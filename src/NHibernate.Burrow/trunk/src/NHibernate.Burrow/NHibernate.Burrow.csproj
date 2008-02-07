@@ -1,0 +1,203 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>NHibernate.Burrow</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NHibernate.Burrow</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>false</SignAssembly>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>..\..\bin\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>..\..\bin\MindHarbor.DomainTemplate.XML</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=1.0.0.2, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=1.2.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\DomainLayerAssemblyElement.cs" />
+    <Compile Include="Configuration\DomainLayerAssemblyElementCollection.cs" />
+    <Compile Include="Configuration\MHDomainTemplateSection.cs" />
+    <Compile Include="Configuration\PUSection.cs" />
+    <Compile Include="Configuration\PUSectionCollection.cs" />
+    <Compile Include="DataContainers\GuidDataContainer.cs" />
+    <Compile Include="DataContainers\LocalSafe.cs" />
+    <Compile Include="Exceptions\NoSuitableContructorException.cs" />
+    <Compile Include="Exceptions\PropertyNotFoundException.cs" />
+    <Compile Include="Exceptions\TypeNotFoundException.cs" />
+    <Compile Include="IHasUserId.cs" />
+    <Compile Include="NHDomain\Conversation.cs" />
+    <Compile Include="NHDomain\ConversationalData.cs" />
+    <Compile Include="NHDomain\ConversationPool.cs" />
+    <Compile Include="NHDomain\Exceptions\ConversationUnavailableException.cs" />
+    <Compile Include="NHDomain\Exceptions\ConversationUninitializedException.cs" />
+    <Compile Include="NHDomain\Exceptions\DomainContextUninitializedException.cs" />
+    <Compile Include="NHDomain\Exceptions\GeneralException.cs" />
+    <Compile Include="NHDomain\PersistantObjSaveDeleteSimple.cs" />
+    <Compile Include="NHDomain\PersistantObjSimple.cs" />
+    <Compile Include="NHDomain\DomainContext.cs" />
+    <Compile Include="NHDomain\DomainSessionBase.cs" />
+    <Compile Include="NHDomain\DomainSessionFactoryBase.cs" />
+    <Compile Include="DomainTemplateException.cs" />
+    <Compile Include="NHDomain\AuditLog\AuditLogInterceptorFactory.cs" />
+    <Compile Include="IPersistantObjSaveDelete.cs" />
+    <Compile Include="NHDomain\BizTransactionEntity\BizTransactionEntityDAOBase.cs" />
+    <Compile Include="NHDomain\BizTransactionEntity\IBizTransactionEntity.cs" />
+    <Compile Include="NHDomain\GeneralDAO.cs" />
+    <Compile Include="NHDomain\Loader.cs" />
+    <Compile Include="NHDomain\IInterceptorFactory.cs" />
+    <Compile Include="NHDomain\ObjWHashIdNDAOBase.cs" />
+    <Compile Include="NHDomain\PersistantObj.cs" />
+    <Compile Include="NHDomain\PersistantObjSaveDelete.cs" />
+    <Compile Include="NHDomain\PersistantUnit.cs" />
+    <Compile Include="NHDomain\PersistantUnitRepo.cs" />
+    <Compile Include="ObjectWHashIdBase.cs" />
+    <Compile Include="DataContainers\AssemblyDataContainer.cs" />
+    <Compile Include="DataContainers\DLContainer.cs" />
+    <Compile Include="DataContainers\HttpAppContainer.cs" />
+    <Compile Include="DataContainers\IDLContainer.cs" />
+    <Compile Include="IWithIdNBizKey.cs" />
+    <Compile Include="NHDomain\AdvGenericDAO.cs" />
+    <Compile Include="NHDomain\AuditLog\Actions.cs" />
+    <Compile Include="NHDomain\AuditLog\AuditLogInterceptor.cs" />
+    <Compile Include="NHDomain\AuditLog\AuditLogRecord.cs" />
+    <Compile Include="NHDomain\AuditLog\AuditLogRecordDAO.cs" />
+    <Compile Include="NHDomain\Configuration.cs" />
+    <Compile Include="NHDomain\GenericDAOBase.cs" />
+    <Compile Include="NHDomain\ISessionManager.cs" />
+    <Compile Include="NHDomain\PersistantObjWithCRUDBase.cs" />
+    <Compile Include="IPersistantObjWithCRUD.cs" />
+    <Compile Include="ObjectWithIdentityIdBase.cs" />
+    <Compile Include="NHDomain\PersistantObjWithDAOBase.cs" />
+    <Compile Include="IObjectDAOHelper.cs" />
+    <Compile Include="NHDomain\ObjectDAOHelper.cs" />
+    <Compile Include="NHDomain\GenericDAO.cs" />
+    <Compile Include="NHDomain\DomainException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NHDomain\DomainLayerBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NHDomain\DomainLayerFactoryBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IGenericDAO.cs" />
+    <Compile Include="IPersistantObjWithDAO.cs" />
+    <Compile Include="NHDomain\SessionManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IDomainSession.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IDomainSessionFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IWithId.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjWithIdNBizKeyBase.cs" />
+    <Compile Include="OverspanState.cs" />
+    <Compile Include="Util\SingletonInstanceLoader.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

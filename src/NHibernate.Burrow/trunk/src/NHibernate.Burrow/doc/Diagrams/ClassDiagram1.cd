@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="MindHarbor.MHGeneralLib.MHContainer.MHContainer">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>MHContainer\MHContainer.cs</FileName>
+      <HashCode>AgMAEAIAADAAAAAAgACAAAAABAEAAAAAAAAAAgAQAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.DomainException" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\DomainException.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.SessionManager" Collapsed="true">
+    <Position X="9" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\SessionManager.cs</FileName>
+      <HashCode>AAAAAAIgAAACAAAAYECACAAEAAAAQAAFAAACACIBAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.DomainLayerBase">
+    <Position X="6.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\DomainLayerBase.cs</FileName>
+      <HashCode>AAAACAAgACAkAAACAACAoAAIoAAAAAAAAAAAAACAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SessBroker" />
+      <Property Name="SessMngr" />
+      <Property Name="Current" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.DomainLayerFactoryBase" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\DomainLayerFactoryBase.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.DomainLayerGeneral" Collapsed="true">
+    <Position X="3.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\DomainLayerGeneral.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.DomainLayerGeneralFactory" Collapsed="true">
+    <Position X="5.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\DomainLayerGeneralFactory.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.GenericObjectLoader&lt;T&gt;" Collapsed="true">
+    <Position X="10.75" Y="2" Width="2" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\GenericObjectLoader.cs</FileName>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.ObjectDAO" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\ObjectDAO.cs</FileName>
+      <HashCode>AAQAAAAEJABAIAQAAAAAAAAAAAEACAABAAAAAQAIAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="nhsb" />
+    </ShowAsAssociation>
+    <AssociationLine Name="nhsb" Type="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.ISessionBroker" ManuallyRouted="true">
+      <Path>
+        <Point X="11.25" Y="10.505" />
+        <Point X="12.068" Y="10.505" />
+        <Point X="12.068" Y="7.267" />
+        <Point X="11.25" Y="7.267" />
+      </Path>
+    </AssociationLine>
+    <Lollipop Position="0.294" />
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.ObjectLoader" Collapsed="true">
+    <Position X="11.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\ObjectLoader.cs</FileName>
+      <HashCode>AAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.PersistantObjBase" BaseTypeListCollapsed="true">
+    <Position X="2" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\PersistantObjBase.cs</FileName>
+      <HashCode>AAAiAAAIAAAAEAAAgAAAAAAAAAAAAIAAAAAAAAAAAgA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.169" />
+  </Class>
+  <Class Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.SessionBroker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\SessionBroker.cs</FileName>
+      <HashCode>AEQAgIAARBBAAQBBAAiAAAAAgAVAEMAEAAAAAAACAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Interface Name="MindHarbor.MHGeneralLib.DomainTemplates.DomainOnNHibernate.ISessionBroker">
+    <Position X="9.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\DomainOnNHibernate\ISessionBroker.cs</FileName>
+      <HashCode>AAQAgAAABBBAAQBBAAAAAAAAgAUAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+  </Interface>
+  <Interface Name="MindHarbor.MHGeneralLib.DomainTemplates.IObjectDAO" Collapsed="true">
+    <Position X="9.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\IObjectDAO.cs</FileName>
+      <HashCode>AAQAAAAAJABAAAQAAAAAAAAAAAEACAAAAAAAAQAIAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.MHGeneralLib.DomainTemplates.IDomainLayer">
+    <Position X="8.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\IDomainLayer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.MHGeneralLib.DomainTemplates.IPersistantObj">
+    <Position X="5.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DomainTemplates\IPersistantObj.cs</FileName>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DAO" />
+    </ShowAsAssociation>
+  </Interface>
+</ClassDiagram>

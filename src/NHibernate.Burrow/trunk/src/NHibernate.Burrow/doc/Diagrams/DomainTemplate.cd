@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="MindHarbor.DomainTemplate.ObjectWithIdentityIdBase" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>ObjectWithIdentityIdBase.cs</FileName>
+      <HashCode>AAACAAAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAACAgA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="MindHarbor.DomainTemplate.IDomainLayer" Collapsed="true">
+    <Position X="6.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IDomainLayer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IDomainLayerFactory" Collapsed="true">
+    <Position X="10" Y="7" Width="2" />
+    <TypeIdentifier>
+      <FileName>IDomainLayerFactory.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IGenericDAO&lt;T&gt;" Collapsed="true">
+    <Position X="1.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGenericDAO.cs</FileName>
+      <HashCode>AAQAAAAAJABAAAAAAAAQAAAAAAEBCAAAQAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IObjectDAOHelper" Collapsed="true">
+    <Position X="11" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IObjectDAOHelper.cs</FileName>
+      <HashCode>AAQAAAAAJABAAAQAAAAAAAAAAAEACAAAAAAAAQAIAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IObjectLoader" Collapsed="true">
+    <Position X="1.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IObjectLoader.cs</FileName>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IObjectWithId" Collapsed="true">
+    <Position X="6.75" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>IObjectWithId.cs</FileName>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IPersistantObjWithCRUD" Collapsed="true">
+    <Position X="5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>IPersistantObjWithCRUD.cs</FileName>
+      <HashCode>AAQAAAAABABAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MindHarbor.DomainTemplate.IPersistantObjWithDAO">
+    <Position X="7.75" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>IPersistantObjWithDAO.cs</FileName>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DAO" />
+    </ShowAsAssociation>
+  </Interface>
+</ClassDiagram>
