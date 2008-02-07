@@ -83,8 +83,7 @@ namespace NHibernate.Burrow.DataContainers {
         /// <param name="key"></param>
         /// <param name="callerType"></param>
         /// <returns></returns>
-        public static T GetThreadStaticData<T>(string key, System.Type callerType) where T : class
-        {
+        public static T GetThreadStaticData<T>(string key, System.Type callerType) where T : class {
             if (threadData == null) return null;
             string compositeKey = callerType + DIVIDER + ComposeKey(key);
 
@@ -99,8 +98,7 @@ namespace NHibernate.Burrow.DataContainers {
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="callerType"></param>
-        public static void SetThreadStaticData(string key, object value, System.Type callerType)
-        {
+        public static void SetThreadStaticData(string key, object value, System.Type callerType) {
             if (threadData == null)
                 return;
             threadData[callerType + DIVIDER + ComposeKey(key)] = value;
@@ -113,8 +111,7 @@ namespace NHibernate.Burrow.DataContainers {
         /// <param name="key"></param>
         /// <param name="callerType"></param>
         /// <returns></returns>
-        public static T GetStaticData<T>(string key, System.Type callerType) where T : class
-        {
+        public static T GetStaticData<T>(string key, System.Type callerType) where T : class {
             lock (lockObj) {
                 if (staticData == null) return null;
                 string compositeKey = callerType + DIVIDER + ComposeKey(key);
@@ -130,8 +127,7 @@ namespace NHibernate.Burrow.DataContainers {
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="callerType"></param>
-        public static void SetStaticData(string key, object value, System.Type callerType)
-        {
+        public static void SetStaticData(string key, object value, System.Type callerType) {
             lock (lockObj) {
                 staticData[callerType + DIVIDER + ComposeKey(key)] = value;
             }

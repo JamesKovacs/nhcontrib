@@ -11,7 +11,7 @@ namespace NHibernate.Burrow.WebUtil {
 
         public object OnSave(object toSave, object objectInStateContainer) {
             if (toSave == null) return null;
-            object id = Loader.Instance.GetId(toSave);
+            object id = EntityLoader.Instance.GetId(toSave);
             Type t = toSave.GetType();
             return new object[] {id, t};
         }
@@ -22,13 +22,12 @@ namespace NHibernate.Burrow.WebUtil {
 
             object[] vs = (object[]) objectOriginallyLoaded;
             if (UseLoad)
-                return Loader.Instance.Load((Type) vs[1], vs[0]);
+                return EntityLoader.Instance.Load((Type) vs[1], vs[0]);
             else
-                return Loader.Instance.Get((Type) vs[1], vs[0]);
+                return EntityLoader.Instance.Get((Type) vs[1], vs[0]);
         }
 
         #endregion
-
     }
 
     public class GetEntityVSFInterceptor : EntityVSFInterceptorBase {

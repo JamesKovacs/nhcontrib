@@ -130,7 +130,8 @@ namespace NHibernate.Burrow.NHDomain {
             //1-29-08 by Kai: but it will be flushed in the following method 
             try {
                 SessionManager.CommitNHibernateTransactions();
-            }finally {
+            }
+            finally {
                 SessionManager.CloseNHibernateSessions();
                 Close();
             }
@@ -147,7 +148,8 @@ namespace NHibernate.Burrow.NHDomain {
             CheckState();
             try {
                 SessionManager.CommitNHibernateTransactions();
-            }catch(Exception ) {
+            }
+            catch (Exception) {
                 Close();
                 throw;
             }
@@ -179,8 +181,7 @@ namespace NHibernate.Burrow.NHDomain {
             if (Canceled)
                 RollbackAndClose();
             else if (!IsInPool)
-                    CommitAndClose();
-               
+                CommitAndClose();
         }
 
         private void Close() {

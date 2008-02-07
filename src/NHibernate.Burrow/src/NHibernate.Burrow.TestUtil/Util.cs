@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using log4net.Config;
 
-namespace NHibernate.Burrow.TestUtil
-{
-    public static class Util
-    {
+namespace NHibernate.Burrow.TestUtil {
+    public static class Util {
         public static void PrintObject(object o) {
             Console.WriteLine("==========" + o + "===========");
             foreach (PropertyInfo pi in o.GetType().GetProperties())
@@ -16,8 +12,7 @@ namespace NHibernate.Burrow.TestUtil
             Console.WriteLine("========== EOF " + o + "===========");
         }
 
-        public static void BeginLog()
-        {
+        public static void BeginLog() {
             XmlConfigurator.Configure();
         }
     }

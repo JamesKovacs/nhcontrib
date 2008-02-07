@@ -1,5 +1,3 @@
-using NHibernate;
-
 namespace NHibernate.Burrow.NHDomain {
     /// <summary>
     /// A factory for creating Interceptor

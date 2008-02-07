@@ -1,19 +1,19 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("NHibernate Burrow")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("NHibernate.Contrib")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("LGPL")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+
+[assembly : AssemblyTitle("NHibernate Burrow")]
+[assembly : AssemblyDescription("")]
+[assembly : AssemblyConfiguration("")]
+[assembly : AssemblyCompany("NHibernate.Contrib")]
+[assembly : AssemblyProduct("")]
+[assembly : AssemblyCopyright("LGPL")]
+[assembly : AssemblyTrademark("")]
+[assembly : AssemblyCulture("")]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.3.0.*")]
+[assembly : AssemblyVersion("1.3.0.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
@@ -53,7 +53,8 @@ using System.Runtime.CompilerServices;
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //
-[assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("")]
-[assembly: AssemblyKeyName("")]
-[assembly: AssemblyFileVersionAttribute("1.3.0")]
+
+[assembly : AssemblyDelaySign(false)]
+[assembly : AssemblyKeyFile("")]
+[assembly : AssemblyKeyName("")]
+[assembly : AssemblyFileVersionAttribute("1.3.0")]

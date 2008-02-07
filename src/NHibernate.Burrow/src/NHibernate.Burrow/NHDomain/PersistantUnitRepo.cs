@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using NHibernate.Burrow.Configuration;
+using NHibernate.Burrow.NHDomain.Exceptions;
 
 namespace NHibernate.Burrow.NHDomain {
     /// <summary>
@@ -12,11 +13,15 @@ namespace NHibernate.Burrow.NHDomain {
     /// repository instances can be retrieved from here
     /// </remarks>
     public class PersistantUnitRepo {
-        private static  PersistantUnitRepo instance = new PersistantUnitRepo();
+        private static PersistantUnitRepo instance = new PersistantUnitRepo();
 
         private IList<PersistantUnit> persistantUnits = new List<PersistantUnit>();
 
         private PersistantUnitRepo() {
+            if (DomainContext.Current == null)
+                throw new DomainContextUninitializedException(
+                    "Facade.InitializeDomain() must be called at the very begining of the application." +
+                    "(Also remember to call Facade.CloseDomain() when exit the transaction with application");
             foreach (PUSection pus in MHDomainTemplateSection.GetInstance().PersistantUnits)
                 PersistantUnits.Add(new PersistantUnit(pus));
         }
@@ -25,9 +30,7 @@ namespace NHibernate.Burrow.NHDomain {
         /// The singleton Instance of this class
         /// </summary>
         public static PersistantUnitRepo Instance {
-            get {
-                return instance;
-            }
+            get { return instance; }
         }
 
         /// <summary>

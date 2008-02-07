@@ -37,12 +37,11 @@ namespace NHibernate.Burrow.Configuration {
         /// The converstaion timout minutes
         ///</summary>
         [ConfigurationProperty("conversationTimeOut",
-          DefaultValue = "30",
-          IsRequired = false,
-          IsKey = false)]
-        public int ConversationTimeOut
-        {
-            get { return (int)this["conversationTimeOut"]; }
+            DefaultValue = "30",
+            IsRequired = false,
+            IsKey = false)]
+        public int ConversationTimeOut {
+            get { return (int) this["conversationTimeOut"]; }
             set { this["conversationTimeOut"] = value; }
         }
 
@@ -53,15 +52,13 @@ namespace NHibernate.Burrow.Configuration {
         ///  must be greater than 1
         ///</summary>
         [ConfigurationProperty("conversationCleanupFrequency",
-          DefaultValue = "4",
-          IsRequired = false,
-          IsKey = false)]
-        public int ConversationCleanupFrequency
-        {
-            get { return (int)this["conversationCleanupFrequency"]; }
+            DefaultValue = "4",
+            IsRequired = false,
+            IsKey = false)]
+        public int ConversationCleanupFrequency {
+            get { return (int) this["conversationCleanupFrequency"]; }
             set { this["conversationCleanupFrequency"] = value; }
         }
-
 
         /// <summary>
         /// Get the instance from the current application's config file

@@ -3,7 +3,6 @@ using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.NHDomain.Exceptions;
 
 namespace NHibernate.Burrow.NHDomain {
-    
     public enum ConversationalDataMode {
         Single,
         SingleTemp,
@@ -19,28 +18,27 @@ namespace NHibernate.Burrow.NHDomain {
     /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ConversationalData<T> {
-      
         private Guid gid = Guid.Empty;
-        public ConversationalData() {}
         private ConversationalDataMode mode = ConversationalDataMode.SingleTemp;
+        public ConversationalData() {}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConversationalData(ConversationalDataMode mode) {
+            this.mode = mode;
+        }
+
+        public ConversationalData(ConversationalDataMode mode, T value) {
+            this.mode = mode;
+            Value = value;
+        }
 
         public ConversationalDataMode Mode {
             get { return mode; }
             set { mode = value; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ConversationalData(ConversationalDataMode mode){
-            this.mode = mode;
-        }
-        
-        public ConversationalData(ConversationalDataMode mode, T value){
-            this.mode = mode;
-            Value = value;
-        }
- 
         /// <summary>
         /// Gets and sets the data value of this container
         /// </summary>
@@ -54,8 +52,8 @@ namespace NHibernate.Burrow.NHDomain {
                         throw new ConversationUnavailableException(
                             "Conversation may have changed, if you don't need to keep data after conversation changed, please use SingleTemp Mode on.");
                     if (Mode == ConversationalDataMode.SingleTemp)
-                     gid = Guid.Empty;
-                }    
+                        gid = Guid.Empty;
+                }
                 return retVal;
             }
             set {
@@ -70,6 +68,7 @@ namespace NHibernate.Burrow.NHDomain {
                     cItems.Set(gid, value);
             }
         }
+
         /// <summary>
         /// indicates if this data is out of conversation 
         /// </summary>
@@ -80,9 +79,10 @@ namespace NHibernate.Burrow.NHDomain {
         private static GuidDataContainer cItems {
             get {
                 if (Conversation.Current == null) {
-                    string msg = "ConversationalData can not be accessed outside conversation. "+
-                                "Make sure Conversation is intialized before visiting conversational data."
-                                +" It might be caused by missing <add name=\"NHSessModule\" type=\"NHibernate.Burrow.NHDomain.NHSessHTTPModule\" /> in the Web.Config file";
+                    string msg = "ConversationalData can not be accessed outside conversation. " +
+                                 "Make sure Conversation is intialized before visiting conversational data."
+                                 +
+                                 " It might be caused by missing <add name=\"NHSessModule\" type=\"NHibernate.Burrow.NHDomain.NHSessHTTPModule\" /> in the Web.Config file";
                     throw new ConversationUnavailableException(
                         msg);
                 }

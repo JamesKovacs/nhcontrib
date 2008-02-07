@@ -10,23 +10,23 @@ namespace NHibernate.Burrow.NHDomain {
         private readonly IDictionary<Guid, ConversationPoolItem> pool = new Dictionary<Guid, ConversationPoolItem>();
         private TimeSpan cleanUpTimeSpan;
         private DateTime nextCleanup = DateTime.Now;
-        private TimeSpan timeOut ;
+        private TimeSpan timeOut;
 
-        internal TimeSpan ConversationTimeout {
-            get { return timeOut; }
-        }
-        
         private ConversationPool() {
             MHDomainTemplateSection cfg = MHDomainTemplateSection.GetInstance();
             int timeoutMinutes = cfg.ConversationTimeOut;
-            if(timeoutMinutes < 1) 
-                throw new ConfigurationErrorsException("ConversationTimeOut must be greater than 1");  
-            
-            timeOut = new TimeSpan(0, timeoutMinutes,0);
+            if (timeoutMinutes < 1)
+                throw new ConfigurationErrorsException("ConversationTimeOut must be greater than 1");
+
+            timeOut = new TimeSpan(0, timeoutMinutes, 0);
             int freq = cfg.ConversationCleanupFrequency;
-            if(freq < 1 )
+            if (freq < 1)
                 throw new ConfigurationErrorsException("ConversationCleanupFrequency must be greater than 1");
-            cleanUpTimeSpan = new TimeSpan(0, timeoutMinutes * freq , 0 );
+            cleanUpTimeSpan = new TimeSpan(0, timeoutMinutes*freq, 0);
+        }
+
+        internal TimeSpan ConversationTimeout {
+            get { return timeOut; }
         }
 
         public static ConversationPool Instance {
@@ -53,7 +53,8 @@ namespace NHibernate.Burrow.NHDomain {
                 else
                     throw new ConversationUnavailableException("Conversation (" + key +
                                                                ") does not exsits in the pool, it may already expired. "
-                                                               + ". Do not try to recover a conversation after an exception occurred.");
+                                                               +
+                                                               ". Do not try to recover a conversation after an exception occurred.");
             }
         }
 
@@ -101,7 +102,6 @@ namespace NHibernate.Burrow.NHDomain {
         private TimeSpan timeOut;
 
         public ConversationPoolItem(Conversation conversation) {
-            
             this.conversation = conversation;
             timeOut = ConversationPool.Instance.ConversationTimeout;
         }

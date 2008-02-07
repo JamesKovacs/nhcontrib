@@ -6,23 +6,21 @@ using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConfigurationTests {
     [TestFixture]
-    public class ConfigSectionReadingTest  {
+    public class ConfigSectionReadingTest {
         [Test]
         public void Test() {
             MHDomainTemplateSection section = MHDomainTemplateSection.GetInstance();
             Assert.IsNotNull(section);
-            Assert.IsTrue(section.PersistantUnits.Count > 0 );
+            Assert.IsTrue(section.PersistantUnits.Count > 0);
 
-            foreach (PUSection puSection in section.PersistantUnits)
-            {
-               Assert.IsTrue(  puSection.DomainLayerAssemblies.Count > 0 );
-                foreach (DomainLayerAssemblyElement dle in puSection.DomainLayerAssemblies) {
-                    Console.WriteLine(dle.Name + " - " + dle.DomianSessionFactoryName);
-                }
+            foreach (PUSection puSection in section.PersistantUnits) {
+                Assert.IsTrue(puSection.DomainAssemblies.Count > 0);
+                foreach (DomainAssemblySection dle in puSection.DomainAssemblies)
+                    foreach (KeyValueConfigurationElement setting in dle.DomainAssemblySettings)
+                        Console.WriteLine(setting.Key + " - " + setting.Value);
 
-                foreach (DictionaryEntry entry in puSection.ORMFrameworkSettingsDict) {
-                    Console.WriteLine(entry.Key + " - "  + entry.Value);
-                }
+                foreach (DictionaryEntry entry in puSection.ORMFrameworkSettingsDict)
+                    Console.WriteLine(entry.Key + " - " + entry.Value);
             }
         }
     }

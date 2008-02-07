@@ -1,24 +1,22 @@
 using System;
 using System.Collections.Generic;
-using NHibernate.Burrow;
 using NHibernate.Burrow.NHDomain;
-using NHibernate;
+using NHibernate.Burrow.Util.EntityBases;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestUtil {
     [TestFixture]
     public class DataProviderBase {
         private readonly LinkedList<object> createdData = new LinkedList<object>();
-        
+
         public readonly Random Random = new Random(19);
 
         public static string RandomName() {
             return RandomString(5);
         }
 
-        protected static string RandomEmail()
-        {
-            return RandomName() + "@"+ RandomName() + ".com";
+        protected static string RandomEmail() {
+            return RandomName() + "@" + RandomName() + ".com";
         }
 
         public static string RandomString(int length) {
@@ -29,7 +27,7 @@ namespace NHibernate.Burrow.TestUtil {
             return Math.Abs(RandomStringGenerator.GenerateLetterStrings(10).GetHashCode()/100);
         }
 
-        protected void AddCreatedData(object  o) {
+        protected void AddCreatedData(object o) {
             createdData.AddFirst(o);
         }
 
@@ -52,15 +50,14 @@ namespace NHibernate.Burrow.TestUtil {
                 DeletePersistantObject((IPersistantObjWithDAO) o);
             else if (o is IPersistantObjSaveDelete)
                 DeletePersistantObject((IPersistantObjSaveDelete) o);
-            else  
+            else
                 DeletePersistantObject(o);
-           
         }
 
         protected static void DeletePersistantObject(IPersistantObjWithDAO o) {
-            o = (IPersistantObjWithDAO)ReloadIWithId(o);
+            o = (IPersistantObjWithDAO) ReloadIWithId(o);
             if (o != null)
-            o.DAO.Delete();
+                o.DAO.Delete();
         }
 
         private static object ReloadIWithId(IWithId o) {
@@ -72,21 +69,19 @@ namespace NHibernate.Burrow.TestUtil {
         }
 
         protected static void DeletePersistantObject(IPersistantObjSaveDelete o) {
-            o = (IPersistantObjSaveDelete)ReloadIWithId(o);
+            o = (IPersistantObjSaveDelete) ReloadIWithId(o);
             if (o != null)
-            o.Delete();
-        } 
-        
-        protected static void DeletePersistantObject(object o) {
-            o = GetSession(o.GetType()).Get(o.GetType(), GetEntityId(o));
-            if(o != null)
-               GetSession(o.GetType()).Delete(o);
+                o.Delete();
         }
 
+        protected static void DeletePersistantObject(object o) {
+            o = GetSession(o.GetType()).Get(o.GetType(), GetEntityId(o));
+            if (o != null)
+                GetSession(o.GetType()).Delete(o);
+        }
 
-        private static object GetEntityId(object entity)
-        {
-            return NHDomain.Loader.Instance.GetId(entity);
+        private static object GetEntityId(object entity) {
+            return EntityLoader.Instance.GetId(entity);
         }
     }
 }

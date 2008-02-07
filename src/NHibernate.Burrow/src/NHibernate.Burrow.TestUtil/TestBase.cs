@@ -1,9 +1,7 @@
 using System;
-using System.Reflection;
 using log4net;
 using log4net.Config;
 using NHibernate.Burrow.NHDomain;
-using NHibernate.Burrow.TestUtil.Attributes;
 using NHibernate.Burrow.TestUtil.Attributes;
 using NUnit.Framework;
 
@@ -12,11 +10,9 @@ namespace NHibernate.Burrow.TestUtil {
         protected DataProviderBase tdp;
         protected int testYear = DateTime.Now.Year - 5;
 
-         [SetUp]
+        [SetUp]
         public void Initialize() {
-            if(DomainContext.Current!= null)
-                DomainContext.Current.Close();
-            DomainContext.Initialize();
+            Facade.InitializeDomain(true, null);
             DataProvider dpa = (DataProvider) Attribute.GetCustomAttribute(GetType(), typeof (DataProvider), true);
             if (dpa != null)
                 tdp = dpa.CreateDataProvider();
@@ -24,13 +20,13 @@ namespace NHibernate.Burrow.TestUtil {
                 tdp = CreateDataProvider();
             SetUp();
         }
-        
+
         [TearDown]
         public void Close() {
             TearDown();
             try {
                 tdp.ClearData();
-                DomainContext.Current.Close();
+                Facade.CloseDomain();
             }
             finally {
                 LogManager.Shutdown();
@@ -51,7 +47,14 @@ namespace NHibernate.Burrow.TestUtil {
             return new DataProviderBase();
         }
 
-        
-   
+        protected static void CommitAndClearSession() {
+            SessionManager.Flush();
+
+            SessionManager.ClearSessions();
+        }
+
+        protected void BeginLog() {
+            XmlConfigurator.Configure();
+        }
     }
 }

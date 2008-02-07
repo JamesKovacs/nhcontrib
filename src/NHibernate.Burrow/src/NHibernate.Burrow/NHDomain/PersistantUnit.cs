@@ -1,9 +1,6 @@
-using System;
 using System.Reflection;
 using Iesi.Collections.Generic;
 using NHibernate.Burrow.Configuration;
-using NHibernate.Burrow.NHDomain.AuditLog;
-using NHibernate;
 
 namespace NHibernate.Burrow.NHDomain {
     /// <summary>
@@ -17,14 +14,14 @@ namespace NHibernate.Burrow.NHDomain {
     public class PersistantUnit {
         private readonly PUSection configuration;
         private readonly ISet<Assembly> domainLayerAssemblies = new HashedSet<Assembly>();
-        private readonly NHibernate.Cfg.Configuration nHConfiguration;
         private readonly IInterceptorFactory interceptorFactory;
+        private readonly Cfg.Configuration nHConfiguration;
         private readonly ISessionFactory sessionFactory;
         private readonly SessionManager sessionManager;
 
         internal PersistantUnit(PUSection cfg) {
             configuration = cfg;
-            foreach (DomainLayerAssemblyElement dae in cfg.DomainLayerAssemblies) {
+            foreach (DomainAssemblySection dae in cfg.DomainAssemblies) {
                 Assembly a = Assembly.Load(dae.Name);
                 if (a == null)
                     throw new DomainTemplateException("Assembly " + dae.Name + " is not found.");
@@ -32,8 +29,9 @@ namespace NHibernate.Burrow.NHDomain {
             }
             nHConfiguration = CreateNHConfiguration();
             sessionFactory = nHConfiguration.BuildSessionFactory();
-            if (Configuration.EnableAuditLog)
-                interceptorFactory = AuditLogInterceptorFactory.Instance;
+            //Temporarily removed auditLog before we decided whether it should stay in Burrow
+            //if (Configuration.EnableAuditLog)
+            //    interceptorFactory = AuditLogInterceptorFactory.Instance;
             sessionManager = new SessionManager(this);
         }
 
@@ -81,10 +79,6 @@ namespace NHibernate.Burrow.NHDomain {
             get { return PersistantUnitRepo.Instance.CurrentPU; }
         }
 
-        public static PersistantUnit Instance(System.Type t)
-        {
-            return PersistantUnitRepo.Instance.GetPUOfDomainAssembly(t.Assembly);
-        }
         /// <summary>
         /// Gets the only domain assembly if there is only one
         /// </summary>
@@ -107,12 +101,16 @@ namespace NHibernate.Burrow.NHDomain {
         /// <summary>
         /// The nhibernate configuration of this session Manager
         /// </summary>
-        public NHibernate.Cfg.Configuration NHConfiguration {
+        public Cfg.Configuration NHConfiguration {
             get { return nHConfiguration; }
         }
 
         public IInterceptorFactory InterceptorFactory {
             get { return interceptorFactory; }
+        }
+
+        public static PersistantUnit Instance(System.Type t) {
+            return PersistantUnitRepo.Instance.GetPUOfDomainAssembly(t.Assembly);
         }
 
         /// <summary>
@@ -121,8 +119,8 @@ namespace NHibernate.Burrow.NHDomain {
         /// <param name="a"></param>
         /// <returns></returns>
         /// <remarks>A help method </remarks>
-        public DomainLayerAssemblyElement FindAssemblySetting(Assembly a) {
-            foreach (DomainLayerAssemblyElement dae in configuration.DomainLayerAssemblies)
+        public DomainAssemblySection FindAssemblySetting(Assembly a) {
+            foreach (DomainAssemblySection dae in configuration.DomainAssemblies)
                 if (dae.Name == a.GetName().Name)
                     return dae;
             throw new DomainTemplateException("Assembly " + a.FullName + " is not found in the section " +
@@ -133,8 +131,8 @@ namespace NHibernate.Burrow.NHDomain {
         /// Create a NHibernate Configuration
         ///</summary>
         ///<returns></returns>
-        private NHibernate.Cfg.Configuration CreateNHConfiguration() {
-            NHibernate.Cfg.Configuration retVal = new NHibernate.Cfg.Configuration();
+        private Cfg.Configuration CreateNHConfiguration() {
+            Cfg.Configuration retVal = new Cfg.Configuration();
             retVal.Properties = Configuration.ORMFrameworkSettingsDict;
             foreach (Assembly assembly in domainLayerAssemblies)
                 retVal.AddAssembly(assembly, FindAssemblySetting(assembly).SkipSorting);

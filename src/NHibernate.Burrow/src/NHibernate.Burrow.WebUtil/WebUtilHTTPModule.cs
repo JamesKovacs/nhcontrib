@@ -1,21 +1,13 @@
 using System;
 using System.Web;
+using System.Web.Handlers;
 using System.Web.UI;
 using NHibernate.Burrow.NHDomain;
-using NHibernate.Burrow.NHDomain.Exceptions;
 
 namespace NHibernate.Burrow.WebUtil {
     /// <summary>
     /// </summary>
     public class WebUtilHTTPModule : IHttpModule {
-        private static DomainContext CurrentDomainContext {
-            get {
-                if (DomainContext.Current == null)
-                    throw new DomainContextUninitializedException();
-                return DomainContext.Current;
-            }
-        }
-
         #region IHttpModule Members
 
         /// <summary>
@@ -41,8 +33,8 @@ namespace NHibernate.Burrow.WebUtil {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RollBack(object sender, EventArgs e) {
-            CurrentDomainContext.CancelConversation();
-            CurrentDomainContext.Close();
+            Facade.CancelConversation();
+            Facade.CloseDomain();
         }
 
         /// <summary>
@@ -53,11 +45,8 @@ namespace NHibernate.Burrow.WebUtil {
             HttpApplication ctx = (HttpApplication) sender;
             if (HandlerIsIrrelavant(ctx))
                 return;
-          
-            if (DomainContext.Current != null)
-                DomainContext.Current.Close();
-            //Close the DomainContext remained in the memory the last request failed to close
-            DomainContext.Initialize(ctx.Request.Params);
+
+            Facade.InitializeDomain(true, ctx.Request.Params);
             if (ctx.Context.Handler is Page) {
                 Page p = (Page) ctx.Context.Handler;
                 new StatefulFieldPageModule(p);
@@ -66,8 +55,8 @@ namespace NHibernate.Burrow.WebUtil {
         }
 
         private bool HandlerIsIrrelavant(HttpApplication ctx) {
-            return ctx.Context.Handler is System.Web.Handlers.AssemblyResourceLoader
-                   || ctx.Context.Handler is System.Web.DefaultHttpHandler;
+            return ctx.Context.Handler is AssemblyResourceLoader
+                   || ctx.Context.Handler is DefaultHttpHandler;
         }
 
         /// <summary>
@@ -76,15 +65,14 @@ namespace NHibernate.Burrow.WebUtil {
         /// not *have* to be opened for this to operate successfully.
         /// </summary>
         private void CloseContext(object sender, EventArgs e) {
-            HttpApplication ctx = (HttpApplication)sender;
+            HttpApplication ctx = (HttpApplication) sender;
             if (HandlerIsIrrelavant(ctx))
                 return;
-            CurrentDomainContext.Close();
+            Facade.CloseDomain();
         }
 
         ~WebUtilHTTPModule() {
-            if (DomainContext.Current != null)
-                DomainContext.Current.Close();
+            Facade.CloseDomain();
         }
     }
 }

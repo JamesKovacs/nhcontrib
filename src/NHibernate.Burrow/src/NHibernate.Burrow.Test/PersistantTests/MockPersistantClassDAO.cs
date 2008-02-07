@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using NHibernate.Expression;
+using NHibernate.Burrow.Util.DAOBases;
 
-namespace NHibernate.Burrow.Test.PersistantTests
-{
-    public class MockPersistantClassDAO : NHibernate.Burrow.NHDomain.GenericDAOBase<MockPersistantClass>
-    {
+namespace NHibernate.Burrow.Test.PersistantTests {
+    public class MockPersistantClassDAO : GenericDAOBase<MockPersistantClass> {
         private static readonly MockPersistantClassDAO instance = new MockPersistantClassDAO();
 
         public static MockPersistantClassDAO Instance {

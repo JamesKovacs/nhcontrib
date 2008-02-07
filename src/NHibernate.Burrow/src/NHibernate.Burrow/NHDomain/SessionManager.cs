@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using log4net;
-using NHibernate;
 
 namespace NHibernate.Burrow.NHDomain {
     /// <summary>
@@ -16,28 +16,31 @@ namespace NHibernate.Burrow.NHDomain {
         private readonly object lockObj2 = new object();
         private readonly PersistantUnit persistantUnit;
         private bool isDisposing = false;
+
         #region conversational transaction and session repo
 
         private static readonly ConversationalData<IDictionary<SessionManager, ISession>> _sessionRepo =
-            new ConversationalData<IDictionary<SessionManager, ISession>>(ConversationalDataMode.Overspan, new Dictionary<SessionManager, ISession>());
+            new ConversationalData<IDictionary<SessionManager, ISession>>(ConversationalDataMode.Overspan,
+                                                                          new Dictionary<SessionManager, ISession>());
 
         private static readonly ConversationalData<IDictionary<SessionManager, ITransaction>> _transactionRepo =
-            new ConversationalData<IDictionary<SessionManager, ITransaction>>(ConversationalDataMode.Overspan, new Dictionary<SessionManager, ITransaction>()
-                    );
+            new ConversationalData<IDictionary<SessionManager, ITransaction>>(ConversationalDataMode.Overspan,
+                                                                              new Dictionary
+                                                                                  <SessionManager, ITransaction>()
+                );
 
         private IDictionary<SessionManager, ISession> sessionRepo {
             get {
                 if (_sessionRepo.Value == null)
-                  return  _sessionRepo.Value = new Dictionary<SessionManager, ISession>();
+                    return _sessionRepo.Value = new Dictionary<SessionManager, ISession>();
                 return _sessionRepo.Value;
             }
         }
 
         private IDictionary<SessionManager, ITransaction> transactionRepo {
             get {
-
                 if (_transactionRepo.Value == null)
-                  return  _transactionRepo.Value = new Dictionary<SessionManager, ITransaction>();
+                    return _transactionRepo.Value = new Dictionary<SessionManager, ITransaction>();
                 return _transactionRepo.Value;
             }
         }
@@ -77,22 +80,6 @@ namespace NHibernate.Burrow.NHDomain {
 
         #region static helper members
 
-        #region obsolete methods 
-
-
-        /// <summary>
-        /// Close DomainContext
-        /// </summary>
-        [Obsolete("Call DomainContext.Current.Close instead")]
-        public static void CloseSessions() {
-            if (DomainContext.Current != null) {
-                DomainContext.Current.FinishConversation();
-                DomainContext.Current.Close();
-            }
-        }
-
-        #endregion
-
         /// <summary>
         /// The singleton Instance 
         /// </summary>
@@ -100,9 +87,12 @@ namespace NHibernate.Burrow.NHDomain {
             get { return PersistantUnit.Current.SessionManager; }
         }
 
-        public static SessionManager GetInstance(System.Type t)
-        {
-            return  PersistantUnitRepo.Instance.GetPUOfDomainAssembly(t.Assembly).SessionManager;
+        public static SessionManager GetInstance(System.Type t) {
+            return GetInstance(t.Assembly);
+        }
+
+        public static SessionManager GetInstance(Assembly a) {
+            return PersistantUnitRepo.Instance.GetPUOfDomainAssembly(a).SessionManager;
         }
 
         /// <summary>
@@ -148,8 +138,6 @@ namespace NHibernate.Burrow.NHDomain {
             foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
                 pu.SessionManager.RollbackTransaction();
         }
-
-
 
         internal static void CloseNHibernateSessions() {
             foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
@@ -216,7 +204,7 @@ namespace NHibernate.Burrow.NHDomain {
                     if (!threadSession.IsOpen)
                         throw new DomainTemplateException(
                             "The threadSession was closed by something other than the SessionManger. Do not close session directly. Always use the SessionManager.CloseSession() method ");
-                   
+
                     threadSession.Flush();
                     threadTransaction.Commit();
                 }

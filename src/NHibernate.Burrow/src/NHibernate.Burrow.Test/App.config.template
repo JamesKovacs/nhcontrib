@@ -9,15 +9,15 @@
 
   <NHibernate.Burrow>
     <persistantUnits>
-      <add name="PersistantUnit1" enableAuditLog="true"  >
+      <add name="PersistantUnit1" >
         <domainLayerAssemblies>
-          <add name="NHibernate.Burrow.Test"   domianLayerFactoryName="NHibernate.Burrow.Test.BooDomainLayerFactory" />
+          <add name="NHibernate.Burrow.Test"   domianSessionFactoryName="NHibernate.Burrow.Test.BooDomainSessionFactory" />
         </domainLayerAssemblies>
         <ORMFrameworkSettings>
           <add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
           <add key="hibernate.dialect" value="NHibernate.Dialect.MsSql2005Dialect" />
           <add key="hibernate.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
-          <add key="hibernate.connection.connection_string" value="Server=localhost;Database=MHGeneralLibTest;User=sa;Pwd=kailuo;" />
+          <add key="hibernate.connection.connection_string" value="Server=localhost;Database=NHibernateBurrowTest;User=sa;Pwd=123456;" />
           <add key="hibernate.show_sql" value="false" />
         </ORMFrameworkSettings>
       </add>

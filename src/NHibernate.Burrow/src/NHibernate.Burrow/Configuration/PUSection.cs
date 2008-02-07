@@ -24,22 +24,22 @@ namespace NHibernate.Burrow.Configuration {
         /// <summary>
         /// 
         /// </summary>
-        [ConfigurationProperty("enableAuditLog",
-            DefaultValue = "false",
-            IsRequired = false,
-            IsKey = false)]
-        public bool EnableAuditLog {
-            get { return (bool) this["enableAuditLog"]; }
-            set { this["enableAuditLog"] = value; }
-        }
-
+        ///  //Temporarily removed auditLog before we decided whether it should stay in Burrow
+        //[ConfigurationProperty("enableAuditLog",
+        //    DefaultValue = "false",
+        //    IsRequired = false,
+        //    IsKey = false)]
+        //public bool EnableAuditLog {
+        //    get { return (bool) this["enableAuditLog"]; }
+        //    set { this["enableAuditLog"] = value; }
+        //}
         /// <summary>
         /// 
         /// </summary>
         [ConfigurationProperty("domainLayerAssemblies",
             IsDefaultCollection = false)]
-        public DomainLayerAssemblyElementCollection DomainLayerAssemblies {
-            get { return (DomainLayerAssemblyElementCollection) base["domainLayerAssemblies"]; }
+        public DomainAssemblySectionCollection DomainAssemblies {
+            get { return (DomainAssemblySectionCollection) base["domainLayerAssemblies"]; }
         }
 
         /// <summary>
@@ -55,13 +55,7 @@ namespace NHibernate.Burrow.Configuration {
         /// The ORMFrameworkSettings oganzied into a dictionary
         /// </summary>
         public IDictionary ORMFrameworkSettingsDict {
-            get { return CopyToDict(ORMFrameworkSettings); }
-        }
-
-        private IDictionary CopyToDict(KeyValueConfigurationCollection settings) {
-            IDictionary dict = new Hashtable(settings.Count);
-            foreach (KeyValueConfigurationElement setting in settings) dict.Add(setting.Key, setting.Value);
-            return dict;
+            get { return Util.CopyToDict(ORMFrameworkSettings); }
         }
     }
 }

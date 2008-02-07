@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo"  assembly="NHibernate.Burrow" default-lazy="false">
-  <class name="NHibernate.Burrow.NHDomain.AuditLog.AuditLogRecord" table="tblAuditLogRecord" mutable="false" >
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo"  default-lazy="false">
+  <class name="NHibernate.Burrow.Util.AuditLog.AuditLogRecord,NHibernate.Burrow.Util" table="tblAuditLogRecord" mutable="false" >
     <id name="Id" type="Int32"  unsaved-value="0">
       <generator class="identity" />
     </id>

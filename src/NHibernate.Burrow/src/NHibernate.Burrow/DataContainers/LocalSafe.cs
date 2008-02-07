@@ -1,19 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.Web;
 
-namespace NHibernate.Burrow.DataContainers
-{
+namespace NHibernate.Burrow.DataContainers {
     /// <summary>
     /// This storage wrapper can be used as a static field and will garuntee localness - either HttpContext local if in a HttpContext environment or ThreadLocal otherwise 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class  LocalSafe<T> 
-    {
-        [ThreadStatic]
-        private static IDictionary threadLocalDictionary;  
+    public class LocalSafe<T> {
+        [ThreadStatic] private static IDictionary threadLocalDictionary;
+
+        private readonly Guid gid = Guid.NewGuid();
 
         private IDictionary Container {
             get {
@@ -25,17 +22,13 @@ namespace NHibernate.Burrow.DataContainers
             }
         }
 
-        readonly Guid gid = Guid.NewGuid();
-        
         public T Value {
             get {
                 if (Container.Contains(gid))
-                    return (T)Container[gid];
+                    return (T) Container[gid];
                 else return default(T);
             }
-            set {
-                Container[gid] = value;
-            }
+            set { Container[gid] = value; }
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -47,16 +46,15 @@ namespace NHibernate.Burrow.WebUtil {
             return ph;
         }
 
-        private   void AddConversationStates(Control c) {
+        private void AddConversationStates(Control c) {
             foreach (OverspanState os in DomainContext.Current.OverspanStates()) {
-                if(os.Mode == OverspanMode.Post) {
+                if (os.Mode == OverspanMode.Post) {
                     Literal l = new Literal();
                     l.Text = string.Format("<input type='hidden' name='{0}' value='{1}' />", os.Name, os.Value);
                     c.Controls.Add(l);
                 }
-                if(os.Mode == OverspanMode.Cookie) {
-                    page.Response.Cookies.Add(new HttpCookie(os.Name,os.Value));
-                }else if(page.Request.Cookies.Get(os.Name)!= null){
+                if (os.Mode == OverspanMode.Cookie) page.Response.Cookies.Add(new HttpCookie(os.Name, os.Value));
+                else if (page.Request.Cookies.Get(os.Name) != null) {
                     HttpCookie cookie = new HttpCookie(os.Name, string.Empty);
                     cookie.Expires = DateTime.Now.AddDays(-1);
                     page.Response.Cookies.Add(cookie);

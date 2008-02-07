@@ -70,12 +70,18 @@ namespace NHibernate.Burrow.NHDomain {
                 current.Value = new DomainContext();
             else
                 throw new DomainException("DomainContext is already initialized");
-            string cid = states[ConversationIdKeyName];
-           
-            if (string.IsNullOrEmpty(cid))
-                Conversation.StartNew();
-            else
-                Conversation.RetrieveCurrent(new Guid(cid));
+            InitializeConversation(states);
+        }
+
+        private static void InitializeConversation(NameValueCollection states) {
+            if (states != null) {
+                string cid = states[ConversationIdKeyName];
+                if (!string.IsNullOrEmpty(cid)) {
+                    Conversation.RetrieveCurrent(new Guid(cid));
+                    return;
+                }
+            }
+            Conversation.StartNew();
         }
 
         /// <summary>
@@ -84,7 +90,7 @@ namespace NHibernate.Burrow.NHDomain {
         public void StarLongConversation() {
             CurrentConversation.AddToPool(OverspanMode.Post);
         }
-        
+
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
@@ -130,7 +136,9 @@ namespace NHibernate.Burrow.NHDomain {
         /// <returns></returns>
         public IList<OverspanState> OverspanStates() {
             IList<OverspanState> retVal = new List<OverspanState>();
-            retVal.Add(new OverspanState(ConversationIdKeyName, CurrentConversation.Id.ToString(), CurrentConversation.OverspanMode));
+            retVal.Add(
+                new OverspanState(ConversationIdKeyName, CurrentConversation.Id.ToString(),
+                                  CurrentConversation.OverspanMode));
             return retVal;
         }
     }
