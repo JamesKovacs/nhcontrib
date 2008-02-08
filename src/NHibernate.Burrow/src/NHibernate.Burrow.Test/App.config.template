@@ -7,13 +7,16 @@
                allowDefinition="Everywhere" allowExeDefinition="MachineToApplication" restartOnExternalChanges="true" />
   </configSections>
 
-  <NHibernate.Burrow>
+   <NHibernate.Burrow>
     <persistantUnits>
       <add name="PersistantUnit1" >
         <domainLayerAssemblies>
-          <add name="NHibernate.Burrow.Test"   domianSessionFactoryName="NHibernate.Burrow.Test.BooDomainSessionFactory" />
+          <add name="NHibernate.Burrow.Test">
+            <domainAssemblySettings>
+              <add key="domainSessionFactory" value="NHibernate.Burrow.Test.BooDomainSessionFactory" />
+            </domainAssemblySettings>
+          </add> 
         </domainLayerAssemblies>
-        <ORMFrameworkSettings>
           <add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
           <add key="hibernate.dialect" value="NHibernate.Dialect.MsSql2005Dialect" />
           <add key="hibernate.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
