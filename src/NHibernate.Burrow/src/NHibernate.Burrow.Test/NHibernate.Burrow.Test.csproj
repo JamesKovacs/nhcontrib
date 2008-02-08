@@ -60,8 +60,6 @@
     <Compile Include="ConfigurationTests\ConfigSectionReadingTest.cs" />
     <Compile Include="ConverstationTests\ConversationalDataFixture.cs" />
     <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
-    <Compile Include="LearningTests\HashCodeTest.cs" />
-    <Compile Include="LearningTests\StringSplitTest.cs" />
     <Compile Include="PersistantTests\HashIdMockClass.cs" />
     <Compile Include="PersistantTests\MockPersistantClass.cs" />
     <Compile Include="PersistantTests\MockPersistantClassDAO.cs" />
