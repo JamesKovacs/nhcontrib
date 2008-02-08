@@ -10,6 +10,7 @@ using NHibernate.Proxy;
 using NHibernate.Shards.Engine;
 using NHibernate.Shards.Id;
 using NHibernate.Shards.Strategy;
+using NHibernate.Shards.Strategy.Selection;
 using NHibernate.Stat;
 using NHibernate.Type;
 
@@ -136,7 +137,14 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public void Flush()
 		{
-			throw new NotImplementedException();
+			 foreach (IShard shard in shards) 
+			 {
+				// unopened sessions won't have anything to flush
+				if (shard.Session != null) 
+				{
+					shard.Session.Flush();
+				}
+			}
 		}
 
 		/// <summary>
@@ -228,7 +236,47 @@ namespace NHibernate.Shards.Session
 		/// <returns>The connection provided by the application or <see langword="null" /></returns>
 		public IDbConnection Close()
 		{
-			throw new NotImplementedException();
+			List<Exception> thrown = null;
+
+			foreach (IShard shard in shards)
+			{
+				if(shard.Session != null)
+				{
+					try
+					{
+						shard.Session.Close();
+					}
+					catch(Exception ex)
+					{
+						thrown = thrown ?? new List<Exception>();
+
+						thrown.Add(ex);
+						// we're going to try and close everything that was
+						// opened
+					}
+				}
+			}
+			shards.Clear();
+
+			shardIdsToShards.Clear();
+
+			classesWithoutTopLevelSaveSupport.Clear();
+
+			if (thrown != null && !(thrown.Count == 0))
+			{
+				// we'll just throw the first one
+				Exception first = thrown[0];
+				if (typeof(HibernateException).IsAssignableFrom(first.GetType())) 
+				{
+					throw (HibernateException)first;
+				}
+				throw new HibernateException(first);
+			}
+
+			closed = true;
+
+			// TODO what should I return here?
+			return null;
 		}
 
 		/// <summary>
@@ -248,7 +296,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsOpen
 		{
-			get { throw new NotImplementedException(); }
+			get { return !closed; }
 		}
 
 		/// <summary>
@@ -891,7 +939,27 @@ namespace NHibernate.Shards.Session
 		/// <returns>a persistent instance or null</returns>
 		public object Get(System.Type clazz, object id)
 		{
+			IShardOperation<Object> shardOp = new GetShardOperation();
+
+			return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(clazz, id));
+		}
+
+		private object ApplyGetOperation(IShardOperation<object> shardOp, ShardResolutionStrategyDataImpl srsd)
+		{
 			throw new NotImplementedException();
+		}
+
+		private class GetShardOperation : IShardOperation<object>
+		{
+			public object Execute(IShard shard)
+			{
+				throw new NotImplementedException();
+			}
+
+			public string OperationName
+			{
+				get { throw new NotImplementedException(); }
+			}
 		}
 
 		/// <summary>
@@ -1126,6 +1194,22 @@ namespace NHibernate.Shards.Session
 			IInterceptor interceptor)
 		{
 			throw new NotImplementedException();
+		}
+
+
+		public ISession SomeSession
+		{
+			get
+			{
+				foreach (IShard shard in shards)
+				{
+					if (shard.Session != null)
+					{
+						return shard.Session;
+					}
+				}
+				return null;
+			}
 		}
 	}
 }
