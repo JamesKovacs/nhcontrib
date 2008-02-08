@@ -17,7 +17,8 @@
             </domainAssemblySettings>
           </add> 
         </domainLayerAssemblies>
-          <add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
+        <ORMFrameworkSettings>
+        <add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
           <add key="hibernate.dialect" value="NHibernate.Dialect.MsSql2005Dialect" />
           <add key="hibernate.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
           <add key="hibernate.connection.connection_string" value="Server=localhost;Database=NHibernateBurrowTest;User=sa;Pwd=123456;" />
