@@ -135,7 +135,7 @@ namespace NHibernate.Burrow.NHDomain {
             Cfg.Configuration retVal = new Cfg.Configuration();
             retVal.Properties = Configuration.ORMFrameworkSettingsDict;
             foreach (Assembly assembly in domainLayerAssemblies)
-                retVal.AddAssembly(assembly, FindAssemblySetting(assembly).SkipSorting);
+                retVal.AddAssembly(assembly);
             return retVal;
         }
     }

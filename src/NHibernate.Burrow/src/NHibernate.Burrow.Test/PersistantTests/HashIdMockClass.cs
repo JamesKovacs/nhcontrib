@@ -1,5 +1,6 @@
 using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
+using NHibernate.Expressions;
 
 namespace NHibernate.Burrow.Test.PersistantTests {
     public class HashIdMockClass : ObjWHashIdNDAOBase {
@@ -13,7 +14,7 @@ namespace NHibernate.Burrow.Test.PersistantTests {
 
     public class HashIdMockClassDAO : GenericDAOBase<HashIdMockClass> {
         public HashIdMockClass FindByName(string name) {
-            return GetCriteria().Add(Expression.Expression.Eq("Name", name))
+            return GetCriteria().Add(Expression.Eq("Name", name))
                 .UniqueResult<HashIdMockClass>();
         }
     }

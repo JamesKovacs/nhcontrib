@@ -2,6 +2,7 @@ using System.Collections;
 using Iesi.Collections.Generic;
 using NHibernate.Burrow.NHDomain;
 using NHibernate.Burrow.Util.EntityBases;
+using NHibernate.SqlCommand;
 using NHibernate.Type;
 
 namespace NHibernate.Burrow.Util.AuditLog {
@@ -43,7 +44,19 @@ namespace NHibernate.Burrow.Util.AuditLog {
             AddLogRecord(entity, id, null, null, null, null, Actions.DELETE);
         }
 
-        public void PostFlush(ICollection entities) {
+    	public void OnCollectionRecreate(object collection, object key)
+    	{
+    	}
+
+    	public void OnCollectionRemove(object collection, object key)
+    	{
+    	}
+
+    	public void OnCollectionUpdate(object collection, object key)
+    	{
+    	}
+
+    	public void PostFlush(ICollection entities) {
             ISession sess = SessionManager.Instance.GetUnManagedSession();
             try {
                 ITransaction t = sess.BeginTransaction();
@@ -59,7 +72,12 @@ namespace NHibernate.Burrow.Util.AuditLog {
             }
         }
 
-        ///<summary>
+    	bool? IInterceptor.IsUnsaved(object entity)
+    	{
+				return null;
+			}
+
+    	///<summary>
         ///
         ///            Called just before an object is initialized
         ///            
@@ -106,7 +124,17 @@ namespace NHibernate.Burrow.Util.AuditLog {
             return null;
         }
 
-        ///<summary>
+    	public string GetEntityName(object entity)
+    	{
+				return null;
+			}
+
+    	public object GetEntity(string entityName, object id)
+    	{
+				return null;
+			}
+
+    	///<summary>
         ///            Called when a NHibernate transaction is begun via the NHibernate <see cref="T:NHibernate.ITransaction" />
         ///            API. Will not be called if transactions are being controlled via some other mechanism.
         ///</summary>
@@ -129,7 +157,12 @@ namespace NHibernate.Burrow.Util.AuditLog {
             //don't know how to implement this method.
         }
 
-        #endregion
+    	public SqlString OnPrepareStatement(SqlString sql)
+    	{
+				return sql;
+			}
+
+    	#endregion
 
         private void AddLogRecord(object entity,
                                   object id,

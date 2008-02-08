@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NHibernate.Burrow.Util.DAOBases;
+using NHibernate.Expressions;
 
 namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
     ///<summary>
@@ -49,8 +50,8 @@ namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
         }
 
         private IList<NHT> FindTimedOutOnes() {
-            return GetCriteria().Add(Expression.Expression.Eq(FinishedTransactionProperyName, false))
-                .Add(Expression.Expression.Le(LastActivityInTransactionProperyName, DateTime.Now - timeout))
+            return GetCriteria().Add(Expression.Eq(FinishedTransactionProperyName, false))
+                .Add(Expression.Le(LastActivityInTransactionProperyName, DateTime.Now - timeout))
                 .List<NHT>();
         }
         }

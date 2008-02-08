@@ -18,11 +18,11 @@
           </add> 
         </domainLayerAssemblies>
         <ORMFrameworkSettings>
-        <add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
-          <add key="hibernate.dialect" value="NHibernate.Dialect.MsSql2005Dialect" />
-          <add key="hibernate.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
-          <add key="hibernate.connection.connection_string" value="Server=localhost;Database=NHibernateBurrowTest;User=sa;Pwd=123456;" />
-          <add key="hibernate.show_sql" value="false" />
+        <add key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
+          <add key="dialect" value="NHibernate.Dialect.MsSql2005Dialect" />
+          <add key="connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
+          <add key="connection.connection_string" value="Server=localhost;Database=NHibernateBurrowTest;User=sa;Pwd=123456;" />
+          <add key="show_sql" value="false" />
         </ORMFrameworkSettings>
       </add>
     </persistantUnits>

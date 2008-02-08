@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using NHibernate.Burrow.Util.DAOBases;
-using NHibernate.Expression;
+using NHibernate.Expressions;
 
 namespace NHibernate.Burrow.Util.AuditLog {
     /// <summary>
@@ -23,8 +23,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <param name="entityId"></param>
         /// <returns></returns>
         public IList<AuditLogRecord> Find(System.Type entityType, object entityId) {
-            return GetCriteria().Add(Expression.Expression.Eq("EntityId", entityId.ToString()))
-                .Add(Expression.Expression.Eq("EntityType", entityType.Name.ToString()))
+            return GetCriteria().Add(Expression.Eq("EntityId", entityId.ToString()))
+                .Add(Expression.Eq("EntityType", entityType.Name.ToString()))
                 .AddOrder(new Order("Created", false))
                 .List<AuditLogRecord>();
         }
@@ -37,9 +37,9 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <param name="action"></param>
         /// <returns></returns>
         public IList<AuditLogRecord> Find(System.Type entityType, object entityId, string action) {
-            return GetCriteria().Add(Expression.Expression.Eq("EntityId", entityId.ToString()))
-                .Add(Expression.Expression.Eq("EntityType", entityType.Name.ToString()))
-                .Add(Expression.Expression.Eq("Action", action))
+            return GetCriteria().Add(Expression.Eq("EntityId", entityId.ToString()))
+                .Add(Expression.Eq("EntityType", entityType.Name.ToString()))
+                .Add(Expression.Eq("Action", action))
                 .List<AuditLogRecord>();
         }
     }
