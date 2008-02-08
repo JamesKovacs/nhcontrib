@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using NHibernate.Burrow.NHDomain;
 using NHibernate.Tool.hbm2ddl;
@@ -38,6 +40,10 @@ namespace NHibernate.Burrow.Configuration {
             return
                 (string)
                 PersistantUnit.Current.Configuration.ORMFrameworkSettingsDict["hibernate.connection.connection_string"];
+        }
+
+        public static IEnumerable<ISessionFactory> SessionFactories {
+            get{ throw new NotImplementedException();}
         }
 
         #region private methods
