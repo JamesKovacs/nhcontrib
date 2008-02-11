@@ -88,6 +88,21 @@ namespace NHibernate.Shards.Session
 			set { currentSubgraphShardId = value; }
 		}
 
+		public ISession SomeSession
+		{
+			get
+			{
+				foreach (IShard shard in shards)
+				{
+					if (shard.Session != null)
+					{
+						return shard.Session;
+					}
+				}
+				return null;
+			}
+		}
+
 		#region IShardedSession Members
 
 		/// <summary>
@@ -137,10 +152,10 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public void Flush()
 		{
-			 foreach (IShard shard in shards) 
-			 {
+			foreach (IShard shard in shards)
+			{
 				// unopened sessions won't have anything to flush
-				if (shard.Session != null) 
+				if (shard.Session != null)
 				{
 					shard.Session.Flush();
 				}
@@ -156,19 +171,67 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public FlushMode FlushMode
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get
+			{
+				// all shards must have the same flush mode
+				ISession someSession = SomeSession;
+				if (someSession == null)
+				{
+					someSession = shards[0].EstablishSession();
+				}
+				return someSession.FlushMode;
+			}
+			set
+			{
+				SetFlushModeOpenSessionEvent @event = new SetFlushModeOpenSessionEvent(value);
+				foreach (IShard shard in shards)
+				{
+					if (shard.Session != null)
+					{
+						shard.Session.FlushMode = value;
+					}
+					else
+					{
+						shard.AddOpenSessionEvent(@event);
+					}
+				}
+			}
 		}
 
-		/// <summary> The current cache mode. </summary>
+		/// <summary> 
+		/// The current cache mode. 
+		/// </summary>
 		/// <remarks>
 		/// Cache mode determines the manner in which this session can interact with
 		/// the second level cache.
 		/// </remarks>
 		public CacheMode CacheMode
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get
+			{
+				// all shards must have the same cache mode
+				ISession someSession = SomeSession;
+				if (someSession == null)
+				{
+					someSession = shards[0].EstablishSession();
+				}
+				return someSession.CacheMode;
+			}
+			set
+			{
+				SetCacheModeOpenSessionEvent @event = new SetCacheModeOpenSessionEvent(value);
+				foreach (IShard shard in shards)
+				{
+					if (shard.Session != null)
+					{
+						shard.Session.CacheMode = value;
+					}
+					else
+					{
+						shard.AddOpenSessionEvent(@event);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -176,19 +239,15 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public ISessionFactory SessionFactory
 		{
-			get { throw new NotImplementedException(); }
+			get { return shardedSessionFactory; }
 		}
 
 		/// <summary>
-		/// Gets the ADO.NET connection.
+		/// Deprecated.
 		/// </summary>
-		/// <remarks>
-		/// Applications are responsible for calling commit/rollback upon the connection before
-		/// closing the <c>ISession</c>.
-		/// </remarks>
 		public IDbConnection Connection
 		{
-			get { throw new NotImplementedException(); }
+			get { throw new InvalidOperationException("On Shards this is deprecated"); }
 		}
 
 		/// <summary>
@@ -240,13 +299,13 @@ namespace NHibernate.Shards.Session
 
 			foreach (IShard shard in shards)
 			{
-				if(shard.Session != null)
+				if (shard.Session != null)
 				{
 					try
 					{
 						shard.Session.Close();
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						thrown = thrown ?? new List<Exception>();
 
@@ -266,9 +325,9 @@ namespace NHibernate.Shards.Session
 			{
 				// we'll just throw the first one
 				Exception first = thrown[0];
-				if (typeof(HibernateException).IsAssignableFrom(first.GetType())) 
+				if (typeof (HibernateException).IsAssignableFrom(first.GetType()))
 				{
-					throw (HibernateException)first;
+					throw (HibernateException) first;
 				}
 				throw new HibernateException(first);
 			}
@@ -288,7 +347,14 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public void CancelQuery()
 		{
-			throw new NotImplementedException();
+			// cancel across all shards
+			foreach (IShard shard in shards)
+			{
+				if (shard.Session != null)
+				{
+					shard.Session.CancelQuery();
+				}
+			}
 		}
 
 		/// <summary>
@@ -304,7 +370,21 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsConnected
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				// one connected shard means the session as a whole is connected
+				foreach (IShard shard in shards)
+				{
+					if (shard.Session != null)
+					{
+						if (shard.Session.IsConnected)
+						{
+							return true;
+						}
+					}
+				}
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -314,7 +394,14 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsDirty()
 		{
-			throw new NotImplementedException();
+			// one dirty shard is all it takes
+			foreach (IShard shard in shards)
+			{
+				if (shard.Session != null)
+					if (shard.Session.IsDirty())
+						return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -328,7 +415,21 @@ namespace NHibernate.Shards.Session
 		/// <returns>the identifier</returns>
 		public object GetIdentifier(object obj)
 		{
-			throw new NotImplementedException();
+			foreach (IShard shard in shards)
+			{
+				if (shard.Session != null)
+				{
+					try
+					{
+						return shard.Session.GetIdentifier(obj);
+					}
+					catch (TransientObjectException e)
+					{
+						// Object is transient or is not associated with this session.
+					}
+				}
+			}
+			throw new TransientObjectException("Instance is transient or associated with a defferent Session");
 		}
 
 		/// <summary>
@@ -338,7 +439,13 @@ namespace NHibernate.Shards.Session
 		/// <returns>true if the given instance is associated with this Session</returns>
 		public bool Contains(object obj)
 		{
-			throw new NotImplementedException();
+			foreach (IShard shard in shards)
+			{
+				if (shard.Session != null)
+					if (shard.Session.Contains(obj))
+						return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -352,20 +459,40 @@ namespace NHibernate.Shards.Session
 		/// <param name="obj">a persistent instance</param>
 		public void Evict(object obj)
 		{
-			throw new NotImplementedException();
+			foreach (IShard shard in shards)
+			{
+				if (shard.Session != null)
+				{
+					shard.Session.Evict(obj);
+				}
+			}
 		}
 
 		/// <summary>
 		/// Return the persistent instance of the given entity class with the given identifier,
 		/// obtaining the specified lock mode.
 		/// </summary>
-		/// <param name="theType">A persistent class</param>
+		/// <param name="clazz">A persistent class</param>
 		/// <param name="id">A valid identifier of an existing persistent instance of the class</param>
 		/// <param name="lockMode">The lock level</param>
 		/// <returns>the persistent instance</returns>
-		public object Load(System.Type theType, object id, LockMode lockMode)
+		public object Load(System.Type clazz, object id, LockMode lockMode)
 		{
-			throw new NotImplementedException();
+			List<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(
+				new ShardResolutionStrategyDataImpl(clazz, id));
+			if (shardIds.Count == 1)
+			{
+				return shardIdsToShards[shardIds[0]].EstablishSession().Load(clazz, id, lockMode);
+			}
+			else
+			{
+				Object result = Get(clazz, id, lockMode);
+				if (result == null)
+				{
+					shardedSessionFactory.EntityNotFoundDelegate.HandleEntityNotFound(clazz.Name, id);
+				}
+				return result;
+			}
 		}
 
 		/// <summary>
@@ -377,12 +504,26 @@ namespace NHibernate.Shards.Session
 		/// <see cref="ISession.Get(Type,object)" /> instead). Use this only to retrieve an instance
 		/// that you assume exists, where non-existence would be an actual error.
 		/// </remarks>
-		/// <param name="theType">A persistent class</param>
+		/// <param name="clazz">A persistent class</param>
 		/// <param name="id">A valid identifier of an existing persistent instance of the class</param>
 		/// <returns>The persistent instance or proxy</returns>
-		public object Load(System.Type theType, object id)
+		public object Load(System.Type clazz, object id)
 		{
-			throw new NotImplementedException();
+			List<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(new
+								 ShardResolutionStrategyDataImpl(clazz, id));
+			if (shardIds.Count == 1)
+			{
+				return shardIdsToShards[shardIds[0]].EstablishSession().Load(clazz, id);
+			}
+			else
+			{
+				Object result = Get(clazz, id);
+				if (result == null)
+				{
+					shardedSessionFactory.EntityNotFoundDelegate.HandleEntityNotFound(clazz.Name, id);
+				}
+				return result;
+			}
 		}
 
 		/// <summary>
@@ -434,6 +575,17 @@ namespace NHibernate.Shards.Session
 		/// <param name="replicationMode"></param>
 		public void Replicate(object obj, ReplicationMode replicationMode)
 		{
+			Replicate(null, obj, replicationMode);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="entityName"></param>
+		/// <param name="obj"></param>
+		/// <param name="replicationMode"></param>
+		public void Replicate(string entityName, object obj, ReplicationMode replicationMode)
+		{
 			throw new NotImplementedException();
 		}
 
@@ -447,6 +599,11 @@ namespace NHibernate.Shards.Session
 		/// <param name="obj">A transient instance of a persistent class</param>
 		/// <returns>The generated identifier</returns>
 		public object Save(object obj)
+		{
+			return Save(null, obj);
+		}
+
+		public object Save(string entityName,object  obj)
 		{
 			throw new NotImplementedException();
 		}
@@ -944,24 +1101,6 @@ namespace NHibernate.Shards.Session
 			return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(clazz, id));
 		}
 
-		private object ApplyGetOperation(IShardOperation<object> shardOp, ShardResolutionStrategyDataImpl srsd)
-		{
-			throw new NotImplementedException();
-		}
-
-		private class GetShardOperation : IShardOperation<object>
-		{
-			public object Execute(IShard shard)
-			{
-				throw new NotImplementedException();
-			}
-
-			public string OperationName
-			{
-				get { throw new NotImplementedException(); }
-			}
-		}
-
 		/// <summary>
 		/// Return the persistent instance of the given entity class with the given identifier, or null
 		/// if there is no such persistent instance. Obtain the specified lock mode if the instance
@@ -1122,6 +1261,16 @@ namespace NHibernate.Shards.Session
 
 		#endregion
 
+		private List<ShardId> SelectShardIdsFromShardResolutionStrategyData(ShardResolutionStrategyDataImpl srsd)
+		{
+			throw new NotImplementedException();
+		}
+
+		private object ApplyGetOperation(IShardOperation<object> shardOp, ShardResolutionStrategyDataImpl srsd)
+		{
+			throw new NotImplementedException();
+		}
+
 		private ISession GetSessionForObject(object obj, List<IShard> shardsToConsider)
 		{
 			IShard shard = GetShardForObject(obj, shardsToConsider);
@@ -1196,20 +1345,25 @@ namespace NHibernate.Shards.Session
 			throw new NotImplementedException();
 		}
 
+		#region Nested type: GetShardOperation
 
-		public ISession SomeSession
+		private class GetShardOperation : IShardOperation<object>
 		{
-			get
+			#region IShardOperation<object> Members
+
+			public object Execute(IShard shard)
 			{
-				foreach (IShard shard in shards)
-				{
-					if (shard.Session != null)
-					{
-						return shard.Session;
-					}
-				}
-				return null;
+				throw new NotImplementedException();
 			}
+
+			public string OperationName
+			{
+				get { throw new NotImplementedException(); }
+			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }
