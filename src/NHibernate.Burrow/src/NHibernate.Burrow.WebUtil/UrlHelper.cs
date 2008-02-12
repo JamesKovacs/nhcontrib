@@ -1,6 +1,6 @@
 using System.Text;
 using System.Web;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.WebUtil {
     public class UrlHelper {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using log4net;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// Handles creation and management of sessions and transactions. 
     /// </summary>

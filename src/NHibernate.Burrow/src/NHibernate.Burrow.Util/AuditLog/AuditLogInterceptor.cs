@@ -1,6 +1,6 @@
 using System.Collections;
 using Iesi.Collections.Generic;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NHibernate.Burrow.Util.EntityBases;
 using NHibernate.SqlCommand;
 using NHibernate.Type;

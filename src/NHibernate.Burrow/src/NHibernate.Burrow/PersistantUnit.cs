@@ -2,7 +2,7 @@ using System.Reflection;
 using Iesi.Collections.Generic;
 using NHibernate.Burrow.Configuration;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// A persistant Unit is a unit of a ORM management
     /// </summary>

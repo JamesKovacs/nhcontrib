@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.DAOBases;
 using NUnit.Framework;

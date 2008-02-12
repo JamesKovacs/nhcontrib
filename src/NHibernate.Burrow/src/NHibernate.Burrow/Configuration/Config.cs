@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NHibernate.Tool.hbm2ddl;
 
 namespace NHibernate.Burrow.Configuration {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.DataContainers {
     /// <summary>

@@ -1,5 +1,5 @@
 using System.Collections.Specialized;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow {
     public static class Facade {

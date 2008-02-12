@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Specialized;
-using NHibernate.Burrow.NHDomain;
-using NHibernate.Burrow.NHDomain.Exceptions;
+using NHibernate.Burrow;
+using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.TestUtil;
 using NUnit.Framework;
 

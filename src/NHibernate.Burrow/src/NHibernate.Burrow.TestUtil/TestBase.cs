@@ -1,7 +1,7 @@
 using System;
 using log4net;
 using log4net.Config;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NHibernate.Burrow.TestUtil.Attributes;
 using NUnit.Framework;
 

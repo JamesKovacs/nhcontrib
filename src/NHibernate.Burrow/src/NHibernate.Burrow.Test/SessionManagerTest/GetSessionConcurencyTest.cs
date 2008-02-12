@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Iesi.Collections.Generic;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.SessionManagerTest {

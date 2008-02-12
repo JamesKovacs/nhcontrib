@@ -1,5 +1,5 @@
 using System;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 using NHibernate.Burrow.Util.EntityBases;
 
 namespace NHibernate.Burrow.Util.DAOBases {

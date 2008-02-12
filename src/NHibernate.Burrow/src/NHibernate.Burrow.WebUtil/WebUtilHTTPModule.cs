@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.UI;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.WebUtil {
     /// <summary>

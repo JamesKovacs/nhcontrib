@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// A generic helper loader for loading persistant object by Id
     /// </summary>

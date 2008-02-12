@@ -1,4 +1,4 @@
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// A factory for creating Interceptor
     /// </summary>

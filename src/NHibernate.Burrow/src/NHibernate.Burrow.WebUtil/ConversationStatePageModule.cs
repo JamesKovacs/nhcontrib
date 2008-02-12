@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.WebUtil {
     public class ConversationStatePageModule {

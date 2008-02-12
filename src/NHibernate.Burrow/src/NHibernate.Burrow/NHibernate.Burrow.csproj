@@ -115,25 +115,25 @@
     <Compile Include="DataContainers\GuidDataContainer.cs" />
     <Compile Include="DataContainers\LocalSafe.cs" />
     <Compile Include="Facade.cs" />
-    <Compile Include="NHDomain\Conversation.cs" />
-    <Compile Include="NHDomain\ConversationalData.cs" />
-    <Compile Include="NHDomain\ConversationPool.cs" />
-    <Compile Include="NHDomain\Exceptions\ConversationUnavailableException.cs" />
-    <Compile Include="NHDomain\Exceptions\ConversationUninitializedException.cs" />
-    <Compile Include="NHDomain\Exceptions\DomainContextUninitializedException.cs" />
-    <Compile Include="NHDomain\Exceptions\GeneralException.cs" />
-    <Compile Include="NHDomain\DomainContext.cs" />
+    <Compile Include="Conversation.cs" />
+    <Compile Include="ConversationalData.cs" />
+    <Compile Include="ConversationPool.cs" />
+    <Compile Include="Exceptions\ConversationUnavailableException.cs" />
+    <Compile Include="Exceptions\ConversationUninitializedException.cs" />
+    <Compile Include="Exceptions\DomainContextUninitializedException.cs" />
+    <Compile Include="Exceptions\GeneralException.cs" />
+    <Compile Include="DomainContext.cs" />
     <Compile Include="DomainTemplateException.cs" />
-    <Compile Include="NHDomain\IInterceptorFactory.cs" />
-    <Compile Include="NHDomain\PersistantUnit.cs" />
-    <Compile Include="NHDomain\PersistantUnitRepo.cs" />
+    <Compile Include="IInterceptorFactory.cs" />
+    <Compile Include="PersistantUnit.cs" />
+    <Compile Include="PersistantUnitRepo.cs" />
     <Compile Include="DataContainers\AssemblyDataContainer.cs" />
     <Compile Include="Configuration\Config.cs" />
-    <Compile Include="NHDomain\ISessionManager.cs" />
-    <Compile Include="NHDomain\DomainException.cs">
+    <Compile Include="ISessionManager.cs" />
+    <Compile Include="DomainException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NHDomain\SessionManager.cs">
+    <Compile Include="SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OverspanState.cs" />

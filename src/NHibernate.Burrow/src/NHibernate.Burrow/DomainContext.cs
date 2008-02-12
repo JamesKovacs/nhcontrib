@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using NHibernate.Burrow.DataContainers;
-using NHibernate.Burrow.NHDomain.Exceptions;
+using NHibernate.Burrow.Exceptions;
+using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// Represents the MindLib managed NHibernate environment within which your domain layer worksDomain Context
     /// You can aslo deem this as the counterpart of HttpContext within which your asp.net layer works. 

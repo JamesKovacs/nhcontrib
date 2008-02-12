@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// Summary description for DomainException.
     /// </summary>

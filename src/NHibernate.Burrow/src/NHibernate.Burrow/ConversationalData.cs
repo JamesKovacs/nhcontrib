@@ -1,8 +1,9 @@
 using System;
 using NHibernate.Burrow.DataContainers;
-using NHibernate.Burrow.NHDomain.Exceptions;
+using NHibernate.Burrow.Exceptions;
+using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     public enum ConversationalDataMode {
         Single,
         SingleTemp,

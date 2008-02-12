@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using NHibernate.Burrow.Configuration;
-using NHibernate.Burrow.NHDomain.Exceptions;
+using NHibernate.Burrow.Exceptions;
+using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     internal class ConversationPool {
         private static readonly ConversationPool instance = new ConversationPool();
         private readonly IDictionary<Guid, ConversationPoolItem> pool = new Dictionary<Guid, ConversationPoolItem>();

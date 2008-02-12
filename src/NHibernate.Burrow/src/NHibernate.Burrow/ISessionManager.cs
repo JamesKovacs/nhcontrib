@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernate.Burrow.NHDomain {
+namespace NHibernate.Burrow {
     /// <summary>
     /// A class where client can obtain managed Nhibernate Session
     /// </summary>

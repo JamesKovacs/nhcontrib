@@ -1,4 +1,4 @@
-using NHibernate.Burrow.NHDomain;
+using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.Util.AuditLog {
     /// <summary>
