@@ -1,7 +1,6 @@
 using System;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow {
     ///<summary>
@@ -12,12 +11,12 @@ namespace NHibernate.Burrow {
     /// Currently we leave it public mainly for testing purpose. 
     /// </remarks>
     public class Conversation {
-        private static LocalSafe<Conversation> current = new LocalSafe<Conversation>();
+        private static readonly LocalSafe<Conversation> current = new LocalSafe<Conversation>();
 
         private readonly GuidDataContainer items = new GuidDataContainer();
         private bool canceled = false;
         private Guid id = Guid.Empty;
-        private OverspanMode overspanMode = OverspanMode.Post;
+        private OverspanStrategy overspanStrategy = OverspanStrategy.Post;
 
         private Conversation() {}
 
@@ -58,13 +57,13 @@ namespace NHibernate.Burrow {
             get { return id != Guid.Empty; }
         }
 
-        public OverspanMode OverspanMode {
+        public OverspanStrategy OverspanStrategy {
             get {
                 if (!IsInPool)
-                    return OverspanMode.None;
-                return overspanMode;
+                    return OverspanStrategy.DoNotSpan;
+                return overspanStrategy;
             }
-            private set { overspanMode = value; }
+            private set { overspanStrategy = value; }
         }
 
         public bool Canceled {
@@ -93,12 +92,12 @@ namespace NHibernate.Burrow {
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do nothing
         /// </remarks>
-        public void AddToPool(OverspanMode om) {
+        public void AddToPool(OverspanStrategy om) {
             if (!IsInPool) {
-                if (om == OverspanMode.None)
+                if (!om.SupportLongConversation)
                     throw new ArgumentException(
-                        "OverspanMode.None is not an accetable overspan mode for adding conversation to pool");
-                OverspanMode = om;
+                       om + "is not an accetable overspan strategy for long conversation");
+                OverspanStrategy = om;
                 id = Guid.NewGuid();
                 ConversationPool.Instance.Add(id, this);
             }

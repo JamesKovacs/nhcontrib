@@ -1,36 +1,22 @@
+using System.Web;
+using System.Web.UI;
+
 namespace NHibernate.Burrow {
-    public enum OverspanMode {
-        /// <summary>
-        /// conversation status tracked by post or get parameter
-        /// </summary>
-        Post,
-        /// <summary>
-        /// conversation status tracked only by get parameter
-        /// </summary>
-        GetOnly,
-        /// <summary>
-        /// conversation status tracked by cookie (very careful with this mode as it's session wide. 
-        /// </summary>
-        Cookie,
-        /// <summary>
-        /// Converstaion does not span
-        /// </summary>
-        None
-    }
+ 
 
     public class OverspanState {
-        private readonly OverspanMode mode;
+        private readonly OverspanStrategy strategy;
         private readonly string name;
         private readonly string value;
 
-        public OverspanState(string name, string value, OverspanMode mode) {
+        public OverspanState(string name, string value, OverspanStrategy strategy) {
             this.name = name;
-            this.mode = mode;
+            this.strategy = strategy;
             this.value = value;
         }
 
-        public OverspanMode Mode {
-            get { return mode; }
+        public OverspanStrategy Strategy {
+            get { return strategy; }
         }
 
         public string Name {
@@ -39,6 +25,16 @@ namespace NHibernate.Burrow {
 
         public string Value {
             get { return value; }
+        }
+
+        public void CleanCookies(HttpContext c)
+        {
+              Strategy.CleanCookies(this, c);
+        }
+
+        public void AddOverspanState(Control c)
+        {
+            Strategy.AddOverspanState(c, this);
         }
     }
 }

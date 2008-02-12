@@ -15,7 +15,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             Assert.AreEqual(0, i.Value);
             i.Value = 1;
             Assert.AreEqual(1, i.Value);
-            Conversation.Current.AddToPool(OverspanMode.Post);
+            Conversation.Current.AddToPool(OverspanStrategy.Post);
             Guid cid = Conversation.Current.Id;
 
             Conversation.StartNew();

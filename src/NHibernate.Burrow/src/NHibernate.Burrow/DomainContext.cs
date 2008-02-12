@@ -89,14 +89,14 @@ namespace NHibernate.Burrow {
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
         public void StarLongConversation() {
-            CurrentConversation.AddToPool(OverspanMode.Post);
+            CurrentConversation.AddToPool(OverspanStrategy.Post);
         }
 
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
         public void StarSessionConversation() {
-            CurrentConversation.AddToPool(OverspanMode.Cookie);
+            CurrentConversation.AddToPool(OverspanStrategy.Cookie);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace NHibernate.Burrow {
             IList<OverspanState> retVal = new List<OverspanState>();
             retVal.Add(
                 new OverspanState(ConversationIdKeyName, CurrentConversation.Id.ToString(),
-                                  CurrentConversation.OverspanMode));
+                                  CurrentConversation.OverspanStrategy));
             return retVal;
         }
     }

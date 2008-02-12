@@ -125,6 +125,7 @@
     <Compile Include="DomainContext.cs" />
     <Compile Include="DomainTemplateException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
+    <Compile Include="OverspanStrategy.cs" />
     <Compile Include="PersistantUnit.cs" />
     <Compile Include="PersistantUnitRepo.cs" />
     <Compile Include="DataContainers\AssemblyDataContainer.cs" />
