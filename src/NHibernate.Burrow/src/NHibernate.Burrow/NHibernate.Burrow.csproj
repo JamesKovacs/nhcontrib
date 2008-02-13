@@ -121,7 +121,6 @@
     <Compile Include="Exceptions\ConversationUnavailableException.cs" />
     <Compile Include="Exceptions\ConversationUninitializedException.cs" />
     <Compile Include="Exceptions\DomainContextUninitializedException.cs" />
-    <Compile Include="Exceptions\GeneralException.cs" />
     <Compile Include="DomainContext.cs" />
     <Compile Include="DomainTemplateException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
@@ -131,7 +130,7 @@
     <Compile Include="DataContainers\AssemblyDataContainer.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="ISessionManager.cs" />
-    <Compile Include="DomainException.cs">
+    <Compile Include="Exceptions\BurrowException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SessionManager.cs">

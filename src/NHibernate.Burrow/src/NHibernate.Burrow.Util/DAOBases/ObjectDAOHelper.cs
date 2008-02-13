@@ -1,5 +1,5 @@
 using System;
-using NHibernate.Burrow;
+using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Util.EntityBases;
 
 namespace NHibernate.Burrow.Util.DAOBases {
@@ -46,17 +46,17 @@ namespace NHibernate.Burrow.Util.DAOBases {
         }
 
         public void SaveOrUpdate() {
-            if (isDeleted) throw new DomainException("Can not saveorUpdate once deleted");
+            if (isDeleted) throw new BurrowException("Can not saveorUpdate once deleted");
             gdao.SaveOrUpdate(obj);
         }
 
         public void Save() {
-            if (isDeleted) throw new DomainException("Can not saveorUpdate once deleted");
+            if (isDeleted) throw new BurrowException("Can not saveorUpdate once deleted");
             gdao.Save(obj);
         }
 
         public void ReAttach() {
-            if (isDeleted) throw new DomainException("Can not saveorUpdate once deleted");
+            if (isDeleted) throw new BurrowException("Can not saveorUpdate once deleted");
             gdao.ReAttach(obj);
         }
 

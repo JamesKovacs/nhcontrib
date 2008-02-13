@@ -1,5 +1,9 @@
+using System;
+
 namespace NHibernate.Burrow.Exceptions {
-    public class ConversationUninitializedException : DomainException {
+
+    [Serializable]
+    public class ConversationUninitializedException : BurrowException {
         public ConversationUninitializedException()
             : base("Conversation is not yet initialized for this thread yet, Either StartNew or Retrieve first") {}
 

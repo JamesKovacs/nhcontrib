@@ -70,7 +70,7 @@ namespace NHibernate.Burrow {
             if (current.Value == null)
                 current.Value = new DomainContext();
             else
-                throw new DomainException("DomainContext is already initialized");
+                throw new BurrowException("DomainContext is already initialized");
             InitializeConversation(states);
         }
 

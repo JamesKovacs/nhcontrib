@@ -1,5 +1,8 @@
+using System;
+
 namespace NHibernate.Burrow.Exceptions {
-    public class DomainContextUninitializedException : DomainException {
+    [Serializable]
+    public class DomainContextUninitializedException : BurrowException {
         public DomainContextUninitializedException() : base() {}
         public DomainContextUninitializedException(string msg) : base(msg) {}
     }

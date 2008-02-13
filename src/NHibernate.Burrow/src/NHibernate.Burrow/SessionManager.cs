@@ -5,7 +5,7 @@ using log4net;
 
 namespace NHibernate.Burrow {
     /// <summary>
-    /// Handles creation and management of sessions and transactions. 
+    /// Handlers creation and management of sessions and transactions. 
     /// </summary>
     /// <remarks>
     /// Lifespan : application, Threadsafe
@@ -96,7 +96,7 @@ namespace NHibernate.Burrow {
         }
 
         /// <summary>
-        /// Shotcut to flush the session
+        /// Shortcut to flush the session
         /// </summary>
         public static void Flush() {
             foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)

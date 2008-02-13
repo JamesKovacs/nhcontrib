@@ -1,26 +1,27 @@
 using System;
 
-namespace NHibernate.Burrow {
+namespace NHibernate.Burrow.Exceptions {
     /// <summary>
     /// Summary description for DomainException.
     /// </summary>
-    public class DomainException : Exception {
+    [Serializable]
+    public class BurrowException : ApplicationException {
         /// <summary>
         /// 
         /// </summary>
-        public DomainException() {}
+        public BurrowException() {}
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="msg"></param>
-        public DomainException(string msg) : base(msg) {}
+        public BurrowException(string msg) : base(msg) {}
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="innerException"></param>
-        public DomainException(string msg, Exception innerException) : base(msg, innerException) {}
+        public BurrowException(string msg, Exception innerException) : base(msg, innerException) {}
     }
 }
