@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using Iesi.Collections;
 using Iesi.Collections.Generic;
+using log4net;
 using NHibernate.Cache;
 using NHibernate.Cfg;
 using NHibernate.Connection;
@@ -17,6 +19,7 @@ using NHibernate.Persister.Entity;
 using NHibernate.Proxy;
 using NHibernate.Shards.Engine;
 using NHibernate.Shards.Strategy;
+using NHibernate.Shards.Util;
 using NHibernate.Stat;
 using NHibernate.Transaction;
 using NHibernate.Type;
@@ -25,6 +28,73 @@ namespace NHibernate.Shards.Session
 {
 	public class ShardedSessionFactoryImpl : IShardedSessionFactoryImplementor, IControlSessionProvider
 	{
+		// the id of the control shard
+		private static readonly int CONTROL_SHARD_ID = 0;
+
+		private readonly bool checkAllAssociatedObjectsForDifferentShards;
+
+		// the SessionFactoryImplementor objects to which we delegate
+
+		// All classes that cannot be directly saved
+		private readonly Set<System.Type> classesWithoutTopLevelSaveSupport;
+
+		// map of SessionFactories used by this ShardedSessionFactory (might be a subset of all SessionFactories)
+
+		// Reference to the SessionFactory we use for functionality that expects
+		// data to live in a single, well-known location (like distributed sequences)
+		private readonly ISessionFactoryImplementor controlSessionFactory;
+
+		private readonly Dictionary<ISessionFactoryImplementor, Set<ShardId>> fullSessionFactoryShardIdMap;
+
+		// flag to indicate whether we should do full cross-shard relationship
+		// checking (very slow)
+
+		//TODO
+		// Statistics aggregated across all contained SessionFactories
+		//private readonly IStatistics statistics = new StatisticsImpl(this);
+
+		// our lovely logger
+		private readonly ILog log = LogManager.GetLogger(typeof (ShardedSessionFactoryImpl));
+
+		private readonly IList<ISessionFactoryImplementor> sessionFactories;
+
+		private readonly Dictionary<ISessionFactoryImplementor, Set<ShardId>> sessionFactoryShardIdMap;
+
+		private readonly IShardStrategy shardStrategy;
+
+		#region Ctor
+
+		/// <summary>
+		/// Constructs a ShardedSessionFactoryImpl
+		/// </summary>
+		/// <param name="shardIds"> The ids of the shards with which this SessionFactory should be associated.</param>
+		/// <param name="sessionFactoryShardIdMap">Mapping of SessionFactories to shard ids. 
+		///  When using virtual shards, this map associates SessionFactories (physical
+		///  shards) with virtual shards (shard ids).  Map cannot be empty.
+		///  Map keys cannot be null.  Map values cannot be null or empty.</param>
+		/// <param name="shardStrategyFactory">factory that knows how to create the <see cref="IShardStrategy"/> 
+		///  that will be used for all shard-related operations</param>
+		/// <param name="classesWithoutTopLevelSaveSupport"> All classes that cannot be saved
+		///  as top-level objects</param>
+		/// <param name="checkAllAssociatedObjectsForDifferentShards">Flag that controls
+		///  whether or not we do full cross-shard relationshp checking (very slow)</param>
+		public ShardedSessionFactoryImpl(
+			IList<ShardId> shardIds,
+			Dictionary<ISessionFactoryImplementor, Set<ShardId>> sessionFactoryShardIdMap,
+			IShardStrategyFactory shardStrategyFactory,
+			Set<System.Type> classesWithoutTopLevelSaveSupport,
+			bool checkAllAssociatedObjectsForDifferentShards)
+		{
+			Preconditions.CheckNotNull(sessionFactoryShardIdMap);
+			Preconditions.CheckArgument(!(sessionFactoryShardIdMap.Count == 0));
+			Preconditions.CheckNotNull(shardStrategyFactory);
+			Preconditions.CheckNotNull(classesWithoutTopLevelSaveSupport);
+
+			//And so on...
+		}
+
+		#endregion
+
 		#region IControlSessionProvider Members
 
 		/// <summary>
@@ -33,7 +103,7 @@ namespace NHibernate.Shards.Session
 		/// <returns>control session</returns>
 		public ISessionImplementor OpenControlSession()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -42,12 +112,12 @@ namespace NHibernate.Shards.Session
 
 		public IDictionary<ISessionFactoryImplementor, Set<ShardId>> GetSessionFactoryShardIdMap()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public bool ContainsFactory(ISessionFactoryImplementor factory)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -55,7 +125,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IList<ISessionFactory> SessionFactories
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -73,7 +143,7 @@ namespace NHibernate.Shards.Session
 		/// <returns>specially configured ShardedSessionFactory</returns>
 		public IShardedSessionFactory GetSessionFactory(IList<ShardId> shardIds, IShardStrategyFactory shardStrategyFactory)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -85,7 +155,7 @@ namespace NHibernate.Shards.Session
 		/// Throws <see cref="HibernateException"/>
 		IShardedSession IShardedSessionFactory.OpenSession(IInterceptor interceptor)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -95,7 +165,7 @@ namespace NHibernate.Shards.Session
 		/// Throws <see cref="HibernateException"/>
 		public IShardedSession openSession()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -111,7 +181,7 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public ISession OpenSession(IDbConnection conn)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -121,7 +191,7 @@ namespace NHibernate.Shards.Session
 		/// <returns>A session</returns>
 		public ISession OpenSession(IInterceptor interceptor)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -138,7 +208,7 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public ISession OpenSession(IDbConnection conn, IInterceptor interceptor)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -147,7 +217,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public ISession OpenSession()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -156,7 +226,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDatabinder OpenDatabinder()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -166,7 +236,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IClassMetadata GetClassMetadata(System.Type persistentType)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -176,7 +246,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public ICollectionMetadata GetCollectionMetadata(string roleName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -186,7 +256,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDictionary GetAllClassMetadata()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -196,7 +266,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDictionary GetAllCollectionMetadata()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -207,7 +277,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void Close()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -218,7 +288,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="persistentClass"></param>
 		public void Evict(System.Type persistentClass)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -230,7 +300,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="id"></param>
 		public void Evict(System.Type persistentClass, object id)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> 
@@ -240,7 +310,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void EvictEntity(string entityName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -251,7 +321,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="roleName"></param>
 		public void EvictCollection(string roleName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -263,7 +333,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="id"></param>
 		public void EvictCollection(string roleName, object id)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -271,7 +341,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void EvictQueries()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -280,7 +350,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="cacheRegion"></param>
 		public void EvictQueries(string cacheRegion)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -288,7 +358,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IConnectionProvider ConnectionProvider
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -296,7 +366,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public Dialect.Dialect Dialect
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -305,7 +375,7 @@ namespace NHibernate.Shards.Session
 		/// <return>The set of filter names.</return>
 		public ICollection<string> DefinedFilterNames
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -315,12 +385,12 @@ namespace NHibernate.Shards.Session
 		/// <return>The filter definition.</return>
 		public FilterDefinition GetFilterDefinition(string filterName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public Settings Settings
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -331,7 +401,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IDictionary Items
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -347,25 +417,25 @@ namespace NHibernate.Shards.Session
 		/// <exception cref="HibernateException">Indicates an issue locating a suitable current session.</exception>
 		public ISession GetCurrentSession()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Get a new stateless session.</summary>
 		public IStatelessSession OpenStatelessSession()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Get a new stateless session for the given ADO.NET connection.</summary>
 		public IStatelessSession OpenStatelessSession(IDbConnection connection)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Get the statistics for this session factory</summary>
 		public IStatistics Statistics
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		///<summary>
@@ -374,7 +444,7 @@ namespace NHibernate.Shards.Session
 		///<filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -382,7 +452,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IEntityPersister GetEntityPersister(System.Type clazz)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -393,7 +463,7 @@ namespace NHibernate.Shards.Session
 		/// <exception cref="MappingException">If no <see cref="IEntityPersister"/> can be found.</exception>
 		public IEntityPersister GetEntityPersister(string className)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -407,7 +477,7 @@ namespace NHibernate.Shards.Session
 		/// and throwIfNotFound is true.</exception>
 		public IEntityPersister GetEntityPersister(string className, bool throwIfNotFound)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -417,7 +487,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public ICollectionPersister GetCollectionPersister(string role)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -425,7 +495,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsOuterJoinedFetchEnabled
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -433,7 +503,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsScrollableResultSetsEnabled
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -441,7 +511,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsGetGeneratedKeysEnabled
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -449,7 +519,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public string DefaultSchema
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -459,13 +529,13 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IType[] GetReturnTypes(string queryString)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Get the return aliases of a query</summary>
 		public string[] GetReturnAliases(string queryString)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -475,7 +545,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public string[] GetImplementors(System.Type clazz)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -485,7 +555,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public string GetImportedClassName(string name)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -493,7 +563,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public int MaximumFetchDepth
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -501,7 +571,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IQueryCache QueryCache
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -513,7 +583,7 @@ namespace NHibernate.Shards.Session
 		/// region name</returns>
 		public IQueryCache GetQueryCache(string regionName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -521,7 +591,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsQueryCacheEnabled
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -530,7 +600,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDbConnection OpenConnection()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -539,7 +609,7 @@ namespace NHibernate.Shards.Session
 		/// <param name="conn"></param>
 		public void CloseConnection(IDbConnection conn)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -550,7 +620,7 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public IsolationLevel Isolation
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -558,27 +628,27 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IIdentifierGenerator GetIdentifierGenerator(System.Type rootClass)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public ResultSetMappingDefinition GetResultSetMapping(string resultSetRef)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public ITransactionFactory TransactionFactory
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public SQLFunctionRegistry SQLFunctionRegistry
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public IEntityNotFoundDelegate EntityNotFoundDelegate
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -586,7 +656,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public ICurrentSessionContext CurrentSessionContext
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -599,7 +669,7 @@ namespace NHibernate.Shards.Session
 		/// <exception cref="HibernateException" />
 		public ISession OpenSession(IDbConnection connection, ConnectionReleaseMode connectionReleaseMode)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> 
@@ -612,50 +682,50 @@ namespace NHibernate.Shards.Session
 		/// </returns>
 		public ISet GetCollectionRolesByEntityParticipant(string entityName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> The cache of table update timestamps</summary>
 		public UpdateTimestampsCache UpdateTimestampsCache
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public IDictionary GetAllSecondLevelCacheRegions()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Get a named second-level cache region</summary>
 		public ICache GetSecondLevelCacheRegion(string regionName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary> Statistics SPI</summary>
 		public IStatisticsImplementor StatisticsImplementor
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public QueryPlanCache QueryPlanCache
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public IType GetIdentifierType(string className)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public string GetIdentifierPropertyName(string className)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public IType GetReferencedPropertyType(string className, string propertyName)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		#endregion
