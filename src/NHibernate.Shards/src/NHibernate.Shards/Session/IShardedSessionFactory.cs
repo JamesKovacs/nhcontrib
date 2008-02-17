@@ -44,6 +44,6 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		/// <returns></returns>
 		/// Throws <see cref="HibernateException"/>
-		IShardedSession openSession();
+		IShardedSession OpenSession();
 	}
 }

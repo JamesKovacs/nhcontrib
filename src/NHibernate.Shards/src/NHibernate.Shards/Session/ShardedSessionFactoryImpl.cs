@@ -51,7 +51,6 @@ namespace NHibernate.Shards.Session
 
 		//TODO
 		// Statistics aggregated across all contained SessionFactories
-		//private readonly IStatistics statistics = new StatisticsImpl(this);
 
 		// our lovely logger
 		private readonly ILog log = LogManager.GetLogger(typeof (ShardedSessionFactoryImpl));
@@ -61,6 +60,7 @@ namespace NHibernate.Shards.Session
 		private readonly Dictionary<ISessionFactoryImplementor, Set<ShardId>> sessionFactoryShardIdMap;
 
 		private readonly IShardStrategy shardStrategy;
+		private readonly IStatistics statistics; // = new StatisticsImpl()
 
 		#region Ctor
 
@@ -90,10 +90,45 @@ namespace NHibernate.Shards.Session
 			Preconditions.CheckNotNull(shardStrategyFactory);
 			Preconditions.CheckNotNull(classesWithoutTopLevelSaveSupport);
 
-			//And so on...
+			this.sessionFactories = new List<ISessionFactoryImplementor>(sessionFactoryShardIdMap.Keys);
+			this.sessionFactoryShardIdMap = new Dictionary<ISessionFactoryImplementor, Set<ShardId>>();
+			this.fullSessionFactoryShardIdMap = sessionFactoryShardIdMap;
+			this.classesWithoutTopLevelSaveSupport = new HashedSet<System.Type>(classesWithoutTopLevelSaveSupport);
+			this.checkAllAssociatedObjectsForDifferentShards = checkAllAssociatedObjectsForDifferentShards;
+			Set<ShardId> uniqueShardIds = new HashedSet<ShardId>();
+			ISessionFactoryImplementor controlSessionFactoryToSet = null;
+
+			foreach (KeyValuePair<ISessionFactoryImplementor, Set<ShardId>> entry in sessionFactoryShardIdMap)
+			{
+				ISessionFactoryImplementor implementor = entry.Key;
+				Preconditions.CheckNotNull(implementor);
+				Set<ShardId> shardIdSet = entry.Value;
+				Preconditions.CheckNotNull(shardIdSet);
+				Preconditions.CheckState(!(shardIdSet.Count == 0));
+
+				foreach (ShardId shardId in shardIdSet)
+				{
+					//TODO: we should change it so we specify control shard in configuration
+					if (shardId.Id == CONTROL_SHARD_ID)
+					{
+						controlSessionFactoryToSet = implementor;
+					}
+					if(!uniqueShardIds.Add(shardId)) 
+					{
+						string msg = string.Format("Cannot have more than one shard with shard id {0}.", shardId.Id);
+						log.Error(msg);
+						throw new HibernateException(msg);
+					}
+				}
+			}
 		}
 
 		#endregion
+
+		private ISessionFactoryImplementor AnyFactory
+		{
+			get { return this.sessionFactories[0]; }
+		}
 
 		#region IControlSessionProvider Members
 
@@ -103,7 +138,9 @@ namespace NHibernate.Shards.Session
 		/// <returns>control session</returns>
 		public ISessionImplementor OpenControlSession()
 		{
-			throw new NotImplementedException();
+			Preconditions.CheckState(controlSessionFactory != null);
+			ISession session = controlSessionFactory.OpenSession();
+			return (ISessionImplementor) session;
 		}
 
 		#endregion
@@ -112,7 +149,7 @@ namespace NHibernate.Shards.Session
 
 		public IDictionary<ISessionFactoryImplementor, Set<ShardId>> GetSessionFactoryShardIdMap()
 		{
-			throw new NotImplementedException();
+			return this.sessionFactoryShardIdMap;
 		}
 
 		public bool ContainsFactory(ISessionFactoryImplementor factory)
@@ -163,9 +200,12 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		/// <returns></returns>
 		/// Throws <see cref="HibernateException"/>
-		public IShardedSession openSession()
+		public IShardedSession OpenSession()
 		{
-			throw new NotImplementedException();
+			return new ShardedSessionImpl(this,
+			                              shardStrategy,
+			                              classesWithoutTopLevelSaveSupport,
+			                              checkAllAssociatedObjectsForDifferentShards);
 		}
 
 		/// <summary>
@@ -181,43 +221,41 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public ISession OpenSession(IDbConnection conn)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
 		/// Create database connection and open a <c>ISession</c> on it, specifying an interceptor
+		/// Warning: this interceptor will be shared across all shards, so be very
+		/// careful about using a stateful implementation.
 		/// </summary>
 		/// <param name="interceptor">A session-scoped interceptor</param>
 		/// <returns>A session</returns>
 		public ISession OpenSession(IInterceptor interceptor)
 		{
-			throw new NotImplementedException();
+			return
+				new ShardedSessionImpl(interceptor,
+				                       this,
+				                       shardStrategy,
+				                       classesWithoutTopLevelSaveSupport,
+				                       checkAllAssociatedObjectsForDifferentShards);
 		}
 
-		/// <summary>
-		/// Open a <c>ISession</c> on the given connection, specifying an interceptor
-		/// </summary>
-		/// <param name="conn">A connection provided by the application</param>
-		/// <param name="interceptor">A session-scoped interceptor</param>
-		/// <returns>A session</returns>
-		/// <remarks>
-		/// Note that the second-level cache will be disabled if you
-		/// supply a ADO.NET connection. NHibernate will not be able to track
-		/// any statements you might have executed in the same transaction.
-		/// Consider implementing your own <see cref="IConnectionProvider" />.
-		/// </remarks>
 		public ISession OpenSession(IDbConnection conn, IInterceptor interceptor)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException("Cannot open a sharded session with a user provided connection.");
 		}
 
 		/// <summary>
 		/// Create a database connection and open a <c>ISession</c> on it
 		/// </summary>
 		/// <returns></returns>
-		public ISession OpenSession()
+		ISession ISessionFactory.OpenSession()
 		{
-			throw new NotImplementedException();
+			return new ShardedSessionImpl(this,
+			                              shardStrategy,
+			                              classesWithoutTopLevelSaveSupport,
+			                              checkAllAssociatedObjectsForDifferentShards);
 		}
 
 		/// <summary>
@@ -236,7 +274,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IClassMetadata GetClassMetadata(System.Type persistentType)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetClassMetadata(persistentType);
 		}
 
 		/// <summary>
@@ -246,7 +284,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public ICollectionMetadata GetCollectionMetadata(string roleName)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetCollectionMetadata(roleName);
 		}
 
 		/// <summary>
@@ -256,7 +294,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDictionary GetAllClassMetadata()
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetAllClassMetadata();
 		}
 
 		/// <summary>
@@ -266,7 +304,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDictionary GetAllCollectionMetadata()
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetAllCollectionMetadata();
 		}
 
 		/// <summary>
@@ -277,7 +315,23 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void Close()
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactory sf in sessionFactories)
+			{
+				sf.Close();
+			}
+
+			sessionFactories.Clear();
+
+			if (classesWithoutTopLevelSaveSupport != null)
+				classesWithoutTopLevelSaveSupport.Clear();
+
+			if (sessionFactoryShardIdMap != null)
+				sessionFactoryShardIdMap.Clear();
+
+			if (fullSessionFactoryShardIdMap != null)
+				fullSessionFactoryShardIdMap.Clear();
+
+			statistics.Clear();
 		}
 
 		/// <summary>
@@ -288,7 +342,10 @@ namespace NHibernate.Shards.Session
 		/// <param name="persistentClass"></param>
 		public void Evict(System.Type persistentClass)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.Evict(persistentClass);
+			}
 		}
 
 		/// <summary>
@@ -300,7 +357,10 @@ namespace NHibernate.Shards.Session
 		/// <param name="id"></param>
 		public void Evict(System.Type persistentClass, object id)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.Evict(persistentClass, id);
+			}
 		}
 
 		/// <summary> 
@@ -310,7 +370,10 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void EvictEntity(string entityName)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.EvictEntity(entityName);
+			}
 		}
 
 		/// <summary>
@@ -321,7 +384,10 @@ namespace NHibernate.Shards.Session
 		/// <param name="roleName"></param>
 		public void EvictCollection(string roleName)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.EvictCollection(roleName);
+			}
 		}
 
 		/// <summary>
@@ -333,7 +399,10 @@ namespace NHibernate.Shards.Session
 		/// <param name="id"></param>
 		public void EvictCollection(string roleName, object id)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.EvictCollection(roleName, id);
+			}
 		}
 
 		/// <summary>
@@ -341,7 +410,10 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public void EvictQueries()
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.EvictQueries();
+			}
 		}
 
 		/// <summary>
@@ -350,7 +422,10 @@ namespace NHibernate.Shards.Session
 		/// <param name="cacheRegion"></param>
 		public void EvictQueries(string cacheRegion)
 		{
-			throw new NotImplementedException();
+			foreach (ISessionFactoryImplementor factory in sessionFactories)
+			{
+				factory.EvictQueries(cacheRegion);
+			}
 		}
 
 		/// <summary>
@@ -358,7 +433,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IConnectionProvider ConnectionProvider
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.ConnectionProvider; }
 		}
 
 		/// <summary>
@@ -366,7 +441,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public Dialect.Dialect Dialect
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.Dialect; }
 		}
 
 		/// <summary>
@@ -375,7 +450,7 @@ namespace NHibernate.Shards.Session
 		/// <return>The set of filter names.</return>
 		public ICollection<string> DefinedFilterNames
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.DefinedFilterNames; }
 		}
 
 		/// <summary>
@@ -385,12 +460,12 @@ namespace NHibernate.Shards.Session
 		/// <return>The filter definition.</return>
 		public FilterDefinition GetFilterDefinition(string filterName)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetFilterDefinition(filterName);
 		}
 
 		public Settings Settings
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.Settings; }
 		}
 
 		/// <summary>
@@ -401,23 +476,15 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IDictionary Items
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.Items; }
 		}
 
 		/// <summary>
-		/// Obtains the current session.
+		/// Unsupported
 		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// The definition of what exactly "current" means is controlled by the <see cref="NHibernate.Context.ICurrentSessionContext" />
-		/// implementation configured for use.
-		/// </para>
-		/// </remarks>
-		/// <returns>The current session.</returns>
-		/// <exception cref="HibernateException">Indicates an issue locating a suitable current session.</exception>
 		public ISession GetCurrentSession()
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary> Get a new stateless session.</summary>
@@ -429,13 +496,13 @@ namespace NHibernate.Shards.Session
 		/// <summary> Get a new stateless session for the given ADO.NET connection.</summary>
 		public IStatelessSession OpenStatelessSession(IDbConnection connection)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException("Cannot open a stateless sharded session with a user provided connection");
 		}
 
 		/// <summary> Get the statistics for this session factory</summary>
 		public IStatistics Statistics
 		{
-			get { throw new NotImplementedException(); }
+			get { return statistics; }
 		}
 
 		///<summary>
@@ -444,7 +511,7 @@ namespace NHibernate.Shards.Session
 		///<filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException("Need to be ported the property IsClosed()");
 		}
 
 		/// <summary>
@@ -452,7 +519,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IEntityPersister GetEntityPersister(System.Type clazz)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetEntityPersister(clazz);
 		}
 
 		/// <summary>
@@ -463,7 +530,7 @@ namespace NHibernate.Shards.Session
 		/// <exception cref="MappingException">If no <see cref="IEntityPersister"/> can be found.</exception>
 		public IEntityPersister GetEntityPersister(string className)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetEntityPersister(className);
 		}
 
 		/// <summary>
@@ -477,7 +544,7 @@ namespace NHibernate.Shards.Session
 		/// and throwIfNotFound is true.</exception>
 		public IEntityPersister GetEntityPersister(string className, bool throwIfNotFound)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetEntityPersister(className, throwIfNotFound);
 		}
 
 		/// <summary>
@@ -487,7 +554,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public ICollectionPersister GetCollectionPersister(string role)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetCollectionPersister(role);
 		}
 
 		/// <summary>
@@ -529,13 +596,13 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IType[] GetReturnTypes(string queryString)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetReturnTypes(queryString);
 		}
 
 		/// <summary> Get the return aliases of a query</summary>
 		public string[] GetReturnAliases(string queryString)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetReturnAliases(queryString);
 		}
 
 		/// <summary>
@@ -545,7 +612,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public string[] GetImplementors(System.Type clazz)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetImplementors(clazz);
 		}
 
 		/// <summary>
@@ -555,7 +622,7 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public string GetImportedClassName(string name)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetImportedClassName(name);
 		}
 
 		/// <summary>
@@ -563,7 +630,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public int MaximumFetchDepth
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.MaximumFetchDepth; }
 		}
 
 		/// <summary>
@@ -571,7 +638,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IQueryCache QueryCache
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.QueryCache; }
 		}
 
 		/// <summary>
@@ -583,7 +650,7 @@ namespace NHibernate.Shards.Session
 		/// region name</returns>
 		public IQueryCache GetQueryCache(string regionName)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetQueryCache(regionName);
 		}
 
 		/// <summary>
@@ -591,7 +658,7 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public bool IsQueryCacheEnabled
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.IsQueryCacheEnabled; }
 		}
 
 		/// <summary>
@@ -600,16 +667,16 @@ namespace NHibernate.Shards.Session
 		/// <returns></returns>
 		public IDbConnection OpenConnection()
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
-		/// Release an ADO.NET connection
+		/// Unsupported
 		/// </summary>
 		/// <param name="conn"></param>
 		public void CloseConnection(IDbConnection conn)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
@@ -620,7 +687,7 @@ namespace NHibernate.Shards.Session
 		/// </remarks>
 		public IsolationLevel Isolation
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.Isolation; }
 		}
 
 		/// <summary>
@@ -628,12 +695,12 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		public IIdentifierGenerator GetIdentifierGenerator(System.Type rootClass)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetIdentifierGenerator(rootClass);
 		}
 
 		public ResultSetMappingDefinition GetResultSetMapping(string resultSetRef)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetResultSetMapping(resultSetRef);
 		}
 
 		public ITransactionFactory TransactionFactory
@@ -643,12 +710,12 @@ namespace NHibernate.Shards.Session
 
 		public SQLFunctionRegistry SQLFunctionRegistry
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.SQLFunctionRegistry; }
 		}
 
 		public IEntityNotFoundDelegate EntityNotFoundDelegate
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.EntityNotFoundDelegate; }
 		}
 
 		/// <summary>
@@ -660,16 +727,11 @@ namespace NHibernate.Shards.Session
 		}
 
 		/// <summary>
-		/// Open a session conforming to the given parameters. For use mainly by
-		/// <see cref="Context.ICurrentSessionContext" /> implementations.
+		/// Not supported
 		/// </summary>
-		/// <param name="connection">The external ADO.NET connection to use, if any (i.e., optional).</param>
-		/// <param name="connectionReleaseMode">The release mode for managed database connections.</param>
-		/// <returns>An appropriate session.</returns>
-		/// <exception cref="HibernateException" />
 		public ISession OpenSession(IDbConnection connection, ConnectionReleaseMode connectionReleaseMode)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary> 
@@ -682,24 +744,24 @@ namespace NHibernate.Shards.Session
 		/// </returns>
 		public ISet GetCollectionRolesByEntityParticipant(string entityName)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetCollectionRolesByEntityParticipant(entityName);
 		}
 
 		/// <summary> The cache of table update timestamps</summary>
 		public UpdateTimestampsCache UpdateTimestampsCache
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.UpdateTimestampsCache; }
 		}
 
 		public IDictionary GetAllSecondLevelCacheRegions()
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetAllSecondLevelCacheRegions();
 		}
 
 		/// <summary> Get a named second-level cache region</summary>
 		public ICache GetSecondLevelCacheRegion(string regionName)
 		{
-			throw new NotImplementedException();
+			return GetSecondLevelCacheRegion(regionName);
 		}
 
 		/// <summary> Statistics SPI</summary>
@@ -710,22 +772,22 @@ namespace NHibernate.Shards.Session
 
 		public QueryPlanCache QueryPlanCache
 		{
-			get { throw new NotImplementedException(); }
+			get { return AnyFactory.QueryPlanCache; }
 		}
 
 		public IType GetIdentifierType(string className)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetIdentifierType(className);
 		}
 
 		public string GetIdentifierPropertyName(string className)
 		{
-			throw new NotImplementedException();
+			return AnyFactory.GetIdentifierPropertyName(className);
 		}
 
 		public IType GetReferencedPropertyType(string className, string propertyName)
 		{
-			throw new NotImplementedException();
+			return GetReferencedPropertyType(className, propertyName);
 		}
 
 		#endregion
