@@ -4,6 +4,6 @@ namespace NHibernate.Shards.Strategy
 {
 	public interface IShardStrategyFactory
 	{
-		IShardStrategy NewShardStrategy(List<ShardId> shardIds);
+		IShardStrategy NewShardStrategy(IList<ShardId> shardIds);
 	}
 }

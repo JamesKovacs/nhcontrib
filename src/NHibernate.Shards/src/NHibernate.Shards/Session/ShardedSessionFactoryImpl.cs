@@ -18,6 +18,7 @@ using NHibernate.Persister.Collection;
 using NHibernate.Persister.Entity;
 using NHibernate.Proxy;
 using NHibernate.Shards.Engine;
+using NHibernate.Shards.Id;
 using NHibernate.Shards.Strategy;
 using NHibernate.Shards.Util;
 using NHibernate.Stat;
@@ -113,12 +114,72 @@ namespace NHibernate.Shards.Session
 					{
 						controlSessionFactoryToSet = implementor;
 					}
-					if(!uniqueShardIds.Add(shardId)) 
+					if (!uniqueShardIds.Add(shardId))
 					{
 						string msg = string.Format("Cannot have more than one shard with shard id {0}.", shardId.Id);
 						log.Error(msg);
 						throw new HibernateException(msg);
 					}
+					if (shardIds.Contains(shardId))
+					{
+						if (!this.sessionFactoryShardIdMap.ContainsKey(implementor))
+							this.sessionFactoryShardIdMap.Add(implementor, new HashedSet<ShardId>());
+
+						this.sessionFactoryShardIdMap[implementor].Add(shardId);
+					}
+				}
+			}
+			// make sure someone didn't associate a session factory with a shard id
+			// that isn't in the full list of shards
+			foreach (ShardId shardId in shardIds)
+			{
+				Preconditions.CheckState(uniqueShardIds.Contains(shardId));
+			}
+			controlSessionFactory = controlSessionFactoryToSet;
+			// now that we have all our shard ids, construct our shard strategy
+			this.shardStrategy = shardStrategyFactory.NewShardStrategy(shardIds);
+			SetupIdGenerators();
+		}
+
+		/// <summary>
+		/// Constructs a ShardedSessionFactoryImpl
+		/// </summary>
+		/// <param name="sessionFactoryShardIdMap">Mapping of SessionFactories to shard ids.
+		/// When using virtual shards, this map associates SessionFactories (physical
+		/// shards) with virtual shards (shard ids).  Map cannot be empty.
+		/// Map keys cannot be null.  Map values cannot be null or empty.</param>
+		/// <param name="shardStrategyFactory">factory that knows how to create the <see cref="IShardStrategy"/> 
+		/// that will be used for all shard-related operations</param>
+		/// <param name="classesWithoutTopLevelSaveSupport">All classes that cannot be saved
+		/// as top-level objects</param>
+		/// <param name="checkAllAssociatedObjectsForDifferentShards">Flag that controls
+		///whether or not we do full cross-shard relationshp checking (very slow)</param>
+		//public ShardedSessionFactoryImpl(
+		//    Dictionary<ISessionFactoryImplementor, Set<ShardId>> sessionFactoryShardIdMap,
+		//    IShardStrategyFactory shardStrategyFactory,
+		//    Set<System.Type> classesWithoutTopLevelSaveSupport,
+		//    bool checkAllAssociatedObjectsForDifferentShards)
+		//    : this(sessionFactoryShardIdMap.Values,
+		//    sessionFactoryShardIdMap,
+		//    shardStrategyFactory,
+		//    classesWithoutTopLevelSaveSupport,
+		//    checkAllAssociatedObjectsForDifferentShards)
+		//{
+
+		//}
+
+		private void SetupIdGenerators()
+		{
+			foreach (ISessionFactoryImplementor sfi in sessionFactories)
+			{
+				foreach (object obj in sfi.GetAllClassMetadata().Values)
+				{
+					IClassMetadata cmd = (IClassMetadata) obj;
+					IEntityPersister ep = null; //= sfi.GetEntityPersister(cmd.EntityName);
+					//TODO: FIXME
+
+					if (ep is IGeneratorRequiringControlSessionProvider)
+						((IGeneratorRequiringControlSessionProvider) ep.IdentifierGenerator).SetControlSessionProvider(this);
 				}
 			}
 		}
