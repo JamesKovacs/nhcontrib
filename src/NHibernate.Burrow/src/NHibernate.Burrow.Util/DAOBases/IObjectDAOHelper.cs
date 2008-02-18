@@ -23,7 +23,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         event EventHandler PreDeleted;
 
         /// <summary>
-        /// Delete the PersistantObj
+        /// Delete the PersistentObj
         /// </summary>
         /// <remarks>  will do nothing if the entity is either already deleted or still transient</remarks>
         void Delete();

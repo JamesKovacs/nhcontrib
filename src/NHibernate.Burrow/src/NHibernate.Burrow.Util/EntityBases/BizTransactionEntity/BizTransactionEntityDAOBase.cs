@@ -13,11 +13,12 @@ namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
     /// This dao will help manage the life circle of BizTransactionEntity
     /// that is delete the timeout one and update the LastActivityInTransaction automatically and etc.
     /// </remarks>
-    public abstract class BizTransactionEntityDAOBase<ReturnT, NHT> : AdvGenericDAO<ReturnT, NHT>
+    public abstract class BizTransactionEntityDAOBase<ReturnT, NHT> : GenericDAO<ReturnT>
         where NHT : IBizTransactionEntity {
         private static readonly object lockObj = new object();
         private static readonly TimeSpan timeout = new TimeSpan(24, 0, 0);
         private static DateTime lastClearOutDatedTime = DateTime.Now;
+        protected BizTransactionEntityDAOBase() :base(typeof(NHT)){}
 
         protected virtual string FinishedTransactionProperyName {
             get { return "FinishedTransaction"; }

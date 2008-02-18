@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// </summary>
         public static IDomainSessionFactory GetDomainSessionFactory() {
             IDomainSessionFactory factory;
-            Assembly currentAssembly = Config.CurrentDomainAssembly;
+            Assembly currentAssembly = AssemblyDataContainer.CurrentDomainAssembly;
 
             string fName = CurrentDomainSessionFactoryName();
             if (string.IsNullOrEmpty(fName))
@@ -43,7 +43,8 @@ namespace NHibernate.Burrow.Util.DomainSession {
         }
 
         private static string CurrentDomainSessionFactoryName() {
-            return (string) Config.DomainAssemblySettings()["domainSessionFactory"];
+            throw new NotImplementedException();
+          //  return (string) Config.DomainAssemblySettings()["domainSessionFactory"];
         }
     }
 }

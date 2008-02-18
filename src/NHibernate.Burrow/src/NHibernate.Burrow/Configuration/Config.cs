@@ -10,36 +10,28 @@ namespace NHibernate.Burrow.Configuration {
     /// This class should be renamed
     /// </summary>
     public class Config {
-        /// <summary>
-        /// The assembly of the domain. 
-        /// </summary>
-        public static Assembly CurrentDomainAssembly {
-            get { return PersistantUnitRepo.Instance.CurrentDomainAssembly; }
-        }
+ 
 
-        public static IDictionary DomainAssemblySettings() {
-            DomainAssemblySection setting = PersistantUnit.Current.FindAssemblySetting(CurrentDomainAssembly);
-            return Util.CopyToDict(setting.DomainAssemblySettings);
-        }
+      
 
         /// <summary> 
         /// Creates the specified database. 
         /// </summary> 
         public static void CreateDatabase() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits) {
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits) {
                 SchemaExport se = new SchemaExport(pu.NHConfiguration);
                 se.Create(true, true);
             }
         }
 
         /// <summary>
-        /// Get the DBConnectionString of the Current PersistantUnit
+        /// Get the DBConnectionString of the Current PersistenceUnit
         /// </summary>
         /// <returns></returns>
-        public static string DBConnectionString() {
+        public static string DBConnectionString(System.Type entityType) {
             return
                 (string)
-                PersistantUnit.Current.Configuration.ORMFrameworkSettingsDict["hibernate.connection.connection_string"];
+                PersistenceUnitRepo.Instance.GetPU(entityType).NHConfiguration.Properties[NHibernate.Cfg.Environment.ConnectionString];
         }
 
         public static IEnumerable<ISessionFactory> SessionFactories {

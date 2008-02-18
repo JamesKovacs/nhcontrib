@@ -57,7 +57,7 @@ namespace NHibernate.Burrow.Util.AuditLog {
     	}
 
     	public void PostFlush(ICollection entities) {
-            ISession sess = SessionManager.Instance.GetUnManagedSession();
+            ISession sess = SessionManager.GetInstance().GetUnManagedSession();
             try {
                 ITransaction t = sess.BeginTransaction();
                 foreach (AuditLogRecord record in records) {

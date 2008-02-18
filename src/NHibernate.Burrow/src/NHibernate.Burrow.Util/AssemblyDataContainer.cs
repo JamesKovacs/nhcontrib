@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using NHibernate.Burrow;
 
-namespace NHibernate.Burrow.DataContainers {
+namespace NHibernate.Burrow.Util
+{
     /// <summary>
     /// this helper class help to organize static and container data for multiple domain Assemblies
     /// </summary>
@@ -13,6 +15,37 @@ namespace NHibernate.Burrow.DataContainers {
     /// it's now only used for the DomainSession Instance
     /// </remarks>
     public class AssemblyDataContainer {
+        /// <summary>
+        /// The domain assembly the current context is using.
+        /// </summary>
+        public static Assembly CurrentDomainAssembly
+        {
+            get
+            {
+               
+
+                foreach (StackFrame s in new StackTrace().GetFrames())
+                {
+                    Assembly a = Assembly.GetAssembly(s.GetMethod().DeclaringType);
+                    if (VerifyAssemly(a))
+                        return a;
+                }
+                throw new Exception(
+                    "There are multilple domain assembly in the config Settings,"
+                    + " none of them is callling this");
+            }
+        }
+
+
+        private static bool VerifyAssemly(Assembly a)
+        {
+            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
+                if (unit.DomainLayerAssemblies.Contains(a))
+                    return true;
+            return false;
+        }
+
+
         private const string DIVIDER = "_:_";
         private static readonly object lockObj = new object();
 
@@ -21,7 +54,7 @@ namespace NHibernate.Burrow.DataContainers {
         [ThreadStatic] private static IDictionary<string, object> threadData = new Dictionary<string, object>();
 
         private static string ComposeKey(string key) {
-            return ComposeKey(key, PersistantUnitRepo.Instance.CurrentDomainAssembly);
+            return ComposeKey(key, CurrentDomainAssembly);
         }
 
         private static string ComposeKey(string key, Assembly a) {

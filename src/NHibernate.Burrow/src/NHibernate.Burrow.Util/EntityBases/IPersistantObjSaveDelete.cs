@@ -1,8 +1,8 @@
 namespace NHibernate.Burrow.Util.EntityBases {
     /// <summary>
-    /// Persistant Object that can be directly Saved or Deleted
+    /// Persistence Object that can be directly Saved or Deleted
     /// </summary>
-    public interface IPersistantObjSaveDelete : IWithId {
+    public interface IPersistentObjSaveDelete : IWithId {
         /// <summary>
         /// Tells if this object is transient (not saved to database yet)
         /// </summary>

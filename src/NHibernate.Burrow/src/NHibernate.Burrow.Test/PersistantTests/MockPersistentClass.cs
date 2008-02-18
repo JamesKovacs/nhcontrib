@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
 
-namespace NHibernate.Burrow.Test.PersistantTests {
-    public class MockPersistantClass : PersistantObjSaveDeleteSimple {
+namespace NHibernate.Burrow.Test.PersistenceTests {
+    public class MockPersistentClass : PersistentObjSaveDeleteSimple {
         private string name;
 
         public int OnPreDeletedPerformed = 0;
 
-        public MockPersistantClass() {
+        public MockPersistentClass() {
             Name = string.Empty;
         }
 
@@ -24,9 +24,9 @@ namespace NHibernate.Burrow.Test.PersistantTests {
         }
     }
 
-    public class MockDAO : GenericDAOBase<MockPersistantClass> {
-        public IList<MockPersistantClass> FindByName(string name) {
-            return CreateQuery("where this.Name = ?").SetString(0, name).List<MockPersistantClass>();
+    public class MockDAO : GenericDAO<MockPersistentClass> {
+        public IList<MockPersistentClass> FindByName(string name) {
+            return CreateQuery("where this.Name = ?").SetString(0, name).List<MockPersistentClass>();
         }
     }
 }

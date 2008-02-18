@@ -4,7 +4,7 @@ namespace NHibernate.Burrow.Configuration {
     /// <summary>
     /// Root Section for NHibernate.Burrow Configuration
     /// </summary>
-    public class MHDomainTemplateSection : ConfigurationSection {
+    public class NHibernateBurrowCfgSection : ConfigurationSection {
         /// <summary>
         /// 
         /// </summary>
@@ -25,10 +25,10 @@ namespace NHibernate.Burrow.Configuration {
         /// </remarks>
         [ConfigurationProperty("persistantUnits",
             IsDefaultCollection = false)]
-        public PUSectionCollection PersistantUnits {
+        public PersistenceUnitElementCollection PersistenceUnits {
             get {
-                PUSectionCollection persistantUnits =
-                    (PUSectionCollection) base["persistantUnits"];
+                PersistenceUnitElementCollection persistantUnits =
+                    (PersistenceUnitElementCollection) base["persistantUnits"];
                 return persistantUnits;
             }
         }
@@ -64,8 +64,8 @@ namespace NHibernate.Burrow.Configuration {
         /// Get the instance from the current application's config file
         /// </summary>
         /// <returns></returns>
-        public static MHDomainTemplateSection GetInstance() {
-            MHDomainTemplateSection section = ConfigurationManager.GetSection(SectionName) as MHDomainTemplateSection;
+        public static NHibernateBurrowCfgSection GetInstance() {
+            NHibernateBurrowCfgSection section = ConfigurationManager.GetSection(SectionName) as NHibernateBurrowCfgSection;
             if (section == null)
                 throw new DomainTemplateException("Section \"" + SectionName + "\" is not found");
             return section;

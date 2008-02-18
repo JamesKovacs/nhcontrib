@@ -5,30 +5,30 @@ using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.DAOBases;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.PersistantTests {
+namespace NHibernate.Burrow.Test.PersistenceTests {
     [TestFixture]
-    public class PersistantTests : TestBase {
+    public class PersistenceTests : TestBase {
         [Test]
         public void CRUDTest() {
             string mockName = new Random(1000).Next().ToString();
-            MockPersistantClass m = new MockPersistantClass();
+            MockPersistentClass m = new MockPersistentClass();
             m.Name = mockName;
             m.Save();
-            GenericDAO<MockPersistantClass> d = new GenericDAO<MockPersistantClass>();
+            GenericDAO<MockPersistentClass> d = new GenericDAO<MockPersistentClass>();
             Assert.AreEqual(d.FindById(m.Id), m);
             Assert.AreEqual(mockName, d.FindById(m.Id).Name);
             m.Delete();
-            SessionManager.Instance.GetSession().Flush();
+            SessionManager.GetInstance().GetSession().Flush();
             Assert.IsNull(d.FindById(m.Id));
         }
 
         [Test]
         public void DAOTest() {
-            MockPersistantClass m = new MockPersistantClass();
+            MockPersistentClass m = new MockPersistentClass();
             string name = RandomStringGenerator.GenerateLetterStrings(5);
             m.Name = name;
             m.Save();
-            IList<MockPersistantClass> result = new MockDAO().FindByName(name);
+            IList<MockPersistentClass> result = new MockDAO().FindByName(name);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(m, result[0]);
             m.Delete();
@@ -69,9 +69,9 @@ namespace NHibernate.Burrow.Test.PersistantTests {
 
         [Test]
         public void PreDeleteTest() {
-            MockPersistantClass m = new MockPersistantClass();
+            MockPersistentClass m = new MockPersistentClass();
             m.Save();
-            GenericDAO<MockPersistantClass> d = new GenericDAO<MockPersistantClass>();
+            GenericDAO<MockPersistentClass> d = new GenericDAO<MockPersistentClass>();
             Assert.AreEqual(d.FindById(m.Id), m);
             m.Delete();
             Assert.AreEqual(1, m.OnPreDeletedPerformed);

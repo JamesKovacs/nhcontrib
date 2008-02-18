@@ -11,7 +11,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
 
         public ObjectDAOHelper(IWithId obj) {
             this.obj = obj;
-            gdao = new GenericDAO<object>(obj.GetType().Assembly);
+            gdao = new GenericDAO<object>(obj.GetType());
         }
 
         #region IObjectDAOHelper Members

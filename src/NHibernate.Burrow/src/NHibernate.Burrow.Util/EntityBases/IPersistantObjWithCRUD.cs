@@ -5,9 +5,9 @@ namespace NHibernate.Burrow.Util.EntityBases {
     /// OBSELETE
     /// A type that itself has the CRUD methods
     /// </summary>
-    public interface IPersistantObjWithCRUD : IWithIdNBizKey, IPersistantObjWithDAO {
+    public interface IPersistentObjWithCRUD : IWithIdNBizKey, IPersistentObjWithDAO {
         /// <summary>
-        /// Delete the PersistantObj
+        /// Delete the PersistentObj
         /// </summary>
         /// <remarks>  will do nothing if IsDeleted is set to true</remarks>
         void Delete();

@@ -14,7 +14,7 @@ namespace NHibernate.Burrow {
         private TimeSpan timeOut;
 
         private ConversationPool() {
-            MHDomainTemplateSection cfg = MHDomainTemplateSection.GetInstance();
+            NHibernateBurrowCfgSection cfg = NHibernateBurrowCfgSection.GetInstance();
             int timeoutMinutes = cfg.ConversationTimeOut;
             if (timeoutMinutes < 1)
                 throw new ConfigurationErrorsException("ConversationTimeOut must be greater than 1");

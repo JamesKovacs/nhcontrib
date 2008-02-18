@@ -14,7 +14,7 @@ namespace NHibernate.Burrow {
         #region fields
 
         private readonly object lockObj2 = new object();
-        private readonly PersistantUnit persistantUnit;
+        private readonly PersistenceUnit persistenceUnit;
         private bool isDisposing = false;
 
         #region conversational transaction and session repo
@@ -70,10 +70,10 @@ namespace NHibernate.Burrow {
         #region public properties
 
         /// <summary>
-        /// The PersistantUnit it belongs to.
+        /// The PersistenceUnit it belongs to.
         /// </summary>
-        public PersistantUnit PersistantUnit {
-            get { return persistantUnit; }
+        public PersistenceUnit PersistenceUnit {
+            get { return persistenceUnit; }
         }
 
         #endregion
@@ -83,23 +83,21 @@ namespace NHibernate.Burrow {
         /// <summary>
         /// The singleton Instance 
         /// </summary>
-        public static SessionManager Instance {
-            get { return PersistantUnit.Current.SessionManager; }
+        public static SessionManager GetInstance()
+        {
+            return PersistenceUnitRepo.Instance.GetOnlyPU().SessionManager;
         }
 
         public static SessionManager GetInstance(System.Type t) {
-            return GetInstance(t.Assembly);
+            return PersistenceUnitRepo.Instance.GetPU(t).SessionManager; ;
         }
-
-        public static SessionManager GetInstance(Assembly a) {
-            return PersistantUnitRepo.Instance.GetPUOfDomainAssembly(a).SessionManager;
-        }
+ 
 
         /// <summary>
         /// Shortcut to flush the session
         /// </summary>
         public static void Flush() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.GetSession().Flush();
         }
 
@@ -107,23 +105,23 @@ namespace NHibernate.Burrow {
         /// Shotcut to clear all the sessions
         /// </summary>
         public static void ClearSessions() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.GetSession().Clear();
         }
 
         /// <summary>
-        /// Begin Transactions for all SessionManagers in All PersistantUnits
+        /// Begin Transactions for all SessionManagers in All PersistenceUnits
         /// </summary>
         internal static void BeginNHibernateTransactions() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.BeginTransaction();
         }
 
         /// <summary>
-        /// Commit Transactions for all SessionManagers in All PersistantUnits
+        /// Commit Transactions for all SessionManagers in All PersistenceUnits
         /// </summary>
         internal static void CommitNHibernateTransactions() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.CommitTransaction();
         }
 
@@ -135,12 +133,12 @@ namespace NHibernate.Burrow {
         /// You can perform this method multiple times, only the first time will take effect. 
         /// </remarks>
         internal static void RollbackNHibernateTransacitons() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.RollbackTransaction();
         }
 
         internal static void CloseNHibernateSessions() {
-            foreach (PersistantUnit pu in PersistantUnitRepo.Instance.PersistantUnits)
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
                 pu.SessionManager.CloseSession();
         }
 
@@ -163,8 +161,8 @@ namespace NHibernate.Burrow {
         /// </summary>
         /// <returns></returns>
         public ISession GetSession() {
-            if (PersistantUnit.InterceptorFactory != null)
-                return GetSession(PersistantUnit.InterceptorFactory.Create());
+            if (PersistenceUnit.InterceptorFactory != null)
+                return GetSession(PersistenceUnit.InterceptorFactory.Create());
             else
                 return GetSession(null);
         }
@@ -265,8 +263,8 @@ namespace NHibernate.Burrow {
 
         #region constructors
 
-        internal SessionManager(PersistantUnit pu) {
-            persistantUnit = pu;
+        internal SessionManager(PersistenceUnit pu) {
+            persistenceUnit = pu;
         }
 
         #endregion
@@ -274,7 +272,7 @@ namespace NHibernate.Burrow {
         #region private members
 
         private ISessionFactory SessionFactory {
-            get { return PersistantUnit.SessionFactory; }
+            get { return PersistenceUnit.SessionFactory; }
         }
 
         /// <summary>

@@ -1,13 +1,13 @@
 namespace NHibernate.Burrow.Util.EntityBases {
     ///<summary>
-    /// Persistant Object that has the public Save and Delete method
+    /// Persistence Object that has the public Save and Delete method
     ///</summary>
     /// <remarks>
     /// This can be a super class for object that is allowed to be saved or deleted externally. 
-    /// If your class want to control the Save and Delete, please use <see cref="PersistantObj"/>
+    /// If your class want to control the Save and Delete, please use <see cref="PersistentObj"/>
     /// </remarks>
-    public abstract class PersistantObjSaveDeleteSimple : PersistantObjSimple, IPersistantObjSaveDelete {
-        #region IPersistantObjSaveDelete Members
+    public abstract class PersistentObjSaveDeleteSimple : PersistentObjSimple, IPersistentObjSaveDelete {
+        #region IPersistentObjSaveDelete Members
 
         /// <summary>
         /// Persists the object into database

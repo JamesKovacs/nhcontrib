@@ -6,7 +6,7 @@ namespace NHibernate.Burrow.Util.AuditLog {
     /// <summary>
     /// 
     /// </summary>
-    public class AuditLogRecordDAO : GenericDAOBase<AuditLogRecord> {
+    public class AuditLogRecordDAO : GenericDAO<AuditLogRecord> {
         private static readonly AuditLogRecordDAO instance = new AuditLogRecordDAO();
 
         /// <summary>

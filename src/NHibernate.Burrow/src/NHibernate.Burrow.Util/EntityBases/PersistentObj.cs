@@ -8,35 +8,21 @@ using NHibernate.Burrow.Util.DAOBases;
 
 namespace NHibernate.Burrow.Util.EntityBases {
     /// <summary>
-    /// Can be a base for the children entity
+    /// Targeted to be the standard PersistentObj
     /// </summary>
-    /// <remarks>
-    /// for some entity that only exists as a composite children of other entity, no business key or over session equality is needed.
-    /// </remarks>
-    public abstract class PersistantObjSimple : IWithId {
+    public abstract class PersistentObj : ObjWithIdNBizKeyBase {
         /// <summary>
         /// a helper for inheritance to perform DAO functions
         /// </summary>
         protected IObjectDAOHelper dao;
 
-        private int id;
-
         /// <summary>
         /// 
         /// </summary>
-        public PersistantObjSimple() {
+        public PersistentObj() {
             dao = new ObjectDAOHelper(this);
             dao.PreDeleted += new EventHandler(OnPreDeleted);
         }
-
-        #region IWithId Members
-
-        public int Id {
-            get { return id; }
-            private set { id = value; }
-        }
-
-        #endregion
 
         /// <summary>
         /// will be called when this object is going to be deleted;

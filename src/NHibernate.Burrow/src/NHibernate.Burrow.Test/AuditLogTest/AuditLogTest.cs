@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using NHibernate.Burrow.Test.PersistantTests;
+using NHibernate.Burrow.Test.PersistenceTests;
 using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.AuditLog;
 using NUnit.Framework;
@@ -13,22 +13,22 @@ namespace NHibernate.Burrow.Test.AuditLogTest {
             string updatedName = "new name";
             int mockUserId = 12;
             int oldCount = AuditLogRecordDAO.Instance.CountAll();
-            MockPersistantClass mpc = new MockPersistantClass();
+            MockPersistentClass mpc = new MockPersistentClass();
             mpc.Save();
             CommitAndClearSession();
 
-            mpc = MockPersistantClassDAO.Instance.FindById(mpc.Id);
+            mpc = MockPersistentClassDAO.Instance.FindById(mpc.Id);
             BooDomainSession.Current.UserId = mockUserId;
             mpc.Name = updatedName;
 
             CommitAndClearSession();
 
-            mpc = MockPersistantClassDAO.Instance.FindById(mpc.Id);
+            mpc = MockPersistentClassDAO.Instance.FindById(mpc.Id);
             mpc.Delete();
             CommitAndClearSession();
 
             //note that the search result will be returned in time decendent.
-            IList<AuditLogRecord> result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistantClass), mpc.Id);
+            IList<AuditLogRecord> result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistentClass), mpc.Id);
             foreach (AuditLogRecord record in result)
                 Console.WriteLine(record.Action + " " + record.EntityId + " " + record.PropertyName + " " +
                                   record.NewValue);
@@ -38,7 +38,7 @@ namespace NHibernate.Burrow.Test.AuditLogTest {
             int newCount = AuditLogRecordDAO.Instance.CountAll();
             Assert.IsTrue(newCount - oldCount >= 3);
 
-            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistantClass), mpc.Id, Actions.UPDATE);
+            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistentClass), mpc.Id, Actions.UPDATE);
             Assert.AreEqual(1, result.Count);
             AuditLogRecord algUpdate = result[0];
             Assert.AreEqual(string.Empty, algUpdate.OldValue);
@@ -47,10 +47,10 @@ namespace NHibernate.Burrow.Test.AuditLogTest {
             Assert.AreEqual(Actions.UPDATE, algUpdate.Action);
             Assert.AreEqual(mockUserId.ToString(), algUpdate.UserId);
 
-            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistantClass), mpc.Id, Actions.INSERT);
+            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistentClass), mpc.Id, Actions.INSERT);
             Assert.AreEqual(1, result.Count);
 
-            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistantClass), mpc.Id, Actions.DELETE);
+            result = AuditLogRecordDAO.Instance.Find(typeof (MockPersistentClass), mpc.Id, Actions.DELETE);
             Assert.AreEqual(1, result.Count);
         }
     }

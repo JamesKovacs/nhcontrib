@@ -1,5 +1,3 @@
-using NHibernate.Burrow.DataContainers;
-
 namespace NHibernate.Burrow.Util.DomainSession {
     /// <summary>
     /// use System.Web.HttpApplication as the container, while this class works as a mediator

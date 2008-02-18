@@ -106,14 +106,13 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Configuration\DomainAssemblySection.cs" />
-    <Compile Include="Configuration\DomainAssemblySectionCollection.cs" />
-    <Compile Include="Configuration\MHDomainTemplateSection.cs" />
-    <Compile Include="Configuration\PUSection.cs" />
-    <Compile Include="Configuration\PUSectionCollection.cs" />
+    <Compile Include="Configuration\NHibernateBurrowCfgSection.cs" />
+    <Compile Include="Configuration\PersistenceUnitElement.cs" />
+    <Compile Include="Configuration\PersistenceUnitElementCollection.cs" />
     <Compile Include="Configuration\Util.cs" />
     <Compile Include="DataContainers\GuidDataContainer.cs" />
     <Compile Include="DataContainers\LocalSafe.cs" />
+    <Compile Include="Exceptions\UnableToGetPersistenceUnitException.cs" />
     <Compile Include="Facade.cs" />
     <Compile Include="Conversation.cs" />
     <Compile Include="ConversationalData.cs" />
@@ -125,9 +124,8 @@
     <Compile Include="DomainTemplateException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
     <Compile Include="OverspanStrategy.cs" />
-    <Compile Include="PersistantUnit.cs" />
-    <Compile Include="PersistantUnitRepo.cs" />
-    <Compile Include="DataContainers\AssemblyDataContainer.cs" />
+    <Compile Include="PersistenceUnit.cs" />
+    <Compile Include="PersistenceUnitRepo.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="ISessionManager.cs" />
     <Compile Include="Exceptions\BurrowException.cs">

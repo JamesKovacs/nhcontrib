@@ -2,7 +2,7 @@ using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
 using NHibernate.Expressions;
 
-namespace NHibernate.Burrow.Test.PersistantTests {
+namespace NHibernate.Burrow.Test.PersistenceTests {
     public class HashIdMockClass : ObjWHashIdNDAOBase {
         private string name;
 
@@ -12,7 +12,7 @@ namespace NHibernate.Burrow.Test.PersistantTests {
         }
     }
 
-    public class HashIdMockClassDAO : GenericDAOBase<HashIdMockClass> {
+    public class HashIdMockClassDAO : GenericDAO<HashIdMockClass> {
         public HashIdMockClass FindByName(string name) {
             return GetCriteria().Add(Expression.Eq("Name", name))
                 .UniqueResult<HashIdMockClass>();

@@ -5,10 +5,10 @@ namespace NHibernate.Burrow.Util.EntityBases {
     /// <summary>
     /// A base class for object that has HashId and DAO
     /// </summary>
-    public abstract class ObjWHashIdNDAOBase : ObjectWHashIdBase, IPersistantObjWithDAO {
+    public abstract class ObjWHashIdNDAOBase : ObjectWHashIdBase, IPersistentObjWithDAO {
         private IObjectDAOHelper dao;
 
-        #region IPersistantObjWithDAO Members
+        #region IPersistentObjWithDAO Members
 
         /// <summary>
         /// A DAO helper that helps with the Database Access related function for the entity

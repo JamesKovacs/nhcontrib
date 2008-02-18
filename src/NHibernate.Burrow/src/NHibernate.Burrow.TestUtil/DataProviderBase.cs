@@ -47,16 +47,16 @@ namespace NHibernate.Burrow.TestUtil {
 
         public static void DeleteEntity(object o) {
             if (o == null) return;
-            if (o is IPersistantObjWithDAO)
-                DeletePersistantObject((IPersistantObjWithDAO) o);
-            else if (o is IPersistantObjSaveDelete)
-                DeletePersistantObject((IPersistantObjSaveDelete) o);
+            if (o is IPersistentObjWithDAO)
+                DeletePersistenceObject((IPersistentObjWithDAO) o);
+            else if (o is IPersistentObjSaveDelete)
+                DeletePersistenceObject((IPersistentObjSaveDelete) o);
             else
-                DeletePersistantObject(o);
+                DeletePersistenceObject(o);
         }
 
-        protected static void DeletePersistantObject(IPersistantObjWithDAO o) {
-            o = (IPersistantObjWithDAO) ReloadIWithId(o);
+        protected static void DeletePersistenceObject(IPersistentObjWithDAO o) {
+            o = (IPersistentObjWithDAO) ReloadIWithId(o);
             if (o != null)
                 o.DAO.Delete();
         }
@@ -69,13 +69,13 @@ namespace NHibernate.Burrow.TestUtil {
             return SessionManager.GetInstance(t).GetSession();
         }
 
-        protected static void DeletePersistantObject(IPersistantObjSaveDelete o) {
-            o = (IPersistantObjSaveDelete) ReloadIWithId(o);
+        protected static void DeletePersistenceObject(IPersistentObjSaveDelete o) {
+            o = (IPersistentObjSaveDelete) ReloadIWithId(o);
             if (o != null)
                 o.Delete();
         }
 
-        protected static void DeletePersistantObject(object o) {
+        protected static void DeletePersistenceObject(object o) {
             o = GetSession(o.GetType()).Get(o.GetType(), GetEntityId(o));
             if (o != null)
                 GetSession(o.GetType()).Delete(o);

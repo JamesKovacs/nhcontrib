@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"   schema="dbo" default-lazy="false">
-  <class name="NHibernate.Burrow.Test.PersistantTests.MockPersistantClass,NHibernate.Burrow.Test" table="MockClass">
+  <class name="NHibernate.Burrow.Test.PersistenceTests.MockPersistentClass,NHibernate.Burrow.Test" table="MockClass">
     <id name="Id" type="Int32" >
       <generator class="identity" />
     </id>

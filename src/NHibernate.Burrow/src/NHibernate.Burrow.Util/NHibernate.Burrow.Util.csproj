@@ -42,14 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyDataContainer.cs" />
     <Compile Include="AuditLog\Actions.cs" />
     <Compile Include="AuditLog\AuditLogInterceptor.cs" />
     <Compile Include="AuditLog\AuditLogInterceptorFactory.cs" />
     <Compile Include="AuditLog\AuditLogRecord.cs" />
     <Compile Include="AuditLog\AuditLogRecordDAO.cs" />
-    <Compile Include="DAOBases\AdvGenericDAO.cs" />
     <Compile Include="DAOBases\GenericDAO.cs" />
-    <Compile Include="DAOBases\GenericDAOBase.cs" />
     <Compile Include="DAOBases\IObjectDAOHelper.cs" />
     <Compile Include="DAOBases\ObjectDAOHelper.cs" />
     <Compile Include="DomainSession\DSConfig.cs" />
@@ -71,10 +70,10 @@
     <Compile Include="EntityBases\ObjectWHashIdBase.cs" />
     <Compile Include="EntityBases\ObjWHashIdNDAOBase.cs" />
     <Compile Include="EntityBases\ObjWithIdNBizKeyBase.cs" />
-    <Compile Include="EntityBases\PersistantObj.cs" />
-    <Compile Include="EntityBases\PersistantObjSaveDelete.cs" />
+    <Compile Include="EntityBases\PersistentObj.cs" />
+    <Compile Include="EntityBases\PersistentObjSaveDelete.cs" />
     <Compile Include="EntityBases\PersistantObjSaveDeleteSimple.cs" />
-    <Compile Include="EntityBases\PersistantObjSimple.cs" />
+    <Compile Include="EntityBases\PersistentObjSimple.cs" />
     <Compile Include="EntityLoader.cs" />
     <Compile Include="Exceptions\NoSuitableContructorException.cs" />
     <Compile Include="Exceptions\PropertyNotFoundException.cs" />
