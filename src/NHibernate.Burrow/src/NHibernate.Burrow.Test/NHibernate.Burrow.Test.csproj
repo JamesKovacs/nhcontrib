@@ -80,7 +80,6 @@
   <ItemGroup>
     <None Include="App.config">
     </None>
-    <None Include="App.config.template" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow.TestUtil\NHibernate.Burrow.TestUtil.csproj">
@@ -106,9 +105,6 @@
     <EmbeddedResource Include="PersistantTests\HashIdMockClass.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BurrowTest.cfg.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="BurrowTest.cfg.xml.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -121,4 +117,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if exist BurrowTest.cfg.xml (del BurrowTest.cfg.xml)
+if not exist "$(ProjectDir)BurrowTest.cfg.xml" (copy "$(ProjectDir)BurrowTest.cfg.xml.template" "$(ProjectDir)BurrowTest.cfg.xml")
+if exist "$(ProjectDir)BurrowTest.cfg.xml" (copy "$(ProjectDir)BurrowTest.cfg.xml" "BurrowTest.cfg.xml")
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
