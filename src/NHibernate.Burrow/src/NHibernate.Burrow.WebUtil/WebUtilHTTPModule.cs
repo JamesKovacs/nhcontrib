@@ -17,7 +17,7 @@ namespace NHibernate.Burrow.WebUtil {
         public void Init(HttpApplication context) {
             context.PreRequestHandlerExecute += new EventHandler(BeginContext);
             context.PostRequestHandlerExecute += new EventHandler(CloseContext);
-            context.Error += new EventHandler(RollBack);
+            context.Error += new EventHandler(OnError);
         }
 
         /// <summary>
@@ -32,9 +32,17 @@ namespace NHibernate.Burrow.WebUtil {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RollBack(object sender, EventArgs e) {
-            Facade.CancelConversation();
-            Facade.CloseDomain();
+        private static void OnError(object sender, EventArgs e) {
+            if(!Facade.Alive) return;
+            try
+            {
+                Facade.CancelConversation();
+                Facade.CloseDomain();
+            }
+            catch (Exception)
+            {
+                //Catch the exception during roll back 
+            }
         }
 
         /// <summary>

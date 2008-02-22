@@ -14,7 +14,7 @@ namespace NHibernate.Burrow {
         }
 
         public static void InitializeDomain(bool safe, NameValueCollection states) {
-            if (safe && DomainContext.Current != null)
+            if (safe && Alive)
                 CloseDomain();
             DomainContext.Initialize(states);
         }
@@ -60,6 +60,14 @@ namespace NHibernate.Burrow {
         /// </remarks>
         public static void CancelConversation() {
             DomainContext.Current.CancelConversation();
+        }
+
+        /// <summary>
+        /// gets if the domain layer is alive. 
+        /// </summary>
+        public static bool Alive
+        {
+            get{ return DomainContext.Current != null;}
         }
     }
 }
