@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Caches.SysCache-2.0", "NHibernate.Caches.SysCache\NHibernate.Caches.SysCache-2.0.csproj", "{21FB1DFD-A6A9-4C8D-B4E2-CCB2EBDF8F16}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Caches.SysCache.Tests-2.0", "NHibernate.Caches.SysCache.Tests\NHibernate.Caches.SysCache.Tests-2.0.csproj", "{53E01216-76B6-4920-A386-2486ACEE5AEA}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21FB1DFD-A6A9-4C8D-B4E2-CCB2EBDF8F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21FB1DFD-A6A9-4C8D-B4E2-CCB2EBDF8F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21FB1DFD-A6A9-4C8D-B4E2-CCB2EBDF8F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21FB1DFD-A6A9-4C8D-B4E2-CCB2EBDF8F16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53E01216-76B6-4920-A386-2486ACEE5AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E01216-76B6-4920-A386-2486ACEE5AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E01216-76B6-4920-A386-2486ACEE5AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E01216-76B6-4920-A386-2486ACEE5AEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
