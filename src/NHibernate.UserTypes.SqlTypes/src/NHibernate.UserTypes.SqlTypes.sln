@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.UserTypes.SqlTypes-2.0", "NHibernate.UserTypes.SqlTypes\NHibernate.UserTypes.SqlTypes-2.0.csproj", "{C404F5BA-AF29-4D36-B1C3-2E67F5B2EE75}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.UserTypes.SqlTypes.Tests-2.0", "NHibernate.UserTypes.SqlTypes.Tests\NHibernate.UserTypes.SqlTypes.Tests-2.0.csproj", "{094F49F9-499A-40DE-97E4-AB0C5C883355}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C404F5BA-AF29-4D36-B1C3-2E67F5B2EE75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C404F5BA-AF29-4D36-B1C3-2E67F5B2EE75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C404F5BA-AF29-4D36-B1C3-2E67F5B2EE75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C404F5BA-AF29-4D36-B1C3-2E67F5B2EE75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{094F49F9-499A-40DE-97E4-AB0C5C883355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{094F49F9-499A-40DE-97E4-AB0C5C883355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{094F49F9-499A-40DE-97E4-AB0C5C883355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{094F49F9-499A-40DE-97E4-AB0C5C883355}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
