@@ -44,7 +44,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
                 Assert.Fail("Failed to throw a ConversationUnavailableException.");
             }
             catch (ConversationUnavailableException) {}
-            DomainContext.Current.Close();
+            Facade.CloseDomain();
             NameValueCollection mockRequest = new NameValueCollection();
             mockRequest.Add(DomainContext.ConversationIdKeyName, gid.ToString());
             Facade.InitializeDomain(mockRequest);
