@@ -1,15 +1,16 @@
+using NHibernate.Burrow.Test.MockEntities;
 using NHibernate.Burrow.Util.DAOBases;
 
 namespace NHibernate.Burrow.Test.PersistenceTests {
-    public class MockPersistentClassDAO : GenericDAO<MockPersistentClass> {
-        private static readonly MockPersistentClassDAO instance = new MockPersistentClassDAO();
+    public class MockEntityDAO : GenericDAO<MockEntity> {
+        private static readonly MockEntityDAO instance = new MockEntityDAO();
 
-        public static MockPersistentClassDAO Instance {
+        public static MockEntityDAO Instance {
             get { return instance; }
         }
 
         // Uncomment the following method if your entity has a unique Name property 
-        // public MockPersistentClass FindByName(string name) {
+        // public MockEntity FindByName(string name) {
         //     return (MockPersistentClass) GetCriteria().Add(Expression.Eq("Name",name))
         //                             .UniqueResult();
         // }

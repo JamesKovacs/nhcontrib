@@ -69,8 +69,8 @@
     <Compile Include="ConverstationTests\ConversationalDataFixture.cs" />
     <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
     <Compile Include="PersistenceTests\HashIdMockClass.cs" />
-    <Compile Include="PersistenceTests\MockPersistentClass.cs" />
-    <Compile Include="PersistenceTests\MockPersistentClassDAO.cs" />
+    <Compile Include="MockEntities\MockEntity.cs" />
+    <Compile Include="PersistenceTests\MockEntityDAO.cs" />
     <Compile Include="PersistenceTests\PersistantTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionManagerTest\GetSessionConcurencyTest.cs" />
@@ -96,7 +96,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PersistenceTests\MockPersistentClass.hbm.xml" />
+    <EmbeddedResource Include="MockEntities\MockEntity.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AuditLogTest\AuditLogRecord.hbm.xml" />

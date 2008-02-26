@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Configuration;
 using NHibernate.Burrow.Configuration;
-using NHibernate.Burrow.Test.PersistenceTests;
+using NHibernate.Burrow.Test.MockEntities;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConfigurationTests {
@@ -24,7 +24,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
         public void ConnectionStringTest()
         {
             Facade.InitializeDomain();
-            string cs = Config.DBConnectionString(typeof(MockPersistentClass));
+            string cs = Config.DBConnectionString(typeof(MockEntity));
             Console.WriteLine(cs);
             Assert.IsTrue(cs.IndexOf("Server") >= 0);
             Facade.CloseDomain();

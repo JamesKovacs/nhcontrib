@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NHibernate.Burrow;
+using NHibernate.Burrow.Test.MockEntities;
 using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.DAOBases;
 using NUnit.Framework;
@@ -11,10 +12,10 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
         [Test]
         public void CRUDTest() {
             string mockName = new Random(1000).Next().ToString();
-            MockPersistentClass m = new MockPersistentClass();
+            MockEntity m = new MockEntity();
             m.Name = mockName;
             m.Save();
-            GenericDAO<MockPersistentClass> d = new GenericDAO<MockPersistentClass>();
+            GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();
             Assert.AreEqual(d.FindById(m.Id), m);
             Assert.AreEqual(mockName, d.FindById(m.Id).Name);
             m.Delete();
@@ -24,11 +25,11 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
 
         [Test]
         public void DAOTest() {
-            MockPersistentClass m = new MockPersistentClass();
+            MockEntity m = new MockEntity();
             string name = RandomStringGenerator.GenerateLetterStrings(5);
             m.Name = name;
             m.Save();
-            IList<MockPersistentClass> result = new MockDAO().FindByName(name);
+            IList<MockEntity> result = new MockDAO().FindByName(name);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(m, result[0]);
             m.Delete();
@@ -69,9 +70,9 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
 
         [Test]
         public void PreDeleteTest() {
-            MockPersistentClass m = new MockPersistentClass();
+            MockEntity m = new MockEntity();
             m.Save();
-            GenericDAO<MockPersistentClass> d = new GenericDAO<MockPersistentClass>();
+            GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();
             Assert.AreEqual(d.FindById(m.Id), m);
             m.Delete();
             Assert.AreEqual(1, m.OnPreDeletedPerformed);
