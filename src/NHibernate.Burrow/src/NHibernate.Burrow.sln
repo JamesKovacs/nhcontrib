@@ -31,6 +31,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util", "N
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NHibernate.Burrow.TestWeb\", "NHibernate.Burrow.TestWeb\", "{18403445-C779-482B-82A3-D6982CA7E5E4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.VirtualPath = "/NHibernate.Burrow.TestWeb"
+		Debug.AspNetCompiler.PhysicalPath = "NHibernate.Burrow.TestWeb\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\NHibernate.Burrow.TestWeb\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/NHibernate.Burrow.TestWeb"
+		Release.AspNetCompiler.PhysicalPath = "NHibernate.Burrow.TestWeb\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\NHibernate.Burrow.TestWeb\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3822"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -91,6 +111,16 @@ Global
 		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Debug|.NET.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Debug|.NET.Build.0 = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Debug|Mixed Platforms.Build.0 = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|.NET.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|.NET.Build.0 = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
+		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Mixed Platforms.Build.0 = Debug|.NET
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

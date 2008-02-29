@@ -75,7 +75,6 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();
             Assert.AreEqual(d.FindById(m.Id), m);
             m.Delete();
-            Assert.AreEqual(1, m.OnPreDeletedPerformed);
         }
     }
 }
