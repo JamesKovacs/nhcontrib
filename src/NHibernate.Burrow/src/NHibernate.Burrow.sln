@@ -31,8 +31,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util", "N
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NHibernate.Burrow.TestWeb\", "NHibernate.Burrow.TestWeb\", "{18403445-C779-482B-82A3-D6982CA7E5E4}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.TestWeb\", "NHibernate.Burrow.TestWeb\", "{18403445-C779-482B-82A3-D6982CA7E5E4}"
 	ProjectSection(WebsiteProperties) = preProject
+		ProjectReferences = "{3DBB9568-5688-4442-8ECA-BD216E807C8D}|NHibernate.Burrow.WebUtil.dll;{D2954D0B-C830-417B-A0D4-70AD81043B71}|NHibernate.Burrow.Test.dll;{3ED19982-3C23-4B7D-BE81-D40846A6CB16}|NHibernate.Burrow.dll;{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}|NHibernate.Burrow.Util.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/NHibernate.Burrow.TestWeb"
 		Debug.AspNetCompiler.PhysicalPath = "NHibernate.Burrow.TestWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\NHibernate.Burrow.TestWeb\"

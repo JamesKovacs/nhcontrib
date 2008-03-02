@@ -83,7 +83,7 @@ namespace NHibernate.Burrow {
                     string msg = "ConversationalData can not be accessed outside conversation. " +
                                  "Make sure Conversation is intialized before visiting conversational data."
                                  +
-                                 " It might be caused by missing <add name=\"NHSessModule\" type=\"NHibernate.Burrow.NHDomain.NHSessHTTPModule\" /> in the Web.Config file";
+                                 " It might be caused by missing <add name=\"WebUtilHTTPModule\" type=\"NHibernate.Burrow.WebUtil.WebUtilHTTPModule\" /> in the Web.Config file";
                     throw new ConversationUnavailableException(
                         msg);
                 }
