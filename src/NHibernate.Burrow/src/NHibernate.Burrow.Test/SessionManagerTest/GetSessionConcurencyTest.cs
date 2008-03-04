@@ -24,7 +24,7 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
                 Thread t = new Thread(new ThreadStart(processor.ThreadProc));
                 t.Start();
             }
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 20; i++) {
                 Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/20");
                 Thread.Sleep(1000); //Wait for all thread to stop.
             }
