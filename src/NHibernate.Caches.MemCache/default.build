@@ -10,7 +10,7 @@
 
 	<target name="build">
 		<mkdir dir="build"/>
-		
+
 		<csc target="library"
 			 output="build/NHibernate.Caches.MemCache.dll"
 		>
@@ -45,8 +45,10 @@
 				<include name="lib/${framework.family}/${framework.version}/Memcached.ClientLibrary.dll"/>
 				<include name="build/NHibernate.Caches.MemCache.dll"/>
 			</references>
-			<resources>
-				<include name="src/**/*.hbm.xml"/>
+			<resources basedir="src/NHibernate.Caches.MemCache.Tests" prefix="NHibernate.Caches.MemCache.Tests" dynamicprefix="true">
+				<include name="**/*.hbm.xml"/>
+				<exclude name="**/bin/**/*.hbm.xml"/>
+				<exclude name="**/obj/**/*.hbm.xml"/>
 			</resources>
 		</csc>
 
@@ -61,7 +63,7 @@
 				<include name="../../lib/${framework.family}/${framework.version}/Iesi.Collections.dll"/>
 				<include name="../../lib/${framework.family}/${framework.version}/log4net.dll"/>
 				<include name="../../lib/${framework.family}/${framework.version}/nunit.framework.dll"/>
-				<include name="../../lib/${framework.family}/${framework.version}/Castle.DynamicProxy2.dll"/>				
+				<include name="../../lib/${framework.family}/${framework.version}/Castle.DynamicProxy2.dll"/>
 				<include name="lib/${framework.family}/${framework.version}/Memcached.ClientLibrary.dll"/>
 				<include name="lib/${framework.family}/ICSharpCode.SharpZipLib.dll"/>
 				<include name="build/NHibernate.Caches.MemCache.dll"/>
@@ -76,5 +78,9 @@
 			<formatter type="Plain"/>
 			<test assemblyname="build/NHibernate.Caches.MemCache.Tests.dll"/>
 		</nunit2>
+	</target>
+
+	<target name="clean">
+		<delete dir="build" failonerror="false"/>
 	</target>
 </project>
