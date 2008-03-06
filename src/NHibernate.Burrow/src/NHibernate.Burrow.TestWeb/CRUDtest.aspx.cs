@@ -48,4 +48,7 @@ public partial class CRUDtest : System.Web.UI.Page
         
     }
 
+    protected void btnRefresh_Click(object sender, EventArgs e)
+    {
+    }
 }

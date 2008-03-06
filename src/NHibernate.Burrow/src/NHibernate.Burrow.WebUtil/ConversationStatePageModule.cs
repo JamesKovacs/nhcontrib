@@ -29,9 +29,9 @@ namespace NHibernate.Burrow.WebUtil {
         }
 
         private bool IsInAjaxMode() {
-            foreach (Control control in page.Form.Controls)
-                if (control is ScriptManager)
-                    return true;
+            ScriptManager current = ScriptManager.GetCurrent(page);
+            if(current != null && current.EnablePartialRendering)
+                return true;
             return false;
         }
 

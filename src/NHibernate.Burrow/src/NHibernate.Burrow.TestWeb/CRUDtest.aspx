@@ -30,7 +30,8 @@
                         <asp:Literal ID="lNumber" runat="server"></asp:Literal></td>
                 </tr>
             </table>
-            <asp:Button ID="btnSave" runat="server" Text="Update/Refresh" OnClick="btnSave_Click" /> <br  /> 
+            <asp:Button ID="btnSave" runat="server" Text="Update" OnClick="btnSave_Click" /> <br  /> 
+            <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" /> <br  /> 
             <asp:Button ID="btnCreate" runat="Server" Text="Create New" OnClick="btnCreate_Click" /><br />
             <asp:Button ID="btnDelete" runat="Server" Text="Delete" OnClick="btnDelete_Click" /><br />
             
