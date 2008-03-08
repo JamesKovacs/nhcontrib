@@ -75,7 +75,9 @@
 	<target name="test"
 			depends="build">
 		<nunit2>
-			<formatter type="Plain"/>
+			<formatter type="Xml"
+			           usefile="true"
+			           extension=".xml" />
 			<test assemblyname="build/NHibernate.Caches.MemCache.Tests.dll"/>
 		</nunit2>
 	</target>
