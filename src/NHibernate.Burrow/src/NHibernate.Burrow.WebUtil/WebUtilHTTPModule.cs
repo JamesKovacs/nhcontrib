@@ -77,10 +77,6 @@ namespace NHibernate.Burrow.WebUtil {
             if (HandlerIsIrrelavant(ctx))
                 return;
             Facade.CloseDomain();
-        }
-
-        ~WebUtilHTTPModule() {
-            Facade.CloseDomain();
-        }
+        } 
     }
 }
