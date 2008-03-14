@@ -2,8 +2,6 @@ using System;
 using System.Reflection;
 using System.Security;
 
-//using System.Runtime.CompilerServices;
-
 [assembly: CLSCompliantAttribute(true)]
 [assembly: AssemblyTitleAttribute("NHibernate.JetDriver")]
 [assembly: AssemblyDescriptionAttribute("The Jet driver and dialect for NHibernate 2.0.0.Alpha1.")]

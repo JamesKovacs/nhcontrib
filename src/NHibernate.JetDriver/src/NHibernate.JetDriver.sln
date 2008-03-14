@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.JetDriver-2.0", 
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.JetDriver.Tests", "NHibernate.JetDriver.Tests\NHibernate.JetDriver.Tests.csproj", "{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +23,10 @@ Global
 		{3905D37C-CA49-4C13-99A4-4D815EFCAA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3905D37C-CA49-4C13-99A4-4D815EFCAA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3905D37C-CA49-4C13-99A4-4D815EFCAA56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

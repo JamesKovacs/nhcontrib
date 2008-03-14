@@ -1,6 +1,6 @@
 using System;
 using System.Data;
-
+using NHibernate.Dialect.Function;
 using NHibernate.SqlCommand;
 
 using Environment=NHibernate.Cfg.Environment;
@@ -152,6 +152,9 @@ namespace NHibernate.JetDriver
 			RegisterFunction("length", new StandardSQLFunction( NHibernateUtil.Int32 ) );
 			RegisterFunction("ltrim", new StandardSQLFunction() );
 */
+            RegisterFunction("upper", new StandardSQLFunction("ucase"));
+            RegisterFunction("lower", new StandardSQLFunction("lcase"));
+
 			//although theoretically Access should support outer joins, it has some severe 
 			//limitations on complexity of the SQL statements, so we better switch it off.
 			DefaultProperties[Environment.MaxFetchDepth] = "0";
