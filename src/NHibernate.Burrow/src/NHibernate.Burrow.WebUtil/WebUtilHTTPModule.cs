@@ -41,7 +41,7 @@ namespace NHibernate.Burrow.WebUtil {
             }
             catch (Exception)
             {
-                //Catch the exception during roll back 
+                //Catch the exception during roll back so that Error Exception won't get swallowed.
             }
         }
 

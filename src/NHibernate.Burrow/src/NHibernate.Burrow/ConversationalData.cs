@@ -5,10 +5,18 @@ using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow {
     public enum ConversationalDataMode {
-        Single,
-        SingleTemp,
         /// <summary>
-        /// overspan mulitple conversations
+        /// Data will only be available in conversation it is created, outside of the conversation, exception will be thrown if it is accessed 
+        /// </summary>
+        Single,
+        
+        /// <summary>
+        /// Data will only be available in conversation it is created, outside of the conversation, data will automatically reset to null 
+        /// </summary>
+        SingleTemp,
+        
+        /// <summary>
+        /// One <see cref="ConversationalData{T}"/> can have different values in different converstaions, each value stick with the corresponding conversation
         /// </summary>
         Overspan
     }
@@ -27,17 +35,21 @@ namespace NHibernate.Burrow {
         /// 
         /// </summary>
         public ConversationalData(ConversationalDataMode mode) {
-            this.mode = mode;
+            Mode = mode;
         }
 
-        public ConversationalData(ConversationalDataMode mode, T value) {
-            this.mode = mode;
+        public ConversationalData(ConversationalDataMode mode, T value) : this(value) {
+            Mode = mode;
+        }
+
+        public ConversationalData(T value)
+        {
             Value = value;
         }
 
         public ConversationalDataMode Mode {
             get { return mode; }
-            set { mode = value; }
+            private set { mode = value; }
         }
 
         /// <summary>

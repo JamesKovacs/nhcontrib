@@ -19,11 +19,16 @@ namespace NHibernate.Burrow {
             if (timeoutMinutes < 1)
                 throw new ConfigurationErrorsException("ConversationTimeOut must be greater than 1");
 
-            timeOut = new TimeSpan(0, timeoutMinutes, 0);
+            timeOut = TimeSpan.FromMinutes(timeoutMinutes);
             int freq = cfg.ConversationCleanupFrequency;
             if (freq < 1)
                 throw new ConfigurationErrorsException("ConversationCleanupFrequency must be greater than 1");
             cleanUpTimeSpan = new TimeSpan(0, timeoutMinutes*freq, 0);
+        }
+
+        public int ConversationsInPool
+        {
+            get { return pool.Count; }
         }
 
         internal TimeSpan ConversationTimeout {
@@ -88,7 +93,7 @@ namespace NHibernate.Burrow {
             List<Guid> timeOutedIds = new List<Guid>(pool.Keys.Count);
 
             foreach (KeyValuePair<Guid, ConversationPoolItem> pair in pool)
-                if (pair.Value.TimeOutAt > DateTime.Now)
+                if (pair.Value.TimeOutAt < DateTime.Now)
                     timeOutedIds.Add(pair.Key);
 
             foreach (Guid id in timeOutedIds)
@@ -99,8 +104,7 @@ namespace NHibernate.Burrow {
 
     internal class ConversationPoolItem {
         private readonly Conversation conversation;
-        private DateTime lastUsed = DateTime.Now;
-        private TimeSpan timeOut;
+        private readonly TimeSpan timeOut;
 
         public ConversationPoolItem(Conversation conversation) {
             this.conversation = conversation;
@@ -112,12 +116,14 @@ namespace NHibernate.Burrow {
         }
 
         public DateTime TimeOutAt {
-            get { return lastUsed + TimeOut; }
+            get
+            {
+                return conversation.LastVisit + TimeOut;
+            }
         }
 
         public Conversation Conversation {
             get {
-                lastUsed = DateTime.Now;
                 return conversation;
             }
         }

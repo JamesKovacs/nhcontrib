@@ -17,10 +17,25 @@ namespace NHibernate.Burrow {
         private bool canceled = false;
         private Guid id = Guid.Empty;
         private OverspanStrategy overspanStrategy = OverspanStrategy.Post;
+        private DateTime lastVisit = DateTime.Now;
+
+        public DateTime LastVisit 
+        {
+            get { return lastVisit ; }
+           private set { lastVisit  = value; }
+        }
 
         private Conversation() {}
 
         #region public methods
+
+        public static int NumOfOutStandingLongConversations
+        {
+            get
+            {
+                return ConversationPool.Instance.ConversationsInPool;
+            }
+        }
 
         /// <summary>
         /// The current context conversation
@@ -36,7 +51,16 @@ namespace NHibernate.Burrow {
         /// You can use this item to store conversation span data
         /// </remarks>
         public GuidDataContainer Items {
-            get { return items; }
+            get
+            {
+                Visited();
+                return items;
+            }
+        }
+
+        private void Visited()
+        {
+            LastVisit = DateTime.Now;
         }
 
         /// <summary>
@@ -93,6 +117,7 @@ namespace NHibernate.Burrow {
         /// if already in the <see cref="ConversationPool"/>, do nothing
         /// </remarks>
         public void AddToPool(OverspanStrategy om) {
+            Visited();
             if (!IsInPool) {
                 if (!om.SupportLongConversation)
                     throw new ArgumentException(
@@ -145,6 +170,7 @@ namespace NHibernate.Burrow {
         /// commit the data change prior to this point and start a new transaction from now on.
         /// </summary>
         public void CommitCurrentChange() {
+            Visited();
             CheckState();
             try {
                 SessionManager.CommitNHibernateTransactions();
