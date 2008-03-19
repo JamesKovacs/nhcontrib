@@ -8,5 +8,6 @@ namespace NHibernate.Burrow.Configuration {
             foreach (KeyValueConfigurationElement setting in settings) dict.Add(setting.Key, setting.Value);
             return dict;
         }
+
     }
 }

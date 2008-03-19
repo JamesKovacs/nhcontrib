@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConfigurationTests {
     [TestFixture]
-    public class ConfigReadingTest {
+    public class ConfigReadWriteFixture {
         [Test]
         public void ReadNHConfigFileTest() {
             NHibernateBurrowCfgSection section = NHibernateBurrowCfgSection.GetInstance();
@@ -18,6 +18,22 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
                 Console.WriteLine(puSection.NHConfigFile);
                Assert.IsTrue(puSection.NHConfigFile.IndexOf(".xml") > 0);
             }
+        }
+        [Test]
+        public void WriteReadNHConfigFileTest() {
+            NHibernateBurrowCfgSection section = NHibernateBurrowCfgSection.GetInstance();
+
+            Assert.IsNotNull(section);
+            Assert.AreEqual(5, section.ConversationCleanupFrequency);
+
+            Random r = new Random(3);
+            int freq = r.Next(10, 100);
+            section.ConversationCleanupFrequency = freq;
+            Assert.AreEqual(freq, section.ConversationCleanupFrequency);
+            freq = r.Next(10, 100);
+            section.ConversationCleanupFrequency = freq;
+            Assert.AreEqual(freq, section.ConversationCleanupFrequency);
+            
         }
 
         [Test]
