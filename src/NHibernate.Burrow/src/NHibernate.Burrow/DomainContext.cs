@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow {
     /// <summary>

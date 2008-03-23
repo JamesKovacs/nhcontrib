@@ -1,7 +1,6 @@
 using System;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow {
     public enum ConversationalDataMode {
