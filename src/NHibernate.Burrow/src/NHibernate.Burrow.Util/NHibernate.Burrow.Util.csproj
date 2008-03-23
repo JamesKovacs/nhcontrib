@@ -75,17 +75,16 @@
     <Compile Include="EntityBases\PersistantObjSaveDeleteSimple.cs" />
     <Compile Include="EntityBases\PersistentObjSimple.cs" />
     <Compile Include="EntityLoader.cs" />
-    <Compile Include="Exceptions\NoSuitableContructorException.cs" />
-    <Compile Include="Exceptions\PropertyNotFoundException.cs" />
-    <Compile Include="Exceptions\TypeNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingletonInstanceLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

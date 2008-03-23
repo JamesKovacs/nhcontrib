@@ -1,5 +1,5 @@
 using System;
-using NHibernate.Burrow.Util;
+using NHibernate.Burrow.utility;
 
 namespace NHibernate.Burrow.WebUtil {
     /// <summary>
@@ -19,7 +19,7 @@ namespace NHibernate.Burrow.WebUtil {
             get {
                 if (string.IsNullOrEmpty(interceptorName))
                     return null;
-                return SingletonInstanceLoader.Load<IStatefulFieldInterceptor>(interceptorName);
+                return InstanceLoader.Load<IStatefulFieldInterceptor>(interceptorName);
             }
         }
     }

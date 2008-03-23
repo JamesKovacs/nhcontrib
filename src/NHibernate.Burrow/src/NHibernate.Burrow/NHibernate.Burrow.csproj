@@ -110,8 +110,13 @@
     <Compile Include="Configuration\PersistenceUnitElement.cs" />
     <Compile Include="Configuration\PersistenceUnitElementCollection.cs" />
     <Compile Include="Configuration\Util.cs" />
+    <Compile Include="ConversationExpirationCheckerByTimeout.cs" />
+    <Compile Include="ConversationExpirationCheckerFactory.cs" />
     <Compile Include="DataContainers\GuidDataContainer.cs" />
     <Compile Include="DataContainers\LocalSafe.cs" />
+    <Compile Include="Exceptions\NoSuitableContructorException.cs" />
+    <Compile Include="Exceptions\PropertyNotFoundException.cs" />
+    <Compile Include="Exceptions\TypeNotFoundException.cs" />
     <Compile Include="Exceptions\UnableToGetPersistenceUnitException.cs" />
     <Compile Include="Facade.cs" />
     <Compile Include="Conversation.cs" />
@@ -122,6 +127,7 @@
     <Compile Include="Exceptions\DomainContextUninitializedException.cs" />
     <Compile Include="DomainContext.cs" />
     <Compile Include="DomainTemplateException.cs" />
+    <Compile Include="IConversationExpirationChecker.cs" />
     <Compile Include="IInterceptorFactory.cs" />
     <Compile Include="OverspanStrategy.cs" />
     <Compile Include="PersistenceUnit.cs" />
@@ -135,6 +141,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OverspanState.cs" />
+    <Compile Include="utility\InstanceLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

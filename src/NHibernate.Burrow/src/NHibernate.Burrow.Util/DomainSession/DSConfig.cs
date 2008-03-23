@@ -1,7 +1,8 @@
 using System;
 using System.Reflection;
 using NHibernate.Burrow.Configuration;
-using NHibernate.Burrow.Util.Exceptions;
+using NHibernate.Burrow.Exceptions;
+using NHibernate.Burrow.utility;
 
 namespace NHibernate.Burrow.Util.DomainSession {
     public class DSConfig {
@@ -34,11 +35,7 @@ namespace NHibernate.Burrow.Util.DomainSession {
             if (fType == null)
                 throw new TypeNotFoundException("The DomainSessionFactory with the name " + fName +
                                                 " was not found in the assembly. Please check domianSessionFactoryName in your DomainTemplate section in the config file. The DomainSession cannot be created.");
-            ConstructorInfo ci = fType.GetConstructor(System.Type.EmptyTypes);
-            if (ci == null)
-                throw new NoSuitableContructorException(
-                    "The DomainSessionFactory must have a public constructor with no paremeters. The DomainSession cannot be created.");
-            factory = (IDomainSessionFactory) ci.Invoke(new object[0]);
+            factory = (IDomainSessionFactory)InstanceLoader.Load(fType);
             return factory;
         }
 

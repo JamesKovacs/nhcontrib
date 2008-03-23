@@ -1,12 +1,13 @@
 using System;
 using System.Reflection;
-using NHibernate.Burrow.Util.Exceptions;
+using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.Util {
+namespace NHibernate.Burrow.utility
+{
     /// <summary>
     /// A loader writen to load instance of singleton types
     /// </summary>
-    public class SingletonInstanceLoader {
+    public class InstanceLoader {
         private const string InstancePropertyName = "Instance";
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace NHibernate.Burrow.Util {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <remarks>
-        /// <see cref="SingletonInstanceLoader.Load(System.Type t)"/>
+        /// <see cref="InstanceLoader.Load(System.Type t)"/>
         /// </remarks>
         public static T Load<T>() {
             return (T) Load(typeof (T));

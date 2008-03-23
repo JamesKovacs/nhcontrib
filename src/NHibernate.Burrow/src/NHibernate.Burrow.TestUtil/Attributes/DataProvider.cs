@@ -1,6 +1,6 @@
 using System;
 using NHibernate.Burrow.TestUtil.Exceptions;
-using NHibernate.Burrow.Util;
+using NHibernate.Burrow.utility;
 
 namespace NHibernate.Burrow.TestUtil.Attributes {
     /// <summary>
@@ -20,7 +20,7 @@ namespace NHibernate.Burrow.TestUtil.Attributes {
             System.Type type = System.Type.GetType(dataProviderName);
             if (type == null)
                 throw new TestUtilException("DataProvider Type " + dataProviderName + " not found. ");
-            return (DataProviderBase) SingletonInstanceLoader.Load(type);
+            return (DataProviderBase) InstanceLoader.Load(type);
         }
     }
 }

@@ -72,12 +72,12 @@ namespace NHibernate.Burrow.Util.AuditLog {
             }
         }
 
-    	bool? IInterceptor.IsUnsaved(object entity)
-    	{
-				return null;
-			}
+        public bool? IsTransient(object entity)
+        {
+            return null;
+        }
 
-    	///<summary>
+        ///<summary>
         ///
         ///            Called just before an object is initialized
         ///            
@@ -111,12 +111,15 @@ namespace NHibernate.Burrow.Util.AuditLog {
             return;
         }
 
-        public object IsUnsaved(object entity) {
-            return null;
-        }
+   
 
         public int[] FindDirty(object entity, object id, object[] currentState, object[] previousState,
                                string[] propertyNames, IType[] types) {
+            return null;
+        }
+
+        public object Instantiate(string entityName, EntityMode entityMode, object id)
+        {
             return null;
         }
 

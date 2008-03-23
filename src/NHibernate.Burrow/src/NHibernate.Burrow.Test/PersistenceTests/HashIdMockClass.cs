@@ -1,6 +1,6 @@
 using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
-using NHibernate.Expressions;
+using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Test.PersistenceTests {
     public class HashIdMockClass : ObjWHashIdNDAOBase {

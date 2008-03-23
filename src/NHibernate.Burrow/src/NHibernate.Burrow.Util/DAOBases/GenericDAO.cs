@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NHibernate.Burrow;
-using NHibernate.Expressions;
+using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Util.DAOBases {
     /// <summary>

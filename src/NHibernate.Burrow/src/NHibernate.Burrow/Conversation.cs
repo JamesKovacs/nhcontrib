@@ -12,12 +12,12 @@ namespace NHibernate.Burrow {
     /// </remarks>
     public class Conversation {
         private static readonly LocalSafe<Conversation> current = new LocalSafe<Conversation>();
-
         private readonly GuidDataContainer items = new GuidDataContainer();
         private bool canceled = false;
         private Guid id = Guid.Empty;
         private OverspanStrategy overspanStrategy = OverspanStrategy.Post;
         private DateTime lastVisit = DateTime.Now;
+      
 
         public DateTime LastVisit 
         {

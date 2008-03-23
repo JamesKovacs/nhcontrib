@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using NHibernate.Burrow.Util.DAOBases;
-using NHibernate.Expressions;
+using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Util.AuditLog {
     /// <summary>
