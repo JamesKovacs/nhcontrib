@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using log4net.Config;
 using NHibernate.Cache;
 using NHibernate.Cfg;
@@ -12,15 +12,15 @@ namespace NHibernate.Caches.MemCache.Tests.NH1086
 	public class Fixture 
 	{
 		private MemCacheProvider provider;
-		private Hashtable props;
+		private new Dictionary<string, string> props;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
 			XmlConfigurator.Configure();
-			props = new Hashtable();
-			props.Add("compression_enabled", false);
-			props.Add("expiration", 20);
+			props = new Dictionary<string, string>();
+			props.Add("compression_enabled", "false");
+			props.Add("expiration", "20");
 			provider = new MemCacheProvider();
 			provider.Start(props);
 		}
