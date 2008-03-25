@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NHibernate.Burrow;
-using NHibernate.Burrow.Util;
+using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
 using NUnit.Framework;
 

@@ -1,6 +1,7 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// A base class that has an integer Identity that can be used to identify the persistant object, and a business key <see cref="BusinessKey"/> for calculating equality
     /// </summary>
@@ -12,7 +13,8 @@ namespace NHibernate.Burrow.Util.EntityBases {
     ///  1) they are of the same type and 2) the have the same business key 
     /// This class also offers a default meaningful ToString() method
     /// </remarks>
-    public abstract class ObjWithIdNBizKeyBase : IWithIdNBizKey, IEquatable<ObjWithIdNBizKeyBase> {
+    public abstract class ObjWithIdNBizKeyBase : IWithIdNBizKey, IEquatable<ObjWithIdNBizKeyBase>
+    {
         /// <summary>
         /// Recommend to use this as the seperator of the composite business key
         /// </summary>
@@ -22,8 +24,12 @@ namespace NHibernate.Burrow.Util.EntityBases {
 
         #region IEquatable<ObjWithIdNBizKeyBase> Members
 
-        public bool Equals(ObjWithIdNBizKeyBase objWithIdNBizKeyBase) {
-            if (objWithIdNBizKeyBase == null) return false;
+        public bool Equals(ObjWithIdNBizKeyBase objWithIdNBizKeyBase)
+        {
+            if (objWithIdNBizKeyBase == null)
+            {
+                return false;
+            }
             return Equals(BusinessKey, objWithIdNBizKeyBase.BusinessKey);
         }
 
@@ -43,7 +49,8 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// <remarks> 
         /// This method is set as virtual for ORM framework to dynamically create proxy
         /// </remarks>
-        public virtual Int32 Id {
+        public virtual Int32 Id
+        {
             get { return id; }
             set { id = value; }
         }
@@ -57,22 +64,32 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// User BusinessKey to Compare 
         /// This method is set as virtual for ORM framework to dynamically create proxy
         /// </remarks>
-        public virtual int CompareTo(object obj) {
+        public virtual int CompareTo(object obj)
+        {
             if (obj == null)
+            {
                 throw new ArgumentNullException();
+            }
             if (!(obj is ObjWithIdNBizKeyBase))
+            {
                 throw new ArgumentException("Object must be of type ObjWithIdNBizKeyBase");
+            }
             return BusinessKey.CompareTo(((ObjWithIdNBizKeyBase) obj).BusinessKey);
         }
 
         #endregion
 
-        public override bool Equals(object obj) {
-            if (ReferenceEquals(this, obj)) return true;
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
             return Equals(obj as ObjWithIdNBizKeyBase);
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return BusinessKey.GetHashCode();
         }
 
@@ -80,10 +97,11 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// 
         /// </summary>
         /// <returns></returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return
-                GetType().ToString() + " #" + Id.ToString() + "( BusinessKey:" +
-                BusinessKey.ToString().Replace(BIZKEYSEP, " ") + ")";
+                GetType().ToString() + " #" + Id.ToString() + "( BusinessKey:"
+                + BusinessKey.ToString().Replace(BIZKEYSEP, " ") + ")";
         }
     }
 }

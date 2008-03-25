@@ -16,10 +16,6 @@ namespace NHibernate.Burrow {
         private IList<PersistenceUnit> persistenceUnits = new List<PersistenceUnit>();
 
         private PersistenceUnitRepo() {
-            if (DomainContext.Current == null)
-                throw new DomainContextUninitializedException(
-                    "Facade.InitializeDomain() must be called at the very begining of the application." +
-                    "(Also remember to call Facade.CloseDomain() when exit the transaction with application");
             foreach (PersistenceUnitElement pus in NHibernateBurrowCfgSection.GetInstance().PersistenceUnits)
                 PersistenceUnits.Add(new PersistenceUnit(pus));
         }

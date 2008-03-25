@@ -1,11 +1,13 @@
 using System;
 using NHibernate.Burrow.Util.DAOBases;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// A base class for object that has HashId and DAO
     /// </summary>
-    public abstract class ObjWHashIdNDAOBase : ObjectWHashIdBase, IPersistentObjWithDAO {
+    public abstract class ObjWHashIdNDAOBase : ObjectWHashIdBase, IPersistentObjWithDAO
+    {
         private IObjectDAOHelper dao;
 
         #region IPersistentObjWithDAO Members
@@ -13,9 +15,12 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// <summary>
         /// A DAO helper that helps with the Database Access related function for the entity
         /// </summary>
-        public IObjectDAOHelper DAO {
-            get {
-                if (dao == null) {
+        public IObjectDAOHelper DAO
+        {
+            get
+            {
+                if (dao == null)
+                {
                     dao = new ObjectDAOHelper(this);
                     dao.PreDeleted += new EventHandler(OnPreDeleted);
                 }

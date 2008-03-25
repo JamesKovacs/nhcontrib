@@ -1,73 +1,67 @@
 using System.Collections;
 using Iesi.Collections.Generic;
-using NHibernate.Burrow;
 using NHibernate.Burrow.Util.EntityBases;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
 
-namespace NHibernate.Burrow.Util.AuditLog {
-    internal class AuditLogInterceptor : IInterceptor {
+namespace NHibernate.Burrow.Util.AuditLog
+{
+    internal class AuditLogInterceptor : IInterceptor
+    {
         private const int valueTruncateLength = 1000;
         private ISet<AuditLogRecord> records = new HashedSet<AuditLogRecord>();
 
         #region IInterceptor Members
 
         public bool OnFlushDirty(object entity, object id, object[] currentState, object[] previousState,
-                                 string[] propertyNames, IType[] types) {
+                                 string[] propertyNames, IType[] types)
+        {
             for (int i = 0; i < currentState.Length; i++)
-                AddLogRecord(entity,
-                             id,
-                             currentState[i],
-                             previousState != null ? previousState[i] : null,
-                             propertyNames[i],
-                             types[i],
-                             Actions.UPDATE);
+            {
+                AddLogRecord(entity, id, currentState[i], previousState != null ? previousState[i] : null,
+                             propertyNames[i], types[i], Actions.UPDATE);
+            }
             return false;
         }
 
-        public bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types) {
+        public bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types)
+        {
             AddLogRecord(entity, id, null, null, null, null, Actions.INSERT);
             for (int i = 0; i < state.Length; i++)
-                AddLogRecord(entity,
-                             id,
-                             state[i],
-                             string.Empty,
-                             propertyNames[i],
-                             types[i],
-                             Actions.INSERT_UPDATE
-                    );
+            {
+                AddLogRecord(entity, id, state[i], string.Empty, propertyNames[i], types[i], Actions.INSERT_UPDATE);
+            }
 
             return false;
         }
 
-        public void OnDelete(object entity, object id, object[] state, string[] propertyNames, IType[] types) {
+        public void OnDelete(object entity, object id, object[] state, string[] propertyNames, IType[] types)
+        {
             AddLogRecord(entity, id, null, null, null, null, Actions.DELETE);
         }
 
-    	public void OnCollectionRecreate(object collection, object key)
-    	{
-    	}
+        public void OnCollectionRecreate(object collection, object key) {}
 
-    	public void OnCollectionRemove(object collection, object key)
-    	{
-    	}
+        public void OnCollectionRemove(object collection, object key) {}
 
-    	public void OnCollectionUpdate(object collection, object key)
-    	{
-    	}
+        public void OnCollectionUpdate(object collection, object key) {}
 
-    	public void PostFlush(ICollection entities) {
+        public void PostFlush(ICollection entities)
+        {
             ISession sess = SessionManager.GetInstance().GetUnManagedSession();
-            try {
+            try
+            {
                 ITransaction t = sess.BeginTransaction();
-                foreach (AuditLogRecord record in records) {
+                foreach (AuditLogRecord record in records)
+                {
                     record.EnsureEntityId();
                     sess.Save(record);
                 }
                 records.Clear();
                 t.Commit();
             }
-            finally {
+            finally
+            {
                 sess.Close();
             }
         }
@@ -103,18 +97,19 @@ namespace NHibernate.Burrow.Util.AuditLog {
         ///<c>state</c> in any way
         ///</returns>
         ///
-        public bool OnLoad(object entity, object id, object[] state, string[] propertyNames, IType[] types) {
+        public bool OnLoad(object entity, object id, object[] state, string[] propertyNames, IType[] types)
+        {
             return false;
         }
 
-        public void PreFlush(ICollection entities) {
+        public void PreFlush(ICollection entities)
+        {
             return;
         }
 
-   
-
         public int[] FindDirty(object entity, object id, object[] currentState, object[] previousState,
-                               string[] propertyNames, IType[] types) {
+                               string[] propertyNames, IType[] types)
+        {
             return null;
         }
 
@@ -123,21 +118,17 @@ namespace NHibernate.Burrow.Util.AuditLog {
             return null;
         }
 
-        public object Instantiate(System.Type type, object id) {
+        public string GetEntityName(object entity)
+        {
             return null;
         }
 
-    	public string GetEntityName(object entity)
-    	{
-				return null;
-			}
+        public object GetEntity(string entityName, object id)
+        {
+            return null;
+        }
 
-    	public object GetEntity(string entityName, object id)
-    	{
-				return null;
-			}
-
-    	///<summary>
+        ///<summary>
         ///            Called when a NHibernate transaction is begun via the NHibernate <see cref="T:NHibernate.ITransaction" />
         ///            API. Will not be called if transactions are being controlled via some other mechanism.
         ///</summary>
@@ -156,55 +147,72 @@ namespace NHibernate.Burrow.Util.AuditLog {
         ///</summary>
         public void AfterTransactionCompletion(ITransaction tx) {}
 
-        public void SetSession(ISession session) {
+        public void SetSession(ISession session)
+        {
             //don't know how to implement this method.
         }
 
-    	public SqlString OnPrepareStatement(SqlString sql)
-    	{
-				return sql;
-			}
+        public SqlString OnPrepareStatement(SqlString sql)
+        {
+            return sql;
+        }
 
-    	#endregion
+        #endregion
 
-        private void AddLogRecord(object entity,
-                                  object id,
-                                  object currentState,
-                                  object previousState,
-                                  string propertyName,
-                                  IType type,
-                                  string action) {
+        public object Instantiate(System.Type type, object id)
+        {
+            return null;
+        }
+
+        private void AddLogRecord(object entity, object id, object currentState, object previousState,
+                                  string propertyName, IType type, string action)
+        {
             if (StatesEquals(currentState, previousState) && action == Actions.UPDATE)
+            {
                 return;
+            }
             AuditLogRecord alg = AuditLogRecord.Create();
             alg.Action = action;
-            alg.EntityType = entity == null
-                                 ? "Unkown Entity"
-                                 : alg.EntityType = entity.GetType().Name;
+            alg.EntityType = entity == null ? "Unkown Entity" : alg.EntityType = entity.GetType().Name;
             alg.Entity = entity as IWithId;
             alg.EntityId = id == null ? "Unknown Id" : id.ToString();
             alg.NewValue = ToTruncatedString(currentState);
             alg.OldValue = ToTruncatedString(previousState);
             alg.PropertyName = propertyName;
             if (type != null)
+            {
                 alg.PropertyType = type.Name;
+            }
             records.Add(alg);
         }
 
-        private bool StatesEquals(object o, object o1) {
+        private bool StatesEquals(object o, object o1)
+        {
             if (o == o1)
+            {
                 return true;
+            }
             else if (o != null)
+            {
                 return o.Equals(o1);
+            }
             else
+            {
                 return o1 == null;
+            }
         }
 
-        private string ToTruncatedString(object o) {
-            if (o == null) return string.Empty;
+        private string ToTruncatedString(object o)
+        {
+            if (o == null)
+            {
+                return string.Empty;
+            }
             string retVal = o.ToString();
             if (retVal.Length > valueTruncateLength)
+            {
                 retVal = retVal.Substring(0, valueTruncateLength);
+            }
             return retVal;
         }
     }

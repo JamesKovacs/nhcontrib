@@ -9,14 +9,19 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
     public class GetSessionConcurencyTest {
         public static ISet<int> sesss = new HashedSet<int>();
         public static int error = 0;
-
+        /// <summary>
+        /// it is set explicit as it's quite time consuming
+        /// </summary>
         [Test, Explicit]
         public void ExhostingTest() {
             for (int i = 0; i < 10; i++)
                 MultiTreadTest();
         }
 
-        [Test]
+        /// <summary>
+        /// it is set explicit as it's quite time consuming
+        /// </summary>
+        [Test, Explicit] 
         public void MultiTreadTest() {
             error = 0;
             for (int j = 0; j < 50; j++) {
@@ -24,9 +29,9 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
                 Thread t = new Thread(new ThreadStart(processor.ThreadProc));
                 t.Start();
             }
-            for (int i = 0; i < 20; i++) {
-                Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/20");
-                Thread.Sleep(1000); //Wait for all thread to stop.
+            for (int i = 0; i < 4; i++) {
+                Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/3");
+                Thread.Sleep(5000); //Wait for all thread to stop.
             }
             Assert.AreEqual(0, error, error + " Errors occured");
         }

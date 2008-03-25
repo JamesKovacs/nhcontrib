@@ -46,9 +46,8 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             Conversation.StartNew();
             Conversation.Current.CommitAndClose();
             ExpectConversationUnavailableException(single);
-            ExpectConversationUnavailableException(singleTemp);
-            ExpectConversationUnavailableException(overspan);
-            
+            Assert.AreEqual(0, singleTemp.Value);
+            Assert.AreEqual(0, overspan.Value);
             Conversation.StartNew();
             ExpectConversationUnavailableException(single);
             Assert.AreEqual(0, singleTemp.Value);

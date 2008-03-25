@@ -1,8 +1,10 @@
-namespace NHibernate.Burrow.Util.AuditLog {
+namespace NHibernate.Burrow.Util.AuditLog
+{
     /// <summary>
     /// Repository for Action Names
     /// </summary>
-    public sealed class Actions {
+    public sealed class Actions
+    {
         /// <summary>
         /// 
         /// </summary>

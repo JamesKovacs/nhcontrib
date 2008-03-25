@@ -1,8 +1,10 @@
-namespace NHibernate.Burrow.Util.DomainSession {
+namespace NHibernate.Burrow.Util.DomainSession
+{
     /// <summary>
     /// Factory of domainLayer<see cref="IDomainSession"/>
     /// </summary>
-    public interface IDomainSessionFactory {
+    public interface IDomainSessionFactory
+    {
         /// <summary>
         /// Create the domainLayer
         /// </summary>

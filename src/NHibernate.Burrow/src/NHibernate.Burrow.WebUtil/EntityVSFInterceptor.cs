@@ -1,5 +1,5 @@
 using System;
-using NHibernate.Burrow.Util;
+using NHibernate.Burrow.Util.DAOBases;
 
 namespace NHibernate.Burrow.WebUtil {
     public abstract class EntityVSFInterceptorBase : IStatefulFieldInterceptor {

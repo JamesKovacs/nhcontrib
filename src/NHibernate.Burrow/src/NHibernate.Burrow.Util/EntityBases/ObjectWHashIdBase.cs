@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// A base class that use its inital hashcode as its Identity
     /// </summary>
@@ -16,18 +17,21 @@ namespace NHibernate.Burrow.Util.EntityBases {
     /// </example>
     /// 
     /// </remarks>
-    public abstract class ObjectWHashIdBase : ObjWithIdNBizKeyBase, IWithIdNBizKey {
+    public abstract class ObjectWHashIdBase : ObjWithIdNBizKeyBase, IWithIdNBizKey
+    {
         private long hashId;
 
         /// <summary>
         /// 
         /// </summary>
-        protected ObjectWHashIdBase() {
+        protected ObjectWHashIdBase()
+        {
             long result = (long) (DateTime.Now - new DateTime(2000, 1, 1)).TotalMilliseconds;
-            HashId = result*131237 + RuntimeHelpers.GetHashCode(this)%4355463;
+            HashId = result * 131237 + RuntimeHelpers.GetHashCode(this) % 4355463;
         }
 
-        private long HashId {
+        private long HashId
+        {
             get { return hashId; }
             set { hashId = value; }
         }
@@ -40,7 +44,8 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// <remarks>
         /// return the HashId
         /// </remarks>
-        public override IComparable BusinessKey {
+        public override IComparable BusinessKey
+        {
             get { return HashId; }
         }
 
@@ -55,7 +60,8 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// This method is kept as virtual for ORM framework to dynamically create proxy
         /// But it should never be overriden by developer
         /// </remarks>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return hashId.GetHashCode();
         }
     }

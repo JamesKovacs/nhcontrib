@@ -3,12 +3,18 @@ using log4net;
 using log4net.Config;
 using NHibernate.Burrow;
 using NHibernate.Burrow.TestUtil.Attributes;
+using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestUtil {
     public abstract class TestBase {
         protected DataProviderBase tdp;
         protected int testYear = DateTime.Now.Year - 5;
+        private const bool OutputDdl = false;
+        protected virtual bool CleanAndCreateSchema
+        {
+            get{ return true; }
+        }
 
         [SetUp]
         public void Initialize() {
@@ -49,12 +55,42 @@ namespace NHibernate.Burrow.TestUtil {
 
         protected static void CommitAndClearSession() {
             SessionManager.Flush();
-
             SessionManager.ClearSessions();
+        }
+
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            if(CleanAndCreateSchema)
+            CreateSchema();
+        }
+
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            if (CleanAndCreateSchema)
+            DropSchema();
         }
 
         protected void BeginLog() {
             XmlConfigurator.Configure();
+        }
+
+        protected void CreateSchema()
+        {
+            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
+            {
+                new SchemaExport(unit.NHConfiguration).Create(OutputDdl, true); 
+            }
+          
+        }
+
+        protected void DropSchema()
+        {
+            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
+            {
+                new SchemaExport(unit.NHConfiguration).Drop(OutputDdl, true);
+            }
         }
     }
 }

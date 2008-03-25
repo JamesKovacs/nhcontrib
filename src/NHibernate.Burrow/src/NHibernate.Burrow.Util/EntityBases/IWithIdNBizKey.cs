@@ -1,10 +1,12 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// interface for object that has business Key
     /// </summary>
-    public interface IWithIdNBizKey : IWithId, IComparable {
+    public interface IWithIdNBizKey : IWithId, IComparable
+    {
         /// <summary>
         /// A businesskey is a property that can uniquely identify the the entity from others of the same type.
         /// </summary>

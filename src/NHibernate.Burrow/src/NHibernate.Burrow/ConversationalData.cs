@@ -59,16 +59,21 @@ namespace NHibernate.Burrow {
                 T retVal = default(T);
                 if (gid == Guid.Empty)
                     return retVal;
-                if (!cItems.TryGet(gid, out retVal)) {
+                if (cItems == null || !cItems.TryGet(gid, out retVal)) {
                     if (Mode == ConversationalDataMode.Single)
-                        throw new ConversationUnavailableException(
-                            "Conversation may have changed, if you don't need to keep data after conversation changed, please use SingleTemp Mode on.");
+                        ConversationUnvailableException();
                     if (Mode == ConversationalDataMode.SingleTemp)
                         gid = Guid.Empty;
                 }
                 return retVal;
             }
             set {
+                if(cItems == null)
+                {
+                    if (Mode == ConversationalDataMode.Single)
+                        ConversationUnvailableException();
+                    return;
+                }
                 if (Equals(value, default(T))) {
                     if (gid != Guid.Empty)
                         cItems.Remove(gid);
@@ -88,17 +93,21 @@ namespace NHibernate.Burrow {
             get { return gid != Guid.Empty && !cItems.ContainsKey(gid); }
         }
 
+        private void ConversationUnvailableException()
+        {
+            string msg = Conversation.Current == null
+                             ? "ConversationalData can not be accessed outside conversation. "
+                               + "Make sure Conversation is intialized before visiting conversational data."
+                               +
+                               " It might be caused by missing <add name=\"WebUtilHTTPModule\" type=\"NHibernate.Burrow.WebUtil.WebUtilHTTPModule\" /> in the Web.Config file"
+                             : "Conversation may have changed, if you don't need to keep data after conversation changed, please use SingleTemp Mode on.";
+            
+
+            throw new ConversationUnavailableException(msg);
+        }
         private static GuidDataContainer cItems {
             get {
-                if (Conversation.Current == null) {
-                    string msg = "ConversationalData can not be accessed outside conversation. " +
-                                 "Make sure Conversation is intialized before visiting conversational data."
-                                 +
-                                 " It might be caused by missing <add name=\"WebUtilHTTPModule\" type=\"NHibernate.Burrow.WebUtil.WebUtilHTTPModule\" /> in the Web.Config file";
-                    throw new ConversationUnavailableException(
-                        msg);
-                }
-                return Conversation.Current.Items;
+                return Conversation.Current == null ? null : Conversation.Current.Items;
             }
         }
     }

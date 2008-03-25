@@ -1,12 +1,14 @@
 using System;
 
-namespace NHibernate.Burrow.Util.DAOBases {
+namespace NHibernate.Burrow.Util.DAOBases
+{
     /// <summary>
     /// This is a helper that goes with a persistant object to
     /// 1) offer helper mothods to the persistant object, 
     /// 2) maintain persistance states for the persistant object (such as IsDeleted, IsTransient)
     /// </summary>
-    public interface IObjectDAOHelper {
+    public interface IObjectDAOHelper
+    {
         /// <summary>
         /// if the object is already 
         /// </summary>

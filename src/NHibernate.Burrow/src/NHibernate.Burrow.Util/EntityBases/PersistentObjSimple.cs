@@ -6,14 +6,16 @@
 using System;
 using NHibernate.Burrow.Util.DAOBases;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// Can be a base for the children entity
     /// </summary>
     /// <remarks>
     /// for some entity that only exists as a composite children of other entity, no business key or over session equality is needed.
     /// </remarks>
-    public abstract class PersistentObjSimple : IWithId {
+    public abstract class PersistentObjSimple : IWithId
+    {
         /// <summary>
         /// a helper for inheritance to perform DAO functions
         /// </summary>
@@ -24,14 +26,16 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// <summary>
         /// 
         /// </summary>
-        public PersistentObjSimple() {
+        public PersistentObjSimple()
+        {
             dao = new ObjectDAOHelper(this);
             dao.PreDeleted += new EventHandler(OnPreDeleted);
         }
 
         #region IWithId Members
 
-        public int Id {
+        public int Id
+        {
             get { return id; }
             private set { id = value; }
         }

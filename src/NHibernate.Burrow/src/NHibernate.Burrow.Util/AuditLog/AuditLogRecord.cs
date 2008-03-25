@@ -3,11 +3,13 @@ using System.Web;
 using NHibernate.Burrow.Util.DomainSession;
 using NHibernate.Burrow.Util.EntityBases;
 
-namespace NHibernate.Burrow.Util.AuditLog {
+namespace NHibernate.Burrow.Util.AuditLog
+{
     /// <summary>
     /// A record of Audit log
     /// </summary>
-    public class AuditLogRecord {
+    public class AuditLogRecord
+    {
         #region fields and properties
 
         private string action;
@@ -26,7 +28,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// The entity of this log, it's not persistant
         /// </summary>
-        public IWithId Entity {
+        public IWithId Entity
+        {
             get { return entity; }
             set { entity = value; }
         }
@@ -34,7 +37,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// The Id of the Entity stored in the string format
         /// </summary>
-        public string EntityId {
+        public string EntityId
+        {
             get { return entityId; }
             set { entityId = value; }
         }
@@ -42,7 +46,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// Gets and Sets when the audit log 
         /// </summary>
-        public DateTime Created {
+        public DateTime Created
+        {
             get { return created; }
             set { created = value; }
         }
@@ -50,7 +55,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// the id of the user that  performed the database change 
         /// </summary>
-        public string UserId {
+        public string UserId
+        {
             get { return userId; }
             set { userId = value; }
         }
@@ -58,7 +64,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// the username of the user that performed the database change
         /// </summary>
-        public string UserName {
+        public string UserName
+        {
             get { return userName; }
             set { userName = value; }
         }
@@ -66,7 +73,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// the type of the property changed.
         /// </summary>
-        public string PropertyType {
+        public string PropertyType
+        {
             get { return propertyType; }
             set { propertyType = value; }
         }
@@ -74,7 +82,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// the new value of the property after change
         /// </summary>
-        public string NewValue {
+        public string NewValue
+        {
             get { return newValue; }
             set { newValue = value; }
         }
@@ -82,7 +91,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// the original value prior to change
         /// </summary>
-        public string OldValue {
+        public string OldValue
+        {
             get { return oldValue; }
             set { oldValue = value; }
         }
@@ -90,7 +100,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// 
         /// </summary>
-        public string PropertyName {
+        public string PropertyName
+        {
             get { return propertyName; }
             set { propertyName = value; }
         }
@@ -98,7 +109,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// 
         /// </summary>
-        public string EntityType {
+        public string EntityType
+        {
             get { return entityType; }
             set { entityType = value; }
         }
@@ -107,7 +119,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// The name of the action user did to this record
         /// </summary>
         /// <see cref="Actions"/>
-        public string Action {
+        public string Action
+        {
             get { return action; }
             set { action = value; }
         }
@@ -115,7 +128,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// The id of the record
         /// </summary>
-        public int Id {
+        public int Id
+        {
             get { return id; }
             private set { id = value; }
         }
@@ -124,17 +138,20 @@ namespace NHibernate.Burrow.Util.AuditLog {
 
         private AuditLogRecord() {}
 
-        internal static AuditLogRecord Create() {
+        internal static AuditLogRecord Create()
+        {
             AuditLogRecord retVal = new AuditLogRecord();
 
-            if (DSConfig.IsUsingDomainLayer
-                && DomainSessionContainer.DomainSession != null
+            if (DSConfig.IsUsingDomainLayer && DomainSessionContainer.DomainSession != null
                 && DomainSessionContainer.DomainSession is IHasUserId)
+            {
                 retVal.UserId = ((IHasUserId) DomainSessionContainer.DomainSession).UserId + string.Empty;
-            if (HttpContext.Current != null
-                && HttpContext.Current.User != null
+            }
+            if (HttpContext.Current != null && HttpContext.Current.User != null
                 && HttpContext.Current.User.Identity != null)
+            {
                 retVal.UserName = HttpContext.Current.User.Identity.Name;
+            }
 
             return retVal;
         }
@@ -145,9 +162,12 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <remarks>
         /// This method is created for the AuditLogInterceptor to call after the entity obtain its Id. 
         /// </remarks>
-        public void EnsureEntityId() {
+        public void EnsureEntityId()
+        {
             if (Entity != null)
+            {
                 EntityId = Entity.Id.ToString();
+            }
         }
     }
 }

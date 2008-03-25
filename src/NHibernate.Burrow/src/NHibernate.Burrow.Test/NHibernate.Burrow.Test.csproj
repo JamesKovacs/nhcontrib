@@ -76,7 +76,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionManagerTest\GetSessionConcurencyTest.cs" />
     <Compile Include="SpecialTests\CreateDB.cs" />
+    <Compile Include="UtilTests\CriterionTest\CriterionTest.cs" />
+    <Compile Include="UtilTests\CriterionTest\Simple.cs" />
+    <Compile Include="UtilTests\DebugConnectionProvider.cs" />
     <Compile Include="UtilTests\DomainSessionFixture.cs" />
+    <Compile Include="UtilTests\DynamicQuery\DynQueryFixture.cs" />
+    <Compile Include="UtilTests\Serialization\ClonerFixture.cs" />
+    <Compile Include="UtilTests\Serialization\Foo.cs" />
+    <Compile Include="UtilTests\Serialization\FooChild.cs" />
+    <Compile Include="UtilTests\TestCase.cs" />
+    <Compile Include="UtilTests\Transform\PosToBeanResultTransformer.cs" />
+    <Compile Include="UtilTests\UserTypes\Foo.cs" />
+    <Compile Include="UtilTests\UserTypes\UpperStringFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -109,6 +120,10 @@
     <None Include="BurrowTest.cfg.xml.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UtilTests\CriterionTest\Simple.hbm.xml" />
+    <EmbeddedResource Include="UtilTests\UserTypes\UpperStringMappings.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

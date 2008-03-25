@@ -1,8 +1,10 @@
-namespace NHibernate.Burrow.Util.DomainSession {
+namespace NHibernate.Burrow.Util.DomainSession
+{
     /// <summary>
     /// use System.Web.HttpApplication as the container, while this class works as a mediator
     /// </summary>
-    public class WebAppAutoDomainSessionContainer : IDomainSessionContainer {
+    public class WebAppAutoDomainSessionContainer : IDomainSessionContainer
+    {
         private const string DL_STORENAME = "HACDomainLayer";
 
         private static readonly WebAppAutoDomainSessionContainer instance = new WebAppAutoDomainSessionContainer();
@@ -11,13 +13,16 @@ namespace NHibernate.Burrow.Util.DomainSession {
 
         private WebAppAutoDomainSessionContainer() {}
 
-        private static IDomainSession dlOutOfSession {
-            get {
+        private static IDomainSession dlOutOfSession
+        {
+            get
+            {
                 return
                     AssemblyDataContainer.GetThreadStaticData<IDomainSession>("dlOutOfSession",
                                                                               typeof (WebAppAutoDomainSessionContainer));
             }
-            set {
+            set
+            {
                 AssemblyDataContainer.SetThreadStaticData("dlOutOfSession", value,
                                                           typeof (WebAppAutoDomainSessionContainer));
             }
@@ -26,7 +31,8 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// <summary>
         /// 
         /// </summary>
-        public static WebAppAutoDomainSessionContainer Current {
+        public static WebAppAutoDomainSessionContainer Current
+        {
             get { return instance; }
         }
 
@@ -36,19 +42,28 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// first try to load the dl from the httpsession, if session is out, than return a threadStatic
         /// DomainSession
         /// </summary>
-        public IDomainSession DomainSession {
-            get {
-                lock (lockObj2) {
+        public IDomainSession DomainSession
+        {
+            get
+            {
+                lock (lockObj2)
+                {
                     IDomainSession retVal = AssemblyDataContainer.GetHttpSessionData<IDomainSession>(DL_STORENAME);
                     if (retVal == null)
+                    {
                         return dlOutOfSession;
+                    }
                     return retVal;
                 }
             }
-            set {
-                lock (lockObj2) {
+            set
+            {
+                lock (lockObj2)
+                {
                     if (!AssemblyDataContainer.SetHttpSessionData(DL_STORENAME, value))
+                    {
                         dlOutOfSession = value;
+                    }
                 }
             }
         }
@@ -56,11 +71,17 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose() {
-            if (isDisposing) return;
+        public void Dispose()
+        {
+            if (isDisposing)
+            {
+                return;
+            }
             isDisposing = true;
             if (DomainSession != null)
+            {
                 DomainSession.Dispose();
+            }
         }
 
         #endregion
@@ -68,7 +89,8 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// <summary>
         /// 
         /// </summary>
-        ~WebAppAutoDomainSessionContainer() {
+        ~WebAppAutoDomainSessionContainer()
+        {
             Dispose();
         }
     }

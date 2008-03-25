@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Criterion;
 
-namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
+namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity
+{
     ///<summary>
     /// a base DAO for BizTransactionEntity
     ///</summary>
@@ -14,46 +15,59 @@ namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
     /// that is delete the timeout one and update the LastActivityInTransaction automatically and etc.
     /// </remarks>
     public abstract class BizTransactionEntityDAOBase<ReturnT, NHT> : GenericDAO<ReturnT>
-        where NHT : IBizTransactionEntity {
+        where NHT : IBizTransactionEntity
+    {
         private static readonly object lockObj = new object();
         private static readonly TimeSpan timeout = new TimeSpan(24, 0, 0);
         private static DateTime lastClearOutDatedTime = DateTime.Now;
-        protected BizTransactionEntityDAOBase() :base(typeof(NHT)){}
+        protected BizTransactionEntityDAOBase() : base(typeof (NHT)) {}
 
-        protected virtual string FinishedTransactionProperyName {
+        protected virtual string FinishedTransactionProperyName
+        {
             get { return "FinishedTransaction"; }
         }
 
-        protected virtual string LastActivityInTransactionProperyName {
+        protected virtual string LastActivityInTransactionProperyName
+        {
             get { return "LastActivityInTransaction"; }
         }
 
-        protected override void OnSave(ReturnT t) {
+        protected override void OnSave(ReturnT t)
+        {
             ClearTimedOutEntities();
             base.OnSave(t);
         }
 
-        protected override void OnLoad(ReturnT loaded) {
+        protected override void OnLoad(ReturnT loaded)
+        {
             IBizTransactionEntity entity = (IBizTransactionEntity) loaded;
             if (!entity.FinishedTransaction)
+            {
                 entity.LastActivityInTransaction = DateTime.Now;
+            }
             base.OnLoad(loaded);
         }
 
-        private void ClearTimedOutEntities() {
-            if (DateTime.Now > lastClearOutDatedTime + timeout) {
+        private void ClearTimedOutEntities()
+        {
+            if (DateTime.Now > lastClearOutDatedTime + timeout)
+            {
                 lastClearOutDatedTime = DateTime.Now;
-                lock (lockObj) {
+                lock (lockObj)
+                {
                     foreach (NHT t in FindTimedOutOnes())
+                    {
                         t.Delete();
+                    }
                 }
             }
         }
 
-        private IList<NHT> FindTimedOutOnes() {
-            return GetCriteria().Add(Expression.Eq(FinishedTransactionProperyName, false))
-                .Add(Expression.Le(LastActivityInTransactionProperyName, DateTime.Now - timeout))
-                .List<NHT>();
+        private IList<NHT> FindTimedOutOnes()
+        {
+            return
+                GetCriteria().Add(Expression.Eq(FinishedTransactionProperyName, false)).Add(
+                    Expression.Le(LastActivityInTransactionProperyName, DateTime.Now - timeout)).List<NHT>();
         }
-        }
+    }
 }

@@ -1,11 +1,13 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// OBSELETE
     /// A type that itself has the CRUD methods
     /// </summary>
-    public interface IPersistentObjWithCRUD : IWithIdNBizKey, IPersistentObjWithDAO {
+    public interface IPersistentObjWithCRUD : IWithIdNBizKey, IPersistentObjWithDAO
+    {
         /// <summary>
         /// Delete the PersistentObj
         /// </summary>

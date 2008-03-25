@@ -1,6 +1,7 @@
 using System;
 
-namespace NHibernate.Burrow.Util.DomainSession {
+namespace NHibernate.Burrow.Util.DomainSession
+{
     /// <summary>
     /// DomainSession is data container for a domainLayer. Helper class with states can be stored in 
     /// this container
@@ -10,7 +11,8 @@ namespace NHibernate.Burrow.Util.DomainSession {
     /// Normally the domain Layer has the same lifetime as a HttpSession if the domain is runned under a httpApplication.
     /// So, please avoid store persistent objects in the domainLayer. It's mainly for storing non-entity ojbects.
     /// </remarks>
-    public abstract class DomainSessionBase : IDomainSession {
+    public abstract class DomainSessionBase : IDomainSession
+    {
         private bool isDisposing = false;
 
         #region static part
@@ -22,22 +24,28 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// <remarks>
         /// This should be thread safe since dlc.DomainSession should be thread safe.
         /// </remarks>
-        public static DomainSessionBase Current {
-            get {
+        public static DomainSessionBase Current
+        {
+            get
+            {
                 if (DomainSessionContainer.DomainSession == null)
+                {
                     DomainSessionContainer.DomainSession = GetInstance();
+                }
                 return (DomainSessionBase) DomainSessionContainer.DomainSession;
             }
         }
 
-        private static DomainSessionBase GetInstance() {
+        private static DomainSessionBase GetInstance()
+        {
             return (DomainSessionBase) DSConfig.GetDomainSessionFactory().Create();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        ~DomainSessionBase() {
+        ~DomainSessionBase()
+        {
             Dispose();
         }
 
@@ -56,16 +64,24 @@ namespace NHibernate.Burrow.Util.DomainSession {
         /// <remarks>
         /// 
         /// </remarks>
-        public void Dispose() {
-            if (isDisposing) return;
+        public void Dispose()
+        {
+            if (isDisposing)
+            {
+                return;
+            }
             isDisposing = true;
         }
 
         /// <summary>
         /// Call it when a http requests ends
         /// </summary>
-        public void Close() {
-            if (PreClose != null) PreClose(this, new EventArgs());
+        public void Close()
+        {
+            if (PreClose != null)
+            {
+                PreClose(this, new EventArgs());
+            }
         }
 
         /// <summary>

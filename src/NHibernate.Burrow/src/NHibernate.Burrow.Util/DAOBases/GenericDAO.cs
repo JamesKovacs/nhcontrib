@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using NHibernate.Burrow;
 using NHibernate.Criterion;
 
-namespace NHibernate.Burrow.Util.DAOBases {
+namespace NHibernate.Burrow.Util.DAOBases
+{
     /// <summary>
     /// Advanced Generic DAO whose return type can be different from Nhibernate type
     /// </summary>
     /// <typeparam name="ReturnT">Type of which the DAO return the entity</typeparam>
-    public class GenericDAO<ReturnT> {
+    public class GenericDAO<ReturnT>
+    {
         /// <summary>
         /// Default Order Expression
         /// </summary>
@@ -17,21 +17,25 @@ namespace NHibernate.Burrow.Util.DAOBases {
 
         private readonly System.Type _NHEntityType;
         private SessionManager _sm;
- 
-
-        private SessionManager sm {
-            get {
-                if (_sm == null)
-                    _sm = SessionManager.GetInstance(_NHEntityType);
-                return _sm;
-            }
-        }
 
         public GenericDAO(System.Type entityType)
         {
-            this._NHEntityType = entityType;
+            _NHEntityType = entityType;
         }
-        public GenericDAO() : this(typeof(ReturnT)){}
+
+        public GenericDAO() : this(typeof (ReturnT)) {}
+
+        private SessionManager sm
+        {
+            get
+            {
+                if (_sm == null)
+                {
+                    _sm = SessionManager.GetInstance(_NHEntityType);
+                }
+                return _sm;
+            }
+        }
 
         /// <summary>
         /// Default Order when query entities
@@ -39,7 +43,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <remarks>
         /// if not override, it will use id Desc 
         /// </remarks>
-        public virtual Order DefaultOrder {
+        public virtual Order DefaultOrder
+        {
             get { return Order.Desc("id"); }
         }
 
@@ -50,21 +55,24 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// default value is false;
         /// override to return the value you want
         /// </remarks>
-        protected virtual bool DefaultCacheable {
+        protected virtual bool DefaultCacheable
+        {
             get { return false; }
         }
 
         /// <summary>
         /// Gets the default cache region 
         /// </summary>
-        protected virtual string DefaultCacheRegion {
+        protected virtual string DefaultCacheRegion
+        {
             get { return _NHEntityType.Name; }
         }
 
         /// <summary>
         /// Gets the Nhibernate Session 
         /// </summary>
-        protected ISession Sess {
+        protected ISession Sess
+        {
             get { return sm.GetSession(); }
         }
 
@@ -72,7 +80,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Finds all entities of the type
         /// </summary>
         /// <returns></returns>
-        public IList<ReturnT> FindAll() {
+        public IList<ReturnT> FindAll()
+        {
             return FindByCriteria(null);
         }
 
@@ -86,7 +95,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <example> Year ASC </example>
         /// </param>
         /// <returns></returns>
-        public IList<ReturnT> FindAll(int startRow, int pageSize, string sortExpression) {
+        public IList<ReturnT> FindAll(int startRow, int pageSize, string sortExpression)
+        {
             return FindByCriteria(startRow, pageSize, null, sortExpression);
         }
 
@@ -94,7 +104,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Counts all entities of the type
         /// </summary>
         /// <returns></returns>
-        public int CountAll() {
+        public int CountAll()
+        {
             return CountByCriteria(null);
         }
 
@@ -102,7 +113,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Reattach a detached the entity to the current session
         /// </summary>
         /// <param name="t">the entity to reAttach</param>
-        public void ReAttach(ReturnT t) {
+        public void ReAttach(ReturnT t)
+        {
             Sess.Lock(t, LockMode.None);
         }
 
@@ -115,7 +127,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Will return null if not found
         /// this will always hit the database
         /// </remarks>
-        public ReturnT FindById(object id) {
+        public ReturnT FindById(object id)
+        {
             return (ReturnT) Sess.Get(_NHEntityType, id);
         }
 
@@ -123,7 +136,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Delete the record of an entity from Database and thus the entity becomes transient
         /// </summary>
         /// <param name="t"></param>
-        public virtual void Delete(ReturnT t) {
+        public virtual void Delete(ReturnT t)
+        {
             Sess.Delete(t);
         }
 
@@ -131,7 +145,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Re-read the state of the entity from the database
         /// </summary>
         /// <param name="t"></param>
-        public void Refresh(ReturnT t) {
+        public void Refresh(ReturnT t)
+        {
             Sess.Refresh(t);
         }
 
@@ -142,7 +157,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <remarks>
         /// By default the instance is always saved. This behaviour may be adjusted by specifying an unsaved-value attribute of the identifier property mapping 
         /// </remarks>
-        public void SaveOrUpdate(ReturnT t) {
+        public void SaveOrUpdate(ReturnT t)
+        {
             Sess.SaveOrUpdate(t);
         }
 
@@ -151,7 +167,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="t"> A transient instance containing updated state</param>
         /// <remarks>Transient instance<paramref name="t"/> will be attached to the Session</remarks>
-        public void Update(ReturnT t) {
+        public void Update(ReturnT t)
+        {
             Sess.Update(t);
         }
 
@@ -159,7 +176,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Persist the given transient instance, first assigning a generated identifier.  
         /// </summary>
         /// <param name="t"></param>
-        public void Save(ReturnT t) {
+        public void Save(ReturnT t)
+        {
             OnSave(t);
             Sess.Save(t);
         }
@@ -200,19 +218,22 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// this method will automatically add "from Team this " before the above query.
         /// </example>
         /// </remarks>
-        protected IQuery CreateQuery(string queryString) {
+        protected IQuery CreateQuery(string queryString)
+        {
             queryString = queryString.Trim();
             string lowerCaseQuery = queryString.ToLower();
-            bool completeQuery = lowerCaseQuery.IndexOf("select ") == 0
-                                 || lowerCaseQuery.IndexOf("from ") == 0;
+            bool completeQuery = lowerCaseQuery.IndexOf("select ") == 0 || lowerCaseQuery.IndexOf("from ") == 0;
             string pre = completeQuery ? "" : "from " + _NHEntityType.Name + " ";
-            bool usingThis = lowerCaseQuery.IndexOf("order by") == 0
-                             || lowerCaseQuery.IndexOf("where") == 0;
+            bool usingThis = lowerCaseQuery.IndexOf("order by") == 0 || lowerCaseQuery.IndexOf("where") == 0;
             if (usingThis)
+            {
                 pre += "this ";
+            }
             IQuery retVal = Sess.CreateQuery(pre + queryString);
             if (DefaultCacheable)
+            {
                 retVal.SetCacheable(DefaultCacheable).SetCacheRegion(DefaultCacheRegion);
+            }
             return retVal;
         }
 
@@ -221,7 +242,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="criterion"></param>
         /// <returns></returns>
-        protected int CountByCriteria(IEnumerable<ICriterion> criterion) {
+        protected int CountByCriteria(IEnumerable<ICriterion> criterion)
+        {
             return CriteriaCount(GetCriteria(criterion, null));
         }
 
@@ -230,12 +252,17 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        protected int CriteriaCount(ICriteria c) {
+        protected int CriteriaCount(ICriteria c)
+        {
             object o = c.SetProjection(Projections.RowCount()).UniqueResult();
             if (o == null)
+            {
                 return 0;
+            }
             else
+            {
                 return (int) o;
+            }
         }
 
         /// <summary>
@@ -248,7 +275,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// it will throw exception if not found.
         /// Basically it uses ISession.Load
         /// </remarks>
-        public ReturnT Load(object id) {
+        public ReturnT Load(object id)
+        {
             ReturnT retval = (ReturnT) Sess.Load(_NHEntityType, id);
             OnLoad(retval);
             return retval;
@@ -264,7 +292,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Find according the criterion
         /// </summary>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriterion(ICriterion crit) {
+        protected IList<ReturnT> FindByCriterion(ICriterion crit)
+        {
             return GetCriteria(new ICriterion[] {crit}).List<ReturnT>();
         }
 
@@ -276,9 +305,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression"></param>
         /// <param name="criterion"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriterion(int startRow, int pageSize, string sortExpression, ICriterion criterion) {
-            return
-                FindByCriteria(startRow, pageSize, new ICriterion[] {criterion}, ParseOrder(sortExpression));
+        protected IList<ReturnT> FindByCriterion(int startRow, int pageSize, string sortExpression, ICriterion criterion)
+        {
+            return FindByCriteria(startRow, pageSize, new ICriterion[] {criterion}, ParseOrder(sortExpression));
         }
 
         /// <summary>
@@ -286,7 +315,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(IEnumerable<ICriterion> criteria) {
+        protected IList<ReturnT> FindByCriteria(IEnumerable<ICriterion> criteria)
+        {
             return GetCriteria(criteria).List<ReturnT>();
         }
 
@@ -297,7 +327,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="pageSize"></param>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, IEnumerable<ICriterion> criteria) {
+        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, IEnumerable<ICriterion> criteria)
+        {
             return FindByCriteria(startRow, pageSize, criteria, string.Empty);
         }
 
@@ -310,7 +341,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression"></param>
         /// <returns></returns>
         protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, IEnumerable<ICriterion> criteria,
-                                                string sortExpression) {
+                                                string sortExpression)
+        {
             return FindByCriteria(startRow, pageSize, criteria, ParseOrder(sortExpression));
         }
 
@@ -322,8 +354,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="criteria"></param>
         /// <param name="o"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, IEnumerable<ICriterion> criteria,
-                                                Order o) {
+        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, IEnumerable<ICriterion> criteria, Order o)
+        {
             ICriteria c = GetCriteria(criteria, o);
             return PagedCriteria(c, pageSize, startRow);
         }
@@ -336,23 +368,35 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="pageSize"></param>
         /// <param name="sortExpression"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(ICriteria c, int startRow, int pageSize, string sortExpression) {
+        protected IList<ReturnT> FindByCriteria(ICriteria c, int startRow, int pageSize, string sortExpression)
+        {
             Order o = ParseOrder(sortExpression);
-            if (o != null) c.AddOrder(o);
+            if (o != null)
+            {
+                c.AddOrder(o);
+            }
             return PagedCriteria(c, pageSize, startRow);
         }
 
-        private ICriteria GetCriteria(IEnumerable<ICriterion> criterion) {
+        private ICriteria GetCriteria(IEnumerable<ICriterion> criterion)
+        {
             return GetCriteria(criterion, DefaultOrder);
         }
 
-        private ICriteria GetCriteria(IEnumerable<ICriterion> criterion, Order odr) {
+        private ICriteria GetCriteria(IEnumerable<ICriterion> criterion, Order odr)
+        {
             ICriteria retVal = GetCriteria();
             if (criterion != null)
+            {
                 foreach (ICriterion crit in criterion)
+                {
                     retVal.Add(crit);
+                }
+            }
             if (odr != null)
+            {
                 retVal.AddOrder(odr);
+            }
 
             return retVal;
         }
@@ -361,10 +405,13 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Create a Criteria instance of the Type
         /// </summary>
         /// <returns></returns>
-        protected ICriteria GetCriteria() {
+        protected ICriteria GetCriteria()
+        {
             ICriteria retVal = Sess.CreateCriteria(_NHEntityType);
             if (DefaultCacheable)
+            {
                 retVal.SetCacheable(DefaultCacheable).SetCacheRegion(DefaultCacheRegion);
+            }
             return retVal;
         }
 
@@ -372,7 +419,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Create a Criteria instance of the Type
         /// </summary>
         /// <returns></returns>
-        protected ICriteria GetCriteria(string alias) {
+        protected ICriteria GetCriteria(string alias)
+        {
             return Sess.CreateCriteria(_NHEntityType, alias);
         }
 
@@ -381,14 +429,21 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="sortExpression"></param>
         /// <returns></returns>
-        protected Order ParseOrder(string sortExpression) {
+        protected Order ParseOrder(string sortExpression)
+        {
             if (String.IsNullOrEmpty(sortExpression))
+            {
                 return DefaultOrder;
+            }
             string[] s = sortExpression.Split(' ');
             if (s.Length == 1)
+            {
                 return new Order(s[0], true);
+            }
             else
+            {
                 return new Order(s[0], s[1] == "ASC");
+            }
         }
 
         /// <summary>
@@ -398,10 +453,13 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="startRow"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        protected static IList<ReturnT> PagedQuery(IQuery q, int startRow, int pageSize) {
+        protected static IList<ReturnT> PagedQuery(IQuery q, int startRow, int pageSize)
+        {
             q.SetFirstResult(startRow);
             if (pageSize > 0)
+            {
                 q.SetMaxResults(pageSize);
+            }
             return q.List<ReturnT>();
         }
 
@@ -412,10 +470,13 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="pageSize"></param>
         /// <param name="startRow"></param>
         /// <returns></returns>
-        private static IList<ReturnT> PagedCriteria(ICriteria c, int pageSize, int startRow) {
+        private static IList<ReturnT> PagedCriteria(ICriteria c, int pageSize, int startRow)
+        {
             c.SetFirstResult(startRow);
             if (pageSize > 0)
+            {
                 c.SetMaxResults(pageSize);
+            }
             return c.List<ReturnT>();
         }
 
@@ -426,10 +487,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <returns></returns>
         /// <remarks>if it's invalid return the default sort expression
         /// </remarks>
-        protected string EnsureSortExpression(string sortExpression) {
-            return string.IsNullOrEmpty(sortExpression)
-                       ? DefaultSortExpression
-                       : sortExpression;
+        protected string EnsureSortExpression(string sortExpression)
+        {
+            return string.IsNullOrEmpty(sortExpression) ? DefaultSortExpression : sortExpression;
         }
     }
 }

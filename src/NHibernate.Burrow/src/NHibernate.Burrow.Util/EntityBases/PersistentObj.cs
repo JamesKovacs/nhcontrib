@@ -6,11 +6,13 @@
 using System;
 using NHibernate.Burrow.Util.DAOBases;
 
-namespace NHibernate.Burrow.Util.EntityBases {
+namespace NHibernate.Burrow.Util.EntityBases
+{
     /// <summary>
     /// Targeted to be the standard PersistentObj
     /// </summary>
-    public abstract class PersistentObj : ObjWithIdNBizKeyBase {
+    public abstract class PersistentObj : ObjWithIdNBizKeyBase
+    {
         /// <summary>
         /// a helper for inheritance to perform DAO functions
         /// </summary>
@@ -19,7 +21,8 @@ namespace NHibernate.Burrow.Util.EntityBases {
         /// <summary>
         /// 
         /// </summary>
-        public PersistentObj() {
+        public PersistentObj()
+        {
             dao = new ObjectDAOHelper(this);
             dao.PreDeleted += new EventHandler(OnPreDeleted);
         }

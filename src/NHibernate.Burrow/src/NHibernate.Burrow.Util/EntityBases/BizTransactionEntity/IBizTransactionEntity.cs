@@ -1,6 +1,7 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
+namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity
+{
     /// <summary>
     /// an interface for entity that can be persisted temporarily for Biz transaction purpose.
     /// These entities needs to be deleted when the biz transaction times out without commit.
@@ -9,7 +10,8 @@ namespace NHibernate.Burrow.Util.EntityBases.BizTransactionEntity {
     /// Some transaction Entity can be temporarily saved in the Database to support business transaction which span over seperate requests.
     /// This is a very simple solution to support business transaction without true transaction management support. 
     /// </remarks>
-    public interface IBizTransactionEntity {
+    public interface IBizTransactionEntity
+    {
         /// <summary>
         /// Gets if the related Biz transaction is successfully commit. 
         /// </summary>

@@ -1,10 +1,10 @@
-using NHibernate.Burrow;
-
-namespace NHibernate.Burrow.Util.AuditLog {
+namespace NHibernate.Burrow.Util.AuditLog
+{
     /// <summary>
     /// Factory of IInterceptor
     /// </summary>
-    public class AuditLogInterceptorFactory : IInterceptorFactory {
+    public class AuditLogInterceptorFactory : IInterceptorFactory
+    {
         private static readonly AuditLogInterceptorFactory instance = new AuditLogInterceptorFactory();
 
         private AuditLogInterceptorFactory() {}
@@ -12,7 +12,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// <summary>
         /// Gets the singleton instance 
         /// </summary>
-        public static AuditLogInterceptorFactory Instance {
+        public static AuditLogInterceptorFactory Instance
+        {
             get { return instance; }
         }
 
@@ -22,7 +23,8 @@ namespace NHibernate.Burrow.Util.AuditLog {
         /// Create the Interceptor
         /// </summary>
         /// <returns></returns>
-        public IInterceptor Create() {
+        public IInterceptor Create()
+        {
             return new AuditLogInterceptor();
         }
 

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
-using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.Util
 {
@@ -14,38 +13,8 @@ namespace NHibernate.Burrow.Util
     /// <remarks> 
     /// it's now only used for the DomainSession Instance
     /// </remarks>
-    public class AssemblyDataContainer {
-        /// <summary>
-        /// The domain assembly the current context is using.
-        /// </summary>
-        public static Assembly CurrentDomainAssembly
-        {
-            get
-            {
-               
-
-                foreach (StackFrame s in new StackTrace().GetFrames())
-                {
-                    Assembly a = Assembly.GetAssembly(s.GetMethod().DeclaringType);
-                    if (VerifyAssemly(a))
-                        return a;
-                }
-                throw new Exception(
-                    "There are multilple domain assembly in the config Settings,"
-                    + " none of them is callling this");
-            }
-        }
-
-
-        private static bool VerifyAssemly(Assembly a)
-        {
-            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
-                if (unit.DomainLayerAssemblies.Contains(a))
-                    return true;
-            return false;
-        }
-
-
+    public class AssemblyDataContainer
+    {
         private const string DIVIDER = "_:_";
         private static readonly object lockObj = new object();
 
@@ -53,11 +22,45 @@ namespace NHibernate.Burrow.Util
 
         [ThreadStatic] private static IDictionary<string, object> threadData = new Dictionary<string, object>();
 
-        private static string ComposeKey(string key) {
+        /// <summary>
+        /// The domain assembly the current context is using.
+        /// </summary>
+        public static Assembly CurrentDomainAssembly
+        {
+            get
+            {
+                foreach (StackFrame s in new StackTrace().GetFrames())
+                {
+                    Assembly a = Assembly.GetAssembly(s.GetMethod().DeclaringType);
+                    if (VerifyAssemly(a))
+                    {
+                        return a;
+                    }
+                }
+                throw new Exception("There are multilple domain assembly in the config Settings,"
+                                    + " none of them is callling this");
+            }
+        }
+
+        private static bool VerifyAssemly(Assembly a)
+        {
+            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
+            {
+                if (unit.DomainLayerAssemblies.Contains(a))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static string ComposeKey(string key)
+        {
             return ComposeKey(key, CurrentDomainAssembly);
         }
 
-        private static string ComposeKey(string key, Assembly a) {
+        private static string ComposeKey(string key, Assembly a)
+        {
             return a.GetName().Name + DIVIDER + key;
         }
 
@@ -67,7 +70,8 @@ namespace NHibernate.Burrow.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static T GetCallStackData<T>(string key) {
+        public static T GetCallStackData<T>(string key)
+        {
             return (T) CallContext.GetData(key);
         }
 
@@ -76,7 +80,8 @@ namespace NHibernate.Burrow.Util
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public static void SetCallStackData(string key, object value) {
+        public static void SetCallStackData(string key, object value)
+        {
             CallContext.SetData(key, value);
         }
 
@@ -86,11 +91,16 @@ namespace NHibernate.Burrow.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static T GetHttpSessionData<T>(string key) where T : class {
+        public static T GetHttpSessionData<T>(string key) where T : class
+        {
             if (HttpContext.Current == null)
+            {
                 return null;
+            }
             if (HttpContext.Current.Session == null)
+            {
                 throw new Exception("HttpSession must be initialized before GetHttpSessionData can be called");
+            }
             return (T) HttpContext.Current.Session[ComposeKey(key)];
         }
 
@@ -100,11 +110,16 @@ namespace NHibernate.Burrow.Util
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns>fasle if the there is no current HTTP application</returns>
-        public static bool SetHttpSessionData(string key, object value) {
+        public static bool SetHttpSessionData(string key, object value)
+        {
             if (HttpContext.Current == null)
+            {
                 return false;
+            }
             if (HttpContext.Current.Session == null)
+            {
                 throw new Exception("HttpSession must be initialized before SetHttpSessionData can be called");
+            }
             HttpContext.Current.Session[ComposeKey(key)] = value;
             return true;
         }
@@ -116,12 +131,18 @@ namespace NHibernate.Burrow.Util
         /// <param name="key"></param>
         /// <param name="callerType"></param>
         /// <returns></returns>
-        public static T GetThreadStaticData<T>(string key, System.Type callerType) where T : class {
-            if (threadData == null) return null;
+        public static T GetThreadStaticData<T>(string key, System.Type callerType) where T : class
+        {
+            if (threadData == null)
+            {
+                return null;
+            }
             string compositeKey = callerType + DIVIDER + ComposeKey(key);
 
             if (!threadData.Keys.Contains(compositeKey))
+            {
                 return null;
+            }
             return (T) threadData[compositeKey];
         }
 
@@ -131,9 +152,12 @@ namespace NHibernate.Burrow.Util
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="callerType"></param>
-        public static void SetThreadStaticData(string key, object value, System.Type callerType) {
+        public static void SetThreadStaticData(string key, object value, System.Type callerType)
+        {
             if (threadData == null)
+            {
                 return;
+            }
             threadData[callerType + DIVIDER + ComposeKey(key)] = value;
         }
 
@@ -144,12 +168,19 @@ namespace NHibernate.Burrow.Util
         /// <param name="key"></param>
         /// <param name="callerType"></param>
         /// <returns></returns>
-        public static T GetStaticData<T>(string key, System.Type callerType) where T : class {
-            lock (lockObj) {
-                if (staticData == null) return null;
+        public static T GetStaticData<T>(string key, System.Type callerType) where T : class
+        {
+            lock (lockObj)
+            {
+                if (staticData == null)
+                {
+                    return null;
+                }
                 string compositeKey = callerType + DIVIDER + ComposeKey(key);
                 if (!staticData.ContainsKey(compositeKey))
+                {
                     return null;
+                }
                 return (T) staticData[compositeKey];
             }
         }
@@ -160,8 +191,10 @@ namespace NHibernate.Burrow.Util
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="callerType"></param>
-        public static void SetStaticData(string key, object value, System.Type callerType) {
-            lock (lockObj) {
+        public static void SetStaticData(string key, object value, System.Type callerType)
+        {
+            lock (lockObj)
+            {
                 staticData[callerType + DIVIDER + ComposeKey(key)] = value;
             }
         }
