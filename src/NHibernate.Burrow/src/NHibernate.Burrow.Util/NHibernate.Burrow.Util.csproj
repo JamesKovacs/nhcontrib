@@ -48,8 +48,6 @@
     <Compile Include="AuditLog\AuditLogInterceptorFactory.cs" />
     <Compile Include="AuditLog\AuditLogRecord.cs" />
     <Compile Include="AuditLog\AuditLogRecordDAO.cs" />
-    <Compile Include="Criterions\Criterion.cs" />
-    <Compile Include="Criterions\EqOrNullExpression.cs" />
     <Compile Include="DAOBases\GenericDAO.cs" />
     <Compile Include="DAOBases\IObjectDAOHelper.cs" />
     <Compile Include="DAOBases\ObjectDAOHelper.cs" />
@@ -62,13 +60,6 @@
     <Compile Include="DomainSession\IDomainSessionFactory.cs" />
     <Compile Include="DomainSession\IHasUserId.cs" />
     <Compile Include="DomainSession\WebAppAutoDomainSessionContainer.cs" />
-    <Compile Include="DynQuery\From.cs" />
-    <Compile Include="DynQuery\IDynClause.cs" />
-    <Compile Include="DynQuery\IQueryPart.cs" />
-    <Compile Include="DynQuery\LogicalExpression.cs" />
-    <Compile Include="DynQuery\OrderBy.cs" />
-    <Compile Include="DynQuery\Select.cs" />
-    <Compile Include="DynQuery\Where.cs" />
     <Compile Include="EntityBases\BizTransactionEntity\BizTransactionEntityDAOBase.cs" />
     <Compile Include="EntityBases\BizTransactionEntity\IBizTransactionEntity.cs" />
     <Compile Include="EntityBases\IPersistantObjSaveDelete.cs" />
@@ -85,9 +76,6 @@
     <Compile Include="EntityBases\PersistentObjSimple.cs" />
     <Compile Include="DAOBases\EntityLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\Cloner.cs" />
-    <Compile Include="Transform\PositionalToBeanResultTransformer.cs" />
-    <Compile Include="UserTypes\UpperString.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
