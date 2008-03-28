@@ -63,9 +63,6 @@
     <Compile Include="DebugConnectionProvider.cs" />
     <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
     <Compile Include="DynamicQuery\DynQueryFixture.cs" />
-    <Compile Include="Hql\AstBuilderFixture.cs" />
-    <Compile Include="Hql\EngineFixture.cs" />
-    <Compile Include="Hql\QueryTranslatorFixture.cs" />
     <Compile Include="Pagination\BasePaginatorFixture.cs" />
     <Compile Include="Pagination\Foo.cs" />
     <Compile Include="Pagination\NamedQueryRowsCounterFixture.cs" />

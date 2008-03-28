@@ -28,10 +28,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GoldParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\GoldParser.dll</HintPath>
-    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\net\2.0\Iesi.Collections.dll</HintPath>
@@ -97,41 +93,6 @@
     <Compile Include="GenericImpl\PaginableCriteria.cs" />
     <Compile Include="GenericImpl\PaginableQuery.cs" />
     <Compile Include="GenericImpl\PaginableRowsCounterQuery.cs" />
-    <Compile Include="Hql\Gold\AstBuilder.cs" />
-    <Compile Include="Hql\Gold\AST\AstException.cs" />
-    <Compile Include="Hql\Gold\AST\BetweenOperator.cs" />
-    <Compile Include="Hql\Gold\AST\BinaryArithmeticOperator.cs" />
-    <Compile Include="Hql\Gold\AST\BinaryLogicOperator.cs" />
-    <Compile Include="Hql\Gold\AST\BinaryOperator.cs" />
-    <Compile Include="Hql\Gold\AST\DeleteStatement.cs" />
-    <Compile Include="Hql\Gold\AST\FromClause.cs" />
-    <Compile Include="Hql\Gold\AST\FromElement.cs" />
-    <Compile Include="Hql\Gold\AST\Identifier.cs" />
-    <Compile Include="Hql\Gold\AST\IntValue.cs" />
-    <Compile Include="Hql\Gold\AST\IOperator.cs" />
-    <Compile Include="Hql\Gold\AST\IsNullOperator.cs" />
-    <Compile Include="Hql\Gold\AST\IStatement.cs" />
-    <Compile Include="Hql\Gold\AST\LiteralNode.cs" />
-    <Compile Include="Hql\Gold\AST\NegateOperator.cs" />
-    <Compile Include="Hql\Gold\AST\Node.cs" />
-    <Compile Include="Hql\Gold\AST\NodeFactories\ComplexStringFactory.cs" />
-    <Compile Include="Hql\Gold\AST\NodeFactories\IgnoreRootNodeFactory.cs" />
-    <Compile Include="Hql\Gold\AST\NodeFactories\PredicateFactory.cs" />
-    <Compile Include="Hql\Gold\AST\NodeFactories\PropertyFactory.cs" />
-    <Compile Include="Hql\Gold\AST\NodeFactory.cs" />
-    <Compile Include="Hql\Gold\AST\NotOperator.cs" />
-    <Compile Include="Hql\Gold\AST\Parameter.cs" />
-    <Compile Include="Hql\Gold\AST\Property.cs" />
-    <Compile Include="Hql\Gold\AST\ReductionsHelper.cs" />
-    <Compile Include="Hql\Gold\AST\SelectClause.cs" />
-    <Compile Include="Hql\Gold\AST\SelectStatement.cs" />
-    <Compile Include="Hql\Gold\AST\TerminalNode.cs" />
-    <Compile Include="Hql\Gold\AST\Tuple.cs" />
-    <Compile Include="Hql\Gold\AST\UnaryOperator.cs" />
-    <Compile Include="Hql\Gold\AST\WhereClause.cs" />
-    <Compile Include="Hql\Gold\HqlParser.cs" />
-    <Compile Include="Hql\Gold\QueryTranslator.cs" />
-    <Compile Include="Hql\Gold\QueryTranslatorFactory.cs" />
     <Compile Include="Pagination\AbstractPaginableCriteria.cs" />
     <Compile Include="Pagination\AbstractPaginableQuery.cs" />
     <Compile Include="Pagination\AbstractPaginableRowsCounterQuery.cs" />
@@ -148,10 +109,6 @@
     <Compile Include="Serialization\Cloner.cs" />
     <Compile Include="Transform\PositionalToBeanResultTransformer.cs" />
     <Compile Include="UserTypes\UpperString.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Hql\Gold\Grammar\Grammar.cgt" />
-    <EmbeddedResource Include="Hql\Gold\Grammar\Grammar.grm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
