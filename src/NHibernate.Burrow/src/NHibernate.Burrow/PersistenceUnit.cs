@@ -18,15 +18,14 @@ namespace NHibernate.Burrow
         private readonly ISet<Assembly> domainLayerAssemblies = new HashedSet<Assembly>();
         private readonly IInterceptorFactory interceptorFactory;
         private readonly Cfg.Configuration nHConfiguration;
-        private readonly ISessionFactory sessionFactory;
+        private ISessionFactory sessionFactory;
         private readonly SessionManager sessionManager;
 
         internal PersistenceUnit(PersistenceUnitElement cfg)
         {
             configuration = cfg;
-
             nHConfiguration = CreateNHConfiguration();
-            sessionFactory = nHConfiguration.BuildSessionFactory();
+            ReBuildSessionfactory();
             //Temporarily removed auditLog before we decided whether it should stay in Burrow
             //if (Configuration.EnableAuditLog)
             //    interceptorFactory = AuditLogInterceptorFactory.Instance;
@@ -74,7 +73,16 @@ namespace NHibernate.Burrow
             get { return sessionManager; }
         }
 
-        
+        /// <summary>
+        /// Rebuild the Session factory
+        /// </summary>
+        /// <remarks>
+        /// in case you need to change the NHConfiguration on the fly
+        /// </remarks>
+        public void ReBuildSessionfactory()
+        {
+            sessionFactory = nHConfiguration.BuildSessionFactory();
+        }
      
 
         internal ISessionFactory SessionFactory

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+This template was written to work with NHibernate.Test.
+Copy the template to your uNhAddIns.Test project folder and rename it in hibernate.cfg.xml and change it 
+for your own use before compile tests in VisualStudio.
+-->
+<hibernate-configuration  xmlns="urn:nhibernate-configuration-2.2" >
+	<session-factory name="NHibernate.Test">
+		<property name="connection.driver_class">NHibernate.Driver.NpgsqlDriver</property>
+		<property name="connection.connection_string">
+			Server=localhost;initial catalog=uNhAddIns;User ID=uNhAddIns;Password=uNhAddIns;
+		</property>
+		<property name="dialect">NHibernate.Dialect.PostgreSQLDialect</property>
+
+		<!-- Only for tests-->
+		<property name="query.startup_check">false</property>
+	</session-factory>
+</hibernate-configuration>

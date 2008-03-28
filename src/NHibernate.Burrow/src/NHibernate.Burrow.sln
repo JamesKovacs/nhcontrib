@@ -52,6 +52,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.Te
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util.Test", "NHibernate.Burrow.Util.Test\NHibernate.Burrow.Util.Test.csproj", "{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -122,6 +128,16 @@ Global
 		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Any CPU.ActiveCfg = Debug|.NET
 		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
 		{18403445-C779-482B-82A3-D6982CA7E5E4}.Release|Mixed Platforms.Build.0 = Debug|.NET
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|.NET.ActiveCfg = Release|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

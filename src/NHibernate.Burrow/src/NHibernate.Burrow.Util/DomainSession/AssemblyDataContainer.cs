@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 
-namespace NHibernate.Burrow.Util
+namespace NHibernate.Burrow.Util.DomainSession
 {
     /// <summary>
     /// this helper class help to organize static and container data for multiple domain Assemblies

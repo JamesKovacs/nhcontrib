@@ -1,0 +1,163 @@
+"Name"     = 'HQL'
+"Author"   = 'NHibernate Team'
+"Version"  = '1.0'
+"About"    = 'NHibernate Query Language'
+
+"Start Symbol" = <Query>
+
+!!! SETS
+
+{ID Head}      = {Letter} + [_]
+{ID Tail}      = {Alphanumeric} + [_]
+{String Ch 1}  = {Printable} - ["]
+{String Ch 2}  = {Printable} - ['']
+
+
+!!! TERMINALS
+
+Identifier   = {ID Head}{ID Tail}*
+
+Operator     = '=' | '<>' | '!=' | '>' | '>=' | '<' | '<='
+
+IntValue     = {Number}+
+FloatValue   = {Number}+'.'{Number}+
+StringLiteral= '"'{String Ch 1}*'"' | ''{String Ch 2}*''
+
+!!! COMMON NON TERMINALS
+
+<Property>          ::= Identifier
+                    | <Property> '.' Identifier
+
+<Column>            ::= <Property>
+                   ! | <FunctionCall>
+
+<ColumnList>      ::= <ColumnList> ',' <Column>
+                    | <Column>
+
+!!!!!!!!!!!! MAIN PROGRAM !!!!!!!!!!!!!
+
+<Query> ::= <SelectQuery>
+        | <DeleteQuery>
+        |
+
+
+!***************** VALID STATMENTS *****************!
+!!!!!!!! SELECT
+<SelectQuery> ::= <SelectClause> <QueryLogic>
+              | <QueryLogic>
+
+
+<SelectClause> ::= select <ColumnList>
+               | select <SelectFilter> <ColumnList>
+
+<SelectFilter> ::= top IntValue
+               | distinct
+               | all
+
+<QueryLogic>   ::= <FromClause>
+               | <FromClause> <WhereClause>
+
+<FromClause>   ::= from <EntityList>                 ! Simplest version
+
+!!!!!!! DELETE
+<DeleteQuery> ::= delete from Identifier
+              | delete from Identifier <WhereClause>
+
+
+!!!!!! FROM CLAUSE
+
+<EntityList>        ::= <EntityList> ',' <EntityDeclaration>
+                   | <EntityDeclaration>
+                   
+<EntityDeclaration> ::= <Property>
+                   | <Property> Identifier
+                   | <Property> as Identifier
+                   | Identifier in class <Property>
+                   
+                   
+!!!!!! WHERE CLAUSE
+
+<WhereClause>  ::= where <ExpOr>
+
+! =============================================================================
+! Expressions
+! =============================================================================
+
+
+<ExpOr>         ::= <ExpAnd> or <ExpOr>
+                | <ExpAnd>
+
+<ExpAnd>        ::= <ExpNot> and <ExpAnd>
+                | <ExpNot>
+
+<ExpNot>        ::= not <Predicate>
+                | <Predicate>
+                
+<Predicate>     ::= <ExpAdd> between <ExpAdd> and <ExpAdd>
+                | <ExpAdd> not between <ExpAdd> and <ExpAdd>
+                | <Value> is not null                        !! REVIEW!
+                | <Value> is null
+                | <ExpAdd> like <ComplexString>
+                | <ExpAdd> not like <ComplexString>
+                | <ExpAdd> in  <Tuple>
+                | <ExpAdd> not in  <Tuple>
+                | <ExpAdd> Operator <ExpAdd>
+                | '(' <ExpOr> ')'
+
+<ExpAdd>        ::= <ExpAdd> '+' <ExpMultiply>
+                | <ExpAdd> '-' <ExpMultiply>
+                | <ExpMultiply>
+
+<ExpMultiply>   ::= <ExpMultiply> '*' <ExpNegate>
+                | <ExpMultiply> '/' <ExpNegate>
+                | <ExpNegate>
+
+<ExpNegate>     ::= '-' <Value>
+                | <Value>
+
+<Value>         ::= '(' <SelectQuery> ')'                !!<Tuple>
+            !    | <Property>
+                | IntValue
+                | FloatValue
+                | <ComplexString>
+                | <Parameter>
+                | NULL
+
+<ComplexString>  ::= '(' <ComplexString> ')'
+                 | <ComplexString> '+' <ComplexString>
+                | StringLiteral
+                | <Property>
+                
+<Parameter>     ::= '?'
+                | ':' Identifier
+
+<Tuple>         ::= '(' <SelectQuery> ')'
+                | '(' <ConstantList> ')'
+
+<ConstantList>  ::= <ConstantList> ',' <Value>
+                | <Value>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

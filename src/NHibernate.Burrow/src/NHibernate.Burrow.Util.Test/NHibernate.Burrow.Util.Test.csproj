@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D2954D0B-C830-417B-A0D4-70AD81043B71}</ProjectGuid>
+    <ProjectGuid>{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NHibernate.Burrow.Test</RootNamespace>
-    <AssemblyName>NHibernate.Burrow.Test</AssemblyName>
+    <RootNamespace>NHibernate.Burrow.Util.Test</RootNamespace>
+    <AssemblyName>NHibernate.Burrow.Util.Test</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -17,25 +17,17 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>3</WarningLevel>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
     <Reference Include="GoldParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\GoldParser.dll</HintPath>
@@ -61,60 +53,56 @@
       <HintPath>..\..\..\..\lib\net\2.0\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuditLogTest\AuditLogTest.cs" />
-    <Compile Include="BooDomainSession.cs" />
-    <Compile Include="BooDomainSessionFactory.cs" />
-    <Compile Include="ConfigurationTests\ConfigReadWriteFixture.cs" />
-    <Compile Include="ConverstationTests\ConversationalDataFixture.cs" />
-    <Compile Include="ConverstationTests\ConversationManagementFixture.cs" />
-    <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
-    <Compile Include="PersistenceTests\HashIdMockClass.cs" />
-    <Compile Include="MockEntities\MockEntity.cs" />
-    <Compile Include="PersistenceTests\MockEntityDAO.cs" />
-    <Compile Include="PersistenceTests\PersistantTests.cs" />
+    <Compile Include="aReposEmul\GenericNHibernateDAO.cs" />
+    <Compile Include="CriterionTest\CriterionTest.cs" />
+    <Compile Include="CriterionTest\Simple.cs" />
+    <Compile Include="DebugConnectionProvider.cs" />
+    <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
+    <Compile Include="DynamicQuery\DynQueryFixture.cs" />
+    <Compile Include="Hql\AstBuilderFixture.cs" />
+    <Compile Include="Hql\EngineFixture.cs" />
+    <Compile Include="Hql\QueryTranslatorFixture.cs" />
+    <Compile Include="Pagination\BasePaginatorFixture.cs" />
+    <Compile Include="Pagination\Foo.cs" />
+    <Compile Include="Pagination\NamedQueryRowsCounterFixture.cs" />
+    <Compile Include="Pagination\NoFoo.cs" />
+    <Compile Include="Pagination\NoFooPaginable.cs" />
+    <Compile Include="Pagination\PaginableCriteriaFixture.cs" />
+    <Compile Include="Pagination\PaginableQueryFixture.cs" />
+    <Compile Include="Pagination\PaginatorFixture.cs" />
+    <Compile Include="Pagination\QueryRowsCounterFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionManagerTest\GetSessionConcurencyTest.cs" />
-    <Compile Include="SpecialTests\CreateDB.cs" />
+    <Compile Include="Serialization\ClonerFixture.cs" />
+    <Compile Include="Serialization\Foo.cs" />
+    <Compile Include="Serialization\FooChild.cs" />
+    <Compile Include="TestCase.cs" />
+    <Compile Include="Transform\PosToBeanResultTransformer.cs" />
+    <Compile Include="UserTypes\Foo.cs" />
+    <Compile Include="UserTypes\UpperStringFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Burrow.TestUtil\NHibernate.Burrow.TestUtil.csproj">
-      <Project>{32112377-D3FC-4A1C-8C90-BBDFF166ED3B}</Project>
-      <Name>NHibernate.Burrow.TestUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj">
       <Project>{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}</Project>
       <Name>NHibernate.Burrow.Util</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
-      <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
-      <Name>NHibernate.Burrow</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MockEntities\MockEntity.hbm.xml" />
+    <EmbeddedResource Include="CriterionTest\Simple.hbm.xml" />
+    <EmbeddedResource Include="Pagination\PagTest.hbm.xml" />
+    <EmbeddedResource Include="UserTypes\UpperStringMappings.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AuditLogTest\AuditLogRecord.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="PersistenceTests\HashIdMockClass.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BurrowTest.cfg.xml.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UtilTests\" />
+    <None Include="App.config" />
+    <None Include="ConfigurationTemplates\FireBird.cfg.xml.tmpl" />
+    <None Include="ConfigurationTemplates\MSSQL.cfg.xml.tmpl" />
+    <None Include="ConfigurationTemplates\MySql.cfg.xml.tmpl" />
+    <None Include="ConfigurationTemplates\Oracle.cfg.xml.tmpl" />
+    <None Include="ConfigurationTemplates\PostgreSQL.cfg.xml.tmpl" />
+    <None Include="ConfigurationTemplates\SQLite.cfg.xml.tmpl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -125,9 +113,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if exist BurrowTest.cfg.xml (del BurrowTest.cfg.xml)
-if not exist "$(ProjectDir)BurrowTest.cfg.xml" (copy "$(ProjectDir)BurrowTest.cfg.xml.template" "$(ProjectDir)BurrowTest.cfg.xml")
-if exist "$(ProjectDir)BurrowTest.cfg.xml" (copy "$(ProjectDir)BurrowTest.cfg.xml" "BurrowTest.cfg.xml")
-</PostBuildEvent>
+    <PostBuildEvent>if exist hibernate.cfg.xml (del hibernate.cfg.xml)
+if exist "$(ProjectDir)hibernate.cfg.xml" (copy "$(ProjectDir)hibernate.cfg.xml" "hibernate.cfg.xml")</PostBuildEvent>
   </PropertyGroup>
 </Project>

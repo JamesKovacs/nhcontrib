@@ -28,9 +28,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GoldParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\GoldParser.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\net\2.0\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\net\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=2.0.0.1001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -42,7 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyDataContainer.cs" />
+    <Compile Include="Criterions\Criterion.cs" />
+    <Compile Include="Criterions\EqOrNullExpression.cs" />
+    <Compile Include="DomainSession\AssemblyDataContainer.cs" />
     <Compile Include="AuditLog\Actions.cs" />
     <Compile Include="AuditLog\AuditLogInterceptor.cs" />
     <Compile Include="AuditLog\AuditLogInterceptorFactory.cs" />
@@ -60,6 +70,15 @@
     <Compile Include="DomainSession\IDomainSessionFactory.cs" />
     <Compile Include="DomainSession\IHasUserId.cs" />
     <Compile Include="DomainSession\WebAppAutoDomainSessionContainer.cs" />
+    <Compile Include="DynQuery\DetachedDynQuery.cs" />
+    <Compile Include="DynQuery\From.cs" />
+    <Compile Include="DynQuery\IDynClause.cs" />
+    <Compile Include="DynQuery\IQueryPart.cs" />
+    <Compile Include="DynQuery\LogicalExpression.cs" />
+    <Compile Include="DynQuery\OrderBy.cs" />
+    <Compile Include="DynQuery\PaginableDynQuery.cs" />
+    <Compile Include="DynQuery\Select.cs" />
+    <Compile Include="DynQuery\Where.cs" />
     <Compile Include="EntityBases\BizTransactionEntity\BizTransactionEntityDAOBase.cs" />
     <Compile Include="EntityBases\BizTransactionEntity\IBizTransactionEntity.cs" />
     <Compile Include="EntityBases\IPersistantObjSaveDelete.cs" />
@@ -75,7 +94,64 @@
     <Compile Include="EntityBases\PersistantObjSaveDeleteSimple.cs" />
     <Compile Include="EntityBases\PersistentObjSimple.cs" />
     <Compile Include="DAOBases\EntityLoader.cs" />
+    <Compile Include="GenericImpl\PaginableCriteria.cs" />
+    <Compile Include="GenericImpl\PaginableQuery.cs" />
+    <Compile Include="GenericImpl\PaginableRowsCounterQuery.cs" />
+    <Compile Include="Hql\Gold\AstBuilder.cs" />
+    <Compile Include="Hql\Gold\AST\AstException.cs" />
+    <Compile Include="Hql\Gold\AST\BetweenOperator.cs" />
+    <Compile Include="Hql\Gold\AST\BinaryArithmeticOperator.cs" />
+    <Compile Include="Hql\Gold\AST\BinaryLogicOperator.cs" />
+    <Compile Include="Hql\Gold\AST\BinaryOperator.cs" />
+    <Compile Include="Hql\Gold\AST\DeleteStatement.cs" />
+    <Compile Include="Hql\Gold\AST\FromClause.cs" />
+    <Compile Include="Hql\Gold\AST\FromElement.cs" />
+    <Compile Include="Hql\Gold\AST\Identifier.cs" />
+    <Compile Include="Hql\Gold\AST\IntValue.cs" />
+    <Compile Include="Hql\Gold\AST\IOperator.cs" />
+    <Compile Include="Hql\Gold\AST\IsNullOperator.cs" />
+    <Compile Include="Hql\Gold\AST\IStatement.cs" />
+    <Compile Include="Hql\Gold\AST\LiteralNode.cs" />
+    <Compile Include="Hql\Gold\AST\NegateOperator.cs" />
+    <Compile Include="Hql\Gold\AST\Node.cs" />
+    <Compile Include="Hql\Gold\AST\NodeFactories\ComplexStringFactory.cs" />
+    <Compile Include="Hql\Gold\AST\NodeFactories\IgnoreRootNodeFactory.cs" />
+    <Compile Include="Hql\Gold\AST\NodeFactories\PredicateFactory.cs" />
+    <Compile Include="Hql\Gold\AST\NodeFactories\PropertyFactory.cs" />
+    <Compile Include="Hql\Gold\AST\NodeFactory.cs" />
+    <Compile Include="Hql\Gold\AST\NotOperator.cs" />
+    <Compile Include="Hql\Gold\AST\Parameter.cs" />
+    <Compile Include="Hql\Gold\AST\Property.cs" />
+    <Compile Include="Hql\Gold\AST\ReductionsHelper.cs" />
+    <Compile Include="Hql\Gold\AST\SelectClause.cs" />
+    <Compile Include="Hql\Gold\AST\SelectStatement.cs" />
+    <Compile Include="Hql\Gold\AST\TerminalNode.cs" />
+    <Compile Include="Hql\Gold\AST\Tuple.cs" />
+    <Compile Include="Hql\Gold\AST\UnaryOperator.cs" />
+    <Compile Include="Hql\Gold\AST\WhereClause.cs" />
+    <Compile Include="Hql\Gold\HqlParser.cs" />
+    <Compile Include="Hql\Gold\QueryTranslator.cs" />
+    <Compile Include="Hql\Gold\QueryTranslatorFactory.cs" />
+    <Compile Include="Pagination\AbstractPaginableCriteria.cs" />
+    <Compile Include="Pagination\AbstractPaginableQuery.cs" />
+    <Compile Include="Pagination\AbstractPaginableRowsCounterQuery.cs" />
+    <Compile Include="Pagination\AbstractRowsCounter.cs" />
+    <Compile Include="Pagination\BasePaginator.cs" />
+    <Compile Include="Pagination\IPageProvider.cs" />
+    <Compile Include="Pagination\IPaginable.cs" />
+    <Compile Include="Pagination\IPaginator.cs" />
+    <Compile Include="Pagination\IRowsCounter.cs" />
+    <Compile Include="Pagination\NamedQueryRowsCounter.cs" />
+    <Compile Include="Pagination\Paginator.cs" />
+    <Compile Include="Pagination\QueryRowsCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\Cloner.cs" />
+    <Compile Include="Transform\PositionalToBeanResultTransformer.cs" />
+    <Compile Include="UserTypes\UpperString.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Hql\Gold\Grammar\Grammar.cgt" />
+    <EmbeddedResource Include="Hql\Gold\Grammar\Grammar.grm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
