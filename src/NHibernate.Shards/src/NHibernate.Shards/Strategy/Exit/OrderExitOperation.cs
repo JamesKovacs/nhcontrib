@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using NHibernate.Expressions;
+using NHibernate.Criterion;
+
 using NHibernate.Shards.Util;
 
 namespace NHibernate.Shards.Strategy.Exit

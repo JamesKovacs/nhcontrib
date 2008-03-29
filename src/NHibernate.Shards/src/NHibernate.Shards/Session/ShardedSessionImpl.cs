@@ -632,6 +632,11 @@ namespace NHibernate.Shards.Session
 			throw new NotImplementedException();
 		}
 
+		public void SaveOrUpdate(string entityName, object obj)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// Update the persistent instance with the identifier of the given transient instance.
 		/// </summary>
@@ -655,6 +660,31 @@ namespace NHibernate.Shards.Session
 		/// <param name="obj">A transient instance containing updated state</param>
 		/// <param name="id">Identifier of persistent instance</param>
 		public void Update(object obj, object id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Update(string entityName, object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public object Merge(object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public object Merge(string entityName, object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Persist(object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Persist(string entityName, object obj)
 		{
 			throw new NotImplementedException();
 		}
@@ -905,6 +935,11 @@ namespace NHibernate.Shards.Session
 			throw new NotImplementedException();
 		}
 
+		public void Lock(string entityName, object obj, LockMode lockMode)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// Re-read the state of the given instance from the underlying database.
 		/// </summary>
@@ -1115,6 +1150,11 @@ namespace NHibernate.Shards.Session
 			throw new NotImplementedException();
 		}
 
+		public object Get(string entityName, object id)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// Strongly-typed version of <see cref="ISession.Get(Type,object)" />
 		/// </summary>
@@ -1216,6 +1256,11 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		/// <returns></returns>
 		public IMultiCriteria CreateMultiCriteria()
+		{
+			throw new NotImplementedException();
+		}
+
+		public ISession GetSession(EntityMode entityMode)
 		{
 			throw new NotImplementedException();
 		}

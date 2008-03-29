@@ -12,6 +12,7 @@ using NHibernate.Context;
 using NHibernate.Dialect.Function;
 using NHibernate.Engine;
 using NHibernate.Engine.Query;
+using NHibernate.Exceptions;
 using NHibernate.Id;
 using NHibernate.Metadata;
 using NHibernate.Persister.Collection;
@@ -671,9 +672,9 @@ namespace NHibernate.Shards.Session
 		/// </summary>
 		/// <param name="clazz"></param>
 		/// <returns></returns>
-		public string[] GetImplementors(System.Type clazz)
+		public string[] GetImplementors(string className)
 		{
-			return AnyFactory.GetImplementors(clazz);
+			return AnyFactory.GetImplementors(className);
 		}
 
 		/// <summary>
@@ -769,6 +770,11 @@ namespace NHibernate.Shards.Session
 			get { throw new NotImplementedException(); }
 		}
 
+		public ISQLExceptionConverter SQLExceptionConverter
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public SQLFunctionRegistry SQLFunctionRegistry
 		{
 			get { return AnyFactory.SQLFunctionRegistry; }
@@ -793,6 +799,12 @@ namespace NHibernate.Shards.Session
 		public ISession OpenSession(IDbConnection connection, ConnectionReleaseMode connectionReleaseMode)
 		{
 			throw new NotSupportedException();
+		}
+
+		public ISession OpenSession(IDbConnection connection, bool flushBeforeCompletionEnabled, bool autoCloseSessionEnabled,
+		                            ConnectionReleaseMode connectionReleaseMode)
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary> 
