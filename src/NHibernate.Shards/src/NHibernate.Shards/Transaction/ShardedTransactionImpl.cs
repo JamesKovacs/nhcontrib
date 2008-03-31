@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using log4net;
+using NHibernate.Shards.Engine;
+using NHibernate.Shards.Session;
 
 namespace NHibernate.Shards.Transaction
 {
@@ -9,15 +11,33 @@ namespace NHibernate.Shards.Transaction
 	{
 		private readonly ILog log = LogManager.GetLogger(typeof (ShardedTransactionImpl));
 
-		private readonly List<ITransaction> transactions;
+		private readonly IList<ITransaction> transactions;
 
 		private bool begun;
 		private bool commitFailed;
 		private bool committed;
 		private bool rolledBack;
+
 		//private IList<Synchronization> synchronizations;
 		private int timeout;
 		private bool timeoutSet;
+
+		public ShardedTransactionImpl(IShardedSessionImplementor ssi)
+		{
+			IOpenSessionEvent osEvent = new SetupTransactionOpenSessionEvent(this);
+			transactions = new SynchronizedCollection<ITransaction>();
+			foreach (IShard shard in ssi.Shards)
+			{
+				if (shard.Session != null)
+				{
+					transactions.Add(shard.Session.Transaction);
+				}
+				else
+				{
+					shard.AddOpenSessionEvent(osEvent);
+				}
+			}
+		}
 
 		#region IShardedTransaction Members
 
@@ -29,26 +49,71 @@ namespace NHibernate.Shards.Transaction
 		/// <param name="session">The Session on which the Transaction should be setup</param>
 		public void SetupTransaction(ISession session)
 		{
-			throw new NotImplementedException();
+			log.Debug("Setting up transaction");
+			transactions.Add(session.Transaction);
+			if (begun)
+			{
+				session.BeginTransaction();
+			}
+			//TODO: Set Timeout
+			//if (timeoutSet)
+			//{
+			//    session.Transaction.SetTimeout(timeout);
+			//}
 		}
 
 		///<summary>
-		///
-		///            Begin the transaction with the default isolation level.
-		///            
-		///</summary>
-		///
+		/// Begin the transaction with the default isolation level.
+		/// </summary>
 		public void Begin()
 		{
-			throw new NotImplementedException();
+			if (begun)
+			{
+				return;
+			}
+			if (commitFailed)
+			{
+				throw new TransactionException("cannot re-start transaction after failed commit");
+			}
+			bool beginException = false;
+			foreach (ITransaction t in transactions)
+			{
+				try
+				{
+					t.Begin();
+				}
+				catch (HibernateException he)
+				{
+					log.Warn("exception starting underlying transaction", he);
+					beginException = true;
+				}
+			}
+			if (beginException)
+			{
+				foreach (ITransaction t in transactions)
+				{
+					if (t.IsActive)
+					{
+						try
+						{
+							t.Rollback();
+						}
+						catch (HibernateException he)
+						{
+							//What do we do?
+						}
+					}
+				}
+				throw new TransactionException("Begin failed");
+			}
+			begun = true;
+			committed = false;
+			rolledBack = false;
 		}
 
 		///<summary>
-		///
-		///            Begin the transaction with the specified isolation level.
-		///            
+		///Begin the transaction with the specified isolation level.
 		///</summary>
-		///
 		///<param name="isolationLevel">Isolation level of the transaction</param>
 		public void Begin(IsolationLevel isolationLevel)
 		{
@@ -152,5 +217,15 @@ namespace NHibernate.Shards.Transaction
 		}
 
 		#endregion
+
+		public void SetTimeout(int seconds)
+		{
+			//timeoutSet = true;
+			//timeout = seconds;
+			//foreach(Transaction t in transactions) 
+			//{
+			//    t.SetTimeout(timeout);
+			//}
+		}
 	}
 }
