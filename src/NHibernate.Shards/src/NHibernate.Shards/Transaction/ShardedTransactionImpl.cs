@@ -10,14 +10,11 @@ namespace NHibernate.Shards.Transaction
 	public class ShardedTransactionImpl : IShardedTransaction
 	{
 		private readonly ILog log = LogManager.GetLogger(typeof (ShardedTransactionImpl));
-
 		private readonly IList<ITransaction> transactions;
-
 		private bool begun;
 		private bool commitFailed;
 		private bool committed;
 		private bool rolledBack;
-
 		//private IList<Synchronization> synchronizations;
 		private int timeout;
 		private bool timeoutSet;
@@ -41,12 +38,6 @@ namespace NHibernate.Shards.Transaction
 
 		#region IShardedTransaction Members
 
-		/// <summary>
-		/// If a new Session is opened while ShardedTransaction exists, this method is
-		/// called with the Session as argument. Implementations should set up a
-		/// transaction for this session and sync it with ShardedTransaction
-		/// </summary>
-		/// <param name="session">The Session on which the Transaction should be setup</param>
 		public void SetupTransaction(ISession session)
 		{
 			log.Debug("Setting up transaction");
@@ -62,9 +53,6 @@ namespace NHibernate.Shards.Transaction
 			//}
 		}
 
-		///<summary>
-		/// Begin the transaction with the default isolation level.
-		/// </summary>
 		public void Begin()
 		{
 			if (begun)
@@ -111,112 +99,179 @@ namespace NHibernate.Shards.Transaction
 			rolledBack = false;
 		}
 
-		///<summary>
-		///Begin the transaction with the specified isolation level.
-		///</summary>
-		///<param name="isolationLevel">Isolation level of the transaction</param>
 		public void Begin(IsolationLevel isolationLevel)
 		{
 			throw new NotImplementedException();
 		}
 
-		///<summary>
-		///
-		///            Flush the associated 
-		///<c>ISession</c> and end the unit of work.
-		///            
-		///</summary>
-		///
-		///<remarks>
-		///
-		///            This method will commit the underlying transaction if and only if the transaction
-		///            was initiated by this object.
-		///            
-		///</remarks>
-		///
 		public void Commit()
 		{
-			throw new NotImplementedException();
+			if (!begun)
+			{
+				throw new TransactionException("Transaction not succesfully started");
+			}
+			log.Debug("Starting transaction commit");
+			BeforeTransactionCompletion();
+			bool commitException = false;
+			HibernateException firstCommitException = null;
+			foreach (ITransaction t in transactions)
+			{
+				try
+				{
+					t.Commit();
+				}
+				catch (HibernateException he)
+				{
+					log.Warn("exception commiting underlying transaction", he);
+					commitException = true;
+					// we're only going to rethrow the first commit exception we receive
+					if (firstCommitException == null)
+					{
+						firstCommitException = he;
+					}
+				}
+			}
+			if (commitException)
+			{
+				commitFailed = true;
+				//afterTransactionCompletion(Status.STATUS_UNKNOWN);
+				throw new TransactionException("Commit failed", firstCommitException);
+			}
+			//afterTransactionCompletion(Status.STATUS_COMMITTED);
+			committed = true;
 		}
 
-		///<summary>
-		///
-		///            Force the underlying transaction to roll back.
-		///            
-		///</summary>
-		///
 		public void Rollback()
 		{
-			throw new NotImplementedException();
+			if (!begun && !commitFailed)
+			{
+				throw new TransactionException("Transaction not successfully started");
+			}
+			bool rollbackException = false;
+			HibernateException firstRollbackException = null;
+			foreach (ITransaction t in transactions)
+			{
+				if (t.WasCommitted)
+				{
+					continue;
+				}
+				try
+				{
+					t.Rollback();
+				}
+				catch (HibernateException he)
+				{
+					log.Warn("exception rolling back underlying transaction", he);
+					rollbackException = true;
+					if (firstRollbackException == null)
+					{
+						firstRollbackException = he;
+					}
+				}
+			}
+			if (rollbackException)
+			{
+				//we're only going to rethrow the first rollback exception
+				throw new TransactionException("Rollback failed", firstRollbackException);
+			}
+			rolledBack = true;
 		}
-
-		///<summary>
-		///
-		///            Enlist the <see cref="T:System.Data.IDbCommand" /> in the current Transaction.
-		///            
-		///</summary>
-		///
-		///<param name="command">The <see cref="T:System.Data.IDbCommand" /> to enlist.</param>
-		///<remarks>
-		///
-		///            It is okay for this to be a no op implementation.
-		///            
-		///</remarks>
-		///
+		
 		public void Enlist(IDbCommand command)
 		{
-			throw new NotImplementedException();
+			foreach (ITransaction t in transactions)
+			{
+				//TODO: Should I finish with the first exception?
+				try
+				{
+					t.Enlist(command);
+				}
+				catch(Exception ex)
+				{
+					string ExceptionMessage = "Can't enlist a commmand succesfully";
+					log.Warn(ExceptionMessage);
+					throw new TransactionException(ExceptionMessage, ex);
+				}
+			}
 		}
 
-		///<summary>
-		///
-		///            Is the transaction in progress
-		///            
-		///</summary>
-		///
 		public bool IsActive
 		{
-			get { throw new NotImplementedException(); }
+			get { return begun && !(rolledBack || committed || commitFailed); }
 		}
 
-		///<summary>
-		///
-		///            Was the transaction rolled back or set to rollback only?
-		///            
-		///</summary>
-		///
 		public bool WasRolledBack
 		{
-			get { throw new NotImplementedException(); }
+			get { return rolledBack; }
 		}
 
-		///<summary>
-		///
-		///            Was the transaction successfully committed?
-		///            
-		///</summary>
-		///
-		///<remarks>
-		///
-		///            This method could return <see langword="false" /> even after successful invocation of 
-		///<c>Commit()</c>
-		///</remarks>
-		///
 		public bool WasCommitted
 		{
-			get { throw new NotImplementedException(); }
+			get { return committed; }
 		}
 
-		///<summary>
-		///Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		///</summary>
-		///<filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			Exception firstException = null;
+			string ExceptionMessage = "Can't dispose properly";
+
+			foreach (ITransaction t in transactions)
+			{
+				try
+				{
+					t.Dispose();
+				}
+				catch (Exception ex)
+				{
+					log.Warn(ExceptionMessage);
+					firstException = ex;
+				}
+			}
+
+			if(firstException != null)
+			{
+				throw new TransactionException(ExceptionMessage, firstException);
+			}
 		}
 
 		#endregion
+
+		private void BeforeTransactionCompletion()
+		{
+			//if (synchronizations != null)
+			//{
+			//    foreach (Synchronization sync in synchronizations)
+			//    {
+			//        try
+			//        {
+			//            sync.BeforeCompletion();
+			//        }
+			//        catch (Exception t)
+			//        {
+			//            log.Warn("exception calling user Synchronization", t);
+			//        }
+			//    }
+			//}
+		}
+
+		private void AfterTransactionCompletion(int status)
+		{
+			//begun = false;
+			//if (synchronizations != null)
+			//{
+			//    foreach (Synchronization sync in synchronizations)
+			//    {
+			//        try
+			//        {
+			//            sync.afterCompletion(status);
+			//        }
+			//        catch (Throwable t)
+			//        {
+			//            log.Warn("exception calling user Synchronization", t);
+			//        }
+			//    }
+			//}
+		}
 
 		public void SetTimeout(int seconds)
 		{
