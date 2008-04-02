@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using NHibernate.Burrow;
 
 namespace NHibernate.Burrow {
+    using Type = System.Type;
     public static class Facade {
         /// <summary>
         /// prepare the NHibernate environment for the Domain Layer
@@ -13,6 +14,11 @@ namespace NHibernate.Burrow {
             InitializeDomain(false, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="safe">close the Domain in the current context first if there is any.</param>
+        /// <param name="states"></param>
         public static void InitializeDomain(bool safe, NameValueCollection states) {
             if (safe && Alive)
                 CloseDomain();
@@ -68,6 +74,26 @@ namespace NHibernate.Burrow {
         public static bool Alive
         {
             get{ return DomainContext.Current != null;}
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static ISession GetSession() {
+            return SessionManager.GetInstance().GetSession();
+        }
+
+        /// <summary>
+        /// Gets a managed ISession
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow
+        /// </remarks>
+        public static ISession GetSession(Type entityType) {
+            return SessionManager.GetInstance(entityType).GetSession();
         }
     }
 }

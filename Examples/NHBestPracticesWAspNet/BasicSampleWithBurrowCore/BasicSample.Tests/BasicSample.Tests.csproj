@@ -1,0 +1,99 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{506BD2E6-A534-4C5D-802E-43CFD16A32B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BasicSample.Tests</RootNamespace>
+    <AssemblyName>BasicSample.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnitAsp, Version=1.5.1.27647, Culture=neutral, PublicKeyToken=f9bdb8e9d00f2b23">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NUnitAsp.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.0.518.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\CustomerDaoTests.cs" />
+    <Compile Include="Data\DaoTestDoubles\MockOrderDaoFactory.cs" />
+    <Compile Include="Data\HistoricalOrderSummaryDaoTests.cs" />
+    <Compile Include="Data\NHibernateTestCase.cs" />
+    <Compile Include="Domain\CustomerTests.cs" />
+    <Compile Include="Domain\DomainObjectIdSetter.cs" />
+    <Compile Include="Domain\OrderTests.cs" />
+    <Compile Include="Domain\SupplierTests.cs" />
+    <Compile Include="TestGlobals.cs" />
+    <Compile Include="Data\DaoTestDoubles\OrderDaoStub.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestFactories\TestOrdersFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow\NHibernate.Burrow.csproj">
+      <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
+      <Name>NHibernate.Burrow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BasicSample.Core\BasicSample.Core.csproj">
+      <Project>{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}</Project>
+      <Name>BasicSample.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BasicSample.Data\BasicSample.Data.csproj">
+      <Project>{FCB45F28-3A4E-4E72-9691-556125CCF227}</Project>
+      <Name>BasicSample.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="hibernate.cfg.xml.Template" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Web\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>if exist hibernate.cfg.xml (del hibernate.cfg.xml)
+if not exist "$(ProjectDir)hibernate.cfg.xml" (copy "$(ProjectDir)hibernate.cfg.xml.template" "$(ProjectDir)hibernate.cfg.xml")
+if exist "$(ProjectDir)hibernate.cfg.xml" (copy "$(ProjectDir)hibernate.cfg.xml" "hibernate.cfg.xml")
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

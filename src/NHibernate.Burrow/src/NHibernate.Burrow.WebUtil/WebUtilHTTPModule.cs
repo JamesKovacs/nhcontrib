@@ -68,9 +68,6 @@ namespace NHibernate.Burrow.WebUtil {
         }
 
         /// <summary>
-        /// Commits and closes the NHibernate session provided by the supplied <see cref="SessionManager"/>.
-        /// Assumes a transaction was begun at the beginning of the request; but a transaction or session does
-        /// not *have* to be opened for this to operate successfully.
         /// </summary>
         private void CloseContext(object sender, EventArgs e) {
             HttpApplication ctx = (HttpApplication) sender;
