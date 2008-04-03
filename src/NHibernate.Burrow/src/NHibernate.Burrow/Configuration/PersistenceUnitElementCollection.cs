@@ -27,7 +27,7 @@ namespace NHibernate.Burrow.Configuration {
         ///
         ///<param name="element">The <see cref="T:System.Configuration.ConfigurationElement"></see> to return the key for. </param>
         protected override object GetElementKey(ConfigurationElement element) {
-            return ((PersistenceUnitElement) element).Name;
+            return ((IPersistenceUnitCfg) element).Name;
         }
     }
 }

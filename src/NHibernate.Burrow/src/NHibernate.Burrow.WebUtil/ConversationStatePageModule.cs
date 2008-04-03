@@ -47,7 +47,7 @@ namespace NHibernate.Burrow.WebUtil {
         }
 
         private void AddConversationStates(Control c) {
-            foreach (OverspanState os in DomainContext.Current.OverspanStates()) {
+            foreach (OverspanState os in OverspanState.CurrentStates()){
                 os.CleanCookies(HttpContext.Current); 
                 os.AddOverspanState(c);
             }

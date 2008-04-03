@@ -1,9 +1,24 @@
 using System.Collections.Specialized;
-using NHibernate.Burrow;
+using NHibernate.Burrow.Configuration;
+using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow {
-    using Type = System.Type;
     public static class Facade {
+        public static IConversation CurrentConversation {
+            get { return ConversationImpl.Current; }
+        }
+
+        public static IBurrowConfig Configuration {
+            get { return  NHibernateBurrowCfgSection.GetInstance(); }
+        }
+
+        /// <summary>
+        /// gets if the domain layer is alive. 
+        /// </summary>
+        public static bool Alive {
+            get { return DomainContext.Current != null; }
+        }
+
         /// <summary>
         /// prepare the NHibernate environment for the Domain Layer
         /// </summary>
@@ -38,46 +53,7 @@ namespace NHibernate.Burrow {
         }
 
         /// <summary>
-        /// Start a long Coversation that spans over multiple http requests
-        /// </summary>
-        public static void StarLongConversation() {
-            DomainContext.Current.StarLongConversation();
-        }
-
-        /// <summary>
-        /// Start a long Coversation that spans over the whole session
-        /// </summary>
-        public static void StarSessionConversation() {
-            DomainContext.Current.StarSessionConversation();
-        }
-
-        /// <summary>
-        /// Finish a conversation that spans over multiple http requests and commit the data changes.
-        /// </summary>
-        public static void FinishOverSpanConversation() {
-            DomainContext.Current.FinishConversation();
-        }
-
-        /// <summary>
-        /// Cancel the current Conversation, so it won't be committed
-        /// </summary>
-        /// <remarks>
-        /// calling this wont' immediately rollback the transaction
-        /// </remarks>
-        public static void CancelConversation() {
-            DomainContext.Current.CancelConversation();
-        }
-
-        /// <summary>
-        /// gets if the domain layer is alive. 
-        /// </summary>
-        public static bool Alive
-        {
-            get{ return DomainContext.Current != null;}
-        }
-
-        /// <summary>
-        /// 
+        /// Gets the managed NHibernate ISession
         /// </summary>
         /// <returns></returns>
         public static ISession GetSession() {
@@ -92,7 +68,7 @@ namespace NHibernate.Burrow {
         /// <remarks>
         /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow
         /// </remarks>
-        public static ISession GetSession(Type entityType) {
+        public static ISession GetSession(System.Type entityType) {
             return SessionManager.GetInstance(entityType).GetSession();
         }
     }

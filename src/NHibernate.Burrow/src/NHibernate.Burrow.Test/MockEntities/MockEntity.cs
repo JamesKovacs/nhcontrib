@@ -6,8 +6,15 @@ using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Test.MockEntities
 {
-    public class MockEntity : PersistentObjSaveDeleteSimple
+    public class MockEntity :  IDeletable
     {
+        private int id;
+
+        public int Id {
+            get { return id; }
+            set { id = value; }
+        }
+
         private string name;
         private int number;
 
@@ -36,10 +43,13 @@ namespace NHibernate.Burrow.Test.MockEntities
             set { preDeletedPerformed = value; }
         }
 
-        protected override void OnPreDeleted(object sender, EventArgs e)
-        {
-            preDeletedPerformed++;
-            base.OnPreDeleted(sender, e);
+        public bool Delete() {
+              preDeletedPerformed++;
+               new MockDAO().Delete(this);
+            return true;
+        }
+        public void Save() {
+            new MockDAO().Save(this);
         }
     }
 

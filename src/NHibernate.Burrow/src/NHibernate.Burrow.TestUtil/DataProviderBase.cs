@@ -47,38 +47,22 @@ namespace NHibernate.Burrow.TestUtil {
 
         public static void DeleteEntity(object o) {
             if (o == null) return;
-            if (o is IPersistentObjWithDAO)
-                DeletePersistenceObject((IPersistentObjWithDAO) o);
-            else if (o is IPersistentObjSaveDelete)
-                DeletePersistenceObject((IPersistentObjSaveDelete) o);
-            else
-                DeletePersistenceObject(o);
-        }
-
-        protected static void DeletePersistenceObject(IPersistentObjWithDAO o) {
-            o = (IPersistentObjWithDAO) ReloadIWithId(o);
-            if (o != null)
-                o.DAO.Delete();
-        }
-
-        private static object ReloadIWithId(IWithId o) {
-            return GetSession(o.GetType()).Get(o.GetType(), o.Id);
-        }
-
-        private static ISession GetSession(System.Type t) {
-            return SessionManager.GetInstance(t).GetSession();
-        }
-
-        protected static void DeletePersistenceObject(IPersistentObjSaveDelete o) {
-            o = (IPersistentObjSaveDelete) ReloadIWithId(o);
-            if (o != null)
-                o.Delete();
-        }
-
-        protected static void DeletePersistenceObject(object o) {
             o = GetSession(o.GetType()).Get(o.GetType(), GetEntityId(o));
             if (o != null)
-                GetSession(o.GetType()).Delete(o);
+            {
+                if (o is IDeletable)
+                    ((IDeletable)o).Delete();
+                else
+                    GetSession(o.GetType()).Delete(o);
+            }
+        }
+ 
+        private static ISession GetSession(System.Type t) {
+            return Facade.GetSession(t);
+        }
+ 
+        protected static void DeletePersistenceObject(object o) {
+           
         }
 
         private static object GetEntityId(object entity) {

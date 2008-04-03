@@ -3,12 +3,20 @@ using NHibernate.Burrow.Util.EntityBases;
 using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Test.PersistenceTests {
-    public class HashIdMockClass : ObjWHashIdNDAOBase {
+    public class HashIdMockClass : EntityWHashIdBase {
         private string name;
 
         public string Name {
             get { return name; }
             set { name = value; }
+        }
+
+        protected override void PreDelete() {
+            // do nothing
+        }
+
+        public void Save() {
+            new HashIdMockClassDAO().Save(this);
         }
     }
 

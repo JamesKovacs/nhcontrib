@@ -1,10 +1,17 @@
+using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
+using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow {
  
 
     public class OverspanState {
+        public static IList<OverspanState> CurrentStates()
+        {
+            return DomainContext.Current.OverspanStates();
+        }
+
         private readonly OverspanStrategy strategy;
         private readonly string name;
         private readonly string value;

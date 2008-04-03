@@ -1,5 +1,5 @@
 using System;
-using NHibernate.Burrow.utility;
+using NHibernate.Burrow.Util;
 
 namespace NHibernate.Burrow.WebUtil {
     /// <summary>

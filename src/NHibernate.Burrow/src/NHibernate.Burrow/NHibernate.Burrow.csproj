@@ -106,12 +106,13 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IPersistenceUnitCfg.cs" />
+    <Compile Include="IBurrowConfig.cs" />
     <Compile Include="Configuration\NHibernateBurrowCfgSection.cs" />
     <Compile Include="Configuration\PersistenceUnitElement.cs" />
     <Compile Include="Configuration\PersistenceUnitElementCollection.cs" />
-    <Compile Include="Configuration\Util.cs" />
-    <Compile Include="ConversationExpirationCheckerByTimeout.cs" />
-    <Compile Include="ConversationExpirationCheckerFactory.cs" />
+    <Compile Include="Impl\ConversationExpirationCheckerByTimeout.cs" />
+    <Compile Include="Impl\ConversationExpirationCheckerFactory.cs" />
     <Compile Include="DataContainers\GuidDataContainer.cs" />
     <Compile Include="DataContainers\LocalSafe.cs" />
     <Compile Include="Exceptions\NoSuitableContructorException.cs" />
@@ -119,29 +120,36 @@
     <Compile Include="Exceptions\TypeNotFoundException.cs" />
     <Compile Include="Exceptions\UnableToGetPersistenceUnitException.cs" />
     <Compile Include="Facade.cs" />
-    <Compile Include="Conversation.cs" />
+    <Compile Include="Impl\ConversationImpl.cs" />
     <Compile Include="ConversationalData.cs" />
-    <Compile Include="ConversationPool.cs" />
+    <Compile Include="Impl\ConversationPool.cs" />
     <Compile Include="Exceptions\ConversationUnavailableException.cs" />
     <Compile Include="Exceptions\ConversationUninitializedException.cs" />
     <Compile Include="Exceptions\DomainContextUninitializedException.cs" />
-    <Compile Include="DomainContext.cs" />
-    <Compile Include="DomainTemplateException.cs" />
+    <Compile Include="Impl\DomainContext.cs" />
+    <Compile Include="Exceptions\GeneralException.cs" />
+    <Compile Include="IConversation.cs" />
     <Compile Include="IConversationExpirationChecker.cs" />
-    <Compile Include="IInterceptorFactory.cs" />
     <Compile Include="OverspanStrategy.cs" />
-    <Compile Include="PersistenceUnit.cs" />
-    <Compile Include="PersistenceUnitRepo.cs" />
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="ISessionManager.cs" />
+    <Compile Include="Impl\PersistenceUnit.cs" />
+    <Compile Include="Impl\PersistenceUnitRepo.cs" />
     <Compile Include="Exceptions\BurrowException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SessionManager.cs">
+    <Compile Include="Impl\SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OverspanState.cs" />
-    <Compile Include="utility\InstanceLoader.cs" />
+    <Compile Include="Util\DAOBases\EntityLoader.cs" />
+    <Compile Include="Util\DAOBases\GenericDAO.cs" />
+    <Compile Include="Util\EntityBases\DeletableEntity.cs" />
+    <Compile Include="Util\EntityBases\IDeletable.cs" />
+    <Compile Include="Util\EntityBases\IWithId.cs" />
+    <Compile Include="Util\EntityBases\IWithIdNBizKey.cs" />
+    <Compile Include="Util\EntityBases\EntityWHashIdBase.cs" />
+    <Compile Include="Util\EntityBases\EntityWithIdNBizKeyBase.cs" />
+    <Compile Include="Util\InstanceLoader.cs" />
+    <Compile Include="Util\SchemaUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -102,7 +102,9 @@ namespace BasicSample.Data
         }
 
         public void CommitChanges() {
-             Conversation.Current.CommitCurrentChange();
+            throw new NotImplementedException("in the burrow design pattern, it's not recommended to have a different transaction life than session ");
+            //if you really want force a DB transaction commit, you can call ConversationImpl.Current.ForceCommitChange();
+            //However that method is submit to change
         }
 
         /// <summary>

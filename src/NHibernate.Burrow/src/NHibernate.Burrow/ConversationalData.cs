@@ -1,6 +1,7 @@
 using System;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
+using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow {
     public enum ConversationalDataMode {
@@ -95,7 +96,7 @@ namespace NHibernate.Burrow {
 
         private void ConversationUnvailableException()
         {
-            string msg = Conversation.Current == null
+            string msg = Facade.CurrentConversation == null
                              ? "ConversationalData can not be accessed outside conversation. "
                                + "Make sure Conversation is intialized before visiting conversational data."
                                +
@@ -107,7 +108,7 @@ namespace NHibernate.Burrow {
         }
         private static GuidDataContainer cItems {
             get {
-                return Conversation.Current == null ? null : Conversation.Current.Items;
+                return ConversationImpl.Current == null ? null : ConversationImpl.Current.Items;
             }
         }
     }

@@ -36,7 +36,7 @@ namespace NHibernate.Burrow.WebUtil {
             if(!Facade.Alive) return;
             try
             {
-                Facade.CancelConversation();
+                 Facade.CurrentConversation.GiveUp();
                 Facade.CloseDomain();
             }
             catch (Exception)

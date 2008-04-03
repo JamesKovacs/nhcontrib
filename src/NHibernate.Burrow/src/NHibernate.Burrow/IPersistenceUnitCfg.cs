@@ -1,11 +1,7 @@
-using System.Collections;
 using System.Configuration;
 
-namespace NHibernate.Burrow.Configuration {
-    /// <summary>
-    /// Configuration Section for a Persistence Unit
-    /// </summary>
-    public class PersistenceUnitElement : ConfigurationElement, IPersistenceUnitCfg {
+namespace NHibernate.Burrow {
+    public interface IPersistenceUnitCfg {
         /// <summary>
         /// 
         /// </summary>
@@ -16,11 +12,8 @@ namespace NHibernate.Burrow.Configuration {
         [StringValidator(InvalidCharacters =
                          " ~!@#$%^&*()[]{}/;'\"|\\",
             MinLength = 1, MaxLength = 60)]
-        public string Name {
-            get { return (string) this["name"]; }
-            set { this["name"] = value; }
-        } 
-        
+        string Name { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -29,11 +22,7 @@ namespace NHibernate.Burrow.Configuration {
             IsKey = false)]
         [StringValidator(InvalidCharacters =
                          " ~!@#$%^&*()[]{};'\"|",
-              MaxLength=160)]
-        public string NHConfigFile {
-            get { return (string)this["nh-config-file"]; }
-            set { this["nh-config-file"] = value; }
-        }
- 
+            MaxLength=160)]
+        string NHConfigFile { get; set; }
     }
 }

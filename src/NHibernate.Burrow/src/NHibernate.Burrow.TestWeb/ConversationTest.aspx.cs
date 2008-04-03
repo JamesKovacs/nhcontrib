@@ -40,8 +40,8 @@ public partial class ConversationTest : System.Web.UI.Page
     protected void btnStart_Click(object sender, EventArgs e)
     {
         me = new MockEntity();
-        Facade.StarLongConversation(); 
-
+        Facade.CurrentConversation.SpanWithPostBacks();
+        
         
     }
     protected void btnUpdate_Click(object sender, EventArgs e)
@@ -53,12 +53,13 @@ public partial class ConversationTest : System.Web.UI.Page
         me.Save();
         meInDb = me;
         me = null;
-        Facade.FinishOverSpanConversation();
+        Facade.CurrentConversation.FinishSpan();
+        
     }
     protected void btnCancel_Click(object sender, EventArgs e)
     {
         me = null;
-        Facade.CancelConversation();
+        Facade.CurrentConversation.GiveUp();
     }
     protected void btnRefresh_Click(object sender, EventArgs e)
     {

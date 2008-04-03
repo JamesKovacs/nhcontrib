@@ -66,7 +66,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuditLogTest\AuditLogTest.cs" />
     <Compile Include="BooDomainSession.cs" />
     <Compile Include="BooDomainSessionFactory.cs" />
     <Compile Include="ConfigurationTests\ConfigReadWriteFixture.cs" />
@@ -101,9 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MockEntities\MockEntity.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="AuditLogTest\AuditLogRecord.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PersistenceTests\HashIdMockClass.hbm.xml" />

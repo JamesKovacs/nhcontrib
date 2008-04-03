@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace NHibernate.Burrow.Util.DomainSession
 {
     /// <summary>
@@ -9,6 +11,6 @@ namespace NHibernate.Burrow.Util.DomainSession
         /// Create the domainLayer
         /// </summary>
         /// <returns>IDomainSession that is created</returns>
-        IDomainSession Create();
+        IDictionary<string, IDomainSession> Create();
     }
 }

@@ -1,5 +1,6 @@
 using NHibernate.Burrow.Configuration;
 using NHibernate.Burrow.TestUtil;
+using NHibernate.Burrow.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.SpecialTests {
@@ -7,7 +8,7 @@ namespace NHibernate.Burrow.Test.SpecialTests {
     public class CreateDB : TestBase {
         [Test, Explicit]
         public void CreateTestDataBase() {
-            Config.CreateDatabase();
+           new SchemaUtil().CreateSchemas();
         }
     }
 }

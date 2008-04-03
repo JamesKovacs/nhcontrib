@@ -10,18 +10,18 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
     public class ConfigReadWriteFixture {
         [Test]
         public void ReadNHConfigFileTest() {
-            NHibernateBurrowCfgSection section = NHibernateBurrowCfgSection.GetInstance();
+            IBurrowConfig section =  Facade.Configuration;
             Assert.IsNotNull(section);
-            Assert.IsTrue(section.PersistenceUnits.Count > 0);
+            Assert.IsTrue(section.PersistenceUnitCfgs.Count > 0);
 
-            foreach (PersistenceUnitElement puSection in section.PersistenceUnits) {
+            foreach (IPersistenceUnitCfg puSection in section.PersistenceUnitCfgs) {
                 Console.WriteLine(puSection.NHConfigFile);
                Assert.IsTrue(puSection.NHConfigFile.IndexOf(".xml") > 0);
             }
         }
         [Test]
         public void WriteReadNHConfigFileTest() {
-            NHibernateBurrowCfgSection section = NHibernateBurrowCfgSection.GetInstance();
+            IBurrowConfig section =  Facade.Configuration;
 
             Assert.IsNotNull(section);
             Assert.AreEqual(5, section.ConversationCleanupFrequency);
@@ -40,7 +40,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
         public void ConnectionStringTest()
         {
             Facade.InitializeDomain();
-            string cs = Config.DBConnectionString(typeof(MockEntity));
+            string cs = Facade.Configuration.DBConnectionString(typeof(MockEntity));
             Console.WriteLine(cs);
             Assert.IsTrue(cs.IndexOf("Server") >= 0);
             Facade.CloseDomain();

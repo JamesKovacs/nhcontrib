@@ -1,6 +1,6 @@
 using System;
 using NHibernate.Burrow.TestUtil.Exceptions;
-using NHibernate.Burrow.utility;
+using NHibernate.Burrow.Util;
 
 namespace NHibernate.Burrow.TestUtil.Attributes {
     /// <summary>

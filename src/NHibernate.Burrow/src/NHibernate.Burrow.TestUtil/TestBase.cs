@@ -3,6 +3,7 @@ using log4net;
 using log4net.Config;
 using NHibernate.Burrow;
 using NHibernate.Burrow.TestUtil.Attributes;
+using NHibernate.Burrow.Util;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
@@ -53,9 +54,9 @@ namespace NHibernate.Burrow.TestUtil {
             return new DataProviderBase();
         }
 
-        protected static void CommitAndClearSession() {
-            SessionManager.Flush();
-            SessionManager.ClearSessions();
+        protected static void CommitAndStartnNewPersistentContext() {
+            Facade.CloseDomain();
+            Facade.InitializeDomain();
         }
 
         [TestFixtureSetUp]
@@ -78,19 +79,14 @@ namespace NHibernate.Burrow.TestUtil {
 
         protected void CreateSchema()
         {
-            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
-            {
-                new SchemaExport(unit.NHConfiguration).Create(OutputDdl, true); 
-            }
+         new  SchemaUtil().CreateSchemas();
           
         }
 
         protected void DropSchema()
         {
-            foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits)
-            {
-                new SchemaExport(unit.NHConfiguration).Drop(OutputDdl, true);
-            }
+            new SchemaUtil().DropSchemas();
+          
         }
     }
 }

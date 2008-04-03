@@ -19,7 +19,6 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             Assert.AreEqual(d.FindById(m.Id), m);
             Assert.AreEqual(mockName, d.FindById(m.Id).Name);
             m.Delete();
-            SessionManager.GetInstance().GetSession().Flush();
             Assert.IsNull(d.FindById(m.Id));
         }
 
@@ -43,10 +42,10 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             Assert.AreNotEqual(o1, o2, o1.BusinessKey + " == " + o2.BusinessKey);
             Assert.AreNotEqual(o3, o2);
             Assert.AreNotEqual(o1, o3);
-            o1.DAO.Save();
-            o2.DAO.Save();
-            o3.DAO.Save();
-            CommitAndClearSession();
+            o1.Save();
+            o2.Save();
+            o3.Save();
+            CommitAndStartnNewPersistentContext();
             HashIdMockClassDAO dao = new HashIdMockClassDAO();
             HashIdMockClass o1reloaded = dao.FindById(o1.Id);
             HashIdMockClass o2reloaded = dao.FindById(o2.Id);
@@ -61,11 +60,11 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             Assert.AreEqual(o2, o2reloaded);
             Assert.AreEqual(o3, o3reloaded);
 
-            o1reloaded.DAO.Delete();
-            o2reloaded.DAO.Delete();
-            o3reloaded.DAO.Delete();
+            o1reloaded.Delete();
+            o2reloaded.Delete();
+            o3reloaded.Delete();
 
-            CommitAndClearSession();
+            CommitAndStartnNewPersistentContext();
         }
 
         [Test]

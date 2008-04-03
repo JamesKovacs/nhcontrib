@@ -52,7 +52,7 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
         public void ThreadProc() {
             try {
                 Facade.InitializeDomain();
-                ISession session = SessionManager.GetInstance().GetSession();
+                ISession session = Facade.GetSession();
                 Assert.IsNotNull(session);
                 int code = session.GetHashCode();
                 session.Flush();
