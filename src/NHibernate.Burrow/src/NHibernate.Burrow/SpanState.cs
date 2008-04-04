@@ -6,23 +6,23 @@ using NHibernate.Burrow.Impl;
 namespace NHibernate.Burrow {
  
 
-    public class OverspanState {
-        public static IList<OverspanState> CurrentStates()
+    public class SpanState {
+        public static IList<SpanState> CurrentStates()
         {
-            return DomainContext.Current.OverspanStates();
+            return DomainContext.Current.SpanStates();
         }
 
-        private readonly OverspanStrategy strategy;
+        private readonly SpanStrategy strategy;
         private readonly string name;
         private readonly string value;
 
-        public OverspanState(string name, string value, OverspanStrategy strategy) {
+        public SpanState(string name, string value, SpanStrategy strategy) {
             this.name = name;
             this.strategy = strategy;
             this.value = value;
         }
 
-        public OverspanStrategy Strategy {
+        public SpanStrategy Strategy {
             get { return strategy; }
         }
 

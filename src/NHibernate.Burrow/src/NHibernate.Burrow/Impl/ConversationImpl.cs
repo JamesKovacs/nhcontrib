@@ -15,10 +15,10 @@ namespace NHibernate.Burrow.Impl {
         private static readonly LocalSafe<ConversationImpl> current = new LocalSafe<ConversationImpl>();
         private readonly GuidDataContainer items = new GuidDataContainer();
         private bool canceled = false;
-        private Guid id = Guid.Empty;
-        private OverspanStrategy overspanStrategy = OverspanStrategy.Post;
+        private readonly Guid id = Guid.NewGuid();
+        private SpanStrategy spanStrategy = SpanStrategy.Post;
         private DateTime lastVisit = DateTime.Now;
-      
+        
 
         public DateTime LastVisit 
         {
@@ -79,16 +79,16 @@ namespace NHibernate.Burrow.Impl {
         /// Conversation not in the <see cref="ConversationPool"/> will be garbage collected once the httpContext or thread is discarded. 
         /// </remarks>
         public bool IsInPool {
-            get { return id != Guid.Empty; }
+            get { return ConversationPool.Instance.ContainsKey(id); }
         }
 
-        public OverspanStrategy OverspanStrategy {
+        public SpanStrategy SpanStrategy {
             get {
                 if (!IsInPool)
-                    return OverspanStrategy.DoNotSpan;
-                return overspanStrategy;
+                    return SpanStrategy.DoNotSpan;
+                return spanStrategy;
             }
-            private set { overspanStrategy = value; }
+            private set { spanStrategy = value; }
         }
 
         public bool Canceled {
@@ -99,8 +99,13 @@ namespace NHibernate.Burrow.Impl {
         /// Retreive a conversation by <paramref name="id"/> and make it the <see cref="Current"/>
         /// </summary>
         /// <param name="id"></param>
-        public static void RetrieveCurrent(Guid id) {
+        /// <returns>true if the conversation is successfully retrieved, otherwise false. 
+        /// </returns> 
+        public static bool RetrieveCurrent(Guid id) {
+            if(!ConversationPool.Instance.ContainsKey(id))
+                return false;
             current.Value = ConversationPool.Instance[id];
+            return true;
         }
 
         /// <summary>
@@ -117,14 +122,14 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do nothing
         /// </remarks>
-        public bool AddToPool(OverspanStrategy om) {
+        public bool AddToPool(SpanStrategy om) {
             Visited();
             if (!IsInPool && !Canceled) {
-                if (!om.SupportLongConversation)
+                if (!om.ValidForSpan)
                     throw new ArgumentException(
                         om + "is not an accetable overspan strategy for long conversation");
-                OverspanStrategy = om;
-                id = Guid.NewGuid();
+                SpanStrategy = om;
+                
                 ConversationPool.Instance.Add(id, this);
                 return true;
             }
@@ -136,7 +141,7 @@ namespace NHibernate.Burrow.Impl {
         /// </summary>
         public bool SpanWithPostBacks()
         {
-            return AddToPool(OverspanStrategy.Post);
+            return AddToPool(SpanStrategy.Post);
         }
 
         /// <summary>
@@ -144,7 +149,7 @@ namespace NHibernate.Burrow.Impl {
         /// </summary>
         public bool SpanWithHttpSession()
         {
-            return AddToPool(OverspanStrategy.Cookie);
+            return AddToPool(SpanStrategy.Cookie);
         }
 
 
@@ -157,7 +162,6 @@ namespace NHibernate.Burrow.Impl {
         public void RemoveFromPool() {
             if (IsInPool) {
                 ConversationPool.Instance.Remove(id);
-                id = Guid.Empty;
             }
         }
 
@@ -244,6 +248,12 @@ namespace NHibernate.Burrow.Impl {
             return true;
         }
 
+        /// <summary>
+        /// Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
+        /// </summary>
+        public bool IsSpanning {
+            get { return SpanStrategy.ValidForSpan; }
+        }
 
         #endregion
 

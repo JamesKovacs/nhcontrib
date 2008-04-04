@@ -15,7 +15,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         {
             try
             {
-                ConversationImpl.Current.AddToPool(OverspanStrategy.DoNotSpan);
+                ConversationImpl.Current.AddToPool(SpanStrategy.DoNotSpan);
                 Assert.Fail("Shoult not reach here");
             }
             catch (ArgumentException) {}
@@ -45,7 +45,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         public void PostConversationOverspanStrategyTest()
         {
             Facade.CurrentConversation.SpanWithPostBacks();
-            Assert.AreEqual(OverspanStrategy.Post, ConversationImpl.Current.OverspanStrategy);
+            Assert.AreEqual(SpanStrategy.Post, ConversationImpl.Current.SpanStrategy);
              Facade.CurrentConversation.GiveUp();
         }
 
@@ -53,14 +53,14 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         public void SessionConversationOverspanStrategyTest()
         {
             Facade.CurrentConversation.SpanWithHttpSession();
-            Assert.AreEqual(OverspanStrategy.Cookie, ConversationImpl.Current.OverspanStrategy);
+            Assert.AreEqual(SpanStrategy.Cookie, ConversationImpl.Current.SpanStrategy);
              Facade.CurrentConversation.GiveUp();
         }
 
         [Test]
         public void TempConversationOverspanStrategyTest()
         {
-            Assert.AreEqual(OverspanStrategy.DoNotSpan, ConversationImpl.Current.OverspanStrategy);
+            Assert.AreEqual(SpanStrategy.DoNotSpan, ConversationImpl.Current.SpanStrategy);
         }
 
         [Test]
@@ -80,12 +80,12 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         public void ConversationInPoolTest()
         {
             ConversationImpl.StartNew();
-            ConversationImpl.Current.AddToPool(OverspanStrategy.Post);
+            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
             Guid cid1 = ConversationImpl.Current.Id;
             Assert.AreEqual(1, ConversationImpl.NumOfOutStandingLongConversations);
             ConversationImpl.StartNew();  
             Assert.AreEqual(1, ConversationImpl.NumOfOutStandingLongConversations);
-            ConversationImpl.Current.AddToPool(OverspanStrategy.Post);
+            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
             Guid cid2 = ConversationImpl.Current.Id;
             Assert.AreNotEqual(cid2, cid1);
             Assert.AreEqual(2, ConversationImpl.NumOfOutStandingLongConversations);

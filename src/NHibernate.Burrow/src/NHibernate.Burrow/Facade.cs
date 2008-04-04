@@ -71,5 +71,13 @@ namespace NHibernate.Burrow {
         public static ISession GetSession(System.Type entityType) {
             return SessionManager.GetInstance(entityType).GetSession();
         }
+
+        public static string WrapUrlWithConversationInfo(string originalUrl) {
+            if (CurrentConversation.IsSpanning)
+                return DomainContext.Current.WrapUrlWithSpanInfo(originalUrl);
+            else
+                throw new Exceptions.IncorrectConversationSpanStatusException(
+                    "CurrentConversation Must Be In Span Before you can wrap a url");
+        }
     }
 }

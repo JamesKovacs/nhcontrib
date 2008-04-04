@@ -30,6 +30,7 @@ namespace NHibernate.Burrow.Impl {
             get { return pool.Count; }
         }
 
+        
     
 
         public static ConversationPool Instance
@@ -127,6 +128,11 @@ namespace NHibernate.Burrow.Impl {
         private bool ConversationIsTimeout(KeyValuePair<Guid, ConversationPoolItem> pair)
         {
             return ExpirationChecker.IsConversationExpired(pair.Value.Conversation);
+        }
+
+        public bool ContainsKey(Guid id)
+        {
+            return pool.ContainsKey(id);
         }
     }
 

@@ -106,6 +106,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
     <Compile Include="IBurrowConfig.cs" />
     <Compile Include="Configuration\NHibernateBurrowCfgSection.cs" />
@@ -130,7 +131,7 @@
     <Compile Include="Exceptions\GeneralException.cs" />
     <Compile Include="IConversation.cs" />
     <Compile Include="IConversationExpirationChecker.cs" />
-    <Compile Include="OverspanStrategy.cs" />
+    <Compile Include="SpanStrategy.cs" />
     <Compile Include="Impl\PersistenceUnit.cs" />
     <Compile Include="Impl\PersistenceUnitRepo.cs" />
     <Compile Include="Exceptions\BurrowException.cs">
@@ -139,7 +140,7 @@
     <Compile Include="Impl\SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OverspanState.cs" />
+    <Compile Include="SpanState.cs" />
     <Compile Include="Util\DAOBases\EntityLoader.cs" />
     <Compile Include="Util\DAOBases\GenericDAO.cs" />
     <Compile Include="Util\EntityBases\DeletableEntity.cs" />

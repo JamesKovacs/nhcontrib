@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Text;
+using System.Web;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
@@ -87,14 +89,14 @@ namespace NHibernate.Burrow.Impl {
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
         public void StarLongConversation() {
-            CurrentConversation.AddToPool(OverspanStrategy.Post);
+            CurrentConversation.AddToPool(SpanStrategy.Post);
         }
 
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
         public void StarSessionConversation() {
-            CurrentConversation.AddToPool(OverspanStrategy.Cookie);
+            CurrentConversation.AddToPool(SpanStrategy.Cookie);
         }
 
       
@@ -128,12 +130,43 @@ namespace NHibernate.Burrow.Impl {
         /// States that should over span multiple domain context 
         /// </summary>
         /// <returns></returns>
-        public IList<OverspanState> OverspanStates() {
-            IList<OverspanState> retVal = new List<OverspanState>();
+        public IList<SpanState> SpanStates() {
+            IList<SpanState> retVal = new List<SpanState>();
             retVal.Add(
-                new OverspanState(ConversationImpl.ConversationIdKeyName, CurrentConversation.Id.ToString(),
-                                  CurrentConversation.OverspanStrategy));
+                new SpanState(ConversationImpl.ConversationIdKeyName, CurrentConversation.Id.ToString(),
+                                  CurrentConversation.SpanStrategy));
             return retVal;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="originalUrl"></param>
+        /// <returns></returns>
+        public  string WrapUrlWithSpanInfo(string originalUrl)
+        {
+            StringBuilder sb = new StringBuilder(originalUrl);
+
+            bool firstPara = originalUrl.IndexOf("?") < 0;
+            foreach (SpanState state in  SpanStates())
+            {
+                if (state.Strategy.ValidForSpan && !string.IsNullOrEmpty(state.Name)
+                    && !string.IsNullOrEmpty(state.Value))
+                {
+                    sb.Append((firstPara ? "?" : "&"));
+                    sb.Append(UrlEncode(state.Name));
+                    sb.Append("=");
+                    sb.Append(UrlEncode(state.Value));
+                    firstPara = false;
+                }
+            }
+            return sb.ToString();
+        }
+
+        private string UrlEncode(string s) {
+            return System.Web.HttpUtility.UrlEncode(s);
+        
         }
     }
 }

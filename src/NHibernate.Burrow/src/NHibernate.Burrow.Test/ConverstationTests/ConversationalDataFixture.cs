@@ -20,7 +20,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             Assert.AreEqual(1, i.Value);
             Assert.IsNull(s.Value);
             
-            ConversationImpl.Current.AddToPool(OverspanStrategy.Post);
+            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
             Guid cid = ConversationImpl.Current.Id;
 
             ConversationImpl.StartNew();
@@ -41,7 +41,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             ConversationalData<int> singleTemp = new ConversationalData<int>(ConversationalDataMode.SingleTemp, 1);
             ConversationalData<int> overspan = new ConversationalData<int>(ConversationalDataMode.Overspan, 1);
             
-            ConversationImpl.Current.AddToPool(OverspanStrategy.Post);
+            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
             Guid cid1 = ConversationImpl.Current.Id;
 
             ConversationImpl.StartNew();
@@ -55,7 +55,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             Assert.AreEqual(0, overspan.Value);
             singleTemp.Value = 2;
             overspan.Value = 2;
-            ConversationImpl.Current.AddToPool(OverspanStrategy.Post);
+            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
             Guid cid2 = ConversationImpl.Current.Id;
             Assert.AreNotEqual(cid2, cid1);
              

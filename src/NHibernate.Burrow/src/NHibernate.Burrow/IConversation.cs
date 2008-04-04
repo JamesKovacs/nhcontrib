@@ -38,5 +38,12 @@ namespace NHibernate.Burrow {
         /// call this method when all operations in a long span conversation are successfully done
         /// </remarks>
         bool FinishSpan();
+
+        /// <summary>
+        /// Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
+        /// </summary>
+        bool IsSpanning{ get;}
+
+
     }
 }
