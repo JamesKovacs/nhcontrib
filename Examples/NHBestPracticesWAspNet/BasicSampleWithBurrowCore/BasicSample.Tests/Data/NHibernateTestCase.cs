@@ -8,13 +8,13 @@ namespace BasicSample.Tests.Data
     { 
         [TestFixtureSetUp]
         public void Setup() {
-           Facade.InitializeDomain();
+           new Facade().InitializeDomain();
         }
 
        
         [TestFixtureTearDown]
         public void Dispose() {
-            Facade.CloseDomain();
+            new Facade().CloseDomain();
         }
     }
 }

@@ -1,6 +1,7 @@
 using NHibernate.Burrow.Util.DomainSession;
 
-namespace NHibernate.Burrow.Test {
+namespace NHibernate.Burrow.Util.Test.DomainSession
+{
     public class BooDomainSession : DomainSessionBase, IHasUserId {
         public string test = "test";
         private object userId;

@@ -15,7 +15,6 @@ namespace NHibernate.Burrow.Impl {
         private readonly IPersistenceUnitCfg configuration;
         private readonly Cfg.Configuration nHConfiguration;
         private ISessionFactory sessionFactory;
-        private readonly SessionManager sessionManager;
 
         internal PersistenceUnit(IPersistenceUnitCfg cfg)
         {
@@ -25,7 +24,6 @@ namespace NHibernate.Burrow.Impl {
             //Temporarily removed auditLog before we decided whether it should stay in Burrow
             //if (Configuration.EnableAuditLog)
             //    interceptorFactory = AuditLogInterceptorFactory.Instance;
-            sessionManager = new SessionManager(this);
         }
 
         /// <summary>
@@ -52,13 +50,7 @@ namespace NHibernate.Burrow.Impl {
             get { return configuration; }
         }
 
-        /// <summary>
-        /// the session Manager that is exclusively used within this persistant unit
-        /// </summary>
-        internal SessionManager SessionManager
-        {
-            get { return sessionManager; }
-        }
+       
 
         /// <summary>
         /// Rebuild the Session factory

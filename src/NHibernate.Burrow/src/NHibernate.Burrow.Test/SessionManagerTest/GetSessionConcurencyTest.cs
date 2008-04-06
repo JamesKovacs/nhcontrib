@@ -51,8 +51,8 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
 
         public void ThreadProc() {
             try {
-                Facade.InitializeDomain();
-                ISession session = Facade.GetSession();
+                new Facade().InitializeDomain();
+                ISession session = new Facade().GetSession();
                 Assert.IsNotNull(session);
                 int code = session.GetHashCode();
                 session.Flush();
@@ -65,7 +65,7 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
                 throw;
             }
             finally {
-                Facade.CloseDomain();
+                new Facade().CloseDomain();
             }
         }
     }

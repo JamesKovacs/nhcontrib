@@ -14,7 +14,7 @@ namespace NHibernate.Burrow.Impl {
 
         public ConversationExpirationCheckerByTimeout()
         {
-            IBurrowConfig cfg =  Facade.Configuration;
+            IBurrowConfig cfg =  new Facade().BurrowEnvironment.Configuration;
             int timeoutMinutes = cfg.ConversationTimeOut;
             if (timeoutMinutes < 1)
             {
@@ -30,9 +30,9 @@ namespace NHibernate.Burrow.Impl {
             cleanUpTimeSpan = new TimeSpan(0, timeoutMinutes * freq, 0);
         }
 
-        public bool IsConversationExpired(ConversationImpl c)
+        public bool IsConversationExpired(IConversation c)
         {
-            return ( c.LastVisit + timeout ) < DateTime.Now; 
+            return ( ((ConversationImpl) c).LastVisit + timeout ) < DateTime.Now; 
         }
 
         public TimeSpan CleanUpTimeSpan

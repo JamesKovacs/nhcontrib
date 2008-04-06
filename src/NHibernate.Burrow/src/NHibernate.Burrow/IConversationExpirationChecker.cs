@@ -7,7 +7,7 @@ namespace NHibernate.Burrow
 {
     public interface IConversationExpirationChecker
     {
-        bool IsConversationExpired(ConversationImpl c);
+        bool IsConversationExpired(IConversation c);
 
         /// <summary>
         /// Gets the period for the conversation pool cleaning.

@@ -14,8 +14,8 @@
         <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click" />
         <asp:Button ID="btnCommit" runat="server" Text="Commit" OnClick="btnCommit_Click" />
         <asp:Button ID="btnCancel" runat="server" Text="Cancel" OnClick="btnCancel_Click" />
-        <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" />
-        
+        <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" /><br />
+        <asp:Label ID="lConversationStatus" runat="server" Text=""></asp:Label>
     </div>
     </form>
 </body>

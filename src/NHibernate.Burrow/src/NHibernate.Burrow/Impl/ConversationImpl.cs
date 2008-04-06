@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NHibernate.Burrow.DataContainers;
 using NHibernate.Burrow.Exceptions;
 
@@ -10,40 +11,27 @@ namespace NHibernate.Burrow.Impl {
     /// Actually you shouldn't need to use this class. We may hide it to internal in the future. 
     /// Currently we leave it public mainly for testing purpose. 
     /// </remarks>
-    public class ConversationImpl : IConversation {
+    internal class ConversationImpl : IConversation {
+        public event System.EventHandler Closed;
         public const string ConversationIdKeyName = "NHibernate.Burrow.ConversationId";
-        private static readonly LocalSafe<ConversationImpl> current = new LocalSafe<ConversationImpl>();
-        private readonly GuidDataContainer items = new GuidDataContainer();
-        private bool canceled = false;
+       
         private readonly Guid id = Guid.NewGuid();
-        private SpanStrategy spanStrategy = SpanStrategy.Post;
+        private readonly GuidDataContainer items = new GuidDataContainer();
+
+        private readonly IDictionary<PersistenceUnit, SessionManager> sessManagers =
+            new Dictionary<PersistenceUnit, SessionManager>();
+
+        private bool canceled = false;
         private DateTime lastVisit = DateTime.Now;
-        
+        private SpanStrategy spanStrategy = SpanStrategy.Post;
 
-        public DateTime LastVisit 
-        {
-            get { return lastVisit ; }
-            private set { lastVisit  = value; }
+        private ConversationImpl() {
+            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
+                sessManagers.Add(pu, new SessionManager(pu));
         }
-
-        private ConversationImpl() {}
 
         #region public methods
 
-        public static int NumOfOutStandingLongConversations
-        {
-            get
-            {
-                return ConversationPool.Instance.ConversationsInPool;
-            }
-        }
-
-        /// <summary>
-        /// The current context conversation
-        /// </summary>
-        public static ConversationImpl Current {
-            get { return current.Value; }
-        }
 
         /// <summary>
         /// Gets the data bag the conversation holds
@@ -52,23 +40,10 @@ namespace NHibernate.Burrow.Impl {
         /// You can use this item to store conversation span data
         /// </remarks>
         public GuidDataContainer Items {
-            get
-            {
+            get {
                 Visited();
                 return items;
             }
-        }
-
-        private void Visited()
-        {
-            LastVisit = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Gets the unique id of this conversation
-        /// </summary>
-        public Guid Id {
-            get { return id; }
         }
 
         /// <summary>
@@ -96,131 +71,24 @@ namespace NHibernate.Burrow.Impl {
         }
 
         /// <summary>
-        /// Retreive a conversation by <paramref name="id"/> and make it the <see cref="Current"/>
+        /// Gets the unique id of this conversation
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>true if the conversation is successfully retrieved, otherwise false. 
-        /// </returns> 
-        public static bool RetrieveCurrent(Guid id) {
-            if(!ConversationPool.Instance.ContainsKey(id))
-                return false;
-            current.Value = ConversationPool.Instance[id];
-            return true;
-        }
-
-        /// <summary>
-        /// Start a new conversation
-        /// </summary>
-        public static void StartNew() {
-            current.Value = new ConversationImpl();
-            SessionManager.BeginNHibernateTransactions();
-        }
-
-        /// <summary>
-        /// Add conversation to the <see cref="ConversationPool"/>
-        /// </summary>
-        /// <remarks>
-        /// if already in the <see cref="ConversationPool"/>, do nothing
-        /// </remarks>
-        public bool AddToPool(SpanStrategy om) {
-            Visited();
-            if (!IsInPool && !Canceled) {
-                if (!om.ValidForSpan)
-                    throw new ArgumentException(
-                        om + "is not an accetable overspan strategy for long conversation");
-                SpanStrategy = om;
-                
-                ConversationPool.Instance.Add(id, this);
-                return true;
-            }
-            return false;
+        public Guid Id {
+            get { return id; }
         }
 
         /// <summary>
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
-        public bool SpanWithPostBacks()
-        {
+        public bool SpanWithPostBacks() {
             return AddToPool(SpanStrategy.Post);
         }
 
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
-        public bool SpanWithHttpSession()
-        {
+        public bool SpanWithHttpSession() {
             return AddToPool(SpanStrategy.Cookie);
-        }
-
-
-        /// <summary>
-        /// Remove this from the <see cref="ConversationPool"/>
-        /// </summary>
-        /// <remarks>
-        /// if not in the <see cref="ConversationPool"/>, do nothing
-        /// </remarks>
-        public void RemoveFromPool() {
-            if (IsInPool) {
-                ConversationPool.Instance.Remove(id);
-            }
-        }
-
-        /// <summary>
-        /// Commit the data changes happened in this conversation and close it.
-        /// </summary>
-        /// <remarks>
-        /// The NHibernate session will also be discard after you close the conversation
-        /// </remarks>
-        public void CommitAndClose() {
-            CheckState();
-
-            //SessionManager.Flush(); 
-            //it's added here because sometime transaction committing does not automatically flush the session especially when deleting something.
-            //1-29-08 by Kai: but it will be flushed in the following method 
-            try {
-                SessionManager.CommitNHibernateTransactions();
-            }
-            finally {
-                SessionManager.CloseNHibernateSessions();
-                Close();
-            }
-        }
-
-        private void CheckState() {
-            if (Canceled) throw new ConversationUnavailableException("Conversation was already canceld");
-        }
-
-        /// <summary>
-        /// Force commit the data 
-        /// </summary>
-        /// <remarks>
-        /// Call it for real special cases as it will break the atomicity of the conversation
-        /// basically it will commit a database transaction and start a new one. 
-        /// Multiple DB transaction in one conversation actually does not follow the design intention. 
-        /// </remarks>
-        public void ForceCommitChange() {
-            Visited();
-            CheckState();
-            try {
-                SessionManager.CommitNHibernateTransactions();
-            }
-            catch (Exception) {
-                Close();
-                throw;
-            }
-            SessionManager.BeginNHibernateTransactions();
-        }
-
-        /// <summary>
-        /// immediately rollback 
-        /// </summary>
-        public void RollbackAndClose() {
-            try {
-                SessionManager.RollbackNHibernateTransacitons();
-            }
-            finally {
-                Close();
-            }
         }
 
         /// <summary>
@@ -242,7 +110,7 @@ namespace NHibernate.Burrow.Impl {
         /// call this method when all operations in a long span conversation are successfully done
         /// </remarks>
         public bool FinishSpan() {
-            if(canceled)
+            if (canceled)
                 return false;
             RemoveFromPool();
             return true;
@@ -253,6 +121,142 @@ namespace NHibernate.Burrow.Impl {
         /// </summary>
         public bool IsSpanning {
             get { return SpanStrategy.ValidForSpan; }
+        }
+
+        private void Visited() {
+            LastVisit = DateTime.Now;
+        }
+
+       
+
+        /// <summary>
+        /// Add conversation to the <see cref="ConversationPool"/>
+        /// </summary>
+        /// <remarks>
+        /// if already in the <see cref="ConversationPool"/>, do nothing
+        /// </remarks>
+        public bool AddToPool(SpanStrategy om) {
+            Visited();
+            if (!IsInPool && !Canceled) {
+                if (!om.ValidForSpan)
+                    throw new ArgumentException(
+                        om + "is not an accetable overspan strategy for long conversation");
+                SpanStrategy = om;
+
+                ConversationPool.Instance.Add(id, this);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Remove this from the <see cref="ConversationPool"/>
+        /// </summary>
+        /// <remarks>
+        /// if not in the <see cref="ConversationPool"/>, do nothing
+        /// </remarks>
+        public void RemoveFromPool() {
+            if (IsInPool) ConversationPool.Instance.Remove(id);
+        }
+
+        /// <summary>
+        /// Commit the data changes happened in this conversation and close it.
+        /// </summary>
+        /// <remarks>
+        /// The NHibernate session will also be discard after you close the conversation
+        /// </remarks>
+        public void CommitAndClose() {
+            CheckState();
+
+            try {
+                CommitNHibernateTransactions();
+            }
+            finally {
+                CloseNHibernateSessions();
+                Close();
+            }
+        }
+
+        private void CheckState() {
+            if (Canceled) throw new ConversationUnavailableException("Conversation was already canceld");
+        }
+
+        /// <summary>
+        /// Force commit the data 
+        /// </summary>
+        /// <remarks>
+        /// Call it for real special cases as it will break the atomicity of the conversation
+        /// basically it will commit a database transaction and start a new one. 
+        /// Multiple DB transaction in one conversation actually does not follow the design intention. 
+        /// </remarks>
+        public void ForceCommitChange() {
+            Visited();
+            CheckState();
+            try {
+                CommitNHibernateTransactions();
+            }
+            catch (Exception) {
+                Close();
+                throw;
+            }
+            BeginNHibernateTransactions();
+        }
+
+        /// <summary>
+        /// immediately rollback 
+        /// </summary>
+        public void RollbackAndClose() {
+            try {
+                RollbackNHibernateTransacitons();
+            }
+            finally {
+                Close();
+            }
+        }
+
+        /// <summary>
+        /// Shortcut to flush the session
+        /// </summary>
+        public void Flush() {
+            foreach (SessionManager sm in sessManagers.Values)
+                sm.GetSession().Flush();
+        }
+
+        /// <summary>
+        /// Begin Transactions for all SessionManagers in All PersistenceUnits
+        /// </summary>
+        internal void BeginNHibernateTransactions() {
+            foreach (SessionManager sm in sessManagers.Values)
+                sm.BeginTransaction();
+        }
+
+        /// <summary>
+        /// Commit Transactions for all SessionManagers in All PersistenceUnits
+        /// </summary>
+        internal void CommitNHibernateTransactions() {
+            foreach (SessionManager sm in sessManagers.Values)
+                sm.CommitTransaction();
+        }
+
+        internal void RollbackNHibernateTransacitons() {
+            foreach (SessionManager sm in sessManagers.Values)
+                sm.RollbackTransaction();
+        }
+
+        internal void CloseNHibernateSessions() {
+            foreach (SessionManager sm in sessManagers.Values)
+                sm.CloseSession();
+        }
+
+        /// <summary>
+        /// The singleton Instance 
+        /// </summary>
+        internal SessionManager GetSessionManager() {
+            return sessManagers[PersistenceUnitRepo.Instance.GetOnlyPU()];
+        }
+
+        internal SessionManager GetSessionManager(System.Type t) {
+            return sessManagers[PersistenceUnitRepo.Instance.GetPU(t)];
         }
 
         #endregion
@@ -271,10 +275,26 @@ namespace NHibernate.Burrow.Impl {
                 RemoveFromPool();
             }
             finally {
-                current.Value = null;
+                if (Closed != null)
+                    Closed(this, new System.EventArgs());
             }
         }
 
         #endregion
+
+        public DateTime LastVisit {
+            get { return lastVisit; }
+            private set { lastVisit = value; }
+        }
+
+        public static IConversation StartNew() {
+            ConversationImpl ci =  new ConversationImpl();
+            ci.BeginNHibernateTransactions();
+            return ci;
+        }
+
+        public static ConversationImpl Current {
+            get { return new Facade().CurrentConversation as ConversationImpl; }
+        }
     }
 }

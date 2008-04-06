@@ -26,7 +26,7 @@ namespace BasicSample.Data
         /// </summary>
         private ISession NHibernateSession {
             get {
-                return Facade.GetSession();
+                return new Facade().GetSession();
             }
         }
     }

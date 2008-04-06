@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using NHibernate.Burrow.Util.DomainSession;
 
-namespace NHibernate.Burrow.Test {
+namespace NHibernate.Burrow.Util.Test.DomainSession
+{
     public class BooDomainSessionFactory : IDomainSessionFactory {
         /// <summary>
         /// Create the domainLayer

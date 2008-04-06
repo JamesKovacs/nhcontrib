@@ -10,40 +10,52 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
     public class ConfigReadWriteFixture {
         [Test]
         public void ReadNHConfigFileTest() {
-            IBurrowConfig section =  Facade.Configuration;
+            IBurrowConfig section =  new Facade().BurrowEnvironment.Configuration;
             Assert.IsNotNull(section);
             Assert.IsTrue(section.PersistenceUnitCfgs.Count > 0);
 
             foreach (IPersistenceUnitCfg puSection in section.PersistenceUnitCfgs) {
-                Console.WriteLine(puSection.NHConfigFile);
+               Console.WriteLine(puSection.NHConfigFile);
                Assert.IsTrue(puSection.NHConfigFile.IndexOf(".xml") > 0);
+               Assert.IsFalse(puSection.ManualTransactionManagement);
             }
         }
         [Test]
         public void WriteReadNHConfigFileTest() {
-            IBurrowConfig section =  Facade.Configuration;
+            Facade f = new Facade();
+            
+            IBurrowConfig section =  f.BurrowEnvironment.Configuration;
 
             Assert.IsNotNull(section);
             Assert.AreEqual(5, section.ConversationCleanupFrequency);
 
             Random r = new Random(3);
             int freq = r.Next(10, 100);
+            try {
+                section.ConversationCleanupFrequency = freq;
+                Assert.Fail("Failed to throw ChangeConfigWhenRunningException");
+            }catch(Exceptions.ChangeConfigWhenRunningException) {}
+            f.BurrowEnvironment.ShutDown();
+
+            
             section.ConversationCleanupFrequency = freq;
+            
             Assert.AreEqual(freq, section.ConversationCleanupFrequency);
             freq = r.Next(10, 100);
             section.ConversationCleanupFrequency = freq;
             Assert.AreEqual(freq, section.ConversationCleanupFrequency);
+            f.BurrowEnvironment.Start();
             
         }
 
         [Test]
         public void ConnectionStringTest()
         {
-            Facade.InitializeDomain();
-            string cs = Facade.Configuration.DBConnectionString(typeof(MockEntity));
+            new Facade().InitializeDomain();
+            string cs = new Facade().BurrowEnvironment.Configuration.DBConnectionString(typeof(MockEntity));
             Console.WriteLine(cs);
             Assert.IsTrue(cs.IndexOf("Server") >= 0);
-            Facade.CloseDomain();
+            new Facade().CloseDomain();
         }
     }
 }

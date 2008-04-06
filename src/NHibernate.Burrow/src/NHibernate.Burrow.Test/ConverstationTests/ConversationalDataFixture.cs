@@ -8,9 +8,11 @@ using NUnit.Framework;
 namespace NHibernate.Burrow.Test.ConverstationTests {
     [TestFixture]
     public class ConversationalDataFixture  {
+        readonly Facade f = new Facade();
         [Test]
         public void ConversationalDataPersistsTest() {
-            ConversationImpl.StartNew();
+           
+            f.InitializeDomain();
             ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Single);
             ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Single, "sometext");
             Assert.AreEqual(0, i.Value);
@@ -19,57 +21,52 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             s.Value = null;
             Assert.AreEqual(1, i.Value);
             Assert.IsNull(s.Value);
-            
-            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
-            Guid cid = ConversationImpl.Current.Id;
+            f.CurrentConversation.SpanWithPostBacks();
+            Guid cid = f.CurrentConversation.Id;
 
-            ConversationImpl.StartNew();
-            ConversationImpl.Current.CommitAndClose();
-            ConversationImpl.RetrieveCurrent(cid);
-
+            f.CloseDomain();
+            f.InitializeDomain(cid);
+               
             Assert.AreEqual(1, i.Value);
             Assert.IsNull(s.Value);
-
-            ConversationImpl.Current.CommitAndClose();
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
+            
         }
 
         [Test]
         public void ConversationalDataSpanBahaviorTest()
         {
-            ConversationImpl.StartNew();
+            f.InitializeDomain();
             ConversationalData<int> single = new ConversationalData<int>(ConversationalDataMode.Single, 1);
             ConversationalData<int> singleTemp = new ConversationalData<int>(ConversationalDataMode.SingleTemp, 1);
-            ConversationalData<int> overspan = new ConversationalData<int>(ConversationalDataMode.Overspan, 1);
             
-            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
-            Guid cid1 = ConversationImpl.Current.Id;
+            f.CurrentConversation.SpanWithPostBacks();
+            Guid cid1 = f.CurrentConversation.Id;
 
-            ConversationImpl.StartNew();
-            ConversationImpl.Current.CommitAndClose();
+            f.CloseDomain();
+            f.InitializeDomain();
             ExpectConversationUnavailableException(single);
             Assert.AreEqual(0, singleTemp.Value);
-            Assert.AreEqual(0, overspan.Value);
-            ConversationImpl.StartNew();
+            f.CloseDomain();
+            f.InitializeDomain();
             ExpectConversationUnavailableException(single);
             Assert.AreEqual(0, singleTemp.Value);
-            Assert.AreEqual(0, overspan.Value);
             singleTemp.Value = 2;
-            overspan.Value = 2;
-            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
-            Guid cid2 = ConversationImpl.Current.Id;
+            f.CurrentConversation.SpanWithPostBacks();
+            Guid cid2 = f.CurrentConversation.Id;
             Assert.AreNotEqual(cid2, cid1);
-             
-            ConversationImpl.RetrieveCurrent(cid1);
+            f.CloseDomain();
+            f.InitializeDomain(cid1);
             Assert.AreEqual(1,single.Value);
             Assert.AreEqual(0, singleTemp.Value);
-            Assert.AreEqual(1, overspan.Value);
-            ConversationImpl.Current.CommitAndClose();
-            
-            ConversationImpl.RetrieveCurrent(cid2);
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
+            f.InitializeDomain(cid2);
             ExpectConversationUnavailableException(single);
             Assert.AreEqual(0, singleTemp.Value);
-            Assert.AreEqual(2, overspan.Value);
-            ConversationImpl.Current.CommitAndClose();
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
         }
 
         private void ExpectConversationUnavailableException(ConversationalData<int> c) {
@@ -83,26 +80,25 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
 
         [Test]
         public void SpanOverMultipleDomainContextTest() {
-            Facade.InitializeDomain();
-            Facade.CurrentConversation.SpanWithPostBacks();
+            f.InitializeDomain();
+            f.CurrentConversation.SpanWithPostBacks();
             ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Single);
             ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Single, "sometext");
-            Guid gid = ConversationImpl.Current.Id;
+            Guid gid = f.CurrentConversation.Id;
             i.Value = 1;
-            Facade.CloseDomain();
-            Facade.InitializeDomain();
+            f.CloseDomain();
+            f.InitializeDomain();
             try {
                 i.Value.ToString();
                 Assert.Fail("Failed to throw a ConversationUnavailableException.");
             }
             catch (ConversationUnavailableException) {}
-            Facade.CloseDomain();
-            NameValueCollection mockRequest = new NameValueCollection();
-            mockRequest.Add(ConversationImpl.ConversationIdKeyName, gid.ToString());
-            Facade.InitializeDomain(mockRequest);
+            f.CloseDomain();
+            f.InitializeDomain(gid);
             Assert.AreEqual(1, i.Value);
             Assert.AreEqual("sometext", s.Value);
-            Facade.CurrentConversation.FinishSpan();
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
         }
     }
 }

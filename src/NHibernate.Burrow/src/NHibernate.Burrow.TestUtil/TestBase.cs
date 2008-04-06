@@ -14,12 +14,12 @@ namespace NHibernate.Burrow.TestUtil {
         private const bool OutputDdl = false;
         protected virtual bool CleanAndCreateSchema
         {
-            get{ return true; }
+            get{ return false; }
         }
 
         [SetUp]
         public void Initialize() {
-            Facade.InitializeDomain(true, null);
+            new Facade().InitializeDomain(true, null);
             DataProvider dpa = (DataProvider) Attribute.GetCustomAttribute(GetType(), typeof (DataProvider), true);
             if (dpa != null)
                 tdp = dpa.CreateDataProvider();
@@ -33,7 +33,7 @@ namespace NHibernate.Burrow.TestUtil {
             TearDown();
             try {
                 tdp.ClearData();
-                Facade.CloseDomain();
+                new Facade().CloseDomain();
             }
             finally {
                 LogManager.Shutdown();
@@ -55,8 +55,8 @@ namespace NHibernate.Burrow.TestUtil {
         }
 
         protected static void CommitAndStartnNewPersistentContext() {
-            Facade.CloseDomain();
-            Facade.InitializeDomain();
+            new Facade().CloseDomain();
+            new Facade().InitializeDomain();
         }
 
         [TestFixtureSetUp]

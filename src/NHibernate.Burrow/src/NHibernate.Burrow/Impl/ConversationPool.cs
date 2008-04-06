@@ -8,7 +8,7 @@ using NHibernate.Burrow.Impl;
 namespace NHibernate.Burrow.Impl {
     internal class ConversationPool
     {
-        private static readonly ConversationPool instance = new ConversationPool();
+        private static  readonly  ConversationPool instance = new ConversationPool(new Facade().BurrowEnvironment.Configuration);
         private readonly IDictionary<Guid, ConversationPoolItem> pool = new Dictionary<Guid, ConversationPoolItem>();
 
         private DateTime nextCleanup = DateTime.Now;
@@ -20,9 +20,9 @@ namespace NHibernate.Burrow.Impl {
             set { expirationChecker = value; }
         }
 
-        private ConversationPool()
+        internal ConversationPool(IBurrowConfig cfg)
         {
-            ExpirationChecker = ConversationExpirationCheckerFactory.Create();
+            ExpirationChecker = ConversationExpirationCheckerFactory.Create(cfg);
         }
 
         public int ConversationsInPool
@@ -133,6 +133,13 @@ namespace NHibernate.Burrow.Impl {
         public bool ContainsKey(Guid id)
         {
             return pool.ContainsKey(id);
+        }
+
+        public void Clear() {
+            for (IEnumerator<ConversationPoolItem> en = pool.Values.GetEnumerator();
+                 en.MoveNext();
+                 en = pool.Values.GetEnumerator())
+                 en.Current.Conversation.RollbackAndClose();
         }
     }
 

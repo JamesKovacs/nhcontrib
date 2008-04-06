@@ -30,9 +30,11 @@ namespace NHibernate.Burrow.Impl {
 
         private ConversationImpl CurrentConversation {
             get {
-                if (ConversationImpl.Current == null)
+                Facade f = new Facade();
+                
+                if (f.CurrentConversation == null)
                     throw new ConversationUninitializedException();
-                return ConversationImpl.Current;
+                return (ConversationImpl)f.CurrentConversation;
             }
         }
 
@@ -78,11 +80,11 @@ namespace NHibernate.Burrow.Impl {
             if (states != null) {
                 string cid = states[ConversationImpl.ConversationIdKeyName];
                 if (!string.IsNullOrEmpty(cid)) {
-                    ConversationImpl.RetrieveCurrent(new Guid(cid));
+                    FrameworkEnvironment.Instance.RetrieveCurrent(new Guid(cid));
                     return;
                 }
             }
-            ConversationImpl.StartNew();
+            FrameworkEnvironment.Instance.StartNewConversation();
         }
 
         /// <summary>
@@ -118,7 +120,7 @@ namespace NHibernate.Burrow.Impl {
         /// </remarks>
         public void Close() {
             try {
-                if (ConversationImpl.Current != null)
+                if (new Facade().CurrentConversation  != null)
                     CurrentConversation.OnDomainContextClose();
             }
             finally {

@@ -1,4 +1,5 @@
 using System;
+using NHibernate.Burrow.DataContainers;
 
 namespace NHibernate.Burrow {
     public interface IConversation {
@@ -44,6 +45,16 @@ namespace NHibernate.Burrow {
         /// </summary>
         bool IsSpanning{ get;}
 
+        /// <summary>
+        /// Gets the data bag the conversation holds
+        /// </summary>
+        /// <remarks>
+        /// You can use this item to store conversation span data
+        /// </remarks>
+        GuidDataContainer Items {
+            get;
+        }
 
+        event System.EventHandler Closed;
     }
 }

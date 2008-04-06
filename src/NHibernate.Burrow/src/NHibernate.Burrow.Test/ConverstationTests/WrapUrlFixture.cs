@@ -1,4 +1,5 @@
 using System;
+using NHibernate.Burrow.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConverstationTests {
@@ -7,27 +8,27 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         [Test]
         public void WrapWithoutSpanTest() {
             try {
-                Facade.InitializeDomain();
-                Facade.WrapUrlWithConversationInfo("http://test.com");
+                new Facade().InitializeDomain();
+                new UrlUtil().WrapUrlWithConversationInfo("http://test.com");
                 Assert.Fail("failed to throw IncorrectConversationSpanStatusException");
 
             }catch(Exceptions.IncorrectConversationSpanStatusException) {
                 
             }finally {
-                Facade.CloseDomain();
+                new Facade().CloseDomain();
             }
         }
         [Test]
         public void WrapTest() {
-            Facade.InitializeDomain();
-            Facade.CurrentConversation.SpanWithPostBacks();
-            string wrapped = Facade.WrapUrlWithConversationInfo("http://test.com");
-            Assert.IsTrue(wrapped.Contains( "http://test.com?NHibernate.Burrow.ConversationId=")); 
-            wrapped = Facade.WrapUrlWithConversationInfo("http://test.com?t=1");
+            new Facade().InitializeDomain();
+            new Facade().CurrentConversation.SpanWithPostBacks();
+            string wrapped = new UrlUtil().WrapUrlWithConversationInfo("http://test.com");
+            Assert.IsTrue(wrapped.Contains( "http://test.com?NHibernate.Burrow.ConversationId="));
+            wrapped = new UrlUtil().WrapUrlWithConversationInfo("http://test.com?t=1");
             Assert.IsTrue(wrapped.Contains( "http://test.com?t=1&NHibernate.Burrow.ConversationId="));
             Console.WriteLine(wrapped);
-            Facade.CurrentConversation.FinishSpan();
-            Facade.CloseDomain();
+            new Facade().CurrentConversation.FinishSpan();
+            new Facade().CloseDomain();
         }
     }
 }

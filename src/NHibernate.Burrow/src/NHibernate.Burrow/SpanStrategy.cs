@@ -8,6 +8,9 @@ using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow
 {
+    /// <summary>
+    /// the strategy with which Burrow span the <see cref="SpanState"/>
+    /// </summary>
     public abstract class SpanStrategy
     {
         public static readonly SpanStrategy Cookie = new CookieStrategy();
@@ -107,6 +110,7 @@ namespace NHibernate.Burrow
             {
                 HtmlInputHidden hi = new HtmlInputHidden();
                 hi.Name = os.Name;
+                hi.ID = os.Name;
                 hi.Value = os.Value;
                 c.Controls.Add(hi);
             }

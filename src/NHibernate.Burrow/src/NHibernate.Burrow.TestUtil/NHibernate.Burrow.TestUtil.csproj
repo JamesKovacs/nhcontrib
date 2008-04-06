@@ -62,10 +62,6 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj">
-      <Project>{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}</Project>
-      <Name>NHibernate.Burrow.Util</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>

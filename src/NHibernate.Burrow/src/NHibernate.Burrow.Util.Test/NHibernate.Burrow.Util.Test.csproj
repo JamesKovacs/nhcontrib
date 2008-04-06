@@ -61,6 +61,8 @@
     <Compile Include="CriterionTest\CriterionTest.cs" />
     <Compile Include="CriterionTest\Simple.cs" />
     <Compile Include="DebugConnectionProvider.cs" />
+    <Compile Include="DomainSession\BooDomainSession.cs" />
+    <Compile Include="DomainSession\BooDomainSessionFactory.cs" />
     <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
     <Compile Include="DynamicQuery\DynQueryFixture.cs" />
     <Compile Include="Pagination\BasePaginatorFixture.cs" />
@@ -82,12 +84,6 @@
     <Compile Include="UserTypes\UpperStringFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj">
-      <Project>{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}</Project>
-      <Name>NHibernate.Burrow.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="CriterionTest\Simple.hbm.xml" />
     <EmbeddedResource Include="Pagination\PagTest.hbm.xml" />
     <EmbeddedResource Include="UserTypes\UpperStringMappings.hbm.xml" />
@@ -100,6 +96,12 @@
     <None Include="ConfigurationTemplates\Oracle.cfg.xml.tmpl" />
     <None Include="ConfigurationTemplates\PostgreSQL.cfg.xml.tmpl" />
     <None Include="ConfigurationTemplates\SQLite.cfg.xml.tmpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj">
+      <Project>{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}</Project>
+      <Name>NHibernate.Burrow.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

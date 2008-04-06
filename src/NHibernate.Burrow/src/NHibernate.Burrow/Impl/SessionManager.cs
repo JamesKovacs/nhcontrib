@@ -15,37 +15,14 @@ namespace NHibernate.Burrow.Impl {
     internal sealed class SessionManager {
         #region fields
 
-        private readonly object lockObj2 = new object();
         private readonly PersistenceUnit persistenceUnit;
         private bool isDisposing = false;
+        private readonly ITransactionManager transactionManager;
 
         #region conversational transaction and session repo
 
-        private static readonly ConversationalData<IDictionary<SessionManager, ISession>> _sessionRepo =
-            new ConversationalData<IDictionary<SessionManager, ISession>>(ConversationalDataMode.Overspan,
-                                                                          new Dictionary<SessionManager, ISession>());
-
-        private static readonly ConversationalData<IDictionary<SessionManager, ITransaction>> _transactionRepo =
-            new ConversationalData<IDictionary<SessionManager, ITransaction>>(ConversationalDataMode.Overspan,
-                                                                              new Dictionary
-                                                                                  <SessionManager, ITransaction>()
-                );
-
-        private IDictionary<SessionManager, ISession> sessionRepo {
-            get {
-                if (_sessionRepo.Value == null)
-                    return _sessionRepo.Value = new Dictionary<SessionManager, ISession>();
-                return _sessionRepo.Value;
-            }
-        }
-
-        private IDictionary<SessionManager, ITransaction> transactionRepo {
-            get {
-                if (_transactionRepo.Value == null)
-                    return _transactionRepo.Value = new Dictionary<SessionManager, ITransaction>();
-                return _transactionRepo.Value;
-            }
-        }
+       
+        private readonly IDictionary<SessionManager, ISession> sessionRepo = new Dictionary<SessionManager, ISession>();
 
         private ISession threadSession {
             get {
@@ -56,15 +33,7 @@ namespace NHibernate.Burrow.Impl {
             set { sessionRepo[this] = value; }
         }
 
-        private ITransaction threadTransaction {
-            get {
-                IDictionary<SessionManager, ITransaction> repo = transactionRepo;
-                if (!repo.ContainsKey(this)) return null;
-                return repo[this];
-            }
-            set { transactionRepo[this] = value; }
-        }
-
+       
         #endregion
 
         #endregion
@@ -80,71 +49,7 @@ namespace NHibernate.Burrow.Impl {
 
         #endregion
 
-        #region static helper members
-
-        /// <summary>
-        /// The singleton Instance 
-        /// </summary>
-        public static SessionManager GetInstance()
-        {
-            return PersistenceUnitRepo.Instance.GetOnlyPU().SessionManager;
-        }
-
-        public static SessionManager GetInstance(System.Type t) {
-            return PersistenceUnitRepo.Instance.GetPU(t).SessionManager; ;
-        }
- 
-
-        /// <summary>
-        /// Shortcut to flush the session
-        /// </summary>
-        public static void Flush() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.GetSession().Flush();
-        }
-
-        /// <summary>
-        /// Shotcut to clear all the sessions
-        /// </summary>
-        public static void ClearSessions() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.GetSession().Clear();
-        }
-
-        /// <summary>
-        /// Begin Transactions for all SessionManagers in All PersistenceUnits
-        /// </summary>
-        internal static void BeginNHibernateTransactions() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Commit Transactions for all SessionManagers in All PersistenceUnits
-        /// </summary>
-        internal static void CommitNHibernateTransactions() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.CommitTransaction();
-        }
-
-        /// <summary>
-        /// Rollback the Transaction and CloseSession
-        /// </summary>
-        /// <remarks>
-        /// if the tranasaction has already been rollback or the session closed this will do nothing. 
-        /// You can perform this method multiple times, only the first time will take effect. 
-        /// </remarks>
-        internal static void RollbackNHibernateTransacitons() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.RollbackTransaction();
-        }
-
-        internal static void CloseNHibernateSessions() {
-            foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
-                pu.SessionManager.CloseSession();
-        }
-
-        #endregion
+     
 
         #region public methods
 
@@ -178,52 +83,37 @@ namespace NHibernate.Burrow.Impl {
             if (threadSession.IsOpen)
                 threadSession.Close();
             threadSession = null;
-            threadTransaction = null;
+            transactionManager.Dispose();
         }
 
         /// <summary>
         /// 
         /// </summary>
         public void BeginTransaction() {
-            if (threadTransaction == null)
-                threadTransaction = GetSession().BeginTransaction();
+            transactionManager.BeginTransaction(GetSession());
         }
 
         /// <summary>
         /// Try commit the transaction, if failed the transaction will be rollback and the session will be close
         /// </summary>
         public void CommitTransaction() {
-            try {
-                if (threadTransaction != null && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack) {
-                    if (threadSession == null)
-                        throw new GeneralException("The threadSession is null, the possible reasons includes: "
-                                                   +
-                                                   "The CloseSession Method is called before CommistTransaction Method.");
-                    if (!threadSession.IsOpen)
-                        throw new GeneralException(
-                            "The threadSession was closed by something other than the SessionManger. Do not close session directly. Always use the SessionManager.CloseSession() method ");
+            if (threadSession == null)
+                throw new GeneralException("The threadSession is null, the possible reasons includes: "
+                                           +
+                                           "The CloseSession Method is called before CommistTransaction Method.");
+            if (!threadSession.IsOpen)
+                throw new GeneralException(
+                    "The threadSession was closed by something other than the SessionManger. Do not close session directly. Always use the SessionManager.CloseSession() method ");
 
-                    threadSession.Flush();
-                    threadTransaction.Commit();
-                }
+            try {
+                threadSession.Flush();
             }
             catch (Exception) {
-                try {
-                    RollbackTransaction();
-                }
-                catch (Exception e) {
-                    //Catch the exception thrown from RollBackTransaction() to prevent the original exception from being swallowed.
-
-                    ILog log = LogManager.GetLogger(typeof (SessionManager));
-                    if (log.IsErrorEnabled)
-                        log.Error("NHibernate.Burrow Rollback failed", e);
-                    else Console.WriteLine(e);
-                }
+                RollBackWithoutExceptionThrown();
                 throw;
             }
-            finally {
-                threadTransaction = null;
-            }
+            transactionManager.CommitTransaction();
+            
         }
 
         /// <summary>
@@ -235,38 +125,46 @@ namespace NHibernate.Burrow.Impl {
         /// </remarks>
         public void RollbackTransaction() {
             try {
-                if (threadSession != null && threadSession.IsOpen && threadTransaction != null
-                    && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
-                    threadTransaction.Rollback();
+                if (threadSession != null && threadSession.IsOpen  )
+                    transactionManager.RollbackTransaction();
             }
             finally {
-                threadTransaction = null;
-
                 CloseSession();
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose() {
-            lock (lockObj2) {
-                if (isDisposing) return;
-                isDisposing = true;
+        public void RollBackWithoutExceptionThrown() {
+            try
+            {
+                RollbackTransaction();
             }
-            if (threadTransaction != null) CommitTransaction();
-
-            //CloseSession();
+            catch (Exception e)
+            {
+                //Catch the exception thrown from RollBackTransaction() to prevent the original exception from being swallowed.
+                try {
+                    ILog log = LogManager.GetLogger(typeof(SessionManager));
+                    if (log.IsErrorEnabled)
+                        log.Error("NHibernate.Burrow Rollback failed", e);
+                    else Console.WriteLine(e);
+                }
+                catch (Exception ) {}
+            }
         }
-
+ 
         #endregion
 
         #region constructors
 
         internal SessionManager(PersistenceUnit pu) {
             persistenceUnit = pu;
+            if (pu.Configuration.ManualTransactionManagement)
+                transactionManager = new VoidTransactionManager();
+            else
+                transactionManager = new TransactionManagerImpl();
         }
 
+
+    
         #endregion
 
         #region private members

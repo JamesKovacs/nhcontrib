@@ -23,7 +23,7 @@ namespace BasicSample.Web
         /// This doesn't actually open a connection to the database until needed.
         /// </summary>
         private void BeginTransaction(object sender, EventArgs e) {
-           Facade.InitializeDomain();
+           new Facade().InitializeDomain();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace BasicSample.Web
         /// not *have* to be opened for this to operate successfully.
         /// </summary>
         private void CommitAndCloseSession(object sender, EventArgs e) {
-           Facade.CloseDomain();
+           new Facade().CloseDomain();
         }
 
         public void Dispose() { }

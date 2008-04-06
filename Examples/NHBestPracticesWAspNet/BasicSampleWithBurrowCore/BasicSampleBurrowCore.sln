@@ -63,18 +63,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.WebUtil",
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj", "{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util.Test", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.Util.Test\NHibernate.Burrow.Util.Test.csproj", "{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.TestWeb\", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.TestWeb\", "{9972C2C1-E497-489B-A058-D100BB622987}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{3ED19982-3C23-4B7D-BE81-D40846A6CB16}|NHibernate.Burrow.dll;{3DBB9568-5688-4442-8ECA-BD216E807C8D}|NHibernate.Burrow.WebUtil.dll;{D2954D0B-C830-417B-A0D4-70AD81043B71}|NHibernate.Burrow.Test.dll;"
@@ -181,26 +169,6 @@ Global
 		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|.NET.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|.NET.ActiveCfg = Release|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9972C2C1-E497-489B-A058-D100BB622987}.Debug|.NET.ActiveCfg = Debug|.NET
 		{9972C2C1-E497-489B-A058-D100BB622987}.Debug|.NET.Build.0 = Debug|.NET
 		{9972C2C1-E497-489B-A058-D100BB622987}.Debug|Any CPU.ActiveCfg = Debug|.NET
@@ -229,8 +197,6 @@ Global
 		{3ED19982-3C23-4B7D-BE81-D40846A6CB16} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
 		{D2954D0B-C830-417B-A0D4-70AD81043B71} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
 		{3DBB9568-5688-4442-8ECA-BD216E807C8D} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
-		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
 		{9972C2C1-E497-489B-A058-D100BB622987} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
 		{32112377-D3FC-4A1C-8C90-BBDFF166ED3B} = {EFF13F5E-1419-443B-9666-28D55CC863EC}
 	EndGlobalSection

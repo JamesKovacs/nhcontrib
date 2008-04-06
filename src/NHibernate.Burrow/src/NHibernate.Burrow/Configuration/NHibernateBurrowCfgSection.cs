@@ -13,7 +13,22 @@ namespace NHibernate.Burrow.Configuration {
         /// </summary>
         public const string SectionName = "NHibernate.Burrow";
 
-        private static IDictionary<string, object> savedSettings = new Dictionary<string, object>();
+        private IList<IPersistenceUnitCfg> pucs;
+        private readonly IDictionary<string, object> savedSettings = new Dictionary<string, object>();
+        private void Set(string key, object value)
+        {
+            new Util().CheckCanChangeCfg(); 
+            savedSettings[key] = value;
+        }
+
+
+        private object Get(string key)
+        {
+            if (savedSettings.ContainsKey(key))
+                return savedSettings[key];
+            else
+                return this[key];
+        }
 
         /// <summary>
         /// 
@@ -40,12 +55,9 @@ namespace NHibernate.Burrow.Configuration {
 
         public ICollection<IPersistenceUnitCfg> PersistenceUnitCfgs {
             get {
-                IList<IPersistenceUnitCfg> retVal = new List<IPersistenceUnitCfg>();
-                foreach (PersistenceUnitElement pue in PersistenceUnits)
-                {
-                    retVal.Add(pue);
-                }
-                return retVal;
+                
+                return pucs;
+               
             }
         }
 
@@ -82,26 +94,22 @@ namespace NHibernate.Burrow.Configuration {
             set { Set("conversationExpirationChecker", value); }
         }
 
-        private void Set(string key, object value) {
-            savedSettings[key] = value;
-        }
-
-        private object Get(string key) {
-            if (savedSettings.ContainsKey(key))
-                return savedSettings[key];
-            else
-                return this[key];
-        }
+     
 
         /// <summary>
         /// Get the instance from the current application's config file
         /// </summary>
         /// <returns></returns>
-        public static NHibernateBurrowCfgSection GetInstance() {
+        public static NHibernateBurrowCfgSection CreateInstance() {
             NHibernateBurrowCfgSection section =
                 ConfigurationManager.GetSection(SectionName) as NHibernateBurrowCfgSection;
             if (section == null)
                 throw new GeneralException("Section \"" + SectionName + "\" is not found");
+            section.pucs = new List<IPersistenceUnitCfg>();
+            foreach (PersistenceUnitElement pue in section.PersistenceUnits)
+            {
+                section.pucs.Add(pue);
+            }
             return section;
         }
 

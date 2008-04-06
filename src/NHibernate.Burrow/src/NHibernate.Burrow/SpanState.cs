@@ -5,7 +5,12 @@ using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow {
  
-
+    /// <summary>
+    /// Represents a state that can span over multiple requests
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
     public class SpanState {
         public static IList<SpanState> CurrentStates()
         {
@@ -16,7 +21,7 @@ namespace NHibernate.Burrow {
         private readonly string name;
         private readonly string value;
 
-        public SpanState(string name, string value, SpanStrategy strategy) {
+        internal SpanState(string name, string value, SpanStrategy strategy) {
             this.name = name;
             this.strategy = strategy;
             this.value = value;

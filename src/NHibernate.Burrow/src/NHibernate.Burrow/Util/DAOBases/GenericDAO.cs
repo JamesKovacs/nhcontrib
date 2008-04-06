@@ -62,7 +62,7 @@ namespace NHibernate.Burrow.Util.DAOBases
         /// </summary>
         protected ISession Sess
         {
-            get { return Facade.GetSession(_NHEntityType); }
+            get { return new Facade().GetSession(_NHEntityType); }
         }
 
         /// <summary>

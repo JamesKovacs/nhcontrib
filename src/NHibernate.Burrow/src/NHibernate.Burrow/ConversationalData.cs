@@ -11,20 +11,21 @@ namespace NHibernate.Burrow {
         Single,
         
         /// <summary>
-        /// Data will only be available in conversation it is created, outside of the conversation, data will automatically reset to null 
+        /// Data will only be available in conversation it is created, once visited outside of the conversation, data will automatically reset to null 
         /// </summary>
         SingleTemp,
-        
-        /// <summary>
-        /// One <see cref="ConversationalData{T}"/> can have different values in different converstaions, each value stick with the corresponding conversation
-        /// </summary>
-        Overspan
+     
     }
 
     /// <summary>
     /// A Data container for conversational data
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <remarks>
+    /// use it when you need some data to have the same life span as the current conversation.
+    /// this class does not actually hold a reference to the <see cref="Value"/>, and thus can be easily serialized.
+    /// for example, in a Asp.net application, you can put an entity into a ConversationalData(entity) and then save the conversationalData instance into the ViewState or HttpSession 
+    /// </remarks>
     [Serializable]
     public class ConversationalData<T> {
         private Guid gid = Guid.Empty;
@@ -96,7 +97,7 @@ namespace NHibernate.Burrow {
 
         private void ConversationUnvailableException()
         {
-            string msg = Facade.CurrentConversation == null
+            string msg = new Facade().CurrentConversation == null
                              ? "ConversationalData can not be accessed outside conversation. "
                                + "Make sure Conversation is intialized before visiting conversational data."
                                +
@@ -108,7 +109,8 @@ namespace NHibernate.Burrow {
         }
         private static GuidDataContainer cItems {
             get {
-                return ConversationImpl.Current == null ? null : ConversationImpl.Current.Items;
+                Facade f = new Facade();
+                return f.CurrentConversation == null ? null : f.CurrentConversation.Items;
             }
         }
     }

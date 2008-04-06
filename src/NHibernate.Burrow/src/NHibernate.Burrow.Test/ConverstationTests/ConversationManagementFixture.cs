@@ -10,59 +10,18 @@ namespace NHibernate.Burrow.Test.ConverstationTests
     [TestFixture]
     public class ConversationManagementFixture : TestBase
     {
-        [Test]
-        public void CannotAddToPoolWithInvalidOverspanStrategy()
+        private Facade f = new Facade();
+
+        protected override bool CleanAndCreateSchema
         {
-            try
+            get
             {
-                ConversationImpl.Current.AddToPool(SpanStrategy.DoNotSpan);
-                Assert.Fail("Shoult not reach here");
+                return true;
             }
-            catch (ArgumentException) {}
         }
 
-        [Test]
-        public void CannotCommitAfterCancelTest()
-        {
-            ConversationImpl.Current.GiveUp();
-
-            try
-            {
-                ConversationImpl.Current.CommitAndClose();
-                Assert.Fail("Shoult not reach here");
-            }
-            catch (ConversationUnavailableException) {}
-
-            try
-            {
-                ConversationImpl.Current.ForceCommitChange();
-                Assert.Fail("Shoult not reach here");
-            }
-            catch (ConversationUnavailableException) {}
-        }
-
-        [Test]
-        public void PostConversationOverspanStrategyTest()
-        {
-            Facade.CurrentConversation.SpanWithPostBacks();
-            Assert.AreEqual(SpanStrategy.Post, ConversationImpl.Current.SpanStrategy);
-             Facade.CurrentConversation.GiveUp();
-        }
-
-        [Test]
-        public void SessionConversationOverspanStrategyTest()
-        {
-            Facade.CurrentConversation.SpanWithHttpSession();
-            Assert.AreEqual(SpanStrategy.Cookie, ConversationImpl.Current.SpanStrategy);
-             Facade.CurrentConversation.GiveUp();
-        }
-
-        [Test]
-        public void TempConversationOverspanStrategyTest()
-        {
-            Assert.AreEqual(SpanStrategy.DoNotSpan, ConversationImpl.Current.SpanStrategy);
-        }
-
+        
+        
         [Test]
         public void ManualRollbackTest()
         {
@@ -70,34 +29,36 @@ namespace NHibernate.Burrow.Test.ConverstationTests
             me.Save();
             Assert.IsNotNull(new MockEntities.MockDAO().FindById(me.Id));
            
-            Facade.CurrentConversation.GiveUp();
-            Facade.CloseDomain();
-            Facade.InitializeDomain();
+            new Facade().CurrentConversation.GiveUp();
+            new Facade().CloseDomain();
+            new Facade().InitializeDomain();
             Assert.IsNull( new MockEntities.MockDAO().FindById(me.Id));
         }
 
         [Test]
         public void ConversationInPoolTest()
         {
-            ConversationImpl.StartNew();
-            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
-            Guid cid1 = ConversationImpl.Current.Id;
-            Assert.AreEqual(1, ConversationImpl.NumOfOutStandingLongConversations);
-            ConversationImpl.StartNew();  
-            Assert.AreEqual(1, ConversationImpl.NumOfOutStandingLongConversations);
-            ConversationImpl.Current.AddToPool(SpanStrategy.Post);
-            Guid cid2 = ConversationImpl.Current.Id;
+            f.CurrentConversation.SpanWithPostBacks();
+            Guid cid1 = f.CurrentConversation.Id;
+            Assert.AreEqual(1, f.BurrowEnvironment.SpanningConversations);
+            f.CloseDomain();
+            f.InitializeDomain();
+            Assert.AreEqual(1, f.BurrowEnvironment.SpanningConversations);
+            f.CurrentConversation.SpanWithPostBacks();
+            Guid cid2 = f.CurrentConversation.Id;
             Assert.AreNotEqual(cid2, cid1);
-            Assert.AreEqual(2, ConversationImpl.NumOfOutStandingLongConversations);
-
-            ConversationImpl.RetrieveCurrent(cid1);
-            Assert.AreEqual(cid1, ConversationImpl.Current.Id);
-            ConversationImpl.Current.CommitAndClose();
-            Assert.IsNull(ConversationImpl.Current);
-            ConversationImpl.RetrieveCurrent(cid2);
-            Assert.AreEqual(cid2, ConversationImpl.Current.Id);
-            ConversationImpl.Current.CommitAndClose();
-            Assert.IsNull(ConversationImpl.Current);
+            Assert.AreEqual(2, f.BurrowEnvironment.SpanningConversations);
+            f.CloseDomain();
+            f.InitializeDomain(cid1);
+            Assert.AreEqual(cid1, f.CurrentConversation.Id);
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
+            Assert.IsNull(f.CurrentConversation);
+            f.InitializeDomain(cid2);
+            Assert.AreEqual(cid2, f.CurrentConversation.Id);
+            f.CurrentConversation.FinishSpan();
+            f.CloseDomain();
+            Assert.IsNull(f.CurrentConversation);
         }
     }
 }

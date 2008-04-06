@@ -112,7 +112,7 @@ namespace BasicSample.Data
         /// </summary>
         private ISession NHibernateSession {
             get {
-                return Facade.GetSession(persitentType);
+                return new Facade().GetSession(persitentType);
             }
         }
 

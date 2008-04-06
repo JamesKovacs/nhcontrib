@@ -8,9 +8,9 @@ namespace NHibernate.Burrow.Impl {
     /// </summary>
     public static class ConversationExpirationCheckerFactory
     {
-        public static IConversationExpirationChecker Create()
+        public static IConversationExpirationChecker Create(IBurrowConfig cfg)
         {
-            string checkerName =  Facade.Configuration.ConversationExpirationChecker;
+            string checkerName =  cfg.ConversationExpirationChecker;
             if (string.IsNullOrEmpty(checkerName))
             {
                 return new ConversationExpirationCheckerByTimeout();

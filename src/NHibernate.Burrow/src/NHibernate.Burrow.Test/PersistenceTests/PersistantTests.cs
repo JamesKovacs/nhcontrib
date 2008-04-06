@@ -9,6 +9,13 @@ using NUnit.Framework;
 namespace NHibernate.Burrow.Test.PersistenceTests {
     [TestFixture]
     public class PersistenceTests : TestBase {
+        protected override bool CleanAndCreateSchema
+        {
+            get
+            {
+                return true;
+            }
+        }
         [Test]
         public void CRUDTest() {
             string mockName = new Random(1000).Next().ToString();

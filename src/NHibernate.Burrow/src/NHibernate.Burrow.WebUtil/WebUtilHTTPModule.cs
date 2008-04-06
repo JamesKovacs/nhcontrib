@@ -33,11 +33,11 @@ namespace NHibernate.Burrow.WebUtil {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private static void OnError(object sender, EventArgs e) {
-            if(!Facade.Alive) return;
+            if(!new Facade().Alive) return;
             try
             {
-                 Facade.CurrentConversation.GiveUp();
-                Facade.CloseDomain();
+                 new Facade().CurrentConversation.GiveUp();
+                new Facade().CloseDomain();
             }
             catch (Exception)
             {
@@ -54,7 +54,7 @@ namespace NHibernate.Burrow.WebUtil {
             if (HandlerIsIrrelavant(ctx))
                 return;
 
-            Facade.InitializeDomain(true, ctx.Request.Params);
+            new Facade().InitializeDomain(true, ctx.Request.Params);
             if (ctx.Context.Handler is Page) {
                 Page p = (Page) ctx.Context.Handler;
                 new StatefulFieldPageModule(p);
@@ -73,7 +73,7 @@ namespace NHibernate.Burrow.WebUtil {
             HttpApplication ctx = (HttpApplication) sender;
             if (HandlerIsIrrelavant(ctx))
                 return;
-            Facade.CloseDomain();
+            new Facade().CloseDomain();
         } 
     }
 }

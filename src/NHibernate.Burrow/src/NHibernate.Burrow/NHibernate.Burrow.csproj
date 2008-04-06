@@ -106,7 +106,15 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Configuration\Util.cs" />
+    <Compile Include="Exceptions\ChangeConfigWhenRunningException.cs" />
+    <Compile Include="Exceptions\FrameworkAlreadyShutDownException.cs" />
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
+    <Compile Include="Impl\FrameworkEnvironment.cs" />
+    <Compile Include="IFrameworkEnvironment.cs" />
+    <Compile Include="Impl\ITransactionManager.cs" />
+    <Compile Include="Impl\TransactionManagerImpl.cs" />
+    <Compile Include="Impl\VoidTransactionManager.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
     <Compile Include="IBurrowConfig.cs" />
     <Compile Include="Configuration\NHibernateBurrowCfgSection.cs" />
@@ -151,6 +159,7 @@
     <Compile Include="Util\EntityBases\EntityWithIdNBizKeyBase.cs" />
     <Compile Include="Util\InstanceLoader.cs" />
     <Compile Include="Util\SchemaUtil.cs" />
+    <Compile Include="Util\UrlUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
