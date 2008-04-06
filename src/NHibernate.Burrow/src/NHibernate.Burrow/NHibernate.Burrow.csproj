@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="Configuration\Util.cs" />
     <Compile Include="Exceptions\ChangeConfigWhenRunningException.cs" />
+    <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
     <Compile Include="Exceptions\FrameworkAlreadyShutDownException.cs" />
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
     <Compile Include="Impl\FrameworkEnvironment.cs" />

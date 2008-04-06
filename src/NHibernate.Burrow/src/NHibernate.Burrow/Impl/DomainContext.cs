@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web;
-using NHibernate.Burrow.DataContainers;
-using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow.Impl {
     /// <summary>
@@ -13,95 +10,66 @@ namespace NHibernate.Burrow.Impl {
     /// You can aslo deem this as the counterpart of HttpContext within which your asp.net layer works. 
     /// </summary>
     /// <remarks>
-    /// The DomainContext contains the status of a particular managed environment for a particular request or thread. 
-    /// It has to be <see cref="Initialize()"/> before MindLib can help management your NHibernate environtment. 
-    /// Also it needs to be <see cref="Close()"/> after that httpRequest or thread is done. 
-    /// This initialization and close is normally automatically taken care of by MindLib itself for a Asp.net application. 
-    /// But for Unit Test or you need use your domain layer in a separate thread, you will need to call the <see cref="Initialize()"/>
-    /// and <see cref="Close"/> before and after your domain layer operations. 
-    /// There is also instruction on how to deal with these scenarios in the documentation
     /// </remarks>
     internal sealed class DomainContext {
-        private static LocalSafe<DomainContext> current = new LocalSafe<DomainContext>();
-
-        private DomainContext() {}
+        private bool closed = false;
+        private ConversationImpl currentConversation;
 
         #region private memebers
 
-        private ConversationImpl CurrentConversation {
-            get {
-                Facade f = new Facade();
-                
-                if (f.CurrentConversation == null)
-                    throw new ConversationUninitializedException();
-                return (ConversationImpl)f.CurrentConversation;
-            }
+        #endregion
+
+        private DomainContext(NameValueCollection states) {
+            InitializeConversation(states);
         }
 
-        #endregion
+        public bool Closed {
+            get { return closed; }
+        }
 
         /// <summary>
         /// The current DomainContext your code is working in
         /// </summary>
         public static DomainContext Current {
-            get { return current.Value; }
+            get { return FrameworkEnvironment.Instance.CurrentDomainContext; }
         }
 
-        /// <summary>
-        /// Initialize a Domain Context 
-        /// </summary>
-        /// <remarks>
-        /// Please read the remarks of the <see cref="DomainContext"/>
-        /// This should be called before any NHibernate related operation
-        /// </remarks>
-        public static void Initialize() {
-            Initialize(new NameValueCollection());
+        public ConversationImpl CurrentConversation {
+            get { return currentConversation; }
+            private set { currentConversation = value; }
         }
 
-        /// <summary>
-        /// Initialize a Domain Context 
-        /// </summary>
-        /// <remarks>
-        /// Please read the remarks of the <see cref="DomainContext"/>
-        /// You normally don't need to call this method
-        /// </remarks>
-        /// <param name="states">
-        /// Initialized the domain context with a collection of states
-        /// </param>
-        public static void Initialize(NameValueCollection states) {
-            if (current.Value == null)
-                current.Value = new DomainContext();
-            else
-                throw new BurrowException("DomainContext is already initialized");
-            InitializeConversation(states);
+        public static DomainContext StartNew(NameValueCollection states) {
+            DomainContext retVal = new DomainContext(states);
+            return retVal;
         }
 
-        private static void InitializeConversation(NameValueCollection states) {
+        private void InitializeConversation(NameValueCollection states) {
             if (states != null) {
-                string cid = states[ConversationImpl.ConversationIdKeyName];
-                if (!string.IsNullOrEmpty(cid)) {
-                    FrameworkEnvironment.Instance.RetrieveCurrent(new Guid(cid));
-                    return;
+                string state = states[ConversationImpl.ConversationIdKeyName];
+                if (state != null) {
+                    string[] cids = state.Split(',');
+                    foreach (string cid in cids) {
+                        if (!string.IsNullOrEmpty(cid)) {
+                            SetCurrentConversation(ConversationPool.Instance[new Guid(cid)]);
+                            return;
+                        }
+                    }
                 }
             }
-            FrameworkEnvironment.Instance.StartNewConversation();
+            SetCurrentConversation(ConversationImpl.StartNew());
         }
 
-        /// <summary>
-        /// Start a long Coversation that spans over multiple http requests
-        /// </summary>
-        public void StarLongConversation() {
-            CurrentConversation.AddToPool(SpanStrategy.Post);
+        private void SetCurrentConversation(ConversationImpl c) {
+            c.Closed += new EventHandler(conversation_Closed);
+            currentConversation = c;
+            return;
         }
 
-        /// <summary>
-        /// Start a long Coversation that spans over the whole session
-        /// </summary>
-        public void StarSessionConversation() {
-            CurrentConversation.AddToPool(SpanStrategy.Cookie);
+        private void conversation_Closed(object sender, EventArgs e) {
+            currentConversation = null;
         }
 
-      
 
         /// <summary>
         /// Cancel the current Conversation, so it won't be commit
@@ -109,7 +77,7 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// </remarks>
         public void CancelConversation() {
-            CurrentConversation.GiveUp();
+            currentConversation.GiveUp();
         }
 
         /// <summary>
@@ -119,13 +87,11 @@ namespace NHibernate.Burrow.Impl {
         /// Please read the remarks of the <see cref="DomainContext"/>
         /// </remarks>
         public void Close() {
-            try {
-                if (new Facade().CurrentConversation  != null)
-                    CurrentConversation.OnDomainContextClose();
-            }
-            finally {
-                current.Value = null;
-            }
+            if (closed)
+                return;
+            if (currentConversation != null)
+                currentConversation.OnDomainContextClose();
+            closed = true;
         }
 
         /// <summary>
@@ -135,40 +101,34 @@ namespace NHibernate.Burrow.Impl {
         public IList<SpanState> SpanStates() {
             IList<SpanState> retVal = new List<SpanState>();
             retVal.Add(
-                new SpanState(ConversationImpl.ConversationIdKeyName, CurrentConversation.Id.ToString(),
-                                  CurrentConversation.SpanStrategy));
+                new SpanState(ConversationImpl.ConversationIdKeyName, currentConversation.Id.ToString(),
+                              currentConversation.SpanStrategy));
             return retVal;
         }
-
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="originalUrl"></param>
         /// <returns></returns>
-        public  string WrapUrlWithSpanInfo(string originalUrl)
-        {
+        public string WrapUrlWithSpanInfo(string originalUrl) {
             StringBuilder sb = new StringBuilder(originalUrl);
 
             bool firstPara = originalUrl.IndexOf("?") < 0;
             foreach (SpanState state in  SpanStates())
-            {
                 if (state.Strategy.ValidForSpan && !string.IsNullOrEmpty(state.Name)
-                    && !string.IsNullOrEmpty(state.Value))
-                {
+                    && !string.IsNullOrEmpty(state.Value)) {
                     sb.Append((firstPara ? "?" : "&"));
                     sb.Append(UrlEncode(state.Name));
                     sb.Append("=");
                     sb.Append(UrlEncode(state.Value));
                     firstPara = false;
                 }
-            }
             return sb.ToString();
         }
 
         private string UrlEncode(string s) {
-            return System.Web.HttpUtility.UrlEncode(s);
-        
+            return HttpUtility.UrlEncode(s);
         }
     }
 }

@@ -17,6 +17,17 @@ namespace NHibernate.Burrow {
             return DomainContext.Current.SpanStates();
         }
 
+        public static void UpdateToHttpContext(bool spanning) {
+            HttpContext c = HttpContext.Current;
+            if(c == null) return;
+            foreach (SpanState state in CurrentStates()) {
+                if(spanning)
+                    state.Strategy.ImmdiatelyAddSpanStates(c, state);
+                else 
+                    state.CleanCookies(c);
+            }
+        }
+
         private readonly SpanStrategy strategy;
         private readonly string name;
         private readonly string value;
@@ -41,12 +52,12 @@ namespace NHibernate.Burrow {
 
         public void CleanCookies(HttpContext c)
         {
-              Strategy.CleanCookies(this, c);
+              Strategy.CleanStates(this, c);
         }
 
         public void AddOverspanState(Control c)
         {
-            Strategy.AddOverspanState(c, this);
+            Strategy.AddOverspanStateWhenRendering(c, this);
         }
     }
 }

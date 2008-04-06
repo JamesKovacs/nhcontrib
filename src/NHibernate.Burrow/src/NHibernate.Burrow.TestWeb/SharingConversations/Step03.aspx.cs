@@ -1,6 +1,7 @@
 using System;
 using System.Web.UI;
 using NHibernate.Burrow;
+using NHibernate.Burrow.Util;
 
 public partial class SharingConversations_Step03 : Page
 {
@@ -28,6 +29,9 @@ public partial class SharingConversations_Step03 : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
+        new Facade().CurrentConversation.FinishSpan();
         Response.Redirect("Step04.aspx");
     }
+
+    
 }

@@ -4,11 +4,12 @@ using Iesi.Collections.Generic;
 using NHibernate.Burrow;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.SessionManagerTest {
+namespace NHibernate.Burrow.Test.Concurrency {
     [TestFixture]
-    public class GetSessionConcurencyTest {
+    public class SessionConcurency {
         public static ISet<int> sesss = new HashedSet<int>();
         public static int error = 0;
+        public static int threadPerformed = 0;
         /// <summary>
         /// it is set explicit as it's quite time consuming
         /// </summary>
@@ -21,7 +22,7 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
         /// <summary>
         /// it is set explicit as it's quite time consuming
         /// </summary>
-        [Test, Explicit] 
+        [Test] 
         public void MultiTreadTest() {
             error = 0;
             for (int j = 0; j < 50; j++) {
@@ -33,16 +34,17 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
                 Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/3");
                 Thread.Sleep(5000); //Wait for all thread to stop.
             }
+            Console.WriteLine("Waitting done");
+            Assert.AreEqual(50, threadPerformed, "not all thread are performed");
             Assert.AreEqual(0, error, error + " Errors occured");
         }
 
         [Test]
         public void SingleTest() {
             new ThreadTestProcessor(1).ThreadProc();
-        }
-    }
-
-    public class ThreadTestProcessor {
+        } 
+        
+        public class ThreadTestProcessor {
         private int num;
 
         public ThreadTestProcessor(int num) {
@@ -56,12 +58,13 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
                 Assert.IsNotNull(session);
                 int code = session.GetHashCode();
                 session.Flush();
-                Assert.IsTrue(GetSessionConcurencyTest.sesss.Add(code));
+                Assert.IsTrue(SessionConcurency.sesss.Add(code));
                 Console.WriteLine("Thread # " + num + " succeeded.");
+                threadPerformed++;
             }
             catch (Exception e) {
                 Console.WriteLine("Thread #" + num + " occurs error:" + e.Message);
-                GetSessionConcurencyTest.error++;
+                SessionConcurency.error++;
                 throw;
             }
             finally {
@@ -69,4 +72,7 @@ namespace NHibernate.Burrow.Test.SessionManagerTest {
             }
         }
     }
+    }
+
+  
 }

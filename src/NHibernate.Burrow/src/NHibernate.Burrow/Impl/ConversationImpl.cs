@@ -81,14 +81,14 @@ namespace NHibernate.Burrow.Impl {
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
         public bool SpanWithPostBacks() {
-            return AddToPool(SpanStrategy.Post);
+            return Span(SpanStrategy.Post);
         }
 
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
         public bool SpanWithHttpSession() {
-            return AddToPool(SpanStrategy.Cookie);
+            return Span(SpanStrategy.Cookie);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace NHibernate.Burrow.Impl {
         /// </remarks>
         public void GiveUp() {
             canceled = true;
-            RemoveFromPool();
+            StopSpanning();
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace NHibernate.Burrow.Impl {
         public bool FinishSpan() {
             if (canceled)
                 return false;
-            RemoveFromPool();
+            StopSpanning();
             return true;
         }
 
@@ -135,17 +135,20 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do nothing
         /// </remarks>
-        public bool AddToPool(SpanStrategy om) {
+        public bool Span(SpanStrategy om) {
             Visited();
-            if (!IsInPool && !Canceled) {
-                if (!om.ValidForSpan)
-                    throw new ArgumentException(
-                        om + "is not an accetable overspan strategy for long conversation");
-                SpanStrategy = om;
-
+            if (!om.ValidForSpan)
+                throw new ArgumentException(
+                    om + "is not an accetable overspan strategy for spanning");
+            if (Canceled)
+                throw new ConversationAlreadyCancelledException();
+            SpanStrategy = om;
+            SpanState.UpdateToHttpContext( IsSpanning);
+            if (!IsInPool) {
                 ConversationPool.Instance.Add(id, this);
                 return true;
             }
+
             return false;
         }
 
@@ -155,8 +158,9 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// if not in the <see cref="ConversationPool"/>, do nothing
         /// </remarks>
-        public void RemoveFromPool() {
+        private void StopSpanning() {
             if (IsInPool) ConversationPool.Instance.Remove(id);
+            SpanState.UpdateToHttpContext(IsSpanning);
         }
 
         /// <summary>
@@ -272,7 +276,7 @@ namespace NHibernate.Burrow.Impl {
 
         private void Close() {
             try {
-                RemoveFromPool();
+                StopSpanning();
             }
             finally {
                 if (Closed != null)
@@ -287,7 +291,8 @@ namespace NHibernate.Burrow.Impl {
             private set { lastVisit = value; }
         }
 
-        public static IConversation StartNew() {
+        public static ConversationImpl StartNew()
+        {
             ConversationImpl ci =  new ConversationImpl();
             ci.BeginNHibernateTransactions();
             return ci;

@@ -33,6 +33,7 @@ public partial class SharingConversations_Step04 : Page
         Session["conversationId"] = conversation.Id;
         //Facade.addPageToAllUseCase("/Step06.aspx");
         //conversation.addPageToUseCase("/Step05.aspx");
+        conversation.SpanWithHttpSession();
         Response.Redirect("Step05.aspx");
     }
 }

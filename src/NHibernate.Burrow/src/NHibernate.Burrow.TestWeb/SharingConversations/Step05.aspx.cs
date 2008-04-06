@@ -18,11 +18,12 @@ public partial class SharingConversations_Step05 : Page
 
         if (!conversation.Id.Equals(lastConversationId))
             throw new Exception("The conversation isn't same that previous, the new conversation was created");
+        
     }
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
         //Session["UseCaseCount"] = Facade.ActiveConversations.Count;
-        Response.Redirect("Step07.aspx");
+        Response.Redirect("Step06.aspx");
     }
 }

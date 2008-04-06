@@ -14,7 +14,11 @@ namespace NHibernate.Burrow {
     /// </remarks>
     public  class Facade {
         public  IConversation CurrentConversation {
-            get { return FrameworkEnvironment.Instance.CurrentConversation; }
+            get {
+                if(DomainContext.Current != null)
+                    return  DomainContext.Current.CurrentConversation;
+                return null;
+            }
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace NHibernate.Burrow {
         public  void InitializeDomain(bool ignoreUnclosedDomain, NameValueCollection states) {
             if (ignoreUnclosedDomain && Alive)
                 CloseDomain();
-            DomainContext.Initialize(states);
+            FrameworkEnvironment.Instance.StartNewDomainContext(states);
         }
 
         public void InitializeDomain(Guid conversationId)
