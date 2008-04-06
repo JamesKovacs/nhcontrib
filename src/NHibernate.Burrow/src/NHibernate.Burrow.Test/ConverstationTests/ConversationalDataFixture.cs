@@ -13,8 +13,8 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         public void ConversationalDataPersistsTest() {
            
             f.InitializeDomain();
-            ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Single);
-            ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Single, "sometext");
+            ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Normal);
+            ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Normal, "sometext");
             Assert.AreEqual(0, i.Value);
             Assert.AreEqual("sometext", s.Value);
             i.Value = 1;
@@ -38,8 +38,8 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         public void ConversationalDataSpanBahaviorTest()
         {
             f.InitializeDomain();
-            ConversationalData<int> single = new ConversationalData<int>(ConversationalDataMode.Single, 1);
-            ConversationalData<int> singleTemp = new ConversationalData<int>(ConversationalDataMode.SingleTemp, 1);
+            ConversationalData<int> single = new ConversationalData<int>(ConversationalDataMode.Normal, 1);
+            ConversationalData<int> singleTemp = new ConversationalData<int>(ConversationalDataMode.OutOfConversationSafe, 1);
             
             f.CurrentConversation.SpanWithPostBacks();
             Guid cid1 = f.CurrentConversation.Id;
@@ -82,8 +82,8 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         public void SpanOverMultipleDomainContextTest() {
             f.InitializeDomain();
             f.CurrentConversation.SpanWithPostBacks();
-            ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Single);
-            ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Single, "sometext");
+            ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Normal);
+            ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Normal, "sometext");
             Guid gid = f.CurrentConversation.Id;
             i.Value = 1;
             f.CloseDomain();

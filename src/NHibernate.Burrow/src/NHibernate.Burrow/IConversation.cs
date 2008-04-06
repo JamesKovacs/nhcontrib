@@ -2,6 +2,9 @@ using System;
 using NHibernate.Burrow.DataContainers;
 
 namespace NHibernate.Burrow {
+    /// <summary>
+    ///
+    /// </summary>
     public interface IConversation {
         /// <summary>
         /// Gets the unique id of this conversation
@@ -50,6 +53,8 @@ namespace NHibernate.Burrow {
         /// </summary>
         /// <remarks>
         /// You can use this item to store conversation span data
+        /// Basically this is a dictionary that uses guid as keys. 
+        /// Another more convenient and better way to store data that share the same life span as conversation is the <see cref="ConversationalData{T}"/>
         /// </remarks>
         GuidDataContainer Items {
             get;
