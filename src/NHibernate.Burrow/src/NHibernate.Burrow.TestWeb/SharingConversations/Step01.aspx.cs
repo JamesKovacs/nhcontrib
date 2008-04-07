@@ -11,10 +11,13 @@ public partial class SharingConversations_Step01 : Page
 
         if (conversation == null)
             throw new Exception("The page doesn't have current conversation!");
+       
 
         if (!IsPostBack)
         {
+            Checker.CheckSpanningConversations(0);
             conversation.SpanWithPostBacks();
+            Checker.CheckSpanningConversations(1);
 
             //conversation.Items["step"] = 0;
             Session["conversationId"] = conversation.Id;
@@ -37,7 +40,7 @@ public partial class SharingConversations_Step01 : Page
     {
         Facade facade = new Facade();
         IConversation conversation = facade.CurrentConversation;
-
+       
         //int step = (int)conversation.Items["step"];
         int step = (int) Session["step"];
 
@@ -48,10 +51,14 @@ public partial class SharingConversations_Step01 : Page
         if (step < 5)
         {
             btnNextStep.Text = "step 1 + " + step + "/5";
+            Checker.CheckSpanningConversations(1);
+
         }
         else
         {
             conversation.FinishSpan();
+            Checker.CheckSpanningConversations(0);
+
             Response.Redirect("Step02.aspx");
         }
     }

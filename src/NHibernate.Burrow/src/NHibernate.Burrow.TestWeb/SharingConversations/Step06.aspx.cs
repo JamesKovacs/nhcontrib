@@ -12,6 +12,7 @@ public partial class SharingConversations_Step06 : Page
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
+            Checker.CheckSpanningConversations(1);
 
             object lastConversationId = Session["conversationId"];
             if (lastConversationId == null)
@@ -20,6 +21,8 @@ public partial class SharingConversations_Step06 : Page
             if (!conversation.Id.Equals(lastConversationId))
                 throw new Exception("The conversation isn't same that previous, the new conversation was created");
             conversation.FinishSpan();
+            Checker.CheckSpanningConversations(0);
+
         }
     }
 

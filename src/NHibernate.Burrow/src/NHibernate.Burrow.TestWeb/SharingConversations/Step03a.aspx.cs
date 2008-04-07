@@ -13,8 +13,11 @@ public partial class SharingConversations_Step03a : Page
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
+            Checker.CheckSpanningConversations(1);
 
             conversation.SpanWithPostBacks();
+
+            Checker.CheckSpanningConversations(2);
 
             //if (Facade.ActiveConversations.Count != 2)
             //    throw new Exception("There are more conversations that the expected");            }
@@ -28,6 +31,8 @@ public partial class SharingConversations_Step03a : Page
         Session["continue"] = true;
 
         conversation.FinishSpan();
+        Checker.CheckSpanningConversations(1);
+
         hdClose.Value = "1";
     }
 }

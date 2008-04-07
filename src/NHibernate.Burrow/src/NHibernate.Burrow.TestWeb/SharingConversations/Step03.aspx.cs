@@ -14,14 +14,15 @@ public partial class SharingConversations_Step03 : Page
         {
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
-
+            Checker.CheckSpanningConversations(0);
             conversation.SpanWithPostBacks();
-
+            Checker.CheckSpanningConversations(1);
+            Session["continue"] = false;
             //if (Facade.ActiveConversations.Count != 1)
             //    throw new Exception("There are more conversations that the expected");
         }
             //else if (conversation.Items.ContainsKey("continue"))
-        else if (Session["continue"] != null)
+        else if (Session["continue"] != null && (bool) Session["continue"])
             btnNextStep.Visible = true;
         else
             lblMessage.Text = "You should complete the step 3 a before continue";
@@ -29,7 +30,11 @@ public partial class SharingConversations_Step03 : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
+        Checker.CheckSpanningConversations(1);
+
         new Facade().CurrentConversation.FinishSpan();
+        Checker.CheckSpanningConversations(0);
+
         Response.Redirect("Step04.aspx");
     }
 

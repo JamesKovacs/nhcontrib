@@ -10,6 +10,7 @@ public partial class SharingConversations_Step02 : Page
         {
             Facade facade = new Facade();
             IConversation conversation = facade.CurrentConversation;
+            Checker.CheckSpanningConversations(0);
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");

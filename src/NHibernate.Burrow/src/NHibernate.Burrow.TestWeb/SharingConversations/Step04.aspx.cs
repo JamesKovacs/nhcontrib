@@ -11,11 +11,13 @@ public partial class SharingConversations_Step04 : Page
         {
             Facade facade = new Facade();
             IConversation conversation = facade.CurrentConversation;
+            Checker.CheckSpanningConversations(0);
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
 
             conversation.SpanWithPostBacks();
+            Checker.CheckSpanningConversations(1);
 
             Session["conversationId"] = conversation.Id;
             lblConversationId.Text = "Current: " + conversation.Id;
@@ -29,11 +31,14 @@ public partial class SharingConversations_Step04 : Page
     {
         Facade facade = new Facade();
         IConversation conversation = facade.CurrentConversation;
+        Checker.CheckSpanningConversations(1);
 
         Session["conversationId"] = conversation.Id;
         //Facade.addPageToAllUseCase("/Step06.aspx");
         //conversation.addPageToUseCase("/Step05.aspx");
         conversation.SpanWithHttpSession();
+        Checker.CheckSpanningConversations(1);
+
         Response.Redirect("Step05.aspx");
     }
 }

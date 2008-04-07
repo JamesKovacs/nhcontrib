@@ -20,6 +20,7 @@ public partial class SharingConversations_Step04Child : Page
         if (!conversation.Id.Equals(id))
             throw new Exception("The conversation in iframe isn't same that conversation in container page. Current.Id " +
                                 conversation.Id);
+        Checker.CheckSpanningConversations(1);
 
         lblConversationId.Text = conversation.Id.ToString();
     }
