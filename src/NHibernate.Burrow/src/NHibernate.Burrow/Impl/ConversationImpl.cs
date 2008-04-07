@@ -23,7 +23,7 @@ namespace NHibernate.Burrow.Impl {
 
         private bool canceled = false;
         private DateTime lastVisit = DateTime.Now;
-        private SpanStrategy spanStrategy = SpanStrategy.Post;
+        private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
 
         private ConversationImpl() {
             foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
@@ -133,9 +133,9 @@ namespace NHibernate.Burrow.Impl {
         /// Add conversation to the <see cref="ConversationPool"/>
         /// </summary>
         /// <remarks>
-        /// if already in the <see cref="ConversationPool"/>, do nothing
+        /// if already in the <see cref="ConversationPool"/>, do simply change the SpanStrategy if there is any change
         /// </remarks>
-        public bool Span(SpanStrategy om) {
+        private bool Span(SpanStrategy om) {
             Visited();
             if (!om.ValidForSpan)
                 throw new ArgumentException(
@@ -143,13 +143,15 @@ namespace NHibernate.Burrow.Impl {
             if (Canceled)
                 throw new ConversationAlreadyCancelledException();
             SpanStrategy = om;
-            SpanState.UpdateToHttpContext( IsSpanning);
+            bool retVal = false;
             if (!IsInPool) {
                 ConversationPool.Instance.Add(id, this);
-                return true;
+                retVal = true;
             }
+            
+            SpanState.UpdateToHttpContext();
 
-            return false;
+            return retVal;
         }
 
         /// <summary>
@@ -160,7 +162,8 @@ namespace NHibernate.Burrow.Impl {
         /// </remarks>
         private void StopSpanning() {
             if (IsInPool) ConversationPool.Instance.Remove(id);
-            SpanState.UpdateToHttpContext(IsSpanning);
+            SpanStrategy = SpanStrategy.DoNotSpan;
+            SpanState.UpdateToHttpContext();
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSample.Tests", "BasicS
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\BasicSample.Web\", "BasicSample.Web\", "{AFE7FBBC-9373-4BD1-AB7A-F4C1476979C2}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\BasicSample.Web\", "BasicSample.Web\", "{AFE7FBBC-9373-4BD1-AB7A-F4C1476979C2}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{FCB45F28-3A4E-4E72-9691-556125CCF227}|BasicSample.Data.dll;{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}|BasicSample.Core.dll;{3DBB9568-5688-4442-8ECA-BD216E807C8D}|NHibernate.Burrow.WebUtil.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/BasicSample.Web"
@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.WebUtil",
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.TestWeb\", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.TestWeb\", "{9972C2C1-E497-489B-A058-D100BB622987}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\NHibernate.Burrow.TestWeb\", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.TestWeb\", "{9972C2C1-E497-489B-A058-D100BB622987}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{3ED19982-3C23-4B7D-BE81-D40846A6CB16}|NHibernate.Burrow.dll;{3DBB9568-5688-4442-8ECA-BD216E807C8D}|NHibernate.Burrow.WebUtil.dll;{D2954D0B-C830-417B-A0D4-70AD81043B71}|NHibernate.Burrow.Test.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/NHibernate.Burrow.TestWeb"
@@ -80,7 +80,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.Te
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3822"
+		VWDPort = "4551"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.TestUtil", "..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.TestUtil\NHibernate.Burrow.TestUtil.csproj", "{32112377-D3FC-4A1C-8C90-BBDFF166ED3B}"

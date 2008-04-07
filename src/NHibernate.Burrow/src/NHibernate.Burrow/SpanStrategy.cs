@@ -48,7 +48,26 @@ namespace NHibernate.Burrow
         }
 
         public abstract void AddOverspanStateWhenRendering(Control c, SpanState os);
-        public abstract void ImmdiatelyAddSpanStates(HttpContext c, SpanState os);
+        
+        public  void UpdateSpanStates(HttpContext c, SpanState os) {
+            
+            HttpCookie cookie = new HttpCookie(os.Name, UseCookie ? os.Value : string.Empty);
+            if (!UseCookie)
+                cookie.Expires = DateTime.Now.AddDays(-1);
+            
+            updateCookie(cookie, c.Response.Cookies);
+            updateCookie(cookie, c.Request.Cookies); //added here for so that even the states will be there even when request is Redirected and no reponse is generated
+        }
+
+        protected abstract bool UseCookie {
+            get;
+        }
+
+        private static void updateCookie(HttpCookie cookie, HttpCookieCollection cookies)
+        {
+            cookies.Remove(cookie.Name);
+            cookies.Add(cookie);
+        }
 
         #region Nested type: CookieStrategy
 
@@ -61,15 +80,8 @@ namespace NHibernate.Burrow
               
             }
 
-            public override void ImmdiatelyAddSpanStates(HttpContext c, SpanState os) {
-                HttpCookie cookie = new HttpCookie(os.Name, os.Value);
-                updateCookie(cookie, c.Response.Cookies);
-                updateCookie(cookie, c.Request.Cookies); //added here for so that even the states will be there even when request is Redirected and no reponse is generated
-            }
-
-            private static void updateCookie(HttpCookie cookie, HttpCookieCollection cookies) {
-                cookies.Remove(cookie.Name);
-                cookies.Add(cookie);
+            protected override bool UseCookie {
+                get { return true;}
             }
 
             public override void CleanStates(SpanState os, HttpContext c) {}
@@ -90,7 +102,10 @@ namespace NHibernate.Burrow
 
             public override void AddOverspanStateWhenRendering(Control c, SpanState os) {}
 
-            public override void ImmdiatelyAddSpanStates(HttpContext c, SpanState os) {}
+            protected override bool UseCookie {
+                get { return false; }
+            }
+ 
         }
 
         #endregion
@@ -109,7 +124,11 @@ namespace NHibernate.Burrow
 
             public override void AddOverspanStateWhenRendering(Control c, SpanState os) {}
 
-            public override void ImmdiatelyAddSpanStates(HttpContext c, SpanState os) {}
+            protected override bool UseCookie
+            {
+                get { return false; }
+            }
+
         }
 
         #endregion
@@ -129,8 +148,10 @@ namespace NHibernate.Burrow
                 c.Controls.Add(hi);
             }
 
-            public override void ImmdiatelyAddSpanStates(HttpContext c, SpanState os) {}
-        }
+            protected override bool UseCookie {
+                get { return false; }
+            }
+      }
 
         #endregion
     }
