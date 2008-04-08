@@ -6,7 +6,8 @@ public partial class SharingConversations_Step06 : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack) {
+        if (!IsPostBack || Session["continue"] != null && (bool)Session["continue"])
+        {
             Facade facade = new Facade();
             IConversation conversation = facade.CurrentConversation;
 
@@ -20,10 +21,16 @@ public partial class SharingConversations_Step06 : Page
 
             if (!conversation.Id.Equals(lastConversationId))
                 throw new Exception("The conversation isn't same that previous, the new conversation was created");
-            conversation.FinishSpan();
-            Checker.CheckSpanningConversations(0);
 
         }
+        
+        if (Session["continue"] != null && (bool)Session["continue"])
+        {
+            Session.Remove("continue");
+            btnNextStep.Visible = true;
+        }
+        else if (IsPostBack)
+            lblMessage.Text = "You should complete the step 6 a before continue";
     }
 
     protected void btnNextStep_Click(object sender, EventArgs e)

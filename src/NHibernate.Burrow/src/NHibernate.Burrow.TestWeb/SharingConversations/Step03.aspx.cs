@@ -23,7 +23,10 @@ public partial class SharingConversations_Step03 : Page
         }
             //else if (conversation.Items.ContainsKey("continue"))
         else if (Session["continue"] != null && (bool) Session["continue"])
+        {
+            Session.Remove("continue");
             btnNextStep.Visible = true;
+        }
         else
             lblMessage.Text = "You should complete the step 3 a before continue";
     }
