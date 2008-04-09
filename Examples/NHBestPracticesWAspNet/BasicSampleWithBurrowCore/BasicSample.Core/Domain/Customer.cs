@@ -119,5 +119,10 @@ namespace BasicSample.Core.Domain
         private string companyName = "";
         private string contactName = "";
         private IList<Order> orders = new List<Order>();
+
+        public override string ToString()
+        {
+            return CompanyName + " - " + ContactName;
+        }
     }
 }

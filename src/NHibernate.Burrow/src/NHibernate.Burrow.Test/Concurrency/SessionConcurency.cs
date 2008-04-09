@@ -25,14 +25,21 @@ namespace NHibernate.Burrow.Test.Concurrency {
         [Test] 
         public void MultiTreadTest() {
             error = 0;
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             for (int j = 0; j < 50; j++) {
                 ThreadTestProcessor processor = new ThreadTestProcessor(j);
                 Thread t = new Thread(new ThreadStart(processor.ThreadProc));
+                t.Priority = ThreadPriority.AboveNormal;
                 t.Start();
             }
-            for (int i = 0; i < 4; i++) {
-                Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/3");
-                Thread.Sleep(5000); //Wait for all thread to stop.
+            Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+            for (int i = 0; i < 2000; i++) {
+                if(i % 100 == 0)
+                Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/2000");
+                if(threadPerformed == 50)
+                    break;
+                Thread.Sleep(10); //Wait for all thread to stop.
             }
             Console.WriteLine("Waitting done");
             Assert.AreEqual(50, threadPerformed, "not all thread are performed");
