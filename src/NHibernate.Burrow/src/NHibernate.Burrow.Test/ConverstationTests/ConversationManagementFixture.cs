@@ -27,12 +27,12 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         {
             MockEntities.MockEntity me = new MockEntity();
             me.Save();
-            Assert.IsNotNull(new MockEntities.MockDAO().FindById(me.Id));
+            Assert.IsNotNull(new MockEntities.MockDAO().Get(me.Id));
            
             new Facade().CurrentConversation.GiveUp();
             new Facade().CloseDomain();
             new Facade().InitializeDomain();
-            Assert.IsNull( new MockEntities.MockDAO().FindById(me.Id));
+            Assert.IsNull( new MockEntities.MockDAO().Get(me.Id));
         }
 
         [Test]

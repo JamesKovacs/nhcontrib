@@ -23,10 +23,10 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             m.Name = mockName;
             m.Save();
             GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();
-            Assert.AreEqual(d.FindById(m.Id), m);
-            Assert.AreEqual(mockName, d.FindById(m.Id).Name);
+            Assert.AreEqual(d.Get(m.Id), m);
+            Assert.AreEqual(mockName, d.Get(m.Id).Name);
             m.Delete();
-            Assert.IsNull(d.FindById(m.Id));
+            Assert.IsNull(d.Get(m.Id));
         }
 
         [Test]
@@ -54,9 +54,9 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             o3.Save();
             CommitAndStartnNewPersistentContext();
             HashIdMockClassDAO dao = new HashIdMockClassDAO();
-            HashIdMockClass o1reloaded = dao.FindById(o1.Id);
-            HashIdMockClass o2reloaded = dao.FindById(o2.Id);
-            HashIdMockClass o3reloaded = dao.FindById(o3.Id);
+            HashIdMockClass o1reloaded = dao.Get(o1.Id);
+            HashIdMockClass o2reloaded = dao.Get(o2.Id);
+            HashIdMockClass o3reloaded = dao.Get(o3.Id);
             Console.WriteLine(o1.GetHashCode());
 
             Assert.AreNotEqual(o1reloaded, o2reloaded);
@@ -79,7 +79,7 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             MockEntity m = new MockEntity();
             m.Save();
             GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();
-            Assert.AreEqual(d.FindById(m.Id), m);
+            Assert.AreEqual(d.Get(m.Id), m);
             m.Delete();
         }
     }

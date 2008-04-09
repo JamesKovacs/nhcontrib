@@ -57,7 +57,7 @@ namespace NHibernate.Burrow.Test.MockEntities
     {
         public IList<MockEntity> FindByName(string name)
         {
-            return FindByCriterion(Expression.Eq("Name", name));
+            return FindByCriteria(Expression.Eq("Name", name));
         }
     }
 }

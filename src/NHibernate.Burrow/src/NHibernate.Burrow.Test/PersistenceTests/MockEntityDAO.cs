@@ -11,7 +11,7 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
 
         // Uncomment the following method if your entity has a unique Name property 
         // public MockEntity FindByName(string name) {
-        //     return (MockPersistentClass) GetCriteria().Add(Expression.Eq("Name",name))
+        //     return (MockPersistentClass) CreateCriteria().Add(Expression.Eq("Name",name))
         //                             .UniqueResult();
         // }
     }

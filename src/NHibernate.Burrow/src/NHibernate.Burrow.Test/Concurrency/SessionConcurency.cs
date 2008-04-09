@@ -19,9 +19,6 @@ namespace NHibernate.Burrow.Test.Concurrency {
                 MultiTreadTest();
         }
 
-        /// <summary>
-        /// it is set explicit as it's quite time consuming
-        /// </summary>
         [Test] 
         public void MultiTreadTest() {
             error = 0;

@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
 
     public class HashIdMockClassDAO : GenericDAO<HashIdMockClass> {
         public HashIdMockClass FindByName(string name) {
-            return GetCriteria().Add(Expression.Eq("Name", name))
+            return CreateCriteria().Add(Expression.Eq("Name", name))
                 .UniqueResult<HashIdMockClass>();
         }
     }

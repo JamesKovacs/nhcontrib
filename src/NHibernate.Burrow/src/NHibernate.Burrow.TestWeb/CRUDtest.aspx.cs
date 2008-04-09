@@ -34,7 +34,7 @@ public partial class CRUDtest : System.Web.UI.Page
     {
         if(me != null)
             me.Delete();
-        me = new MockDAO().FindById(me.Id);
+        me = new MockDAO().Get(me.Id);
     }
 
     protected override void OnPreRender(EventArgs e)
