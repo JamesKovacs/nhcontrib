@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Iesi.Collections.Generic;
 
@@ -92,7 +93,8 @@ namespace NHibernate.Burrow.Impl {
         private Cfg.Configuration CreateNHConfiguration()
         {
             Cfg.Configuration retVal = new Cfg.Configuration();
-            retVal.Configure(configuration.NHConfigFile);
+            string configFile = configuration.NHConfigFile.Replace("~", AppDomain.CurrentDomain.BaseDirectory);
+            retVal.Configure(configFile);
             //retVal.Properties = Configuration.ORMFrameworkSettingsDict;
             //foreach (Assembly assembly in domainLayerAssemblies)
             //    retVal.AddAssembly(assembly);

@@ -46,7 +46,7 @@ namespace NHibernate.Burrow.Configuration {
             IsRequired = true,
             IsKey = false)]
         [StringValidator(InvalidCharacters =
-                         " ~!@#$%^&*()[]{};'\"|",
+                         " !@#$%^&*()[]{};'\"|",
               MaxLength=160)]
         public string NHConfigFile {
             get { return (string)Get("nh-config-file"); }
