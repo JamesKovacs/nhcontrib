@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using NHibernate.Burrow.Test.MockEntities;
+using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.WebUtil;
 
 public partial class CRUDtest : System.Web.UI.Page
@@ -34,7 +35,7 @@ public partial class CRUDtest : System.Web.UI.Page
     {
         if(me != null)
             me.Delete();
-        me = new MockDAO().Get(me.Id);
+        me = new MockEntityDAO().Get(me.Id);
     }
 
     protected override void OnPreRender(EventArgs e)

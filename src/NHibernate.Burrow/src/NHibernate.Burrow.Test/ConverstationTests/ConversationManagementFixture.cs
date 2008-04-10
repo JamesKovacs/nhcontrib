@@ -2,6 +2,7 @@ using System;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
 using NHibernate.Burrow.Test.MockEntities;
+using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.TestUtil;
 using NUnit.Framework;
 
@@ -27,12 +28,12 @@ namespace NHibernate.Burrow.Test.ConverstationTests
         {
             MockEntities.MockEntity me = new MockEntity();
             me.Save();
-            Assert.IsNotNull(new MockEntities.MockDAO().Get(me.Id));
+            Assert.IsNotNull(new MockEntityDAO().Get(me.Id));
            
             new Facade().CurrentConversation.GiveUp();
             new Facade().CloseDomain();
             new Facade().InitializeDomain();
-            Assert.IsNull( new MockEntities.MockDAO().Get(me.Id));
+            Assert.IsNull( new MockEntityDAO().Get(me.Id));
         }
 
         [Test]

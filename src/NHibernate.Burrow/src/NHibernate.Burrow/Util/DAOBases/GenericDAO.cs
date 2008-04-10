@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Iesi.Collections.Generic;
 using NHibernate.Criterion;
 
 namespace NHibernate.Burrow.Util.DAOBases {
@@ -87,6 +88,33 @@ namespace NHibernate.Burrow.Util.DAOBases {
                 return new Order(s[0], s[1] == "ASC");
         }
 
+        /// <summary>
+        /// Gets the unique result from results
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// you can use this together with other helper methods to do unqiue search
+        /// <example>
+        /// <code>
+        /// public class CustomerDAO : GenericDAO{Customer}  {
+        ///      public Customer FindbyName(string name){
+        ///          return UniqueResult(Find(Expression.Eq( "Name", name)); 
+        ///      }
+        /// }
+        /// </code>
+        /// </example>
+        ///
+        /// </remarks>
+        protected T UniqueResult<T>(IList<T> results) {
+            if (results == null || results.Count == 0)
+                return default(T);
+            if(results.Count > 1 && new HashedSet<T>(results).Count > 1)
+                throw new HibernateException("More than one results return");
+            return results[0];
+        }
+
         #region Query Helpers
 
         /// <summary>
@@ -141,7 +169,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="startRow"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        protected static IList<ReturnT> FindByQueryPaginated(IQuery q, int startRow, int pageSize) {
+        protected static IList<ReturnT> PaginatedQuery(IQuery q, int startRow, int pageSize) {
             q.SetFirstResult(startRow);
             if (pageSize > 0)
                 q.SetMaxResults(pageSize);
@@ -204,7 +232,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Find according the criterion
         /// </summary>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(params ICriterion[] crit) {
+        protected IList<ReturnT> Find(params ICriterion[] crit) {
             return CreateCriteria(crit).List<ReturnT>();
         }
 
@@ -212,11 +240,13 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Find by ICriteria created by client
         /// </summary>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, string sortExpression, ICriteria c) {
+        protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression, ICriteria c) {
             Order o = ParseOrder(sortExpression);
-            if (o != null)
+            if (o != null) {
+                c.Orders.Clear();
                 c.AddOrder(o);
-            return FindByCriteria(pageSize, startRow, c);
+            }
+            return Find(pageSize, startRow, c);
         }
 
         /// <summary>
@@ -226,7 +256,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="pageSize"></param>
         /// <param name="startRow"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int pageSize, int startRow, ICriteria c) {
+        protected IList<ReturnT> Find(int pageSize, int startRow, ICriteria c) {
             c.SetFirstResult(startRow);
             if (pageSize > 0)
                 c.SetMaxResults(pageSize);
@@ -241,9 +271,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression">will use <see cref="DefaultOrder"/> if empty</param>
         /// <param name="crit"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, string sortExpression,
+        protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression,
                                                 params ICriterion[] crit) {
-            return FindByCriteria(startRow, pageSize, sortExpression, CreateCriteria(crit));
+            return Find(startRow, pageSize, sortExpression, CreateCriteria(crit));
         }
 
         /// <summary>
@@ -254,9 +284,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression">will use <see cref="DefaultOrder"/> if empty</param>
         /// <param name="crit"></param>
         /// <returns></returns>
-        protected IList<ReturnT> FindByCriteria(int startRow, int pageSize, string sortExpression,
+        protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression,
                                                 ICollection<ICriterion> crit) {
-            return FindByCriteria(startRow, pageSize, sortExpression, CreateCriteria(crit));
+            return Find(startRow, pageSize, sortExpression, CreateCriteria(crit));
         }
 
         #endregion  
@@ -268,12 +298,12 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="criterions"></param>
         /// <returns></returns>
-        protected int CountByCriteria(ICollection<ICriterion> criterions) {
-            return CountByCriteria(CreateCriteria(null, criterions));
+        protected int Count(ICollection<ICriterion> criterions) {
+            return Count(CreateCriteria(null, criterions));
         }
 
-        protected int CountByCriteria(params ICriterion[] criterions) {
-            return CountByCriteria(CreateCriteria(null, criterions));
+        protected int Count(params ICriterion[] criterions) {
+            return Count(CreateCriteria(null, criterions));
         }
 
         /// <summary>
@@ -281,7 +311,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        protected int CountByCriteria(ICriteria c) {
+        protected int Count(ICriteria c) {
             object o = c.SetProjection(Projections.RowCount()).UniqueResult();
             if (o == null)
                 return 0;
@@ -307,8 +337,8 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <returns>a persistent instance or null</returns>
         public virtual ReturnT Get(object id) {
             return (ReturnT) Session.Get(_NHEntityType, id);
-        }
-
+        }  
+        
         /// <summary>
         /// Return the persistent instance of the given entity class with the given identifier, assuming that the instance exists.
         /// </summary>
@@ -372,7 +402,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <returns></returns>
         public virtual IList<ReturnT> FindAll() {
-            return FindByCriteria();
+            return Find();
         }
 
         /// <summary>
@@ -387,7 +417,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </param>
         /// <returns></returns>
         public virtual IList<ReturnT> FindAll(int startRow, int pageSize, string sortExpression) {
-            return FindByCriteria(startRow, pageSize, sortExpression);
+            return Find(startRow, pageSize, sortExpression);
         }
 
         /// <summary>
@@ -395,9 +425,26 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// </summary>
         /// <returns></returns>
         public virtual int CountAll() {
-            return CountByCriteria(CreateCriteria());
+            return Count(CreateCriteria());
         }
 
+
+        public IList<ReturnT> FindByExample(ReturnT exampleInstance, params string[] propertiesToExclude)
+        {
+            ICriteria criteria = CreateCriteria();
+            Example example = Example.Create(exampleInstance);
+
+            foreach (string propertyToExclude in propertiesToExclude)
+            {
+                example.ExcludeProperty(propertyToExclude);
+            }
+
+            criteria.Add(example);
+
+            return criteria.List<ReturnT>();
+        }
+
+        
         #endregion
 
         #endregion

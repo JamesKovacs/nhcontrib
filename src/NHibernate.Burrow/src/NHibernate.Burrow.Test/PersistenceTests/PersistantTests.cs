@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NHibernate.Burrow;
 using NHibernate.Burrow.Test.MockEntities;
+using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.DAOBases;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
             string name = RandomStringGenerator.GenerateLetterStrings(5);
             m.Name = name;
             m.Save();
-            IList<MockEntity> result = new MockDAO().FindByName(name);
+            IList<MockEntity> result = new MockEntityDAO().FindByName(name);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(m, result[0]);
             m.Delete();

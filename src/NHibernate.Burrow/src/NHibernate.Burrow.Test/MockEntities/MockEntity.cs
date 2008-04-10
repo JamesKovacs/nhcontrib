@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.Util.DAOBases;
 using NHibernate.Burrow.Util.EntityBases;
 using NHibernate.Criterion;
@@ -45,19 +46,13 @@ namespace NHibernate.Burrow.Test.MockEntities
 
         public bool Delete() {
               preDeletedPerformed++;
-               new MockDAO().Delete(this);
+               new MockEntityDAO().Delete(this);
             return true;
         }
         public void Save() {
-            new MockDAO().Save(this);
+            new MockEntityDAO().Save(this);
         }
     }
 
-    public class MockDAO : GenericDAO<MockEntity>
-    {
-        public IList<MockEntity> FindByName(string name)
-        {
-            return FindByCriteria(Expression.Eq("Name", name));
-        }
-    }
+   
 }

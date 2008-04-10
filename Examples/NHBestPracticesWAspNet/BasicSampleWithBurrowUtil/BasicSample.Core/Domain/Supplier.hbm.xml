@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="BasicSample.Core.Domain.Supplier, BasicSample.Core" table="Suppliers" lazy="false">
+    <id name="ID" column="SupplierID" unsaved-value="0">
+      <generator class="identity" />
+    </id>
+
+    <property name="CompanyName" column="CompanyName" />
+    <property name="ContactName" column="ContactName" />
+
+    <bag name="products" access="field"  table="Products" inverse="true">
+      <key column="SupplierID" />
+      <one-to-many class="BasicSample.Core.Domain.Product, BasicSample.Core" />
+    </bag>
+  </class>
+</hibernate-mapping>
