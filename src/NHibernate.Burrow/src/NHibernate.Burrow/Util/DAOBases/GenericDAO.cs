@@ -236,10 +236,28 @@ namespace NHibernate.Burrow.Util.DAOBases {
             return CreateCriteria(crit).List<ReturnT>();
         }
 
+		/// <summary>
+		/// Query by creteria with paging surport. 
+		/// </summary>
+		/// <param name="c"></param>
+		/// <param name="pageSize"></param>
+		/// <param name="startRow"></param>
+		/// <returns></returns>
+		protected IList<ReturnT> Find(int pageSize, int startRow, ICriteria c)
+		{
+			c.SetFirstResult(startRow);
+			if (pageSize > 0)
+				c.SetMaxResults(pageSize);
+			return c.List<ReturnT>();
+		}
+
         /// <summary>
-        /// Find by ICriteria created by client
+        /// Find by ICriteria created by client with Pagination and Sorting
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// This pagination signature is designed to work with ASP.NET ObjectDataSource, for more advanced pagination, please consider NHiberante.Burrow.Util.Pagination.IPaginator, NHiberante.Burrow.Util
+        /// </remarks>
         protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression, ICriteria c) {
             Order o = ParseOrder(sortExpression);
             if (o != null) {
@@ -249,19 +267,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
             return Find(pageSize, startRow, c);
         }
 
-        /// <summary>
-        /// Query by creteria with paging surport. 
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="startRow"></param>
-        /// <returns></returns>
-        protected IList<ReturnT> Find(int pageSize, int startRow, ICriteria c) {
-            c.SetFirstResult(startRow);
-            if (pageSize > 0)
-                c.SetMaxResults(pageSize);
-            return c.List<ReturnT>();
-        }
+     
 
         /// <summary>
         /// 
@@ -271,6 +277,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression">will use <see cref="DefaultOrder"/> if empty</param>
         /// <param name="crit"></param>
         /// <returns></returns>
+		/// <remarks>
+		/// This pagination signature is designed to work with ASP.NET ObjectDataSource, for more advanced pagination, please consider NHiberante.Burrow.Util.Pagination.IPaginator, NHiberante.Burrow.Util
+		/// </remarks>
         protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression,
                                                 params ICriterion[] crit) {
             return Find(startRow, pageSize, sortExpression, CreateCriteria(crit));
@@ -284,6 +293,9 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// <param name="sortExpression">will use <see cref="DefaultOrder"/> if empty</param>
         /// <param name="crit"></param>
         /// <returns></returns>
+	    /// <remarks>
+		/// This pagination signature is designed to work with ASP.NET ObjectDataSource, for more advanced pagination, please consider NHiberante.Burrow.Util.Pagination.IPaginator, NHiberante.Burrow.Util
+		/// </remarks>
         protected IList<ReturnT> Find(int startRow, int pageSize, string sortExpression,
                                                 ICollection<ICriterion> crit) {
             return Find(startRow, pageSize, sortExpression, CreateCriteria(crit));
