@@ -163,7 +163,8 @@ namespace NHibernate.Burrow.Impl {
         private void StopSpanning() {
             if (IsInPool) ConversationPool.Instance.Remove(id);
             SpanStrategy = SpanStrategy.DoNotSpan;
-            SpanState.UpdateToHttpContext();
+            if(Current != null && Current.Equals(this))
+                SpanState.UpdateToHttpContext();
         }
 
         /// <summary>
@@ -301,7 +302,7 @@ namespace NHibernate.Burrow.Impl {
             return ci;
         }
 
-        public static ConversationImpl Current {
+        private static ConversationImpl Current {
             get { return new Facade().CurrentConversation as ConversationImpl; }
         }
     }
