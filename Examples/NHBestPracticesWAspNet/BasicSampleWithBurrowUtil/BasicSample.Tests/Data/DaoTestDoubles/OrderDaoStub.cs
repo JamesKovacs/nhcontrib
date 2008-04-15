@@ -12,9 +12,7 @@ namespace BasicSample.Tests.Data.DaoTestDoubles
     /// </summary>
     public class OrderDaoStub : IOrderDao
     {
-        public List<Order> GetByExample(Order exampleInstance, params string[] propertiesToExclude) {
-            return new TestOrdersFactory().CreateOrders();
-        }
+       
 
         #region Not-Implemented DAO methods
  
@@ -27,12 +25,16 @@ namespace BasicSample.Tests.Data.DaoTestDoubles
             throw new NotImplementedException();
         }
 
+        public Order Get(object id) {
+            throw new NotImplementedException();
+        }
+
         public IList<Order> FindAll() {
             throw new NotImplementedException();
         }
 
         public IList<Order> FindByExample(Order exampleInstance, params string[] propertiesToExclude) {
-            throw new NotImplementedException();
+            return new TestOrdersFactory().CreateOrders();
         }
 
         public long Save(Order entity) {
@@ -48,5 +50,9 @@ namespace BasicSample.Tests.Data.DaoTestDoubles
         }
         #endregion
 
+        public IList<Order> GetOrdersPlacedBetween(DateTime startDate, DateTime endDate, int startRow, int PageSize,
+                                                   string sortExpression) {
+            throw new NotImplementedException();
+        }
     }
 }

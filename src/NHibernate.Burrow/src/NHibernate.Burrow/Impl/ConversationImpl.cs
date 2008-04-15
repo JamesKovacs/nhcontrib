@@ -24,6 +24,7 @@ namespace NHibernate.Burrow.Impl {
         private bool canceled = false;
         private DateTime lastVisit = DateTime.Now;
         private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
+        private string workSpaceName;
 
         private ConversationImpl() {
             foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
@@ -81,14 +82,15 @@ namespace NHibernate.Burrow.Impl {
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
         public bool SpanWithPostBacks() {
-            return Span(SpanStrategy.Post);
+            return Span(SpanStrategy.Post, string.Empty);
         }
 
         /// <summary>
         /// Start a long Coversation that spans over the whole session
         /// </summary>
-        public bool SpanWithHttpSession() {
-            return Span(SpanStrategy.Cookie);
+        /// <param name="inWorkSpaceName">span in the work space</param>
+        public bool SpanWithCookie(string inWorkSpaceName) {
+            return Span(SpanStrategy.Cookie, inWorkSpaceName);
         }
 
         /// <summary>
@@ -135,7 +137,7 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do simply change the SpanStrategy if there is any change
         /// </remarks>
-        private bool Span(SpanStrategy om) {
+        private bool Span(SpanStrategy om, string inWorkSpaceName) {
             Visited();
             if (!om.ValidForSpan)
                 throw new ArgumentException(
@@ -148,9 +150,8 @@ namespace NHibernate.Burrow.Impl {
                 ConversationPool.Instance.Add(id, this);
                 retVal = true;
             }
-            
-            SpanState.UpdateToHttpContext();
-
+            workSpaceName = inWorkSpaceName;
+            WorkSpaceUpdate();
             return retVal;
         }
 
@@ -163,8 +164,12 @@ namespace NHibernate.Burrow.Impl {
         private void StopSpanning() {
             if (IsInPool) ConversationPool.Instance.Remove(id);
             SpanStrategy = SpanStrategy.DoNotSpan;
-            if(Current != null && Current.Equals(this))
-                SpanState.UpdateToHttpContext();
+            WorkSpaceUpdate();
+        }
+
+        private void WorkSpaceUpdate() {
+            if(WorkSpace.Current != null && Equals(WorkSpace.Current.Conversation))
+                WorkSpace.Current.UpdateToHttpContext();
         }
 
         /// <summary>
@@ -271,7 +276,7 @@ namespace NHibernate.Burrow.Impl {
 
         #region nonpublic methods
 
-        internal void OnDomainContextClose() {
+        internal void OnWorkSpaceClose() {
             if (Canceled)
                 RollbackAndClose();
             else if (!IsInPool)
@@ -304,6 +309,11 @@ namespace NHibernate.Burrow.Impl {
 
         private static ConversationImpl Current {
             get { return new Facade().CurrentConversation as ConversationImpl; }
+        }
+
+        public string WorkSpaceName
+        {
+            get { return workSpaceName; }
         }
     }
 }

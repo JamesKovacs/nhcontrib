@@ -22,7 +22,7 @@ public partial class SharingConversations_Step04 : Page
             Session["conversationId"] = conversation.Id;
             lblConversationId.Text = "Current: " + conversation.Id;
 
-            UrlUtil utils = new UrlUtil();
+            WebUtil utils = new WebUtil();
             frameChild.Attributes["src"] = utils.WrapUrlWithConversationInfo("Step04Child.aspx");
         }
     }
@@ -36,7 +36,7 @@ public partial class SharingConversations_Step04 : Page
         Session["conversationId"] = conversation.Id;
         //Facade.addPageToAllUseCase("/Step06.aspx");
         //conversation.addPageToUseCase("/Step05.aspx");
-        conversation.SpanWithHttpSession();
+        conversation.SpanWithCookie(String.Empty);
         Checker.CheckSpanningConversations(1);
 
         Response.Redirect("Step05.aspx");

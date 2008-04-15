@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web.UI;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow.Util
 {
-    public class UrlUtil
+    public class WebUtil
     { 
         
         /// <summary>
@@ -24,10 +25,15 @@ namespace NHibernate.Burrow.Util
         public string WrapUrlWithConversationInfo(string originalUrl)
         {
             if (new Facade().CurrentConversation.IsSpanning)
-                return DomainContext.Current.WrapUrlWithSpanInfo(originalUrl);
+                return WorkSpace.Current.WrapUrlWithSpanInfo(originalUrl);
             else
                 throw new Exceptions.IncorrectConversationSpanStatusException(
                     "CurrentConversation Must Be In Span Before you can wrap a url");
+        }
+
+        public static void AddConversationStates(Control c)
+        {
+            WorkSpace.Current.UpdateToControl(c);
         }
     }
 }

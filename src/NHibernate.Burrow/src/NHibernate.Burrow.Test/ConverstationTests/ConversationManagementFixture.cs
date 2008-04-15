@@ -61,5 +61,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests
             f.CloseDomain();
             Assert.IsNull(f.CurrentConversation);
         }
+
+   
     }
 }

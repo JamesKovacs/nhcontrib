@@ -8,7 +8,7 @@ namespace NHibernate.Burrow.Impl {
     internal class FrameworkEnvironment : IFrameworkEnvironment {
         private static readonly FrameworkEnvironment instance = new FrameworkEnvironment();
         private NHibernateBurrowCfgSection cfg;
-        private LocalSafe<DomainContext> currentDomainContextHolder;
+        private LocalSafe<WorkSpace> currentDomainContextHolder;
 
         private FrameworkEnvironment() {
             cfg = NHibernateBurrowCfgSection.CreateInstance();
@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.Impl {
         /// <summary>
         /// The currentConversationHolder context conversation
         /// </summary>
-        public DomainContext CurrentDomainContext
+        public WorkSpace CurrentWorkSpace
         {
             get {
                 CheckRunning();
@@ -40,18 +40,19 @@ namespace NHibernate.Burrow.Impl {
         /// Initialize a Domain Context 
         /// </summary>
         /// <remarks>
-        /// Please read the remarks of the <see cref="DomainContext"/>
+        /// Please read the remarks of the <see cref="NHibernate.Burrow.Impl.WorkSpace"/>
         /// You normally don't need to call this method
         /// </remarks>
         /// <param name="states">
         /// Initialized the domain context with a collection of states
         /// </param>
-        public void StartNewDomainContext(NameValueCollection states)
+        /// <param name="currentWorkSpaceName"></param>
+        public void StartNewDomainContext(NameValueCollection states, string currentWorkSpaceName)
         {
-            if (CurrentDomainContext == null)
-                CurrentDomainContext = DomainContext.StartNew(states);
+            if (CurrentWorkSpace == null)
+                CurrentWorkSpace = WorkSpace.Initialize(states, currentWorkSpaceName);
             else
-                throw new BurrowException("DomainContext is already initialized");
+                throw new BurrowException("WorkSpace is already initialized");
         }
 
         #region IFrameworkEnvironment Members
@@ -82,7 +83,7 @@ namespace NHibernate.Burrow.Impl {
             if (IsRunning)
                 throw new GeneralException("Burrow Environment is already running");
           
-            currentDomainContextHolder = new LocalSafe<DomainContext>();
+            currentDomainContextHolder = new LocalSafe<WorkSpace>();
         }
 
         /// <summary>

@@ -136,7 +136,7 @@
     <Compile Include="Exceptions\ConversationUnavailableException.cs" />
     <Compile Include="Exceptions\ConversationUninitializedException.cs" />
     <Compile Include="Exceptions\DomainContextUninitializedException.cs" />
-    <Compile Include="Impl\DomainContext.cs" />
+    <Compile Include="Impl\WorkSpace.cs" />
     <Compile Include="Exceptions\GeneralException.cs" />
     <Compile Include="IConversation.cs" />
     <Compile Include="IConversationExpirationChecker.cs" />
@@ -149,7 +149,6 @@
     <Compile Include="Impl\SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SpanState.cs" />
     <Compile Include="Util\DAOBases\EntityLoader.cs" />
     <Compile Include="Util\DAOBases\GenericDAO.cs" />
     <Compile Include="Util\EntityBases\DeletableEntity.cs" />
@@ -160,7 +159,7 @@
     <Compile Include="Util\EntityBases\EntityWithIdNBizKeyBase.cs" />
     <Compile Include="Util\InstanceLoader.cs" />
     <Compile Include="Util\SchemaUtil.cs" />
-    <Compile Include="Util\UrlUtil.cs" />
+    <Compile Include="Util\WebUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -15,8 +15,8 @@ namespace NHibernate.Burrow {
     public  class Facade {
         public  IConversation CurrentConversation {
             get {
-                if(DomainContext.Current != null)
-                    return  DomainContext.Current.CurrentConversation;
+                if(WorkSpace.Current != null)
+                    return  WorkSpace.Current.Conversation;
                 return null;
             }
         }
@@ -32,7 +32,7 @@ namespace NHibernate.Burrow {
         /// gets if the domain layer is already <see cref="InitializeDomain(bool,NameValueCollection)"/>.
         /// </summary>
         public  bool Alive {
-            get { return DomainContext.Current != null; }
+            get { return WorkSpace.Current != null; }
         }
 
         /// <summary>
@@ -53,9 +53,13 @@ namespace NHibernate.Burrow {
         /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
         /// </remarks>
         public  void InitializeDomain(bool ignoreUnclosedDomain, NameValueCollection states) {
+            InitializeDomain(ignoreUnclosedDomain,states,string.Empty);
+        }  
+        
+        public  void InitializeDomain(bool ignoreUnclosedDomain, NameValueCollection states, string currentWorkSpaceName) {
             if (ignoreUnclosedDomain && Alive)
                 CloseDomain();
-            FrameworkEnvironment.Instance.StartNewDomainContext(states);
+            FrameworkEnvironment.Instance.StartNewDomainContext(states, currentWorkSpaceName);
         }
 
         public void InitializeDomain(Guid conversationId)
@@ -74,8 +78,8 @@ namespace NHibernate.Burrow {
         /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
         /// </remarks>
         public  void CloseDomain() {
-            if (DomainContext.Current != null)
-                DomainContext.Current.Close();
+            if (WorkSpace.Current != null)
+                WorkSpace.Current.Close();
         }
 
         /// <summary>

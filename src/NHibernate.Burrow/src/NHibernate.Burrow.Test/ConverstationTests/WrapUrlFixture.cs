@@ -9,7 +9,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         public void WrapWithoutSpanTest() {
             try {
                 new Facade().InitializeDomain();
-                new UrlUtil().WrapUrlWithConversationInfo("http://test.com");
+                new WebUtil().WrapUrlWithConversationInfo("http://test.com");
                 Assert.Fail("failed to throw IncorrectConversationSpanStatusException");
 
             }catch(Exceptions.IncorrectConversationSpanStatusException) {
@@ -22,9 +22,9 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         public void WrapTest() {
             new Facade().InitializeDomain();
             new Facade().CurrentConversation.SpanWithPostBacks();
-            string wrapped = new UrlUtil().WrapUrlWithConversationInfo("http://test.com");
+            string wrapped = new WebUtil().WrapUrlWithConversationInfo("http://test.com");
             Assert.IsTrue(wrapped.Contains( "http://test.com?NHibernate.Burrow.ConversationId="));
-            wrapped = new UrlUtil().WrapUrlWithConversationInfo("http://test.com?t=1");
+            wrapped = new WebUtil().WrapUrlWithConversationInfo("http://test.com?t=1");
             Assert.IsTrue(wrapped.Contains( "http://test.com?t=1&NHibernate.Burrow.ConversationId="));
             Console.WriteLine(wrapped);
             new Facade().CurrentConversation.FinishSpan();

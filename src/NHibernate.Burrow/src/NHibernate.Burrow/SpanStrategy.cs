@@ -37,21 +37,13 @@ namespace NHibernate.Burrow
             return name;
         }
 
-        public virtual void CleanStates(SpanState os, HttpContext c)
-        {
-            if (c.Request.Cookies.Get(os.Name) != null)
-            {
-                HttpCookie cookie = new HttpCookie(os.Name, string.Empty);
-                cookie.Expires = DateTime.Now.AddDays(-1);
-                c.Response.Cookies.Add(cookie);
-            }
-        }
+       
 
-        public abstract void AddOverspanStateWhenRendering(Control c, SpanState os);
+        public abstract void AddOverspanStateWhenRendering(Control c, string key, string val);
         
-        public  void UpdateSpanStates(HttpContext c, SpanState os) {
+        public  void UpdateSpanStates(HttpContext c, string key, string value) {
             
-            HttpCookie cookie = new HttpCookie(os.Name, UseCookie ? os.Value : string.Empty);
+            HttpCookie cookie = new HttpCookie(key, UseCookie ? value : string.Empty);
             if (!UseCookie)
                 cookie.Expires = DateTime.Now.AddDays(-1);
             
@@ -75,7 +67,7 @@ namespace NHibernate.Burrow
         {
             public CookieStrategy() : base("Cookie") {}
 
-            public override void AddOverspanStateWhenRendering(Control c, SpanState os)
+            public override void AddOverspanStateWhenRendering(Control c, string key, string val)
             {
               
             }
@@ -84,7 +76,6 @@ namespace NHibernate.Burrow
                 get { return true;}
             }
 
-            public override void CleanStates(SpanState os, HttpContext c) {}
         }
 
         #endregion
@@ -100,7 +91,7 @@ namespace NHibernate.Burrow
                 get { return false; }
             }
 
-            public override void AddOverspanStateWhenRendering(Control c, SpanState os) {}
+            public override void AddOverspanStateWhenRendering(Control c, string key, string val) {}
 
             protected override bool UseCookie {
                 get { return false; }
@@ -122,7 +113,7 @@ namespace NHibernate.Burrow
         {
             public UrlQueryOnlyStrategy() : base("Url Query Only") {}
 
-            public override void AddOverspanStateWhenRendering(Control c, SpanState os) {}
+            public override void AddOverspanStateWhenRendering(Control c, string key, string val) {}
 
             protected override bool UseCookie
             {
@@ -139,12 +130,12 @@ namespace NHibernate.Burrow
         {
             public PostStrategy() : base("Post") {}
 
-            public override void AddOverspanStateWhenRendering(Control c, SpanState os)
+            public override void AddOverspanStateWhenRendering(Control c, string key, string val)
             {
                 HtmlInputHidden hi = new HtmlInputHidden();
-                hi.Name = os.Name;
-                hi.ID = os.Name;
-                hi.Value = os.Value;
+                hi.Name = key;
+                hi.ID = key;
+                hi.Value = val;
                 c.Controls.Add(hi);
             }
 

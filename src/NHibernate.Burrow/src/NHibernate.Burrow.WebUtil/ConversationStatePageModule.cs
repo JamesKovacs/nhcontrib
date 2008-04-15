@@ -47,9 +47,7 @@ namespace NHibernate.Burrow.WebUtil {
         }
 
         private void AddConversationStates(Control c) {
-            foreach (SpanState os in SpanState.CurrentStates()){
-                os.AddOverspanStateToResponse(c);
-            }
+            Burrow.Util.WebUtil.AddConversationStates(c);
         }
     }
 }

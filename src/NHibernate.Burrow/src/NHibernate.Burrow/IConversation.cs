@@ -18,7 +18,7 @@ namespace NHibernate.Burrow {
         /// <remarks>
         /// The conversation will be available to all requests that shares the same HttpSession
         /// </remarks>
-        bool SpanWithHttpSession();
+        bool SpanWithCookie(string workSpaceName);
 
         /// <summary>
         /// Span with a chain of post http requests
