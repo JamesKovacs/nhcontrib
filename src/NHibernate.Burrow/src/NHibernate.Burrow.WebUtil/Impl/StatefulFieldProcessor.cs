@@ -5,7 +5,8 @@ using System.Web.UI;
 using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil {
-    public abstract class StatefulFieldProcessor {
+	internal abstract class StatefulFieldProcessor
+	{
         private static readonly IDictionary<Type, IDictionary<FieldInfo, StatefulField>>
             fieldInfoCache = new Dictionary<Type, IDictionary<FieldInfo, StatefulField>>();
 

@@ -5,7 +5,7 @@ using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil {
 
-    public class StatefulFieldLoader : StatefulFieldProcessor
+    internal class StatefulFieldLoader : StatefulFieldProcessor
     {
         public StatefulFieldLoader(Control c) : base(c) { }
 
@@ -27,7 +27,7 @@ namespace NHibernate.Burrow.WebUtil {
         }
     }
 
-    public class StatefulFieldSaver : StatefulFieldProcessor
+	internal class StatefulFieldSaver : StatefulFieldProcessor
     {
         public StatefulFieldSaver(Control c) : base(c) { }
 

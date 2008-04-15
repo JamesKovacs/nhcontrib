@@ -6,25 +6,30 @@ public partial class SharingConversations_Step05 : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
-        Checker.CheckSpanningConversations(1);
+    	if (!IsPostBack) {
+    		Facade facade = new Facade();
+    		IConversation conversation = facade.CurrentConversation;
+    		Checker.CheckSpanningConversations(1);
         
-        if (conversation == null)
-            throw new Exception("The page doesn't have conversation");
+    		if (conversation == null)
+    			throw new Exception("The page doesn't have conversation");
 
-        object lastConversationId = Session["conversationId"];
-        if (lastConversationId == null)
-            throw new Exception("We haven't found the Id of previous conversation");
+    		object lastConversationId = Session["conversationId"];
+    		if (lastConversationId == null)
+    			throw new Exception("We haven't found the Id of previous conversation");
 
-        if (!conversation.Id.Equals(lastConversationId))
-            throw new Exception("The conversation isn't same that previous, the new conversation was created");
-        
+    		if (!conversation.Id.Equals(lastConversationId))
+    			throw new Exception("The conversation isn't same that previous, the new conversation was created");
+
+    		conversation.FinishSpan();
+    	}
     }
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
-        //Session["UseCaseCount"] = Facade.ActiveConversations.Count;
+    	IConversation conversation = new Facade().CurrentConversation;
+    	conversation.SpanWithCookie("WorkSpaceStep06"); //Span the conversation in WorkSpace "WorkSpaceStep06"
+		Session["conversationId"] = conversation.Id;
         Response.Redirect("Step06.aspx");
     }
 }

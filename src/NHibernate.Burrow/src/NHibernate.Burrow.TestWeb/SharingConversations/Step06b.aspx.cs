@@ -11,8 +11,8 @@ using System.Web.UI.HtmlControls;
 using NHibernate.Burrow;
 using NHibernate.Burrow.WebUtil.Attributes;
 
-[WorkSpaceInfo("SomeOtherWorkSpace")]
-public partial class SharingConversations_Step06a : System.Web.UI.Page
+[WorkSpaceInfo("WorkSpaceStep06")]
+public partial class SharingConversations_Step06b : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -28,19 +28,15 @@ public partial class SharingConversations_Step06a : System.Web.UI.Page
             if (lastConversationId == null)
                 throw new Exception("We haven't found the Id of previous conversation");
 
-            if (conversation.Id.Equals(lastConversationId))
-                throw new Exception("The conversation is same that previous, the new conversation was not created");
-
-           
+            if (!conversation.Id.Equals(lastConversationId))
+                throw new Exception("Failed to join the conversation in the same workspace, a new conversation was  created");
         }
     }
 
     protected void btnClose_Click(object sender, EventArgs e)
     {
     
-        Session["continue_a"] = true;
-
-
+        Session["continue_b"] = true;
         hdClose.Value = "1";
     }
     

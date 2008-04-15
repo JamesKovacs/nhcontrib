@@ -1,7 +1,8 @@
 using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.WebUtil {
-    public class ConversationalDataVSFInterceptor : IStatefulFieldInterceptor {
+	internal class ConversationalDataVSFInterceptor : IStatefulFieldInterceptor
+	{
         public ConversationalDataVSFInterceptor() {}
 
         #region IStatefulFieldInterceptor Members

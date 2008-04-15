@@ -2,7 +2,8 @@ using System;
 using NHibernate.Burrow.Util.DAOBases;
 
 namespace NHibernate.Burrow.WebUtil {
-    public abstract class EntityVSFInterceptorBase : IStatefulFieldInterceptor {
+	internal abstract class EntityVSFInterceptorBase : IStatefulFieldInterceptor
+	{
         public EntityVSFInterceptorBase() {}
 
         protected abstract bool UseLoad { get; }
@@ -30,13 +31,15 @@ namespace NHibernate.Burrow.WebUtil {
         #endregion
     }
 
-    public class GetEntityVSFInterceptor : EntityVSFInterceptorBase {
+	internal class GetEntityVSFInterceptor : EntityVSFInterceptorBase
+	{
         protected override bool UseLoad {
             get { return false; }
         }
     }
 
-    public class LoadEntityVSFInterceptor : EntityVSFInterceptorBase {
+	internal class LoadEntityVSFInterceptor : EntityVSFInterceptorBase
+	{
         protected override bool UseLoad {
             get { return true; }
         }

@@ -34,8 +34,7 @@ public partial class SharingConversations_Step04 : Page
         Checker.CheckSpanningConversations(1);
 
         Session["conversationId"] = conversation.Id;
-        //Facade.addPageToAllUseCase("/Step06.aspx");
-        //conversation.addPageToUseCase("/Step05.aspx");
+        //using string.Empty as workspace name will span the conversation over all pages, NOT recommendded though
         conversation.SpanWithCookie(String.Empty);
         Checker.CheckSpanningConversations(1);
 

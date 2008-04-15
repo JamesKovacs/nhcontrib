@@ -94,6 +94,17 @@ namespace NHibernate.Burrow.Configuration {
             set { Set("conversationExpirationChecker", value); }
         }
 
+
+		/// <summary>
+		/// for user to set a customer IWorkSpaceNameSniffer for WebUtil to use
+		/// </summary>
+		[ConfigurationProperty("workSpaceNameSniffer", DefaultValue = "", IsRequired = false, IsKey = false)]
+		public string WorkSpaceNameSniffer
+		{
+			get { return (string)Get("workSpaceNameSniffer"); }
+			set { Set("workSpaceNameSniffer", value); }
+        }
+
      
 
         /// <summary>

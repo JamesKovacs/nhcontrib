@@ -5,7 +5,8 @@ using System.Web.UI.WebControls;
 using NHibernate.Burrow;
 
 namespace NHibernate.Burrow.WebUtil {
-    public class ConversationStatePageModule {
+	internal class ConversationStatePageModule
+	{
         private const string PlaceHolderName = "ConversationalStatePlaceHolder";
         private const string UpdatePanelId = "ConversationalStateUpdatePanel";
         private Control controlForHoldState;

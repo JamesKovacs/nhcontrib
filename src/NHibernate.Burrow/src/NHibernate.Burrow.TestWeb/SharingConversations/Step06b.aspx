@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Step06a.aspx.cs" Inherits="SharingConversations_Step06a" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Step06b.aspx.cs" Inherits="SharingConversations_Step06b" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -19,7 +19,7 @@
     <form id="form1" runat="server">
     <div>
         <asp:HiddenField ID="hdClose" runat="server" Value="0" />
-        <p>We have successful checked that new conversation is create with target="_blank" and different workSpaceName after use SpanWithHttpSession</p>
+        <p>We have successful checked that conversation is spanning with target="_blank" in the same workspacename after using SpanWithCookie</p>
         <asp:Button ID="btnClose" runat="server" OnClick="btnClose_Click" Text="Clic here to continue" />
     </div>
     </form>

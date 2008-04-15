@@ -62,18 +62,28 @@ namespace NHibernate.Burrow.WebUtil
             {
                 return;
             }
-
-            new Facade().InitializeDomain(true, ctx.Request.Params);
-            if (ctx.Context.Handler is Page)
+        	IHttpHandler handler = ctx.Context.Handler;
+        	string currentWorkSpaceName = Sniffer().Sniff(handler);
+            new Facade().InitializeDomain(true, ctx.Request.Params, currentWorkSpaceName);
+            if (handler is Page)
             {
-                Page p = (Page) ctx.Context.Handler;
+                Page p = (Page) handler;
                 p.Init += new EventHandler(p_Init);
                 new StatefulFieldPageModule(p);
                 new ConversationStatePageModule(p);
             }
         }
 
-        private void p_Init(object sender, EventArgs e)
+    	private IWorkSpaceNameSniffer Sniffer() {
+    		IBurrowConfig cfg = new Facade().BurrowEnvironment.Configuration;
+			if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))
+				return new Impl.WorkSpaceSnifferByAttribute();
+			else
+				return Burrow.Util.InstanceLoader.Load<IWorkSpaceNameSniffer>(cfg.WorkSpaceNameSniffer);
+
+    	}
+
+    	private void p_Init(object sender, EventArgs e)
         {
             ScriptManager current = ScriptManager.GetCurrent((Page) sender);
             if (current != null && current.EnablePartialRendering)
@@ -86,6 +96,7 @@ namespace NHibernate.Burrow.WebUtil
         {
             OnError(sender, e);
         }
+
 
         private bool HandlerIsIrrelavant(HttpApplication ctx)
         {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace NHibernate.Burrow {
     public interface IBurrowConfig {
@@ -41,5 +42,15 @@ namespace NHibernate.Burrow {
         ICollection<IPersistenceUnitCfg> PersistenceUnitCfgs {
             get;
         }
+
+    	/// <summary>
+    	/// for user to set a customer IWorkSpaceNameSniffer for WebUtil to use
+    	/// </summary>
+    	[ConfigurationProperty("workSpaceNameSniffer", DefaultValue = "", IsRequired = false, IsKey = false)]
+    	string WorkSpaceNameSniffer
+    	{
+    		get;
+    		set;
+    	}
     }
 }

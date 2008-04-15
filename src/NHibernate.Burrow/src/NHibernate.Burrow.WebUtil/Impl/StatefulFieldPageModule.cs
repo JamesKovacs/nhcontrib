@@ -2,7 +2,8 @@ using System;
 using System.Web.UI;
 
 namespace NHibernate.Burrow.WebUtil {
-    public class StatefulFieldPageModule {
+	internal class StatefulFieldPageModule
+	{
         private readonly Page page;
         protected bool dataLoaded = false;
 

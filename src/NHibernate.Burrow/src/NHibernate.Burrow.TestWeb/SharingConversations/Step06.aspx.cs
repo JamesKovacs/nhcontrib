@@ -1,7 +1,9 @@
 using System;
 using System.Web.UI;
 using NHibernate.Burrow;
+using NHibernate.Burrow.WebUtil.Attributes;
 
+[WorkSpaceInfo("WorkSpaceStep06")]
 public partial class SharingConversations_Step06 : Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -21,20 +23,25 @@ public partial class SharingConversations_Step06 : Page
 
             if (!conversation.Id.Equals(lastConversationId))
                 throw new Exception("The conversation isn't same that previous, the new conversation was created");
-
-        }
         
-        if (Session["continue"] != null && (bool)Session["continue"])
+        }
+
+		if (StepCompleted("a") && StepCompleted("b"))
         {
             Session.Remove("continue");
             btnNextStep.Visible = true;
         }
         else if (IsPostBack)
-            lblMessage.Text = "You should complete the step 6 a before continue";
+            lblMessage.Text = "You should complete the step 6a, 6b, 6c a before continue";
     }
 
-    protected void btnNextStep_Click(object sender, EventArgs e)
+	private bool StepCompleted(string step) {
+		return Session["continue_" + step] != null && (bool)Session["continue_" + step];
+	}
+
+	protected void btnNextStep_Click(object sender, EventArgs e)
     {
+		new Facade().CurrentConversation.FinishSpan();
         Response.Redirect("TheEnd.aspx");
     }
 }
