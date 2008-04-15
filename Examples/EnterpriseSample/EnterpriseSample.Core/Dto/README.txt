@@ -1,0 +1,1 @@
+All the DTOs in this folder are intended to be returned as web service results.

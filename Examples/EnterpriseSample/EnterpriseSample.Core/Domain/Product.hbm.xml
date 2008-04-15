@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="EnterpriseSample.Core.Domain.Product, EnterpriseSample.Core" table="Products" lazy="false">
+    <id name="ID" column="ProductID" unsaved-value="0">
+      <generator class="identity" />
+    </id>
+
+    <property name="ProductName" column="ProductName" not-null="true" />
+
+    <many-to-one name="SuppliedBy" column="SupplierID"
+      class="EnterpriseSample.Core.Domain.Supplier, EnterpriseSample.Core" not-null="true" />
+  </class>
+</hibernate-mapping>

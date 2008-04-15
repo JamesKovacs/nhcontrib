@@ -1,0 +1,119 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{506BD2E6-A534-4C5D-802E-43CFD16A32B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EnterpriseSample.Tests</RootNamespace>
+    <AssemblyName>EnterpriseSample.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NHibernate, Version=1.2.0.3001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.Burrow, Version=1.3.0.1927, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NHibernate.Burrow.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnitAsp, Version=1.5.1.27647, Culture=neutral, PublicKeyToken=f9bdb8e9d00f2b23">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NUnitAsp.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.0.518.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\CustomerDaoTests.cs" />
+    <Compile Include="Data\DaoTestDoubles\MockCustomerDaoFactory.cs" />
+    <Compile Include="Data\DaoTestDoubles\MockHistoricalOrderSummaryDaoFactory.cs" />
+    <Compile Include="Data\DaoTestDoubles\MockOrderDaoFactory.cs" />
+    <Compile Include="Data\HistoricalOrderSummaryDaoTests.cs" />
+    <Compile Include="Data\NHibernateTestCase.cs" />
+    <Compile Include="Domain\CustomerTests.cs" />
+    <Compile Include="Domain\DomainObjectIdSetter.cs" />
+    <Compile Include="Domain\Dto\CustomerDtoTests.cs" />
+    <Compile Include="Domain\OrderTests.cs" />
+    <Compile Include="NUnitAdapter.cs" />
+    <Compile Include="Presenters\ListHistoricalOrderSummariesPresenterTests.cs" />
+    <Compile Include="Presenters\ListOrdersPresenterTests.cs" />
+    <Compile Include="TestFactories\TestHistoricalOrderSummariesFactory.cs" />
+    <Compile Include="TestGlobals.cs" />
+    <Compile Include="Data\DaoTestDoubles\OrderDaoStub.cs" />
+    <Compile Include="Presenters\EditCustomerPresenterTests.cs" />
+    <Compile Include="Presenters\ListCustomersPresenterTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestFactories\TestCustomersFactory.cs" />
+    <Compile Include="TestFactories\TestOrdersFactory.cs" />
+    <Compile Include="Web\WebSmokeTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseSample.Core\EnterpriseSample.Core.csproj">
+      <Project>{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}</Project>
+      <Name>EnterpriseSample.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnterpriseSample.Data\EnterpriseSample.Data.csproj">
+      <Project>{FCB45F28-3A4E-4E72-9691-556125CCF227}</Project>
+      <Name>EnterpriseSample.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnterpriseSample.Presenters\EnterpriseSample.Presenters.csproj">
+      <Project>{42F08BD3-664F-42F7-8A8B-26B07E80C356}</Project>
+      <Name>EnterpriseSample.Presenters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectBase.Data\ProjectBase.Data.csproj">
+      <Project>{DF442913-716B-4A18-8A70-004B0FEB0168}</Project>
+      <Name>ProjectBase.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectBase.Utils\ProjectBase.Utils.csproj">
+      <Project>{24D21FC0-59B8-4208-AA1D-1B30D3F3C101}</Project>
+      <Name>ProjectBase.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="App.config.template" />
+    <None Include="EnterpiseSample.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

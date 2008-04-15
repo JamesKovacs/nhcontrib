@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="ProjectBase.Data.AbstractNHibernateDao&lt;T, IdT&gt;">
+    <Position X="5.75" Y="16" Width="2.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Data.HistoricalOrderSummaryDao" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="20.5" Width="2.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Data.OrderDao">
+    <Position X="3.5" Y="20.5" Width="2.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.Customer">
+    <Position X="0.5" Y="3" Width="1.75" />
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="Orders" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.DomainObject&lt;IdT&gt;">
+    <Position X="4" Y="0.5" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.HistoricalOrderSummary">
+    <Position X="2.75" Y="8.25" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.Order">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="OrderedBy" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.Product">
+    <Position X="8.75" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="SuppliedBy" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.Products" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Core.Domain.Supplier">
+    <Position X="5.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="Products" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EnterpriseSample.Core.Dto.CustomerDto">
+    <Position X="0.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="OrderDtos" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EnterpriseSample.Core.Dto.OrderDto">
+    <Position X="3.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="EnterpriseSample.Data.NHibernateDaoFactory">
+    <Position X="0.5" Y="15.75" Width="2.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Data.CustomerDao" Collapsed="true">
+    <Position X="6.25" Y="20.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EnterpriseSample.Data.SupplierDao" Collapsed="true">
+    <Position X="8.75" Y="20.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ProjectBase.Data.IDao&lt;T, IdT&gt;">
+    <Position X="6.25" Y="10.25" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.DataInterfaces.IDaoFactory">
+    <Position X="0.5" Y="13.75" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.DataInterfaces.ICustomerDao">
+    <Position X="6.25" Y="13.75" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.DataInterfaces.ISupplierDao">
+    <Position X="8.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.DataInterfaces.IOrderDao">
+    <Position X="3.5" Y="13.75" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.DataInterfaces.IHistoricalOrderSummaryDao">
+    <Position X="10.75" Y="13.75" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EnterpriseSample.Core.Domain.IHasAssignedId&lt;IdT&gt;">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+</ClassDiagram>
