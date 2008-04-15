@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web.UI;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil {
     public abstract class StatefulFieldProcessor {

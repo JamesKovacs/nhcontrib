@@ -10,7 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using NHibernate.Burrow.Test.MockEntities;
 using NHibernate.Burrow.Test.UtilTests.DAO;
-using NHibernate.Burrow.WebUtil;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 public partial class CRUDtest : System.Web.UI.Page
 {

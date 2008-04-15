@@ -3,7 +3,7 @@ using System.Web.UI;
 using BasicSample.Core.DataInterfaces;
 using BasicSample.Core.Domain;
 using BasicSample.Data;
-using NHibernate.Burrow.WebUtil;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 public partial class EditCustomer : UserControl {
     //EntityField attribute is added here so that the value of this field will be rememberred through multiple postbacks.

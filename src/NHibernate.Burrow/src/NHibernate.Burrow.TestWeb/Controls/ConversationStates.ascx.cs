@@ -10,7 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using NHibernate.Burrow;
 using NHibernate.Burrow.Test.MockEntities;
-using NHibernate.Burrow.WebUtil;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 public partial class Controls_ConversationStates : System.Web.UI.UserControl
 { 

@@ -4,7 +4,7 @@ using BasicSample.Core.DataInterfaces;
 using BasicSample.Core.Domain;
 using BasicSample.Data;
 using NHibernate.Burrow;
-using NHibernate.Burrow.WebUtil;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 /// <summary>
 /// This page give a simple sample of spanning conversation 

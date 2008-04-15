@@ -41,15 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConversationalDataVSFInterceptor.cs" />
-    <Compile Include="ConversationalField.cs" />
+    <Compile Include="Attributes\ConversationalField.cs" />
     <Compile Include="ConversationStatePageModule.cs" />
     <Compile Include="StatefulFieldPageModule.cs" />
-    <Compile Include="EntityFieldNullSafe.cs" />
-    <Compile Include="EntityField.cs" />
+    <Compile Include="Attributes\EntityFieldNullSafe.cs" />
+    <Compile Include="Attributes\EntityField.cs" />
     <Compile Include="EntityVSFInterceptor.cs" />
     <Compile Include="IStatefulFieldInterceptor.cs" />
     <Compile Include="StatefulFieldLoader.cs" />
-    <Compile Include="StatefulField.cs" />
+    <Compile Include="Attributes\StatefulField.cs" />
     <Compile Include="StatefulFieldProcessor.cs" />
     <Compile Include="WebUtilHTTPModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
