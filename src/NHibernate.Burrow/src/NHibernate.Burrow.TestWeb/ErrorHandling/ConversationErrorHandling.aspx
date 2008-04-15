@@ -10,7 +10,8 @@
     <form id="form1" runat="server">
     <div>
         Click the link to start testing
-        <a href="../ErrorHandling/BreakConversation.aspx" target="_blank" >BreakConversation.aspx</a>
+        <a href="../ErrorHandling/BreakConversation.aspx" target="_blank" >BreakConversation </a> &nbsp;&nbsp; <a
+            href="../ErrorHandling/BreakConversationAjax.aspx"  target="_blank" > BreakConversation Ajax </a>
         <br />Status: <%= Status %>
         <br />
         <asp:Button ID="btnRefresh" runat="server" Text="Refresh" />

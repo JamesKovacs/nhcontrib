@@ -21,6 +21,17 @@ public class Checker
     {
         int conversations = f.BurrowEnvironment.SpanningConversations;
         if(  conversations != numOfSpanning )
-           throw new Exception("Expected spanning conversation "  + numOfSpanning + " but is " + conversations );
+           throw new AssertException("Expected spanning conversation "  + numOfSpanning + " but is " + conversations );
+    }
+
+    public static void AssertEqual(object expected , object val)
+    {
+        if (expected == null && val == null)
+            return;
+        if (expected != null && expected.Equals(val))
+           return;
+          
+        throw new AssertException("Expected " + expected + " but was " + val);
+
     }
 }

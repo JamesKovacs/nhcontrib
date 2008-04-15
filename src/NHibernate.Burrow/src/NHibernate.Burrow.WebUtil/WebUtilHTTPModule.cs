@@ -2,19 +2,21 @@ using System;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.UI;
-using NHibernate.Burrow;
 
-namespace NHibernate.Burrow.WebUtil {
+namespace NHibernate.Burrow.WebUtil
+{
     /// <summary>
     /// </summary>
-    public class WebUtilHTTPModule : IHttpModule {
+    public class WebUtilHTTPModule : IHttpModule
+    {
         #region IHttpModule Members
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        public void Init(HttpApplication context) {
+        public void Init(HttpApplication context)
+        {
             context.PreRequestHandlerExecute += new EventHandler(BeginContext);
             context.PostRequestHandlerExecute += new EventHandler(CloseContext);
             context.Error += new EventHandler(OnError);
@@ -32,11 +34,15 @@ namespace NHibernate.Burrow.WebUtil {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnError(object sender, EventArgs e) {
-            if(!new Facade().Alive) return;
+        private static void OnError(object sender, EventArgs e)
+        {
+            if (!new Facade().Alive)
+            {
+                return;
+            }
             try
             {
-                 new Facade().CurrentConversation.GiveUp();
+                new Facade().CurrentConversation.GiveUp();
                 new Facade().CloseDomain();
             }
             catch (Exception)
@@ -49,31 +55,53 @@ namespace NHibernate.Burrow.WebUtil {
         /// Opens a session within a transaction at the beginning of the HTTP request.
         /// This doesn't actually open a connection to the database until needed.
         /// </summary>
-        private void BeginContext(object sender, EventArgs e) {
+        private void BeginContext(object sender, EventArgs e)
+        {
             HttpApplication ctx = (HttpApplication) sender;
             if (HandlerIsIrrelavant(ctx))
+            {
                 return;
+            }
 
             new Facade().InitializeDomain(true, ctx.Request.Params);
-            if (ctx.Context.Handler is Page) {
+            if (ctx.Context.Handler is Page)
+            {
                 Page p = (Page) ctx.Context.Handler;
+                p.Init += new EventHandler(p_Init);
                 new StatefulFieldPageModule(p);
                 new ConversationStatePageModule(p);
             }
         }
 
-        private bool HandlerIsIrrelavant(HttpApplication ctx) {
-            return ctx.Context.Handler is AssemblyResourceLoader
-                   || ctx.Context.Handler is DefaultHttpHandler;
+        private void p_Init(object sender, EventArgs e)
+        {
+            ScriptManager current = ScriptManager.GetCurrent((Page) sender);
+            if (current != null && current.EnablePartialRendering)
+            {
+                current.AsyncPostBackError +=  AsyncPostBackError ;
+            }
+        }
+
+        private static void AsyncPostBackError(object sender, AsyncPostBackErrorEventArgs e)
+        {
+            OnError(sender, e);
+        }
+
+        private bool HandlerIsIrrelavant(HttpApplication ctx)
+        {
+            return ctx.Context.Handler is AssemblyResourceLoader || ctx.Context.Handler is DefaultHttpHandler;
         }
 
         /// <summary>
         /// </summary>
-        private void CloseContext(object sender, EventArgs e) {
+        private void CloseContext(object sender, EventArgs e)
+        {
             HttpApplication ctx = (HttpApplication) sender;
             if (HandlerIsIrrelavant(ctx))
+            {
                 return;
+            }
             new Facade().CloseDomain();
-        } 
+        }
     }
 }

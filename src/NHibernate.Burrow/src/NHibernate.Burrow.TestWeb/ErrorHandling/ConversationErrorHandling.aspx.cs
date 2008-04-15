@@ -20,10 +20,8 @@ public partial class ErrorHandling_ConversationErrorHandling : System.Web.UI.Pag
         {
 
             Status = ErrorTestStatus.Unknown;
-            f.CloseDomain();
-            f.BurrowEnvironment.ShutDown();
-            f.BurrowEnvironment.Start();
-            f.InitializeDomain();
+            conversationNum = 0;
+        Util.ResetEnvironment();
         }
     }
 
@@ -33,26 +31,19 @@ public partial class ErrorHandling_ConversationErrorHandling : System.Web.UI.Pag
         set { Session["Status"] = value; }
     }
 
+    int conversationNum
+    {
+        get { return Session["conversationNum"] != null ? (int)Session["conversationNum"] : 0; }
+        set { Session["conversationNum"] = value; }
+    }
+
+
 
     protected override void OnPreRender(EventArgs e)
     {
-        int expectedConversation;
-        switch(Status)
-        {
-           
-            case ErrorTestStatus.ConversationStarted:
-                expectedConversation = 1;
-                lMessage.Text = "Test started";
-                break;
-            case ErrorTestStatus.ErrorOccurred:
-                expectedConversation = 0;
-                lMessage.Text = "Test passed"; //it has not passed at this point, but this won't show up if it does not.
-                break;
-            default:
-                expectedConversation = 0;
-                break;
-        }
-        Checker.CheckSpanningConversations(expectedConversation);
+        if(Status == ErrorTestStatus.ErrorOccurred)
+            lMessage.Text = "Succeed";
+        Checker.CheckSpanningConversations(conversationNum);
 
         base.OnPreRender(e);
     }

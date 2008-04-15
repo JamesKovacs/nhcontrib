@@ -52,6 +52,25 @@ namespace NHibernate.Burrow.Test.MockEntities
         public void Save() {
             new MockEntityDAO().Save(this);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (this.Id == 0)
+                return Object.Equals(this, obj);
+            else
+            {
+                MockEntity that = obj as MockEntity;
+                if( that == null)
+                    return false;
+                return this.Id.Equals(that.Id);
+            }    
+                
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
     }
 
    
