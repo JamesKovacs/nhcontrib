@@ -103,7 +103,7 @@ namespace ProjectBase.Data
             ISession session = (ISession)ContextSessions[sessionFactoryConfigPath];
 
             if (session != null && session.IsOpen) {
-                session.Flush();
+                //session.Flush();
                 session.Close();
             }
 

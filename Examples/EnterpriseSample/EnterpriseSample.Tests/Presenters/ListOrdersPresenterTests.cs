@@ -15,7 +15,7 @@ namespace EnterpriseSample.Tests.Presenters
             ListOrdersViewStub view = new ListOrdersViewStub();
             ListCustomerOrdersPresenter presenter = new ListCustomerOrdersPresenter(view,
                 new MockCustomerDaoFactory().CreateMockCustomerDao());
-            presenter.InitViewWith(TestGlobals.TestCustomer.ID);
+            presenter.InitViewWith(TestGlobals.TestCustomer);
 
             Assert.IsNotNull(view.ObjectsToList);
             Assert.AreEqual(3, view.ObjectsToList.Count);

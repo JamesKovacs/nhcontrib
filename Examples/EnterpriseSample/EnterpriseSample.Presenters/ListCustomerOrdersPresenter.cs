@@ -16,11 +16,8 @@ namespace EnterpriseSample.Presenters
             this.customerDao = customerDao;
         }
 
-        public void InitViewWith(string customerId) {
-            Check.Require(!string.IsNullOrEmpty(customerId), "customerId may not be empty");
-
-            // No need to lock the customer since we're just viewing the data
-            Customer customer = customerDao.GetById(customerId, false);
+        public void InitViewWith(Customer customer) {
+            Check.Require(customer!=null, "customer may not be null");
 
             // Note that the Orders collection is lazy-loaded
             view.ObjectsToList = customer.Orders;

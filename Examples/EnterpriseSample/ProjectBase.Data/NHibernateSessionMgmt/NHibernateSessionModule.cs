@@ -24,7 +24,7 @@ namespace ProjectBase.Data
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BeginTransaction(object sender, EventArgs e) {
-            NHibernateSessionManager.Init("Config/NorthwindNHibernate.config");
+            NHibernateSessionManager.Init("D:/nhcontrib/trunk/Examples/EnterpriseSample/EnterpriseSample.Web/Config/NorthwindNHibernate.config");
         }
 
         /// <summary>

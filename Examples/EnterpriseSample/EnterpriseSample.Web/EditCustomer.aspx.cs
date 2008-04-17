@@ -1,6 +1,8 @@
 using System;
+using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters;
 using EnterpriseSample.Web;
+using NHibernate.Burrow;
 
 /// <summary>
 /// In this page, as opposed to ListCustomers.aspx, this acts as a view-initializer wherein
@@ -13,8 +15,14 @@ using EnterpriseSample.Web;
 public partial class EditCustomer : BasePage
 {
     protected override void PageLoad() {
+        if (!IsPostBack)
+        {
+            BurrowFramework burrow = new BurrowFramework();
+            burrow.CurrentConversation.SpanWithPostBacks();
+        }
+
         InitEditCustomerView();
-        InitListOrdersView();
+        //InitListOrdersView();
         InitListHistoricalOrderSummariesView();
     }
 
@@ -22,8 +30,9 @@ public partial class EditCustomer : BasePage
         EditCustomerPresenter presenter = new EditCustomerPresenter(ctrlEditCustomerView, DaoFactory.GetCustomerDao());
         ctrlEditCustomerView.AttachPresenter(presenter);
         // Listen for events coming from the view
-        ctrlEditCustomerView.UpdateCompleted += new EventHandler(HandleUpdateCompleted);
-        ctrlEditCustomerView.UpdateCancelled += new EventHandler(HandleUpdateCancelled);
+        ctrlEditCustomerView.UpdateCompleted += HandleUpdateCompleted;
+        ctrlEditCustomerView.UpdateCancelled += HandleUpdateCancelled;
+        ctrlEditCustomerView.OrdersView += HandleOrdersView;
 
         if (!IsPostBack) {
             presenter.InitViewWith(CustomerId);
@@ -31,23 +40,28 @@ public partial class EditCustomer : BasePage
     }
 
     private void HandleUpdateCancelled(object sender, EventArgs e) {
+        BurrowFramework burrow = new BurrowFramework();
+        burrow.CurrentConversation.FinishSpan();
         Response.Redirect("ListCustomers.aspx");
     }
 
     private void HandleUpdateCompleted(object sender, EventArgs e) {
         // PageMethods is perfect for managing strongly-typed redirects...
         // definitely use it with your web apps instead of the following.
+        BurrowFramework burrow = new BurrowFramework();
+        burrow.CurrentConversation.FinishSpan();
         Response.Redirect("ListCustomers.aspx?action=updated");
-
     }
 
-    private void InitListOrdersView() {
+    private void HandleOrdersView(object sender, CustomerEventArgs e)
+    {
+        InitListOrdersView(e.Customer);
+    }
+
+    private void InitListOrdersView(Customer customer) {
         ListCustomerOrdersPresenter presenter = new ListCustomerOrdersPresenter(ctrlListOrdersView,
             DaoFactory.GetCustomerDao());
-
-        if (!IsPostBack) {
-            presenter.InitViewWith(CustomerId);
-        }
+        presenter.InitViewWith(customer);
     }
 
     private void InitListHistoricalOrderSummariesView() {

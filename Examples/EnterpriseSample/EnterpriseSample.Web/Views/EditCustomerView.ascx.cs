@@ -9,6 +9,7 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
 {
     public EventHandler UpdateCompleted;
     public EventHandler UpdateCancelled;
+    public EventHandler<CustomerEventArgs> OrdersView;
     
     public void AttachPresenter(EditCustomerPresenter presenter) {
         this.presenter = presenter;
@@ -18,6 +19,10 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
         set {
             Check.Require(value != null, "Customer may not be null");
             ShowCustomerDetails(value);
+            Session[ClientID + "Customer"] = value;
+        }
+        get { 
+            return Session[ClientID + "Customer"] as Customer; 
         }
     }
 
@@ -55,6 +60,12 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
         if (UpdateCancelled != null) {
             UpdateCancelled(this, EventArgs.Empty);
         }
+    }
+
+    protected void btnOrdersView_OnClick(object sender, EventArgs e)
+    {
+        if (OrdersView != null)
+            OrdersView(this, new CustomerEventArgs(this.Customer));
     }
 
     private EditCustomerPresenter presenter;

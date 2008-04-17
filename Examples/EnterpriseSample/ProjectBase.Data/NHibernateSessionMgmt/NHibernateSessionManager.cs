@@ -49,6 +49,7 @@ namespace ProjectBase.Data
             */
 
             internal static readonly INHibernateSessionManager NHibernateSessionManager =
+                //new NHibernateSessionManagerImplDefault(sessionFactoryConfigPath);
                 new NHibernateSessionManagerImplBurrow();
         }
 
