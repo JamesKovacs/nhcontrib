@@ -57,8 +57,8 @@ namespace NHibernate.Burrow.Test.Concurrency {
 
         public void ThreadProc() {
             try {
-                new Facade().InitializeDomain();
-                ISession session = new Facade().GetSession();
+                new BurrowFramework().InitWorkSpace();
+                ISession session = new BurrowFramework().GetSession();
                 Assert.IsNotNull(session);
                 int code = session.GetHashCode();
                 session.Flush();
@@ -72,7 +72,7 @@ namespace NHibernate.Burrow.Test.Concurrency {
                 throw;
             }
             finally {
-                new Facade().CloseDomain();
+                new BurrowFramework().CloseWorkSpace();
             }
         }
     }

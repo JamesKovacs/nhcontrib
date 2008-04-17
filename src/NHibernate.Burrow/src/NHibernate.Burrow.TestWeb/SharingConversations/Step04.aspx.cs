@@ -9,8 +9,8 @@ public partial class SharingConversations_Step04 : Page
     {
         if (!IsPostBack)
         {
-            Facade facade = new Facade();
-            IConversation conversation = facade.CurrentConversation;
+            BurrowFramework bf = new BurrowFramework();
+            IConversation conversation = bf.CurrentConversation;
             Checker.CheckSpanningConversations(0);
 
             if (conversation == null)
@@ -29,8 +29,8 @@ public partial class SharingConversations_Step04 : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
+        BurrowFramework bf = new BurrowFramework();
+        IConversation conversation = bf.CurrentConversation;
         Checker.CheckSpanningConversations(1);
 
         Session["conversationId"] = conversation.Id;

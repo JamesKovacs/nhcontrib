@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace NHibernate.Burrow.Test.FrameworkEnvironment {
     [TestFixture]
     public class ShutDownFixture {
-        Facade f = new Facade();
+        BurrowFramework f = new BurrowFramework();
 
         [TearDown]
         public void TearDown() {
@@ -16,7 +16,7 @@ namespace NHibernate.Burrow.Test.FrameworkEnvironment {
         public void CannotInitializeDomainTest() {
             f.BurrowEnvironment.ShutDown();
             try {
-                f.InitializeDomain();
+                f.InitWorkSpace();
                 Assert.Fail("Failed to throw FrameworkAlreadyShutDownException");
             }catch(FrameworkAlreadyShutDownException) {
                 

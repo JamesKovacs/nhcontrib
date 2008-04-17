@@ -18,8 +18,8 @@ public partial class SharingConversations_Step06b : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            Facade facade = new Facade();
-            IConversation conversation = facade.CurrentConversation;
+            BurrowFramework bf = new BurrowFramework();
+            IConversation conversation = bf.CurrentConversation;
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");

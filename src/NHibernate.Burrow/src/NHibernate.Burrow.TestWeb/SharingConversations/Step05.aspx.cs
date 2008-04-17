@@ -7,8 +7,8 @@ public partial class SharingConversations_Step05 : Page
     protected void Page_Load(object sender, EventArgs e)
     {
     	if (!IsPostBack) {
-    		Facade facade = new Facade();
-    		IConversation conversation = facade.CurrentConversation;
+    		BurrowFramework bf = new BurrowFramework();
+    		IConversation conversation = bf.CurrentConversation;
     		Checker.CheckSpanningConversations(1);
         
     		if (conversation == null)
@@ -27,7 +27,7 @@ public partial class SharingConversations_Step05 : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
-    	IConversation conversation = new Facade().CurrentConversation;
+    	IConversation conversation = new BurrowFramework().CurrentConversation;
     	conversation.SpanWithCookie("WorkSpaceStep06"); //Span the conversation in WorkSpace "WorkSpaceStep06"
 		Session["conversationId"] = conversation.Id;
         Response.Redirect("Step06.aspx");

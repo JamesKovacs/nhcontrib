@@ -12,7 +12,7 @@ using NHibernate.Burrow;
 
 public partial class ErrorHandling_ConversationErrorHandling : System.Web.UI.Page
 {
-    Facade f = new Facade();
+    BurrowFramework f = new BurrowFramework();
 
     protected void Page_Load(object sender, EventArgs e)
     {

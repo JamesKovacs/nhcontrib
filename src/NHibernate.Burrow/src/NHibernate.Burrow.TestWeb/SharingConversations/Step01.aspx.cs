@@ -6,8 +6,8 @@ public partial class SharingConversations_Step01 : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
+        BurrowFramework bf = new BurrowFramework();
+        IConversation conversation = bf.CurrentConversation;
 
         if (conversation == null)
             throw new Exception("The page doesn't have current conversation!");
@@ -38,8 +38,8 @@ public partial class SharingConversations_Step01 : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
+        BurrowFramework bf = new BurrowFramework();
+        IConversation conversation = bf.CurrentConversation;
        
         //int step = (int)conversation.Items["step"];
         int step = (int) Session["step"];

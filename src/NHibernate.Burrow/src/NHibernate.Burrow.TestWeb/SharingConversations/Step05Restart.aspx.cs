@@ -12,7 +12,7 @@ public partial class SharingConversations_Step05Restart : Page
 
     protected void btnNextStep_Click(object sender, EventArgs e)
     {
-    	IConversation conversation = new Facade().CurrentConversation;
+    	IConversation conversation = new BurrowFramework().CurrentConversation;
     	conversation.SpanWithCookie("WorkSpaceStep06");
 		 Session["conversationId"] = conversation.Id;
         Response.Redirect("Step06.aspx");

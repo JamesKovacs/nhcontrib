@@ -7,12 +7,16 @@ using NHibernate.Burrow.Impl;
 namespace NHibernate.Burrow {
 
     /// <summary>
-    /// Facade of the Burrow 
+    /// Facade of Burrow 
     /// </summary>
     /// <remarks>
-    /// creating an instance of this class is free.
+    /// Creating an instance of this class is free. The instance is stateless and can be stored anywhere
     /// </remarks>
-    public  class Facade {
+    public class BurrowFramework {
+
+        /// <summary>
+        /// Gets the current <see cref="IConversation"/>
+        /// </summary>
         public  IConversation CurrentConversation {
             get {
                 if(WorkSpace.Current != null)
@@ -22,51 +26,52 @@ namespace NHibernate.Burrow {
         }
 
         /// <summary>
-        /// <see cref="IFrameworkEnvironment"/>
+        /// Gets the <see cref="IFrameworkEnvironment"/>
         /// </summary>
         public IFrameworkEnvironment BurrowEnvironment {
             get { return FrameworkEnvironment.Instance; }
         }
 
         /// <summary>
-        /// gets if the domain layer is already <see cref="InitializeDomain(bool,NameValueCollection)"/>.
+        /// gets if the Burrow workspace is already <see cref="InitWorkSpace()"/> and not <see cref="CloseWorkSpace()"/>  yet.
         /// </summary>
-        public  bool Alive {
+        public  bool WorkSpaceIsReady {
             get { return WorkSpace.Current != null; }
         }
 
         /// <summary>
-        /// a shotcut to <see cref="InitializeDomain(bool,NameValueCollection)"/> with (false, null) as the parameter
+        /// a shotcut to <see cref="InitWorkSpace(bool,NameValueCollection,string)"/> with (false, null, string.Empty) as the parameter
         /// </summary>
-        public  void InitializeDomain() {
-            InitializeDomain(false, null);
+        public  void InitWorkSpace() {
+            InitWorkSpace(false, null, string.Empty);
         }
 
+      
         /// <summary>
         ///  prepare the Burrow environment for the current visit to your Domain Layer
         /// </summary>
-        /// <param name="ignoreUnclosedDomain">if there is an existing Domain Context, ignoreUnclosedDomain = true will close it first. 
-        ///                                     ignoreUnclosedDomain = false will throw an Exception .</param>
+        /// <param name="ignoreUnclosedWorkSpace">if there is an existing WorkSpace, ignoreUnclosedWorkSpace = true will close it first. 
+        ///                                     ignoreUnclosedWorkSpace = false will throw an Exception .</param>
         /// <param name="states">the span states that should be used to initialized it, if you are not spanning the conversation, leave it null</param>
-       /// <remarks>
+        /// <remarks>
         /// This should be called before any NHibernate related operation and actually, for example, in the begining of handling a http request
-        /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
+        /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, as you should in an Web Application, it will call this for you, you don't need to worry about this.
         /// </remarks>
-        public  void InitializeDomain(bool ignoreUnclosedDomain, NameValueCollection states) {
-            InitializeDomain(ignoreUnclosedDomain,states,string.Empty);
-        }  
-        
-        public  void InitializeDomain(bool ignoreUnclosedDomain, NameValueCollection states, string currentWorkSpaceName) {
-            if (ignoreUnclosedDomain && Alive)
-                CloseDomain();
-            FrameworkEnvironment.Instance.StartNewDomainContext(states, currentWorkSpaceName);
+        /// <param name="currentWorkSpaceName">the workSpaceName of the current context (usually defined by the handler side)</param>
+        public  void InitWorkSpace(bool ignoreUnclosedWorkSpace, NameValueCollection states, string currentWorkSpaceName) {
+            if (ignoreUnclosedWorkSpace && WorkSpaceIsReady)
+                CloseWorkSpace();
+            FrameworkEnvironment.Instance.StartNewWorkSpace(states, currentWorkSpaceName);
         }
 
-        public void InitializeDomain(Guid conversationId)
-        {
-            NameValueCollection nve = new NameValueCollection();
-            nve.Add(ConversationImpl.ConversationIdKeyName, conversationId.ToString());
-            InitializeDomain(false, nve);
+
+        /// <summary>
+        /// Initialize the WorkSpace and join the conversation with <paramref name="conversationId"/>
+        /// </summary>
+        /// <param name="conversationId"></param>
+        public void InitWorkSpace(Guid conversationId)
+        { 
+            InitWorkSpace(false, WorkSpace.CreateState(conversationId, string.Empty), string.Empty);
         }
 
      
@@ -77,13 +82,13 @@ namespace NHibernate.Burrow {
         /// This should be called after the current visit to the domainlayer is finished and the time of next visit is unknow, for example, at the very end of handling the http request
         /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
         /// </remarks>
-        public  void CloseDomain() {
+        public void CloseWorkSpace() {
             if (WorkSpace.Current != null)
                 WorkSpace.Current.Close();
         }
 
         /// <summary>
-        /// Gets the managed NHibernate ISession
+        /// overloaded version of <see cref="GetSession(Type)"/> in a single-SessionFactory environment
         /// </summary>
         /// <returns></returns>
         public  ISession GetSession() {

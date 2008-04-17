@@ -8,14 +8,14 @@ public partial class SharingConversations_Step02 : Page
     {
         if (!IsPostBack)
         {
-            Facade facade = new Facade();
-            IConversation conversation = facade.CurrentConversation;
+            BurrowFramework bf = new BurrowFramework();
+            IConversation conversation = bf.CurrentConversation;
             Checker.CheckSpanningConversations(0);
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
 
-            //if (Facade.ActiveConversations.Count != 1)
+            //if (BurrowFramework.ActiveConversations.Count != 1)
             //    throw new Exception("There are more conversations that the expected");
 
             object lastConversationId = Session["conversationId"];

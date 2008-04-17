@@ -17,7 +17,7 @@ namespace NHibernate.Burrow.Impl {
         private IList<PersistenceUnit> persistenceUnits = new List<PersistenceUnit>();
 
         private PersistenceUnitRepo() {
-            foreach (IPersistenceUnitCfg pus in  new Facade().BurrowEnvironment.Configuration.PersistenceUnitCfgs)
+            foreach (IPersistenceUnitCfg pus in  new BurrowFramework().BurrowEnvironment.Configuration.PersistenceUnitCfgs)
                 PersistenceUnits.Add(new PersistenceUnit(pus));
         }
 

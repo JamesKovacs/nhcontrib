@@ -24,7 +24,7 @@ namespace NHibernate.Burrow.Util
         /// </exception>
         public string WrapUrlWithConversationInfo(string originalUrl)
         {
-            if (new Facade().CurrentConversation.IsSpanning)
+            if (new BurrowFramework().CurrentConversation.IsSpanning)
                 return WorkSpace.Current.WrapUrlWithSpanInfo(originalUrl);
             else
                 throw new Exceptions.IncorrectConversationSpanStatusException(

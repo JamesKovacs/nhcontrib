@@ -8,17 +8,17 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:PlaceHolder ID="phSelectCustomer" runat="server" Visible="true">
-            Select a customer who wants to place an order (will be the OrderBy)<br /> 
+            <asp:PlaceHolder ID="phSelectCustomer" runat="server" Visible="true">Select a customer
+                who wants to place an order (will be the OrderBy)<br />
                 <asp:DropDownList ID="ddlCustomers" runat="server" DataTextField="ContactName" DataValueField="ID">
                 </asp:DropDownList>
-                <asp:Button ID="btnSelectCustomer" runat="server" Text="Next" OnClick="btnSelectCustomer_Click" />
+                <asp:Button ID="btnSelectCustomer" runat="server" Text="Next" OnClick="Step1" />
             </asp:PlaceHolder>
             <asp:PlaceHolder ID="phEnterShipToName" runat="server" Visible="false">Please enter
                 your ship to information:
                 <asp:TextBox ID="tbShipToName" runat="server"></asp:TextBox>
-                <asp:Button ID="btnEnterShipTo" runat="server" Text="Next" OnClick="btnEnterShipTo_Click" /><br />
-                <asp:Button ID="btnCancel" OnClick="btnCancel_Click" runat="server" Text="cancel"></asp:Button>
+                <asp:Button ID="btnEnterShipTo" runat="server" Text="Next" OnClick="btnStep2" /><br />
+                <asp:Button ID="btnCancel" OnClick="Cancel" runat="server" Text="cancel"></asp:Button>
             </asp:PlaceHolder>
             <asp:PlaceHolder ID="phConfirm" runat="server" Visible="false">Customer:
                 <asp:Literal ID="lCustomer" runat="server"></asp:Literal>
@@ -26,9 +26,11 @@
                 Ship to:
                 <asp:Literal ID="lShipTo" runat="server"></asp:Literal>
                 <br />
-                <asp:Button ID="btnConfirm" runat="server" Text="Confirm" OnClick="btnConfirm_Click" />
+                <asp:Button ID="btnConfirm" runat="server" Text="Confirm" OnClick="Finish" />
             </asp:PlaceHolder>
-            <br /><br /><br />
+            <br />
+            <br />
+            <br />
             <asp:HyperLink ID="hlOrders" Target="_blank" NavigateUrl="~/recentorders.aspx" runat="server">Show recent orders</asp:HyperLink>
         </div>
     </form>

@@ -26,7 +26,7 @@ namespace BasicSample.Data
         /// </summary>
         private ISession NHibernateSession {
             get {
-                return new Facade().GetSession();
+                return new BurrowFramework().GetSession();
             }
         }
     }

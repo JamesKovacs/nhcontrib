@@ -5,29 +5,29 @@ namespace NHibernate.Burrow.Test.Transaction {
     public class ManualTransactionFixture {
         [Test]
         public void ManualTransactionInOneConversationTest() {
-            Facade facade = new Facade();
-            facade.BurrowEnvironment.ShutDown();
-            foreach (IPersistenceUnitCfg cfg in facade.BurrowEnvironment.Configuration.PersistenceUnitCfgs)
+            BurrowFramework bf = new BurrowFramework();
+            bf.BurrowEnvironment.ShutDown();
+            foreach (IPersistenceUnitCfg cfg in bf.BurrowEnvironment.Configuration.PersistenceUnitCfgs)
                 cfg.ManualTransactionManagement = false;
 
-            facade.BurrowEnvironment.Start();
-            facade.InitializeDomain();
+            bf.BurrowEnvironment.Start();
+            bf.InitWorkSpace();
 
-            Assert.IsTrue(facade.GetSession().Transaction.IsActive);
+            Assert.IsTrue(bf.GetSession().Transaction.IsActive);
 
-            facade.CloseDomain(); 
-            facade.BurrowEnvironment.ShutDown();
+            bf.CloseWorkSpace(); 
+            bf.BurrowEnvironment.ShutDown();
 
-            foreach (IPersistenceUnitCfg cfg in facade.BurrowEnvironment.Configuration.PersistenceUnitCfgs)
+            foreach (IPersistenceUnitCfg cfg in bf.BurrowEnvironment.Configuration.PersistenceUnitCfgs)
                 cfg.ManualTransactionManagement = true;
 
-            facade.BurrowEnvironment.Start();
+            bf.BurrowEnvironment.Start();
 
-            facade.InitializeDomain();
+            bf.InitWorkSpace();
 
-            Assert.IsFalse(facade.GetSession().Transaction.IsActive);
+            Assert.IsFalse(bf.GetSession().Transaction.IsActive);
 
-            facade.CloseDomain();
+            bf.CloseWorkSpace();
         }
     }
 }

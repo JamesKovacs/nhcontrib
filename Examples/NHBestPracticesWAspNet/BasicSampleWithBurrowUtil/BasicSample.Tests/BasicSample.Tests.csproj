@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHibernate.Burrow, Version=1.3.0.18390, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NHibernate.Burrow.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Solution Items\nunit.framework.dll</HintPath>
@@ -60,10 +64,6 @@
     <Compile Include="TestFactories\TestOrdersFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow\NHibernate.Burrow.csproj">
-      <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
-      <Name>NHibernate.Burrow</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BasicSample.Core\BasicSample.Core.csproj">
       <Project>{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}</Project>
       <Name>BasicSample.Core</Name>

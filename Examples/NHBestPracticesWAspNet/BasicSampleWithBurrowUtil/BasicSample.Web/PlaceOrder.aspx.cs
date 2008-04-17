@@ -11,7 +11,7 @@ using NHibernate.Burrow.WebUtil.Attributes;
 /// </summary>
 public partial class PlaceOrder : Page {
     private IDaoFactory daoFactory = ServiceLocator.DaoFactory;
-    private Facade facade = new Facade();
+    private BurrowFramework bf = new BurrowFramework();
 
     /// <summary>
     /// using a ConversationalField attribute so that it has the same life span as the Conversation
@@ -36,7 +36,7 @@ public partial class PlaceOrder : Page {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     protected void btnSelectCustomer_Click(object sender, EventArgs e) {
-        facade.CurrentConversation.SpanWithPostBacks(); //start a Conversation that span over postbacks
+        bf.CurrentConversation.SpanWithPostBacks(); //start a Conversation that span over postbacks
         Customer selectedCustomer = daoFactory.GetCustomerDao().Get(ddlCustomers.SelectedValue);
         placingOrder =  new Order(selectedCustomer);
 
@@ -67,7 +67,7 @@ public partial class PlaceOrder : Page {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     protected void btnCancel_Click(object sender, EventArgs e) {
-        facade.CurrentConversation.GiveUp(); // give up the current spanning conversation
+        bf.CurrentConversation.GiveUp(); // give up the current spanning conversation
         StartOver("Order Canceled!");
     }
 
@@ -79,7 +79,7 @@ public partial class PlaceOrder : Page {
     protected void btnConfirm_Click(object sender, EventArgs e) {
         placingOrder.OrderDate = DateTime.Now; //Set the order date
         daoFactory.GetOrderDao().Save(placingOrder); //persists the order
-        facade.CurrentConversation.FinishSpan(); //finish the current spanning conversation (this method means the conversation is successfully finished)
+        bf.CurrentConversation.FinishSpan(); //finish the current spanning conversation (this method means the conversation is successfully finished)
         StartOver("Order Placed!");
     }
 

@@ -8,8 +8,8 @@ public partial class SharingConversations_Step03a : Page
     {
         if (!IsPostBack)
         {
-            Facade facade = new Facade();
-            IConversation conversation = facade.CurrentConversation;
+            BurrowFramework bf = new BurrowFramework();
+            IConversation conversation = bf.CurrentConversation;
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
@@ -19,15 +19,15 @@ public partial class SharingConversations_Step03a : Page
 
             Checker.CheckSpanningConversations(2);
 
-            //if (Facade.ActiveConversations.Count != 2)
+            //if (BurrowFramework.ActiveConversations.Count != 2)
             //    throw new Exception("There are more conversations that the expected");            }
         }
     }
 
     protected void btnClose_Click(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
+        BurrowFramework bf = new BurrowFramework();
+        IConversation conversation = bf.CurrentConversation;
         Session["continue"] = true;
 
         conversation.FinishSpan();

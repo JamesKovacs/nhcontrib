@@ -8,7 +8,7 @@ using NHibernate.Burrow.Impl;
 namespace NHibernate.Burrow.Impl {
     internal class ConversationPool
     {
-        private static  readonly  ConversationPool instance = new ConversationPool(new Facade().BurrowEnvironment.Configuration);
+        private static  readonly  ConversationPool instance = new ConversationPool(new BurrowFramework().BurrowEnvironment.Configuration);
         private readonly IDictionary<Guid, ConversationPoolItem> pool = new Dictionary<Guid, ConversationPoolItem>();
 
         private DateTime nextCleanup = DateTime.Now;

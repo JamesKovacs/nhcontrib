@@ -47,7 +47,7 @@ namespace NHibernate.Burrow.Impl {
         /// Initialized the domain context with a collection of states
         /// </param>
         /// <param name="currentWorkSpaceName"></param>
-        public void StartNewDomainContext(NameValueCollection states, string currentWorkSpaceName)
+        public void StartNewWorkSpace(NameValueCollection states, string currentWorkSpaceName)
         {
             if (CurrentWorkSpace == null)
                 CurrentWorkSpace = WorkSpace.Initialize(states, currentWorkSpaceName);
@@ -65,8 +65,8 @@ namespace NHibernate.Burrow.Impl {
         /// </remarks>
         public void ShutDown() {
             CheckRunning();
-            if (new Facade().Alive)
-                throw new GeneralException("Domain must be closed before ShutDown, call Facade.CloseDomain() first");
+            if (new BurrowFramework().WorkSpaceIsReady)
+                throw new GeneralException("Domain must be closed before ShutDown, call BurrowFramework.CloseWorkSpace() first");
             ConversationPool.Instance.Clear();
             currentDomainContextHolder = null;
         }

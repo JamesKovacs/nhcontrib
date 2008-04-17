@@ -14,7 +14,7 @@ namespace NHibernate.Burrow.Impl {
 
         public ConversationExpirationCheckerByTimeout()
         {
-            IBurrowConfig cfg =  new Facade().BurrowEnvironment.Configuration;
+            IBurrowConfig cfg =  new BurrowFramework().BurrowEnvironment.Configuration;
             int timeoutMinutes = cfg.ConversationTimeOut;
             if (timeoutMinutes < 1)
             {

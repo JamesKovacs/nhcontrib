@@ -69,7 +69,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\MindHarbor.DomainTemplate.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\NHibernate.Burrow.XML</DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -129,7 +129,7 @@
     <Compile Include="Exceptions\PropertyNotFoundException.cs" />
     <Compile Include="Exceptions\TypeNotFoundException.cs" />
     <Compile Include="Exceptions\UnableToGetPersistenceUnitException.cs" />
-    <Compile Include="Facade.cs" />
+    <Compile Include="BurrowFramework.cs" />
     <Compile Include="Impl\ConversationImpl.cs" />
     <Compile Include="ConversationalData.cs" />
     <Compile Include="Impl\ConversationPool.cs" />
@@ -140,7 +140,7 @@
     <Compile Include="Exceptions\GeneralException.cs" />
     <Compile Include="IConversation.cs" />
     <Compile Include="IConversationExpirationChecker.cs" />
-    <Compile Include="SpanStrategy.cs" />
+    <Compile Include="Impl\SpanStrategy.cs" />
     <Compile Include="Impl\PersistenceUnit.cs" />
     <Compile Include="Impl\PersistenceUnitRepo.cs" />
     <Compile Include="Exceptions\BurrowException.cs">

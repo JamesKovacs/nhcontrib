@@ -6,12 +6,12 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NHibernate.Burrow.Impl;
 
-namespace NHibernate.Burrow
+namespace NHibernate.Burrow.Impl
 {
     /// <summary>
-    /// the strategy with which Burrow span the <see cref="SpanState"/>
+    /// the strategy with which Burrow span the Conversation
     /// </summary>
-    public abstract class SpanStrategy
+    internal abstract class SpanStrategy
     {
         public static readonly SpanStrategy Cookie = new CookieStrategy();
         public static readonly SpanStrategy DoNotSpan = new DoNotSpanStrategy();
@@ -142,7 +142,7 @@ namespace NHibernate.Burrow
             protected override bool UseCookie {
                 get { return false; }
             }
-      }
+        }
 
         #endregion
     }

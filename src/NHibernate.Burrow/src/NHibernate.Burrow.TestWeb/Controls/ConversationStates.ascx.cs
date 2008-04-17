@@ -53,7 +53,7 @@ public partial class Controls_ConversationStates : System.Web.UI.UserControl
     {
         lStatus.Text = "MockEntity In Conversation: " + GetNumber(me) +
                         "<br /> MockEntity in DB: " + GetNumber(meInDb);
-        bool spanning = new Facade().CurrentConversation.IsSpanning;
+        bool spanning = new BurrowFramework().CurrentConversation.IsSpanning;
         btnUpdate.Enabled = spanning;
         btnCommit.Enabled = spanning;
         btnCancel.Enabled = spanning;
@@ -73,7 +73,7 @@ public partial class Controls_ConversationStates : System.Web.UI.UserControl
     protected void btnStart_Click(object sender, EventArgs e)
     {
         MEInConversation = new MockEntity();
-        Facade f = new Facade();
+        BurrowFramework f = new BurrowFramework();
         f.CurrentConversation.SpanWithPostBacks();
         lConversationStatus.Text = f.CurrentConversation.IsSpanning.ToString();
     }
@@ -89,13 +89,13 @@ public partial class Controls_ConversationStates : System.Web.UI.UserControl
         me.Save();
         MEInDB = me;
         MEInConversation = null;
-        new Facade().CurrentConversation.FinishSpan();
+        new BurrowFramework().CurrentConversation.FinishSpan();
 
     }
     protected void btnCancel_Click(object sender, EventArgs e)
     {
         MEInConversation = null;
-        new Facade().CurrentConversation.GiveUp();
+        new BurrowFramework().CurrentConversation.GiveUp();
     }
 
 

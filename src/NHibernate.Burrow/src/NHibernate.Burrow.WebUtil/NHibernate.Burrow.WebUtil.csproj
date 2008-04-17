@@ -27,7 +27,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\MindHarbor.DomainTemplate.WebUtil.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\NHibernate.Burrow.WebUtil.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

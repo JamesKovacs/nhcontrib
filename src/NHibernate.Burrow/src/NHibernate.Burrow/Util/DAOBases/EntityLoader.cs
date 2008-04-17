@@ -58,7 +58,7 @@ namespace NHibernate.Burrow.Util.DAOBases
 
         private static ISession GetSession(System.Type t)
         {
-            return new Facade().GetSession(t);
+            return new BurrowFramework().GetSession(t);
         }
     }
 }

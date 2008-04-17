@@ -10,14 +10,14 @@ using NHibernate.Burrow;
 /// </summary>
 public partial class PlaceOrder : Page {
     private IDaoFactory daoFactory = new NHibernateDaoFactory();
-    private Facade facade = new Facade();
+    private BurrowFramework facade = new BurrowFramework();
 
     /// <summary>
-    /// Store the placing order in the <see cref="ConversationalData{T}"/> container so that it has the same life span as the Conversation
+    /// Store the placing order in the Conversation.Items so that it has the same life span as the Conversation
     /// </summary>
-    public ConversationalData<Order> placingOrder {
-        get { return (ConversationalData<Order>) ViewState["placingOrder"]; }
-        set { ViewState["placingOrder"] = value; }
+    public Order placingOrder {
+        get { return (Order) facade.CurrentConversation.Items["placingOrder"]; }
+        set { facade.CurrentConversation.Items["placingOrder"] = value; }
     }
 
     protected void Page_Load(object sender, EventArgs e) {
@@ -27,48 +27,38 @@ public partial class PlaceOrder : Page {
         }
     }
 
-    protected void btnSelectCustomer_Click(object sender, EventArgs e) {
+    protected void Step1(object sender, EventArgs e) {
         facade.CurrentConversation.SpanWithPostBacks(); //start a Conversation that span over postbacks
         Customer selectedCustomer = daoFactory.GetCustomerDao().GetById(ddlCustomers.SelectedValue, false);
-        placingOrder = new ConversationalData<Order>( new Order(selectedCustomer) );
-
+        placingOrder =  new Order(selectedCustomer) ;
         phSelectCustomer.Visible = false;
         phEnterShipToName.Visible = true;
     }
 
-    protected void btnEnterShipTo_Click(object sender, EventArgs e) {
-        placingOrder.Value.ShipToName = tbShipToName.Text;
-
-
+    protected void btnStep2(object sender, EventArgs e) {
+        placingOrder.ShipToName = tbShipToName.Text;
         phEnterShipToName.Visible = false;
         phConfirm.Visible = true;
-
-        lCustomer.Text = placingOrder.Value.OrderedBy.ToString();
-        lShipTo.Text = placingOrder.Value.ShipToName;
+        lCustomer.Text = placingOrder.OrderedBy.ToString();
+        lShipTo.Text = placingOrder.ShipToName;
     }
 
-    protected void btnCancel_Click(object sender, EventArgs e) {
+    protected void Cancel(object sender, EventArgs e) {
         facade.CurrentConversation.GiveUp(); // give up the current spanning conversation
         phEnterShipToName.Visible = false;
         StartOver();
     }
 
     private void StartOver() {
-        
         phSelectCustomer.Visible = true;
     }
 
-    protected void btnConfirm_Click(object sender, EventArgs e) {
-        placingOrder.Value.OrderDate = DateTime.Now;
-        daoFactory.GetOrderDao().Save(placingOrder.Value);
-
+    protected void Finish(object sender, EventArgs e) {
+        placingOrder.OrderDate = DateTime.Now;
+        daoFactory.GetOrderDao().Save(placingOrder);
         facade.CurrentConversation.FinishSpan(); //finish up the current spanning conversation
-        
-        
-        placingOrder = null; //reset the placing order to null;
+        placingOrder = null; //reset the placing order to null after conversation is done is a good practice
         phConfirm.Visible = false;
         StartOver();
-      
     }
-
 }

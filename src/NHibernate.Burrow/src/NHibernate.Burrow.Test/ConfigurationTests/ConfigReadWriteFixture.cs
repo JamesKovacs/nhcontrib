@@ -10,7 +10,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
     public class ConfigReadWriteFixture {
         [Test]
         public void ReadNHConfigFileTest() {
-            IBurrowConfig section =  new Facade().BurrowEnvironment.Configuration;
+            IBurrowConfig section =  new BurrowFramework().BurrowEnvironment.Configuration;
             Assert.IsNotNull(section);
             Assert.IsTrue(section.PersistenceUnitCfgs.Count > 0);
 
@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
         }
         [Test]
         public void WriteReadNHConfigFileTest() {
-            Facade f = new Facade();
+            BurrowFramework f = new BurrowFramework();
             
             IBurrowConfig section =  f.BurrowEnvironment.Configuration;
 
@@ -51,11 +51,11 @@ namespace NHibernate.Burrow.Test.ConfigurationTests {
         [Test]
         public void ConnectionStringTest()
         {
-            new Facade().InitializeDomain();
-            string cs = new Facade().BurrowEnvironment.Configuration.DBConnectionString(typeof(MockEntity));
+            new BurrowFramework().InitWorkSpace();
+            string cs = new BurrowFramework().BurrowEnvironment.Configuration.DBConnectionString(typeof(MockEntity));
             Console.WriteLine(cs);
             Assert.IsTrue(cs.IndexOf("Server") >= 0);
-            new Facade().CloseDomain();
+            new BurrowFramework().CloseWorkSpace();
         }
     }
 }

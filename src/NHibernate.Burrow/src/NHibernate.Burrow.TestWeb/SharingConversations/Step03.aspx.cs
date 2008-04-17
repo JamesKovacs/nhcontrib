@@ -7,8 +7,8 @@ public partial class SharingConversations_Step03 : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Facade facade = new Facade();
-        IConversation conversation = facade.CurrentConversation;
+        BurrowFramework bf = new BurrowFramework();
+        IConversation conversation = bf.CurrentConversation;
 
         if (!IsPostBack)
         {
@@ -18,7 +18,7 @@ public partial class SharingConversations_Step03 : Page
             conversation.SpanWithPostBacks();
             Checker.CheckSpanningConversations(1);
             Session["continue"] = false;
-            //if (Facade.ActiveConversations.Count != 1)
+            //if (BurrowFramework.ActiveConversations.Count != 1)
             //    throw new Exception("There are more conversations that the expected");
         }
             //else if (conversation.Items.ContainsKey("continue"))
@@ -35,7 +35,7 @@ public partial class SharingConversations_Step03 : Page
     {
         Checker.CheckSpanningConversations(1);
 
-        new Facade().CurrentConversation.FinishSpan();
+        new BurrowFramework().CurrentConversation.FinishSpan();
         Checker.CheckSpanningConversations(0);
 
         Response.Redirect("Step04.aspx");

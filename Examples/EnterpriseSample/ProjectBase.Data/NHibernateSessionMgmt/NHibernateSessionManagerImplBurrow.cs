@@ -20,7 +20,7 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
 
         public ISession GetSession()
         {
-            Facade facade = new Facade();
+            BurrowFramework facade = new BurrowFramework();
             return facade.GetSession();
         }
 

@@ -36,14 +36,14 @@ namespace NHibernate.Burrow.WebUtil
         /// <param name="e"></param>
         private static void OnError(object sender, EventArgs e)
         {
-            if (!new Facade().Alive)
+            if (!new BurrowFramework().WorkSpaceIsReady)
             {
                 return;
             }
             try
             {
-                new Facade().CurrentConversation.GiveUp();
-                new Facade().CloseDomain();
+                new BurrowFramework().CurrentConversation.GiveUp();
+                new BurrowFramework().CloseWorkSpace();
             }
             catch (Exception)
             {
@@ -64,7 +64,7 @@ namespace NHibernate.Burrow.WebUtil
             }
         	IHttpHandler handler = ctx.Context.Handler;
         	string currentWorkSpaceName = Sniffer().Sniff(handler);
-            new Facade().InitializeDomain(true, ctx.Request.Params, currentWorkSpaceName);
+            new BurrowFramework().InitWorkSpace(true, ctx.Request.Params, currentWorkSpaceName);
             if (handler is Page)
             {
                 Page p = (Page) handler;
@@ -75,7 +75,7 @@ namespace NHibernate.Burrow.WebUtil
         }
 
     	private IWorkSpaceNameSniffer Sniffer() {
-    		IBurrowConfig cfg = new Facade().BurrowEnvironment.Configuration;
+    		IBurrowConfig cfg = new BurrowFramework().BurrowEnvironment.Configuration;
 			if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))
 				return new Impl.WorkSpaceSnifferByAttribute();
 			else
@@ -112,7 +112,7 @@ namespace NHibernate.Burrow.WebUtil
             {
                 return;
             }
-            new Facade().CloseDomain();
+            new BurrowFramework().CloseWorkSpace();
         }
     }
 }

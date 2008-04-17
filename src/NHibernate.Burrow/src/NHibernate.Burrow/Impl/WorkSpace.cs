@@ -14,7 +14,6 @@ namespace NHibernate.Burrow.Impl {
 	/// </remarks>
 	internal sealed class WorkSpace {
 		private const string ConversationIdKeyName = "_NHibernate.Burrow.ConversationId_";
-		private const string WorkSpaceNameKeyName = "NHibernate.Burrow.WorkSpaceName";
 		private bool closed = false;
 		private ConversationImpl conversation;
 
@@ -87,7 +86,6 @@ namespace NHibernate.Burrow.Impl {
 		{
 			IDictionary<string, string> retVal = new Dictionary<string, string>();
 			retVal.Add(ConversationIdKeyName + WorkSpaceName, conversation.Id.ToString());
-			//retVal.Add(WorkSpaceNameKeyName, WorkSpaceName);
 			return retVal;
 		}
 
@@ -166,5 +164,11 @@ namespace NHibernate.Burrow.Impl {
 		#region private memebers
 
 		#endregion
+
+	    public static NameValueCollection CreateState(Guid id, string workSpaceName) {
+	        NameValueCollection nvc = new NameValueCollection();
+            nvc.Add(ConversationIdKeyName+workSpaceName, id.ToString());
+	        return nvc;
+        }
 	}
 }

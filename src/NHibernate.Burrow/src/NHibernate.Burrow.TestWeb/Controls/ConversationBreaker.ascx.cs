@@ -26,7 +26,7 @@ public partial class Controls_ConversationBreaker : System.Web.UI.UserControl
 
 
 
-    Facade f = new Facade();
+    BurrowFramework f = new BurrowFramework();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)

@@ -12,7 +12,7 @@ namespace EnterpriseSample.Tests.Data
         /// </summary>
         [TestFixtureSetUp]
         public void Setup() {
-            new Facade().InitializeDomain(true, new NameValueCollection());
+            new BurrowFramework().InitWorkSpace();
             NHibernateSessionManager.Init(TestGlobals.SessionFactoryConfigPath);
             NHibernateSessionManager.Instance.BeginTransaction();
         }
@@ -24,7 +24,7 @@ namespace EnterpriseSample.Tests.Data
         [TestFixtureTearDown]
         public void Dispose() {
             NHibernateSessionManager.Instance.RollbackTransaction();
-            new Facade().CloseDomain();
+            new BurrowFramework().CloseWorkSpace();
         }
     }
 }

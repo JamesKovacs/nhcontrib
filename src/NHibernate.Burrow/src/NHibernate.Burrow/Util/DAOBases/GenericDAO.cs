@@ -70,7 +70,7 @@ namespace NHibernate.Burrow.Util.DAOBases {
         /// Gets the Nhibernate Session 
         /// </summary>
         protected ISession Session {
-            get { return new Facade().GetSession(_NHEntityType); }
+            get { return new BurrowFramework().GetSession(_NHEntityType); }
         }
 
         /// <summary>

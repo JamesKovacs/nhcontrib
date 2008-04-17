@@ -10,8 +10,8 @@ public partial class SharingConversations_Step06 : Page
     {
         if (!IsPostBack || Session["continue"] != null && (bool)Session["continue"])
         {
-            Facade facade = new Facade();
-            IConversation conversation = facade.CurrentConversation;
+            BurrowFramework bf = new BurrowFramework();
+            IConversation conversation = bf.CurrentConversation;
 
             if (conversation == null)
                 throw new Exception("The page doesn't have conversation");
@@ -41,7 +41,7 @@ public partial class SharingConversations_Step06 : Page
 
 	protected void btnNextStep_Click(object sender, EventArgs e)
     {
-		new Facade().CurrentConversation.FinishSpan();
+		new BurrowFramework().CurrentConversation.FinishSpan();
         Response.Redirect("TheEnd.aspx");
     }
 }

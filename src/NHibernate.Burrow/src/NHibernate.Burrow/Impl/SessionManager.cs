@@ -49,8 +49,6 @@ namespace NHibernate.Burrow.Impl {
 
         #endregion
 
-     
-
         #region public methods
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace NHibernate.Burrow.TestUtil {
         }
  
         private static ISession GetSession(System.Type t) {
-            return new Facade().GetSession(t);
+            return new BurrowFramework().GetSession(t);
         }
  
         protected static void DeletePersistenceObject(object o) {

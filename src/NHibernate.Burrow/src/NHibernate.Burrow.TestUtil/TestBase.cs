@@ -19,7 +19,7 @@ namespace NHibernate.Burrow.TestUtil {
 
         [SetUp]
         public void Initialize() {
-            new Facade().InitializeDomain(true, null);
+            new BurrowFramework().InitWorkSpace(true, null, string.Empty);
             DataProvider dpa = (DataProvider) Attribute.GetCustomAttribute(GetType(), typeof (DataProvider), true);
             if (dpa != null)
                 tdp = dpa.CreateDataProvider();
@@ -33,7 +33,7 @@ namespace NHibernate.Burrow.TestUtil {
             TearDown();
             try {
                 tdp.ClearData();
-                new Facade().CloseDomain();
+                new BurrowFramework().CloseWorkSpace();
             }
             finally {
                 LogManager.Shutdown();
@@ -55,8 +55,8 @@ namespace NHibernate.Burrow.TestUtil {
         }
 
         protected static void CommitAndStartnNewPersistentContext() {
-            new Facade().CloseDomain();
-            new Facade().InitializeDomain();
+            new BurrowFramework().CloseWorkSpace();
+            new BurrowFramework().InitWorkSpace();
         }
 
         [TestFixtureSetUp]

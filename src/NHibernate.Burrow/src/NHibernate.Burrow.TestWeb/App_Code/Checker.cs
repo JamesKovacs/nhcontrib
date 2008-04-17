@@ -14,7 +14,7 @@ using NHibernate.Burrow;
 /// </summary>
 public class Checker
 {
-    static Facade f = new Facade();
+    static BurrowFramework f = new BurrowFramework();
    
 
     public static void CheckSpanningConversations(int numOfSpanning)

@@ -23,7 +23,7 @@ namespace NHibernate.Burrow
     /// <typeparam name="T"></typeparam>
     /// <remarks>
     /// use it when you need some data to have the same life span as the current conversation.
-    /// this class does not actually hold a reference to the <see cref="Value"/> which is actually stored in <see cref="IConversation.Items"/> 
+    /// this class does not actually hold a reference to the <see cref="Value"/> which is actually stored in <see cref="IConversation.SafeItems"/> 
     /// Thus <see cref="ConversationalData{T}"/> can be cheaply serialized and stored. 
     /// for example, in a Asp.net application, you can put an entity into a ConversationalData(entity) and then save the conversationalData instance into the ViewState or HttpSession 
     /// </remarks>
@@ -131,14 +131,14 @@ namespace NHibernate.Burrow
         {
             get
             {
-                Facade f = new Facade();
-                return f.CurrentConversation == null ? null : f.CurrentConversation.Items;
+                BurrowFramework f = new BurrowFramework();
+                return f.CurrentConversation == null ? null : f.CurrentConversation.SafeItems;
             }
         }
 
         private void ConversationUnvailableException()
         {
-            string msg = new Facade().CurrentConversation == null
+            string msg = new BurrowFramework().CurrentConversation == null
                              ? "ConversationalData can not be accessed outside conversation. "
                                + "Make sure Conversation is intialized before visiting conversational data."
                                +
