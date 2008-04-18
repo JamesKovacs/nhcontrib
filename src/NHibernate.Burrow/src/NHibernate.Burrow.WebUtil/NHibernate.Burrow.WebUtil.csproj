@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\WorkSpaceInfo.cs" />
+    <Compile Include="Exceptions\BurrowWebUtilException.cs" />
+    <Compile Include="Exceptions\DuplicatedGlobalHolderException.cs" />
     <Compile Include="Impl\ConversationalDataVSFInterceptor.cs" />
     <Compile Include="Attributes\ConversationalField.cs" />
     <Compile Include="Impl\ConversationStatePageModule.cs" />
+    <Compile Include="Impl\GlobalPlaceHolder.cs" />
     <Compile Include="Impl\WorkSpaceSnifferByAttribute.cs" />
     <Compile Include="IWorkSpaceNameSniffer.cs" />
     <Compile Include="Impl\StatefulFieldPageModule.cs" />

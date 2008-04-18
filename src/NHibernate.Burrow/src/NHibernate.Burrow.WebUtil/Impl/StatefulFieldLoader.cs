@@ -1,52 +1,56 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil {
 
     internal class StatefulFieldLoader : StatefulFieldProcessor
     {
-        public StatefulFieldLoader(Control c) : base(c) { }
+		public StatefulFieldLoader(Control c, Control globalPlaceHolder) : base(c, globalPlaceHolder) { }
 
         protected override void DoProcess()
         {
-            foreach (KeyValuePair<FieldInfo, StatefulField> p in GetStatefulFields())
+			
+            foreach (KeyValuePair<FieldInfo, StatefulField> p in statefulfields)
             {
                 StatefulField vsf = p.Value;
-                object toSet = ViewState[p.Key.Name];
+                object toSet = States[p.Key.Name];
                 if (vsf.Interceptor != null)
                     toSet = vsf.Interceptor.OnLoad(toSet);
                 p.Key.SetValue(Control, toSet);
             }
         }
 
-        protected override StatefulFieldProcessor CreateSubProcessor(Control c)
+		protected override StatefulFieldProcessor CreateSubProcessor(Control c, Control globalPlaceHolder)
         {
-            return new StatefulFieldLoader(c);
+            return new StatefulFieldLoader(c, globalPlaceHolder);
         }
     }
 
 	internal class StatefulFieldSaver : StatefulFieldProcessor
     {
-        public StatefulFieldSaver(Control c) : base(c) { }
+		public StatefulFieldSaver(Control c, Control globalPlaceHolder) : base(c, globalPlaceHolder) { }
 
         protected override void DoProcess()
         {
-            foreach (KeyValuePair<FieldInfo, StatefulField> p in GetStatefulFields())
+			foreach (KeyValuePair<FieldInfo, StatefulField> p in statefulfields)
             {
                 StatefulField vsf = p.Value;
                 object toSave = p.Key.GetValue(Control);
-                object objectInViewState = ViewState[p.Key.Name];
+                object objectInViewState = States[p.Key.Name];
                 if (vsf.Interceptor != null)
                     toSave = vsf.Interceptor.OnSave(toSave, objectInViewState);
-                ViewState[p.Key.Name] = toSave;
+                States[p.Key.Name] = toSave;
             }
+			if(statefulfields.Count > 0)
+				SaveStates();
         }
 
-        protected override StatefulFieldProcessor CreateSubProcessor(Control c)
+		protected override StatefulFieldProcessor CreateSubProcessor(Control c, Control globalPlaceHolder)
         {
-            return new StatefulFieldSaver(c);
+			return new StatefulFieldSaver(c, globalPlaceHolder);
         }
     }
 }

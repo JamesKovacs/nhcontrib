@@ -12,7 +12,7 @@
         Click the link to start testing
         <a href="../ErrorHandling/BreakConversation.aspx" target="_blank" >BreakConversation </a> &nbsp;&nbsp; <a
             href="../ErrorHandling/BreakConversationAjax.aspx"  target="_blank" > BreakConversation Ajax </a>
-        <br />Status: <%= Status %>
+        <br />Status:  <asp:Literal ID="lStatus" runat="server"></asp:Literal>
         <br />
         <asp:Button ID="btnRefresh" runat="server" Text="Refresh" />
         <asp:Literal ID="lMessage" runat="server"></asp:Literal>

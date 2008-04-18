@@ -1,7 +1,7 @@
 namespace NHibernate.Burrow.WebUtil {
     public interface IStatefulFieldInterceptor {
         /// <summary>
-        /// called after loaded from ViewState
+        /// called after loaded from States
         /// </summary>
         /// <param name="objectOriginallyLoaded">objectStoredInViewState</param>
         /// <returns>the object set to the Overspan field</returns>

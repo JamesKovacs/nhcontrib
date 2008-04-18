@@ -2,6 +2,8 @@ using System;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using NHibernate.Burrow.WebUtil.Impl;
 
 namespace NHibernate.Burrow.WebUtil
 {
@@ -9,7 +11,9 @@ namespace NHibernate.Burrow.WebUtil
     /// </summary>
     public class WebUtilHTTPModule : IHttpModule
     {
-        #region IHttpModule Members
+    	private static BurrowFramework bf = new BurrowFramework();
+
+    	#region IHttpModule Members
 
         /// <summary>
         /// 
@@ -36,14 +40,14 @@ namespace NHibernate.Burrow.WebUtil
         /// <param name="e"></param>
         private static void OnError(object sender, EventArgs e)
         {
-            if (!new BurrowFramework().WorkSpaceIsReady)
+            if (!bf.WorkSpaceIsReady)
             {
                 return;
             }
             try
             {
-                new BurrowFramework().CurrentConversation.GiveUp();
-                new BurrowFramework().CloseWorkSpace();
+                bf.CurrentConversation.GiveUp();
+                bf.CloseWorkSpace();
             }
             catch (Exception)
             {
@@ -64,18 +68,19 @@ namespace NHibernate.Burrow.WebUtil
             }
         	IHttpHandler handler = ctx.Context.Handler;
         	string currentWorkSpaceName = Sniffer().Sniff(handler);
-            new BurrowFramework().InitWorkSpace(true, ctx.Request.Params, currentWorkSpaceName);
+            bf.InitWorkSpace(true, ctx.Request.Params, currentWorkSpaceName);
             if (handler is Page)
             {
                 Page p = (Page) handler;
                 p.Init += new EventHandler(p_Init);
-                new StatefulFieldPageModule(p);
-                new ConversationStatePageModule(p);
+				GlobalPlaceHolder gph = new GlobalPlaceHolder(p);
+                new StatefulFieldPageModule(p,gph );
+                new ConversationStatePageModule(p,gph);
             }
         }
 
     	private IWorkSpaceNameSniffer Sniffer() {
-    		IBurrowConfig cfg = new BurrowFramework().BurrowEnvironment.Configuration;
+    		IBurrowConfig cfg = bf.BurrowEnvironment.Configuration;
 			if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))
 				return new Impl.WorkSpaceSnifferByAttribute();
 			else
@@ -112,7 +117,7 @@ namespace NHibernate.Burrow.WebUtil
             {
                 return;
             }
-            new BurrowFramework().CloseWorkSpace();
+            bf.CloseWorkSpace();
         }
     }
 }

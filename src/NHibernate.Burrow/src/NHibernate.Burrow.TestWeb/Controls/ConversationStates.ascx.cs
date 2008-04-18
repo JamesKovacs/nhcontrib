@@ -24,6 +24,8 @@ public partial class Controls_ConversationStates : System.Web.UI.UserControl
     {
         if(!IsPostBack)
         {
+        	Session["me"] = null;
+        	Session["meInDb"] = null;
             Util.ResetEnvironment();
         }
     }
@@ -57,6 +59,7 @@ public partial class Controls_ConversationStates : System.Web.UI.UserControl
         btnUpdate.Enabled = spanning;
         btnCommit.Enabled = spanning;
         btnCancel.Enabled = spanning;
+    	btnStart.Enabled = !spanning;
         base.OnPreRender(e);
         Checker.AssertEqual(Session["me"], me);
         Checker.AssertEqual(Session["meInDb"], meInDb);

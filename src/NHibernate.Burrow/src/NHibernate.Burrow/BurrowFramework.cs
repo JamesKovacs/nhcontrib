@@ -83,7 +83,7 @@ namespace NHibernate.Burrow {
         /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
         /// </remarks>
         public void CloseWorkSpace() {
-            if (WorkSpace.Current != null)
+			if (WorkSpaceIsReady)
                 WorkSpace.Current.Close();
         }
 

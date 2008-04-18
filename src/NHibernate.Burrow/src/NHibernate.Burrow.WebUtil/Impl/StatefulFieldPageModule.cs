@@ -1,27 +1,31 @@
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using NHibernate.Burrow.WebUtil.Impl;
 
 namespace NHibernate.Burrow.WebUtil {
 	internal class StatefulFieldPageModule
 	{
         private readonly Page page;
         protected bool dataLoaded = false;
-
-        public StatefulFieldPageModule(Page page) {
+		private readonly GlobalPlaceHolder gph;
+		public StatefulFieldPageModule(Page page, GlobalPlaceHolder globalPlaceHolder)
+		{
             this.page = page;
+        	gph = globalPlaceHolder;
             page.PreLoad += new EventHandler(page_PreLoad);
             page.PreRenderComplete += new EventHandler(page_PreRenderComplete);
         }
 
         private void page_PreRenderComplete(object sender, EventArgs e) {
-            new StatefulFieldSaver(page).Process();
+            new StatefulFieldSaver(page, gph.Holder).Process();
         }
 
         private void page_PreLoad(object sender, EventArgs e) {
             if (!page.IsPostBack || dataLoaded)
                 return;
             dataLoaded = true;
-            new StatefulFieldLoader(page).Process();
+			new StatefulFieldLoader(page,gph.Holder).Process();
         }
     }
 }

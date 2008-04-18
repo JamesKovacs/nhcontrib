@@ -21,8 +21,9 @@ public partial class ErrorHandling_ConversationErrorHandling : System.Web.UI.Pag
 
             Status = ErrorTestStatus.Unknown;
             conversationNum = 0;
-        Util.ResetEnvironment();
+			Util.ResetEnvironment();
         }
+    	lStatus.Text = Status.ToString();
     }
 
     protected ErrorTestStatus Status
