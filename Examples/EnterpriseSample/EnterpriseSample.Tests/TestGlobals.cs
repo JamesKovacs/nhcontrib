@@ -1,3 +1,4 @@
+using System;
 using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Tests.Domain;
 
@@ -27,6 +28,21 @@ namespace EnterpriseSample.Tests
                 Customer customer = new Customer("Cactus Comidas para llevar");
                 new DomainObjectIdSetter<string>().SetIdOf(customer, "CACTU");
                 customer.ContactName = "Patricio Simpson";
+
+                //Add Orders
+                Order order1 = new Order(customer);
+                order1.OrderDate = DateTime.Today.AddMonths(-1);
+
+                Order order2 = new Order(customer);
+                order2.OrderDate = DateTime.Today.AddMonths(-2);
+                
+                Order order3 = new Order(customer);
+                order3.OrderDate = DateTime.Today.AddMonths(-3);
+
+                customer.AddOrder(order1);
+                customer.AddOrder(order2);
+                customer.AddOrder(order3);
+
                 return customer;
             }
         }
