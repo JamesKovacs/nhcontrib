@@ -1,1 +1,0 @@
-This sln includes the Burrow projects temporarily for the convenience of development.

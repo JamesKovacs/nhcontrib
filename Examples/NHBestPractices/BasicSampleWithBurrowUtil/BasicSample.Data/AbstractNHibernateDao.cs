@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Burrow;
-using NHibernate.Burrow.Util.DAOBases;
+using NHibernate.Burrow.AppBlock.DAOBases;
 using NHibernate.Criterion;
 using BasicSample.Core.DataInterfaces;
 

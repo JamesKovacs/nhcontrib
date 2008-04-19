@@ -32,6 +32,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Solution Items\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.Burrow, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Solution Items\NHibernate.Burrow.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -52,18 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj">
-      <Project>{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}</Project>
-      <Name>NHibernate.Burrow.Util</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.WebUtil\NHibernate.Burrow.WebUtil.csproj">
-      <Project>{3DBB9568-5688-4442-8ECA-BD216E807C8D}</Project>
-      <Name>NHibernate.Burrow.WebUtil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\NHibernate.Burrow\src\NHibernate.Burrow\NHibernate.Burrow.csproj">
-      <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
-      <Name>NHibernate.Burrow</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProjectBase.Utils\ProjectBase.Utils.csproj">
       <Project>{24D21FC0-59B8-4208-AA1D-1B30D3F3C101}</Project>
       <Name>ProjectBase.Utils</Name>

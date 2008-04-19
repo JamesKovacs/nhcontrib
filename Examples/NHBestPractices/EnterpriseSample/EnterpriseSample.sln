@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\EnterpriseSample.Web\", "EnterpriseSample.Web\", "{C2A3FB1E-16BC-41C0-932D-D13A55B18120}"
 	ProjectSection(WebsiteProperties) = preProject
-		ProjectReferences = "{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}|EnterpriseSample.Core.dll;{FCB45F28-3A4E-4E72-9691-556125CCF227}|EnterpriseSample.Data.dll;{42F08BD3-664F-42F7-8A8B-26B07E80C356}|EnterpriseSample.Presenters.dll;{3ED19982-3C23-4B7D-BE81-D40846A6CB16}|NHibernate.Burrow.dll;{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}|NHibernate.Burrow.Util.dll;{3DBB9568-5688-4442-8ECA-BD216E807C8D}|NHibernate.Burrow.WebUtil.dll;"
+		ProjectReferences = "{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}|EnterpriseSample.Core.dll;{FCB45F28-3A4E-4E72-9691-556125CCF227}|EnterpriseSample.Data.dll;{42F08BD3-664F-42F7-8A8B-26B07E80C356}|EnterpriseSample.Presenters.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/EnterpriseSample.Web"
 		Debug.AspNetCompiler.PhysicalPath = "EnterpriseSample.Web\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\EnterpriseSample.Web\"
@@ -52,24 +52,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase.Utils", "Projec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseSample.Presenters", "EnterpriseSample.Presenters\EnterpriseSample.Presenters.csproj", "{42F08BD3-664F-42F7-8A8B-26B07E80C356}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow", "..\..\src\NHibernate.Burrow\src\NHibernate.Burrow\NHibernate.Burrow.csproj", "{3ED19982-3C23-4B7D-BE81-D40846A6CB16}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util", "..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.Util\NHibernate.Burrow.Util.csproj", "{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.WebUtil", "..\..\src\NHibernate.Burrow\src\NHibernate.Burrow.WebUtil\NHibernate.Burrow.WebUtil.csproj", "{3DBB9568-5688-4442-8ECA-BD216E807C8D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -154,36 +136,6 @@ Global
 		{42F08BD3-664F-42F7-8A8B-26B07E80C356}.Release|Any CPU.Build.0 = Release|Any CPU
 		{42F08BD3-664F-42F7-8A8B-26B07E80C356}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{42F08BD3-664F-42F7-8A8B-26B07E80C356}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Release|.NET.ActiveCfg = Release|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3ED19982-3C23-4B7D-BE81-D40846A6CB16}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|.NET.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|.NET.ActiveCfg = Release|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3DBB9568-5688-4442-8ECA-BD216E807C8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
