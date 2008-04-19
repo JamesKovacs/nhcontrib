@@ -13,7 +13,7 @@ namespace NHibernate.Burrow.WebUtil {
 		{
             this.page = page;
         	gph = globalPlaceHolder;
-            page.PreLoad += new EventHandler(page_PreLoad);
+            page.Init += new EventHandler(page_Init);
             page.PreRenderComplete += new EventHandler(page_PreRenderComplete);
         }
 
@@ -21,7 +21,8 @@ namespace NHibernate.Burrow.WebUtil {
             new StatefulFieldSaver(page, gph.Holder).Process();
         }
 
-        private void page_PreLoad(object sender, EventArgs e) {
+        private void page_Init(object sender, EventArgs e)
+        {
             if (!page.IsPostBack || dataLoaded)
                 return;
             dataLoaded = true;
