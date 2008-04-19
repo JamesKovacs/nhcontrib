@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="NormalErrorHandling.aspx.cs" Inherits="ErrorHandling" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Monitor.aspx.cs" Inherits="MultipleConversation_Monitor" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -9,9 +9,8 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Button ID="btnexception1" OnClick="btnException_Click"
-         runat="server" Text="Throw An Exception" />
-    
+       <asp:Button ID="btnRefresh" runat="server" Text="Refresh" />
+              <asp:Label ID="lStatus" runat="server" Text="Click buttons in each frame to start tests"></asp:Label>
     </div>
     </form>
 </body>

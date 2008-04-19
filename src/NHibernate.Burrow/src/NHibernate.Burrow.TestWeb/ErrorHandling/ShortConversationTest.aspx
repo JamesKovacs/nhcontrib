@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="RedirectingA.aspx.cs" Inherits="RedirectingA" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ShortConversationTest.aspx.cs" Inherits="ErrorHandling" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -9,7 +9,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Button ID="btnRedirect" runat="server" Text="Redirect To B" OnClick="Redirect" />
+        <asp:Button ID="btnexception1" OnClick="btnException_Click"
+         runat="server" Text="Throw An Exception" />
+    
     </div>
     </form>
 </body>
