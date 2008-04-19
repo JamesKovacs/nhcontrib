@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
-using NHibernate.Burrow;
 using NHibernate.Burrow.Test.MockEntities;
-using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.TestUtil;
 using NHibernate.Burrow.Util.DAOBases;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.PersistenceTests {
+namespace NHibernate.Burrow.Test.PersistenceTests
+{
     [TestFixture]
-    public class PersistenceTests : TestBase {
+    public class PersistenceTests : TestBase
+    {
         protected override bool CleanAndCreateSchema
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
+
         [Test]
-        public void CRUDTest() {
+        public void CRUDTest()
+        {
             string mockName = new Random(1000).Next().ToString();
             MockEntity m = new MockEntity();
             m.Name = mockName;
@@ -31,7 +30,8 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
         }
 
         [Test]
-        public void DAOTest() {
+        public void DAOTest()
+        {
             MockEntity m = new MockEntity();
             string name = RandomStringGenerator.GenerateLetterStrings(5);
             m.Name = name;
@@ -43,7 +43,8 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
         }
 
         [Test]
-        public void HashIdTest() {
+        public void HashIdTest()
+        {
             HashIdMockClass o1 = new HashIdMockClass();
             HashIdMockClass o2 = new HashIdMockClass();
             HashIdMockClass o3 = new HashIdMockClass();
@@ -76,7 +77,8 @@ namespace NHibernate.Burrow.Test.PersistenceTests {
         }
 
         [Test]
-        public void PreDeleteTest() {
+        public void PreDeleteTest()
+        {
             MockEntity m = new MockEntity();
             m.Save();
             GenericDAO<MockEntity> d = new GenericDAO<MockEntity>();

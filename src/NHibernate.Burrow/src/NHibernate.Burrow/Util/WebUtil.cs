@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Web.UI;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
@@ -8,8 +5,7 @@ using NHibernate.Burrow.Impl;
 namespace NHibernate.Burrow.Util
 {
     public class WebUtil
-    { 
-        
+    {
         /// <summary>
         /// Wraps a url with Conversation Information so that conversation can span with Request query
         /// </summary>
@@ -25,10 +21,14 @@ namespace NHibernate.Burrow.Util
         public string WrapUrlWithConversationInfo(string originalUrl)
         {
             if (new BurrowFramework().CurrentConversation.IsSpanning)
+            {
                 return WorkSpace.Current.WrapUrlWithSpanInfo(originalUrl);
+            }
             else
-                throw new Exceptions.IncorrectConversationSpanStatusException(
+            {
+                throw new IncorrectConversationSpanStatusException(
                     "CurrentConversation Must Be In Span Before you can wrap a url");
+            }
         }
 
         public static void AddConversationStates(Control c)

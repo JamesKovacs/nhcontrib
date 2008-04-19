@@ -1,20 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Text;
-using NHibernate.Burrow.Configuration;
 
-namespace NHibernate.Burrow.Impl {
+namespace NHibernate.Burrow.Impl
+{
     public class ConversationExpirationCheckerByTimeout : IConversationExpirationChecker
     {
         private TimeSpan cleanUpTimeSpan;
         private TimeSpan timeout;
 
-
-
         public ConversationExpirationCheckerByTimeout()
         {
-            IBurrowConfig cfg =  new BurrowFramework().BurrowEnvironment.Configuration;
+            IBurrowConfig cfg = new BurrowFramework().BurrowEnvironment.Configuration;
             int timeoutMinutes = cfg.ConversationTimeOut;
             if (timeoutMinutes < 1)
             {
@@ -30,14 +26,18 @@ namespace NHibernate.Burrow.Impl {
             cleanUpTimeSpan = new TimeSpan(0, timeoutMinutes * freq, 0);
         }
 
+        #region IConversationExpirationChecker Members
+
         public bool IsConversationExpired(IConversation c)
         {
-            return ( ((ConversationImpl) c).LastVisit + timeout ) < DateTime.Now; 
+            return (((ConversationImpl) c).LastVisit + timeout) < DateTime.Now;
         }
 
         public TimeSpan CleanUpTimeSpan
         {
             get { return cleanUpTimeSpan; }
         }
+
+        #endregion
     }
 }

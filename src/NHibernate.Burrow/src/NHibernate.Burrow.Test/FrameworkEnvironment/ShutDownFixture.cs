@@ -1,27 +1,36 @@
 using NHibernate.Burrow.Exceptions;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.FrameworkEnvironment {
+namespace NHibernate.Burrow.Test.FrameworkEnvironment
+{
     [TestFixture]
-    public class ShutDownFixture {
-        BurrowFramework f = new BurrowFramework();
+    public class ShutDownFixture
+    {
+        #region Setup/Teardown
 
         [TearDown]
-        public void TearDown() {
-            if(!f.BurrowEnvironment.IsRunning)
+        public void TearDown()
+        {
+            if (!f.BurrowEnvironment.IsRunning)
+            {
                 f.BurrowEnvironment.Start();
+            }
         }
 
+        #endregion
+
+        private BurrowFramework f = new BurrowFramework();
+
         [Test]
-        public void CannotInitializeDomainTest() {
+        public void CannotInitializeDomainTest()
+        {
             f.BurrowEnvironment.ShutDown();
-            try {
+            try
+            {
                 f.InitWorkSpace();
                 Assert.Fail("Failed to throw FrameworkAlreadyShutDownException");
-            }catch(FrameworkAlreadyShutDownException) {
-                
             }
-
+            catch (FrameworkAlreadyShutDownException) {}
         }
     }
 }

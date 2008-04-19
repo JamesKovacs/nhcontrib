@@ -1,17 +1,27 @@
 using System;
-using System.Collections.Specialized;
-using NHibernate.Burrow;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Impl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.ConverstationTests {
+namespace NHibernate.Burrow.Test.ConverstationTests
+{
     [TestFixture]
-    public class ConversationalDataFixture  {
-        readonly BurrowFramework f = new BurrowFramework();
+    public class ConversationalDataFixture
+    {
+        private readonly BurrowFramework f = new BurrowFramework();
+
+        private void ExpectConversationUnavailableException(ConversationalData<int> c)
+        {
+            try
+            {
+                c.Value.ToString();
+                Assert.Fail("Failed to throw a ConversationUnavailableException.");
+            }
+            catch (ConversationUnavailableException) {}
+        }
+
         [Test]
-        public void ConversationalDataPersistsTest() {
-           
+        public void ConversationalDataPersistsTest()
+        {
             f.InitWorkSpace();
             ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Normal);
             ConversationalData<string> s = new ConversationalData<string>(ConversationalDataMode.Normal, "sometext");
@@ -26,12 +36,11 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
 
             f.CloseWorkSpace();
             f.InitWorkSpace(cid);
-               
+
             Assert.AreEqual(1, i.Value);
             Assert.IsNull(s.Value);
             f.CurrentConversation.FinishSpan();
             f.CloseWorkSpace();
-            
         }
 
         [Test]
@@ -39,8 +48,9 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
         {
             f.InitWorkSpace();
             ConversationalData<int> single = new ConversationalData<int>(ConversationalDataMode.Normal, 1);
-            ConversationalData<int> singleTemp = new ConversationalData<int>(ConversationalDataMode.OutOfConversationSafe, 1);
-            
+            ConversationalData<int> singleTemp =
+                new ConversationalData<int>(ConversationalDataMode.OutOfConversationSafe, 1);
+
             f.CurrentConversation.SpanWithPostBacks();
             Guid cid1 = f.CurrentConversation.Id;
 
@@ -58,7 +68,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             Assert.AreNotEqual(cid2, cid1);
             f.CloseWorkSpace();
             f.InitWorkSpace(cid1);
-            Assert.AreEqual(1,single.Value);
+            Assert.AreEqual(1, single.Value);
             Assert.AreEqual(0, singleTemp.Value);
             f.CurrentConversation.FinishSpan();
             f.CloseWorkSpace();
@@ -69,17 +79,9 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             f.CloseWorkSpace();
         }
 
-        private void ExpectConversationUnavailableException(ConversationalData<int> c) {
-            try
-            {
-                c.Value.ToString();
-                Assert.Fail("Failed to throw a ConversationUnavailableException.");
-            }
-            catch (ConversationUnavailableException) { }
-        }
-
         [Test]
-        public void SpanOverMultipleDomainContextTest() {
+        public void SpanOverMultipleDomainContextTest()
+        {
             f.InitWorkSpace();
             f.CurrentConversation.SpanWithPostBacks();
             ConversationalData<int> i = new ConversationalData<int>(ConversationalDataMode.Normal);
@@ -88,7 +90,8 @@ namespace NHibernate.Burrow.Test.ConverstationTests {
             i.Value = 1;
             f.CloseWorkSpace();
             f.InitWorkSpace();
-            try {
+            try
+            {
                 i.Value.ToString();
                 Assert.Fail("Failed to throw a ConversationUnavailableException.");
             }

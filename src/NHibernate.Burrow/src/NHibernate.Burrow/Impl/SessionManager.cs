@@ -1,39 +1,42 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using log4net;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Impl;
 
-namespace NHibernate.Burrow.Impl {
+namespace NHibernate.Burrow.Impl
+{
     /// <summary>
     /// Handlers creation and management of sessions and transactions. 
     /// </summary>
     /// <remarks>
     /// Lifespan : application, Threadsafe
     /// </remarks>
-    internal sealed class SessionManager {
+    internal sealed class SessionManager
+    {
         #region fields
 
         private readonly PersistenceUnit persistenceUnit;
-        private bool isDisposing = false;
         private readonly ITransactionManager transactionManager;
+        private bool isDisposing = false;
 
         #region conversational transaction and session repo
 
-       
         private readonly IDictionary<SessionManager, ISession> sessionRepo = new Dictionary<SessionManager, ISession>();
 
-        private ISession threadSession {
-            get {
+        private ISession threadSession
+        {
+            get
+            {
                 IDictionary<SessionManager, ISession> repo = sessionRepo;
-                if (!repo.ContainsKey(this)) return null;
+                if (!repo.ContainsKey(this))
+                {
+                    return null;
+                }
                 return repo[this];
             }
             set { sessionRepo[this] = value; }
         }
 
-       
         #endregion
 
         #endregion
@@ -43,7 +46,8 @@ namespace NHibernate.Burrow.Impl {
         /// <summary>
         /// The PersistenceUnit it belongs to.
         /// </summary>
-        public PersistenceUnit PersistenceUnit {
+        public PersistenceUnit PersistenceUnit
+        {
             get { return persistenceUnit; }
         }
 
@@ -55,9 +59,12 @@ namespace NHibernate.Burrow.Impl {
         /// get a un managed session
         /// </summary>
         /// <returns></returns>
-        public ISession GetUnManagedSession() {
+        public ISession GetUnManagedSession()
+        {
             if (isDisposing)
+            {
                 throw new GeneralException("SessionManager already disposed");
+            }
             return SessionFactory.OpenSession();
         }
 
@@ -65,7 +72,8 @@ namespace NHibernate.Burrow.Impl {
         /// Get a managed Session
         /// </summary>
         /// <returns></returns>
-        public ISession GetSession() {
+        public ISession GetSession()
+        {
             //Todo: exploit a better solution for injecting Interceptor
             return GetSession(null);
         }
@@ -76,10 +84,16 @@ namespace NHibernate.Burrow.Impl {
         /// <remarks>
         /// if the session is already closed, this will do nothing
         /// </remarks>
-        public void CloseSession() {
-            if (threadSession == null) return;
+        public void CloseSession()
+        {
+            if (threadSession == null)
+            {
+                return;
+            }
             if (threadSession.IsOpen)
+            {
                 threadSession.Close();
+            }
             threadSession = null;
             transactionManager.Dispose();
         }
@@ -87,31 +101,37 @@ namespace NHibernate.Burrow.Impl {
         /// <summary>
         /// 
         /// </summary>
-        public void BeginTransaction() {
+        public void BeginTransaction()
+        {
             transactionManager.BeginTransaction(GetSession());
         }
 
         /// <summary>
         /// Try commit the transaction, if failed the transaction will be rollback and the session will be close
         /// </summary>
-        public void CommitTransaction() {
+        public void CommitTransaction()
+        {
             if (threadSession == null)
+            {
                 throw new GeneralException("The threadSession is null, the possible reasons includes: "
-                                           +
-                                           "The CloseSession Method is called before CommistTransaction Method.");
+                                           + "The CloseSession Method is called before CommistTransaction Method.");
+            }
             if (!threadSession.IsOpen)
+            {
                 throw new GeneralException(
                     "The threadSession was closed by something other than the SessionManger. Do not close session directly. Always use the SessionManager.CloseSession() method ");
+            }
 
-            try {
+            try
+            {
                 threadSession.Flush();
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 RollBackWithoutExceptionThrown();
                 throw;
             }
             transactionManager.CommitTransaction();
-            
         }
 
         /// <summary>
@@ -121,17 +141,23 @@ namespace NHibernate.Burrow.Impl {
         /// if the tranasaction has already been rollback or the session closed this will do nothing. 
         /// You can perform this method multiple times, only the first time will take effect. 
         /// </remarks>
-        public void RollbackTransaction() {
-            try {
-                if (threadSession != null && threadSession.IsOpen  )
+        public void RollbackTransaction()
+        {
+            try
+            {
+                if (threadSession != null && threadSession.IsOpen)
+                {
                     transactionManager.RollbackTransaction();
+                }
             }
-            finally {
+            finally
+            {
                 CloseSession();
             }
         }
 
-        public void RollBackWithoutExceptionThrown() {
+        public void RollBackWithoutExceptionThrown()
+        {
             try
             {
                 RollbackTransaction();
@@ -139,35 +165,45 @@ namespace NHibernate.Burrow.Impl {
             catch (Exception e)
             {
                 //Catch the exception thrown from RollBackTransaction() to prevent the original exception from being swallowed.
-                try {
-                    ILog log = LogManager.GetLogger(typeof(SessionManager));
+                try
+                {
+                    ILog log = LogManager.GetLogger(typeof (SessionManager));
                     if (log.IsErrorEnabled)
+                    {
                         log.Error("NHibernate.Burrow Rollback failed", e);
-                    else Console.WriteLine(e);
+                    }
+                    else
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
-                catch (Exception ) {}
+                catch (Exception) {}
             }
         }
- 
+
         #endregion
 
         #region constructors
 
-        internal SessionManager(PersistenceUnit pu) {
+        internal SessionManager(PersistenceUnit pu)
+        {
             persistenceUnit = pu;
             if (pu.Configuration.ManualTransactionManagement)
+            {
                 transactionManager = new VoidTransactionManager();
+            }
             else
+            {
                 transactionManager = new TransactionManagerImpl();
+            }
         }
 
-
-    
         #endregion
 
         #region private members
 
-        private ISessionFactory SessionFactory {
+        private ISessionFactory SessionFactory
+        {
             get { return PersistenceUnit.SessionFactory; }
         }
 
@@ -175,13 +211,19 @@ namespace NHibernate.Burrow.Impl {
         /// Gets a session with or without an interceptor.  This method is not called directly; instead,
         /// it gets invoked from other public methods.
         /// </summary>
-        private ISession GetSession(IInterceptor interceptor) {
-          
+        private ISession GetSession(IInterceptor interceptor)
+        {
             if (threadSession == null)
+            {
                 if (interceptor != null)
+                {
                     threadSession = SessionFactory.OpenSession(interceptor);
+                }
                 else
+                {
                     threadSession = SessionFactory.OpenSession();
+                }
+            }
 
             return threadSession;
         }

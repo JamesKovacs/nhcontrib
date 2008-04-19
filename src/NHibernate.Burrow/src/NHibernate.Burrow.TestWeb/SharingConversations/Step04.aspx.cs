@@ -14,7 +14,9 @@ public partial class SharingConversations_Step04 : Page
             Checker.CheckSpanningConversations(0);
 
             if (conversation == null)
+            {
                 throw new Exception("The page doesn't have conversation");
+            }
 
             conversation.SpanWithPostBacks();
             Checker.CheckSpanningConversations(1);

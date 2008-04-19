@@ -1,10 +1,10 @@
-using System;
-
-namespace NHibernate.Burrow.Exceptions {
+namespace NHibernate.Burrow.Exceptions
+{
     /// <summary>
     /// 
     /// </summary>
-    public class GeneralException : BurrowException {
+    public class GeneralException : BurrowException
+    {
         /// <summary>
         /// 
         /// </summary>

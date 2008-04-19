@@ -1,8 +1,7 @@
-using NHibernate.Burrow.Configuration;
-using NHibernate.Burrow.Impl;
 using NHibernate.Burrow.Util;
 
-namespace NHibernate.Burrow.Impl {
+namespace NHibernate.Burrow.Impl
+{
     /// <summary>
     /// static factory for <see cref="IConversationExpirationChecker"/>
     /// </summary>
@@ -10,7 +9,7 @@ namespace NHibernate.Burrow.Impl {
     {
         public static IConversationExpirationChecker Create(IBurrowConfig cfg)
         {
-            string checkerName =  cfg.ConversationExpirationChecker;
+            string checkerName = cfg.ConversationExpirationChecker;
             if (string.IsNullOrEmpty(checkerName))
             {
                 return new ConversationExpirationCheckerByTimeout();

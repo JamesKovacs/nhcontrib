@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+				   assembly="NHibernate.Burrow.AppBlock.Test"
+				   namespace="NHibernate.Burrow.AppBlock.Test.UserTypes" default-lazy="false">
+  
+  <class name="Foo" table="FooUserType">
+    <id name="Id" type="int">
+      <generator class="assigned"/>
+    </id>
+    
+    <property name="Name"/>
+    
+    <property name="Description" 
+              type="NHibernate.Burrow.AppBlock.UserTypes.UpperString, NHibernate.Burrow.AppBlock"
+              not-null="false"/>
+  </class>
+
+</hibernate-mapping>

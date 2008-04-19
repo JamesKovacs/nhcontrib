@@ -10,8 +10,9 @@ public partial class SharingConversations_Step01 : Page
         IConversation conversation = bf.CurrentConversation;
 
         if (conversation == null)
+        {
             throw new Exception("The page doesn't have current conversation!");
-       
+        }
 
         if (!IsPostBack)
         {
@@ -27,7 +28,9 @@ public partial class SharingConversations_Step01 : Page
         else
         {
             if (!conversation.Id.Equals(Session["conversationId"]))
+            {
                 throw new Exception("The current conversation isn't the correct");
+            }
 
             //if (conversation.Items["step"] == null)
             //    throw new Exception("The current conversation has lost state");
@@ -40,7 +43,7 @@ public partial class SharingConversations_Step01 : Page
     {
         BurrowFramework bf = new BurrowFramework();
         IConversation conversation = bf.CurrentConversation;
-       
+
         //int step = (int)conversation.Items["step"];
         int step = (int) Session["step"];
 
@@ -52,7 +55,6 @@ public partial class SharingConversations_Step01 : Page
         {
             btnNextStep.Text = "step 1 + " + step + "/5";
             Checker.CheckSpanningConversations(1);
-
         }
         else
         {

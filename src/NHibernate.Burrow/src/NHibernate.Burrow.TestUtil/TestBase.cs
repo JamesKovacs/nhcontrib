@@ -1,41 +1,50 @@
 using System;
 using log4net;
 using log4net.Config;
-using NHibernate.Burrow;
 using NHibernate.Burrow.TestUtil.Attributes;
 using NHibernate.Burrow.Util;
-using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.TestUtil {
-    public abstract class TestBase {
+namespace NHibernate.Burrow.TestUtil
+{
+    public abstract class TestBase
+    {
+        private const bool OutputDdl = false;
         protected DataProviderBase tdp;
         protected int testYear = DateTime.Now.Year - 5;
-        private const bool OutputDdl = false;
+
         protected virtual bool CleanAndCreateSchema
         {
-            get{ return false; }
+            get { return false; }
         }
 
         [SetUp]
-        public void Initialize() {
+        public void Initialize()
+        {
             new BurrowFramework().InitWorkSpace(true, null, string.Empty);
             DataProvider dpa = (DataProvider) Attribute.GetCustomAttribute(GetType(), typeof (DataProvider), true);
             if (dpa != null)
+            {
                 tdp = dpa.CreateDataProvider();
+            }
             else
+            {
                 tdp = CreateDataProvider();
+            }
             SetUp();
         }
 
         [TearDown]
-        public void Close() {
+        public void Close()
+        {
             TearDown();
-            try {
+            try
+            {
                 tdp.ClearData();
                 new BurrowFramework().CloseWorkSpace();
             }
-            finally {
+            finally
+            {
                 LogManager.Shutdown();
             }
         }
@@ -50,11 +59,13 @@ namespace NHibernate.Burrow.TestUtil {
         /// </summary>
         protected virtual void SetUp() {}
 
-        protected virtual DataProviderBase CreateDataProvider() {
+        protected virtual DataProviderBase CreateDataProvider()
+        {
             return new DataProviderBase();
         }
 
-        protected static void CommitAndStartnNewPersistentContext() {
+        protected static void CommitAndStartnNewPersistentContext()
+        {
             new BurrowFramework().CloseWorkSpace();
             new BurrowFramework().InitWorkSpace();
         }
@@ -62,31 +73,34 @@ namespace NHibernate.Burrow.TestUtil {
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            if(CleanAndCreateSchema)
-            CreateSchema();
+            if (CleanAndCreateSchema)
+            {
+                CreateSchema();
+            }
         }
 
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
             if (CleanAndCreateSchema)
-            DropSchema();
+            {
+                DropSchema();
+            }
         }
 
-        protected void BeginLog() {
+        protected void BeginLog()
+        {
             XmlConfigurator.Configure();
         }
 
         protected void CreateSchema()
         {
-         new  SchemaUtil().CreateSchemas();
-          
+            new SchemaUtil().CreateSchemas();
         }
 
         protected void DropSchema()
         {
             new SchemaUtil().DropSchemas();
-          
         }
     }
 }

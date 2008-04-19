@@ -1,28 +1,29 @@
 using System;
 using System.Collections.Generic;
 using log4net;
-using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.Impl {
-    internal class TransactionManagerImpl : ITransactionManager {
-    
-
-        private  readonly IDictionary<TransactionManagerImpl, ITransaction> transactionRepo =   new Dictionary<TransactionManagerImpl, ITransaction>();
-       
-
+namespace NHibernate.Burrow.Impl
+{
+    internal class TransactionManagerImpl : ITransactionManager
+    {
+        private readonly IDictionary<TransactionManagerImpl, ITransaction> transactionRepo =
+            new Dictionary<TransactionManagerImpl, ITransaction>();
 
         private ITransaction threadTransaction
         {
             get
             {
                 IDictionary<TransactionManagerImpl, ITransaction> repo = transactionRepo;
-                if (!repo.ContainsKey(this)) return null;
+                if (!repo.ContainsKey(this))
+                {
+                    return null;
+                }
                 return repo[this];
             }
             set { transactionRepo[this] = value; }
         }
 
-
+        #region ITransactionManager Members
 
         /// <summary>
         /// 
@@ -30,7 +31,9 @@ namespace NHibernate.Burrow.Impl {
         public void BeginTransaction(ISession sess)
         {
             if (threadTransaction == null)
+            {
                 threadTransaction = sess.BeginTransaction();
+            }
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace NHibernate.Burrow.Impl {
             {
                 if (threadTransaction != null && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
                 {
-                   threadTransaction.Commit();
+                    threadTransaction.Commit();
                 }
             }
             catch (Exception)
@@ -55,10 +58,15 @@ namespace NHibernate.Burrow.Impl {
                 {
                     //Catch the exception thrown from RollBackTransaction() to prevent the original exception from being swallowed.
 
-                    ILog log = LogManager.GetLogger(typeof(SessionManager));
+                    ILog log = LogManager.GetLogger(typeof (SessionManager));
                     if (log.IsErrorEnabled)
+                    {
                         log.Error("NHibernate.Burrow Rollback failed", e);
-                    else Console.WriteLine(e);
+                    }
+                    else
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
                 throw;
             }
@@ -79,9 +87,10 @@ namespace NHibernate.Burrow.Impl {
         {
             try
             {
-                if (  threadTransaction != null
-                    && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
+                if (threadTransaction != null && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
+                {
                     threadTransaction.Rollback();
+                }
             }
             finally
             {
@@ -89,8 +98,11 @@ namespace NHibernate.Burrow.Impl {
             }
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             threadTransaction = null;
         }
+
+        #endregion
     }
 }

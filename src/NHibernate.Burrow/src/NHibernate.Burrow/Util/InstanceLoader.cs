@@ -2,11 +2,13 @@ using System;
 using System.Reflection;
 using NHibernate.Burrow.Exceptions;
 
-namespace NHibernate.Burrow.Util {
+namespace NHibernate.Burrow.Util
+{
     /// <summary>
     /// A loader writen to load instance of singleton types
     /// </summary>
-    public class InstanceLoader {
+    public class InstanceLoader
+    {
         private const string InstancePropertyName = "Instance";
 
         /// <summary>
@@ -14,11 +16,13 @@ namespace NHibernate.Burrow.Util {
         /// </summary>
         /// <param name="t"></param>
         /// <returns>null if there is no public non-parameter constructor</returns>
-        public static object LoadByConstrutor(System.Type t) {
+        public static object LoadByConstrutor(System.Type t)
+        {
             ConstructorInfo ci = t.GetConstructor(new System.Type[0]);
             if (ci == null)
-                throw new NoSuitableContructorException(
-                    t.Name + " must have a public constructor without parameter");
+            {
+                throw new NoSuitableContructorException(t.Name + " must have a public constructor without parameter");
+            }
             return ci.Invoke(new object[0]);
         }
 
@@ -28,10 +32,13 @@ namespace NHibernate.Burrow.Util {
         /// <param name="t"></param>
         /// <returns>return null if there is no such 
         /// </returns>
-        public static object LoadByInstanceProperty(System.Type t) {
+        public static object LoadByInstanceProperty(System.Type t)
+        {
             PropertyInfo pi = t.GetProperty(InstancePropertyName, BindingFlags.Static | BindingFlags.Public);
             if (pi == null)
+            {
                 return null;
+            }
             return pi.GetValue(null, null);
         }
 
@@ -40,17 +47,25 @@ namespace NHibernate.Burrow.Util {
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static object Load(System.Type t) {
+        public static object Load(System.Type t)
+        {
             if (t == null)
+            {
                 throw new ArgumentNullException();
+            }
             object retVal;
             retVal = LoadByInstanceProperty(t);
             if (retVal == null)
+            {
                 retVal = LoadByConstrutor(t);
+            }
 
             if (retVal == null)
-                throw new Exceptions.PropertyNotFoundException("The type " + t.Name +
+            {
+                throw new Exceptions.PropertyNotFoundException("The type " + t.Name
+                                                               +
                                                                " must have either a static property named \"Instance\" or a public non-parameter constructor");
+            }
             return retVal;
         }
 
@@ -60,10 +75,13 @@ namespace NHibernate.Burrow.Util {
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static T Load<T>(string name) {
+        public static T Load<T>(string name)
+        {
             System.Type type = System.Type.GetType(name);
             if (type == null)
+            {
                 throw new TypeNotFoundException("Type " + name + " not found.");
+            }
             return (T) Load(type);
         }
 
@@ -75,7 +93,8 @@ namespace NHibernate.Burrow.Util {
         /// <remarks>
         /// <see cref="InstanceLoader.Load(System.Type t)"/>
         /// </remarks>
-        public static T Load<T>() {
+        public static T Load<T>()
+        {
             return (T) Load(typeof (T));
         }
 
@@ -84,7 +103,8 @@ namespace NHibernate.Burrow.Util {
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static bool Loadable(System.Type t) {
+        public static bool Loadable(System.Type t)
+        {
             PropertyInfo pi = t.GetProperty(InstancePropertyName, BindingFlags.Static | BindingFlags.Public);
             ConstructorInfo ci = t.GetConstructor(new System.Type[0]);
             return ci != null || pi != null;

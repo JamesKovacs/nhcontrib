@@ -1,10 +1,12 @@
 using System.Configuration;
 
-namespace NHibernate.Burrow.Configuration {
+namespace NHibernate.Burrow.Configuration
+{
     /// <summary>
     /// ConfigurationElementCollection for Persistence Unit Section
     /// </summary>
-    public class PersistenceUnitElementCollection : ConfigurationElementCollection {
+    public class PersistenceUnitElementCollection : ConfigurationElementCollection
+    {
         ///<summary>
         ///When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"></see>.
         ///</summary>
@@ -13,7 +15,8 @@ namespace NHibernate.Burrow.Configuration {
         ///A new <see cref="T:System.Configuration.ConfigurationElement"></see>.
         ///</returns>
         ///
-        protected override ConfigurationElement CreateNewElement() {
+        protected override ConfigurationElement CreateNewElement()
+        {
             return new PersistenceUnitElement();
         }
 
@@ -26,7 +29,8 @@ namespace NHibernate.Burrow.Configuration {
         ///</returns>
         ///
         ///<param name="element">The <see cref="T:System.Configuration.ConfigurationElement"></see> to return the key for. </param>
-        protected override object GetElementKey(ConfigurationElement element) {
+        protected override object GetElementKey(ConfigurationElement element)
+        {
             return ((IPersistenceUnitCfg) element).Name;
         }
     }

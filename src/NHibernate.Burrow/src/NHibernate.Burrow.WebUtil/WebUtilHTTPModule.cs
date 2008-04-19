@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using NHibernate.Burrow.Util;
 using NHibernate.Burrow.WebUtil.Impl;
 
 namespace NHibernate.Burrow.WebUtil
@@ -11,9 +11,9 @@ namespace NHibernate.Burrow.WebUtil
     /// </summary>
     public class WebUtilHTTPModule : IHttpModule
     {
-    	private static BurrowFramework bf = new BurrowFramework();
+        private static BurrowFramework bf = new BurrowFramework();
 
-    	#region IHttpModule Members
+        #region IHttpModule Members
 
         /// <summary>
         /// 
@@ -66,34 +66,38 @@ namespace NHibernate.Burrow.WebUtil
             {
                 return;
             }
-        	IHttpHandler handler = ctx.Context.Handler;
-        	string currentWorkSpaceName = Sniffer().Sniff(handler);
+            IHttpHandler handler = ctx.Context.Handler;
+            string currentWorkSpaceName = Sniffer().Sniff(handler);
             bf.InitWorkSpace(true, ctx.Request.Params, currentWorkSpaceName);
             if (handler is Page)
             {
                 Page p = (Page) handler;
                 p.Init += new EventHandler(p_Init);
-				GlobalPlaceHolder gph = new GlobalPlaceHolder(p);
-                new StatefulFieldPageModule(p,gph );
-                new ConversationStatePageModule(p,gph);
+                GlobalPlaceHolder gph = new GlobalPlaceHolder(p);
+                new StatefulFieldPageModule(p, gph);
+                new ConversationStatePageModule(p, gph);
             }
         }
 
-    	private IWorkSpaceNameSniffer Sniffer() {
-    		IBurrowConfig cfg = bf.BurrowEnvironment.Configuration;
-			if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))
-				return new Impl.WorkSpaceSnifferByAttribute();
-			else
-				return Burrow.Util.InstanceLoader.Load<IWorkSpaceNameSniffer>(cfg.WorkSpaceNameSniffer);
+        private IWorkSpaceNameSniffer Sniffer()
+        {
+            IBurrowConfig cfg = bf.BurrowEnvironment.Configuration;
+            if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))
+            {
+                return new WorkSpaceSnifferByAttribute();
+            }
+            else
+            {
+                return InstanceLoader.Load<IWorkSpaceNameSniffer>(cfg.WorkSpaceNameSniffer);
+            }
+        }
 
-    	}
-
-    	private void p_Init(object sender, EventArgs e)
+        private void p_Init(object sender, EventArgs e)
         {
             ScriptManager current = ScriptManager.GetCurrent((Page) sender);
             if (current != null && current.EnablePartialRendering)
             {
-                current.AsyncPostBackError +=  AsyncPostBackError ;
+                current.AsyncPostBackError += AsyncPostBackError;
             }
         }
 
@@ -101,7 +105,6 @@ namespace NHibernate.Burrow.WebUtil
         {
             OnError(sender, e);
         }
-
 
         private bool HandlerIsIrrelavant(HttpApplication ctx)
         {

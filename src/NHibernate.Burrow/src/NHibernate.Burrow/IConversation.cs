@@ -2,15 +2,56 @@ using System;
 using System.Collections.Generic;
 using NHibernate.Burrow.DataContainers;
 
-namespace NHibernate.Burrow {
+namespace NHibernate.Burrow
+{
     /// <summary>
     ///
     /// </summary>
-    public interface IConversation {
+    public interface IConversation
+    {
         /// <summary>
         /// Gets the unique id of this conversation
         /// </summary>
         Guid Id { get; }
+
+        /// <summary>
+        /// Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
+        /// </summary>
+        bool IsSpanning { get; }
+
+        /// <summary>
+        /// Gets the safe data bag the conversation holds
+        /// </summary>
+        /// <remarks>
+        /// You can use this item to store conversation span data. It's safer as it requires you to use a GUID as key.
+        /// Basically this is a dictionary that uses guid as keys. 
+        /// Another more convenient and better way to  safely store datathat share the same life span as conversation is the <see cref="ConversationalData{T}"/>
+        /// </remarks>
+        GuidDataContainer SafeItems { get; }
+
+        /// <summary>
+        /// Gets the data bag the conversation holds. You can use this item to store conversation span data.
+        /// </summary>
+        /// <remarks>
+        /// You can use it as how you want. As it's using string as key, you might have key conflict problem, for safer conversational bag, you can use SafeItems
+        /// </remarks>
+        IDictionary<string, object> Items { get; }
+
+        /// <summary>
+        /// Gets the string WorkSpace name, 
+        /// </summary>
+        /// <remarks>
+        /// the workSpaceName define the group of pages/handlers within which it spans, 
+        /// if not null or empty, the conversation will span within the pages/handlers with the same workSpaceName
+        /// </remarks>
+        string WorkSpaceName { get; }
+
+        /// <summary>
+        /// Gets the last time this conversation is visited
+        /// </summary>
+        DateTime LastVisit { get; }
+
+        bool Canceled { get; }
 
         /// <summary>
         /// Span with Http Session
@@ -44,60 +85,6 @@ namespace NHibernate.Burrow {
         /// </remarks>
         bool FinishSpan();
 
-        /// <summary>
-        /// Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
-        /// </summary>
-        bool IsSpanning{ get;}
-
-        /// <summary>
-        /// Gets the safe data bag the conversation holds
-        /// </summary>
-        /// <remarks>
-        /// You can use this item to store conversation span data. It's safer as it requires you to use a GUID as key.
-        /// Basically this is a dictionary that uses guid as keys. 
-        /// Another more convenient and better way to  safely store datathat share the same life span as conversation is the <see cref="ConversationalData{T}"/>
-        /// </remarks>
-        GuidDataContainer SafeItems {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the data bag the conversation holds. You can use this item to store conversation span data.
-        /// </summary>
-        /// <remarks>
-        /// You can use it as how you want. As it's using string as key, you might have key conflict problem, for safer conversational bag, you can use SafeItems
-        /// </remarks>
-        IDictionary<string, object> Items
-        {
-            get;
-        }
-
-
-        /// <summary>
-        /// Gets the string WorkSpace name, 
-        /// </summary>
-        /// <remarks>
-        /// the workSpaceName define the group of pages/handlers within which it spans, 
-        /// if not null or empty, the conversation will span within the pages/handlers with the same workSpaceName
-        /// </remarks>
-        string WorkSpaceName
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the last time this conversation is visited
-        /// </summary>
-        DateTime LastVisit
-        {
-            get;
-        }
-
-        bool Canceled
-        {
-            get;
-        }
-
-        event System.EventHandler Closed;
+        event EventHandler Closed;
     }
 }

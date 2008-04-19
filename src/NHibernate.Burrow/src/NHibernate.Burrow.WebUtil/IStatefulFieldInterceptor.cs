@@ -1,5 +1,7 @@
-namespace NHibernate.Burrow.WebUtil {
-    public interface IStatefulFieldInterceptor {
+namespace NHibernate.Burrow.WebUtil
+{
+    public interface IStatefulFieldInterceptor
+    {
         /// <summary>
         /// called after loaded from States
         /// </summary>

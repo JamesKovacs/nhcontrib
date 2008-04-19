@@ -12,7 +12,9 @@ public partial class SharingConversations_Step03a : Page
             IConversation conversation = bf.CurrentConversation;
 
             if (conversation == null)
+            {
                 throw new Exception("The page doesn't have conversation");
+            }
             Checker.CheckSpanningConversations(1);
 
             conversation.SpanWithPostBacks();

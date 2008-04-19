@@ -1,32 +1,23 @@
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
-using System.Web;
-using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using NHibernate.Burrow;
 
-public partial class Controls_ConversationBreaker : System.Web.UI.UserControl
+public partial class Controls_ConversationBreaker : UserControl
 {
-    ErrorTestStatus Status
+    private BurrowFramework f = new BurrowFramework();
+
+    private ErrorTestStatus Status
     {
-        get { return (ErrorTestStatus)Session["Status"]; }
+        get { return (ErrorTestStatus) Session["Status"]; }
         set { Session["Status"] = value; }
     }
-     
-    int conversationNum
+
+    private int conversationNum
     {
-        get { return (int)Session["conversationNum"]; }
+        get { return (int) Session["conversationNum"]; }
         set { Session["conversationNum"] = value; }
     }
 
-
-
-    BurrowFramework f = new BurrowFramework();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -36,6 +27,7 @@ public partial class Controls_ConversationBreaker : System.Web.UI.UserControl
             conversationNum++;
         }
     }
+
     protected void btnBreak_Click(object sender, EventArgs e)
     {
         Status = ErrorTestStatus.ErrorOccurred;

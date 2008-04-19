@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using NHibernate.Burrow.Util.DAOBases;
 
 namespace NHibernate.Burrow.Util.EntityBases
 {
@@ -21,6 +20,7 @@ namespace NHibernate.Burrow.Util.EntityBases
     public abstract class EntityWHashIdBase : EntityWithIdNBizKeyBase, IWithIdNBizKey, IDeletable
     {
         private long hashId;
+
         /// <summary>
         /// 
         /// </summary>
@@ -64,7 +64,5 @@ namespace NHibernate.Burrow.Util.EntityBases
         {
             return hashId.GetHashCode();
         }
-
-        
     }
 }

@@ -1,8 +1,7 @@
 using System;
-using System.Reflection;
-using Iesi.Collections.Generic;
 
-namespace NHibernate.Burrow.Impl {
+namespace NHibernate.Burrow.Impl
+{
     /// <summary>
     /// A persistant Unit is a unit of a ORM management
     /// </summary>
@@ -38,8 +37,6 @@ namespace NHibernate.Burrow.Impl {
             get { return configuration.Name; }
         }
 
- 
-
         /// <summary>
         /// The configuration section that sets this Persistence Unit in the configuration file
         /// </summary>
@@ -50,20 +47,6 @@ namespace NHibernate.Burrow.Impl {
         {
             get { return configuration; }
         }
-
-       
-
-        /// <summary>
-        /// Rebuild the Session factory
-        /// </summary>
-        /// <remarks>
-        /// in case you need to change the NHConfiguration on the fly
-        /// </remarks>
-        public void ReBuildSessionfactory()
-        {
-            sessionFactory = nHConfiguration.BuildSessionFactory();
-        }
-     
 
         internal ISessionFactory SessionFactory
         {
@@ -78,8 +61,16 @@ namespace NHibernate.Burrow.Impl {
             get { return nHConfiguration; }
         }
 
-      
-  
+        /// <summary>
+        /// Rebuild the Session factory
+        /// </summary>
+        /// <remarks>
+        /// in case you need to change the NHConfiguration on the fly
+        /// </remarks>
+        public void ReBuildSessionfactory()
+        {
+            sessionFactory = nHConfiguration.BuildSessionFactory();
+        }
 
         public static PersistenceUnit Instance(System.Type t)
         {

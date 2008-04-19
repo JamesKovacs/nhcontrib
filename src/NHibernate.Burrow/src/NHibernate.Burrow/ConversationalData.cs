@@ -124,7 +124,7 @@ namespace NHibernate.Burrow
         /// </summary>
         public bool OutOfConversation
         {
-            get { return cItems == null || ( gid != Guid.Empty && !cItems.ContainsKey(gid)); }
+            get { return cItems == null || (gid != Guid.Empty && !cItems.ContainsKey(gid)); }
         }
 
         private static GuidDataContainer cItems

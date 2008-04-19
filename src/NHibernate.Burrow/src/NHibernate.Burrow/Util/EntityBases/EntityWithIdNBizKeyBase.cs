@@ -103,7 +103,5 @@ namespace NHibernate.Burrow.Util.EntityBases
                 GetType().ToString() + " #" + Id.ToString() + "( BusinessKey:"
                 + BusinessKey.ToString().Replace(BIZKEYSEP, " ") + ")";
         }
-
-
     }
 }

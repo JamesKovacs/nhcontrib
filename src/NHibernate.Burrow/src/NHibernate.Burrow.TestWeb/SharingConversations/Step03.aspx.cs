@@ -1,7 +1,6 @@
 using System;
 using System.Web.UI;
 using NHibernate.Burrow;
-using NHibernate.Burrow.Util;
 
 public partial class SharingConversations_Step03 : Page
 {
@@ -13,7 +12,9 @@ public partial class SharingConversations_Step03 : Page
         if (!IsPostBack)
         {
             if (conversation == null)
+            {
                 throw new Exception("The page doesn't have conversation");
+            }
             Checker.CheckSpanningConversations(0);
             conversation.SpanWithPostBacks();
             Checker.CheckSpanningConversations(1);
@@ -28,7 +29,9 @@ public partial class SharingConversations_Step03 : Page
             btnNextStep.Visible = true;
         }
         else
+        {
             lblMessage.Text = "You should complete the step 3 a before continue";
+        }
     }
 
     protected void btnNextStep_Click(object sender, EventArgs e)
@@ -40,6 +43,4 @@ public partial class SharingConversations_Step03 : Page
 
         Response.Redirect("Step04.aspx");
     }
-
-    
 }

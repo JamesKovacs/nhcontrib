@@ -1,8 +1,5 @@
 using System;
-using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Impl;
 using NHibernate.Burrow.Test.MockEntities;
-using NHibernate.Burrow.Test.UtilTests.DAO;
 using NHibernate.Burrow.TestUtil;
 using NUnit.Framework;
 
@@ -15,25 +12,7 @@ namespace NHibernate.Burrow.Test.ConverstationTests
 
         protected override bool CleanAndCreateSchema
         {
-            get
-            {
-                return true;
-            }
-        }
-
-        
-        
-        [Test]
-        public void ManualRollbackTest()
-        {
-            MockEntities.MockEntity me = new MockEntity();
-            me.Save();
-            Assert.IsNotNull(new MockEntityDAO().Get(me.Id));
-           
-            new BurrowFramework().CurrentConversation.GiveUp();
-            new BurrowFramework().CloseWorkSpace();
-            new BurrowFramework().InitWorkSpace();
-            Assert.IsNull( new MockEntityDAO().Get(me.Id));
+            get { return true; }
         }
 
         [Test]
@@ -62,6 +41,17 @@ namespace NHibernate.Burrow.Test.ConverstationTests
             Assert.IsNull(f.CurrentConversation);
         }
 
-   
+        [Test]
+        public void ManualRollbackTest()
+        {
+            MockEntity me = new MockEntity();
+            me.Save();
+            Assert.IsNotNull(new MockEntityDAO().Get(me.Id));
+
+            new BurrowFramework().CurrentConversation.GiveUp();
+            new BurrowFramework().CloseWorkSpace();
+            new BurrowFramework().InitWorkSpace();
+            Assert.IsNull(new MockEntityDAO().Get(me.Id));
+        }
     }
 }

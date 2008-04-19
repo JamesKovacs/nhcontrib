@@ -1,18 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using NHibernate.Burrow.Configuration;
 using NHibernate.Burrow.Exceptions;
-using NHibernate.Burrow.Impl;
 
-namespace NHibernate.Burrow.Impl {
+namespace NHibernate.Burrow.Impl
+{
     internal class ConversationPool
     {
-        private static  readonly  ConversationPool instance = new ConversationPool(new BurrowFramework().BurrowEnvironment.Configuration);
+        private static readonly ConversationPool instance =
+            new ConversationPool(new BurrowFramework().BurrowEnvironment.Configuration);
+
         private readonly IDictionary<Guid, ConversationPoolItem> pool = new Dictionary<Guid, ConversationPoolItem>();
 
-        private DateTime nextCleanup = DateTime.Now;
         private IConversationExpirationChecker expirationChecker;
+        private DateTime nextCleanup = DateTime.Now;
+
+        internal ConversationPool(IBurrowConfig cfg)
+        {
+            ExpirationChecker = ConversationExpirationCheckerFactory.Create(cfg);
+        }
 
         public IConversationExpirationChecker ExpirationChecker
         {
@@ -20,18 +25,10 @@ namespace NHibernate.Burrow.Impl {
             set { expirationChecker = value; }
         }
 
-        internal ConversationPool(IBurrowConfig cfg)
-        {
-            ExpirationChecker = ConversationExpirationCheckerFactory.Create(cfg);
-        }
-
         public int ConversationsInPool
         {
             get { return pool.Count; }
         }
-
-        
-    
 
         public static ConversationPool Instance
         {
@@ -122,9 +119,9 @@ namespace NHibernate.Burrow.Impl {
             {
                 pool.Remove(id);
             }
-            nextCleanup +=  ExpirationChecker.CleanUpTimeSpan;
+            nextCleanup += ExpirationChecker.CleanUpTimeSpan;
         }
-         
+
         private bool ConversationIsTimeout(KeyValuePair<Guid, ConversationPoolItem> pair)
         {
             return ExpirationChecker.IsConversationExpired(pair.Value.Conversation);
@@ -135,11 +132,14 @@ namespace NHibernate.Burrow.Impl {
             return pool.ContainsKey(id);
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             for (IEnumerator<ConversationPoolItem> en = pool.Values.GetEnumerator();
                  en.MoveNext();
                  en = pool.Values.GetEnumerator())
-                 en.Current.Conversation.RollbackAndClose();
+            {
+                en.Current.Conversation.RollbackAndClose();
+            }
         }
     }
 
@@ -159,7 +159,6 @@ namespace NHibernate.Burrow.Impl {
             this.conversation = conversation;
         }
 
- 
         public ConversationImpl Conversation
         {
             get { return conversation; }

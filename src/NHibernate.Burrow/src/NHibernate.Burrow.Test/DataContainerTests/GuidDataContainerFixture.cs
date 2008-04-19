@@ -2,35 +2,48 @@ using System;
 using NHibernate.Burrow.DataContainers;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.Test.DataContainerTests {
+namespace NHibernate.Burrow.Test.DataContainerTests
+{
     [TestFixture]
-    public class GuidDataContainerFixture {
+    public class GuidDataContainerFixture
+    {
         private static readonly GuidDataContainer c = new GuidDataContainer();
 
         private Guid fieldId = Guid.Empty;
 
-        public string ConversationalString {
-            get {
+        public string ConversationalString
+        {
+            get
+            {
                 if (fieldId == Guid.Empty)
+                {
                     return default(string);
+                }
                 return c.Get<String>(fieldId);
             }
-            set {
+            set
+            {
                 if (fieldId == Guid.Empty)
+                {
                     fieldId = c.CreateSlot(value);
+                }
                 else
+                {
                     c.Set(fieldId, value);
+                }
             }
         }
 
         [Test]
-        public void NullTest() {
+        public void NullTest()
+        {
             Guid gid = c.CreateSlot(null);
             Assert.IsNull(c.Get(gid));
         }
 
         [Test]
-        public void PropertyTest() {
+        public void PropertyTest()
+        {
             string value = "TEst String Value";
             Assert.IsNull(ConversationalString);
 

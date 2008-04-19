@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
-using NHibernate.Burrow.Impl;
+using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow.Configuration
 {
     internal class Util
     {
-        public void CheckCanChangeCfg() {
+        public void CheckCanChangeCfg()
+        {
             BurrowFramework f = new BurrowFramework();
-            if( f.BurrowEnvironment.IsRunning )
-                throw new Exceptions.ChangeConfigWhenRunningException("Configuration Setting can only be changed on the fly when the environment is shut down");
+            if (f.BurrowEnvironment.IsRunning)
+            {
+                throw new ChangeConfigWhenRunningException(
+                    "Configuration Setting can only be changed on the fly when the environment is shut down");
+            }
         }
     }
 }

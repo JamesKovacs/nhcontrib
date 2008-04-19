@@ -13,17 +13,14 @@ namespace NHibernate.Burrow.Impl
     /// Currently we leave it public mainly for testing purpose. 
     /// </remarks>
     internal class ConversationImpl : IConversation
-    {       
-        #region IConversation Members
-
-        public event EventHandler Closed;
-
-        #endregion
+    {
         private readonly Guid id = Guid.NewGuid();
         private readonly IDictionary<string, object> items = new Dictionary<string, object>();
         private readonly GuidDataContainer safeItems = new GuidDataContainer();
+
         private readonly IDictionary<PersistenceUnit, SessionManager> sessManagers =
             new Dictionary<PersistenceUnit, SessionManager>();
+
         private bool canceled = false;
         private DateTime lastVisit = DateTime.Now;
         private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
@@ -150,7 +147,6 @@ namespace NHibernate.Burrow.Impl
             get { return SpanStrategy.ValidForSpan; }
         }
 
-
         /// <summary>
         /// Gets the last time this conversation is visited
         /// </summary>
@@ -159,7 +155,6 @@ namespace NHibernate.Burrow.Impl
             get { return lastVisit; }
             private set { lastVisit = value; }
         }
-
 
         public string WorkSpaceName
         {
@@ -170,6 +165,12 @@ namespace NHibernate.Burrow.Impl
         {
             get { return items; }
         }
+
+        #endregion
+
+        #region IConversation Members
+
+        public event EventHandler Closed;
 
         #endregion
 
@@ -283,7 +284,6 @@ namespace NHibernate.Burrow.Impl
         //    }
         //    BeginNHibernateTransactions();
         //}
-
         /// <summary>
         /// immediately rollback 
         /// </summary>
@@ -361,7 +361,6 @@ namespace NHibernate.Burrow.Impl
             return sessManagers[PersistenceUnitRepo.Instance.GetPU(t)];
         }
 
-  
         internal void OnWorkSpaceClose()
         {
             if (Canceled)
@@ -388,8 +387,6 @@ namespace NHibernate.Burrow.Impl
                 }
             }
         }
-
-
 
         public static ConversationImpl StartNew()
         {

@@ -1,11 +1,13 @@
 using System;
 
-namespace NHibernate.Burrow.Exceptions {
+namespace NHibernate.Burrow.Exceptions
+{
     /// <summary>
     /// Summary description for DomainException.
     /// </summary>
     [Serializable]
-    public class BurrowException : ApplicationException {
+    public class BurrowException : ApplicationException
+    {
         /// <summary>
         /// 
         /// </summary>
