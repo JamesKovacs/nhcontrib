@@ -72,10 +72,8 @@
     <Compile Include="ConverstationTests\WrapUrlFixture.cs" />
     <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
     <Compile Include="FrameworkEnvironment\ShutDownFixture.cs" />
-    <Compile Include="PersistenceTests\HashIdMockClass.cs" />
     <Compile Include="MockEntities\MockEntity.cs" />
     <Compile Include="MockEntities\MockEntityDAO.cs" />
-    <Compile Include="PersistenceTests\PersistantTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Concurrency\SessionConcurency.cs" />
     <Compile Include="SpecialTests\CreateDB.cs" />
@@ -99,15 +97,9 @@
     <EmbeddedResource Include="MockEntities\MockEntity.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PersistenceTests\HashIdMockClass.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="BurrowTest.cfg.xml.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UtilTests\DAO\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

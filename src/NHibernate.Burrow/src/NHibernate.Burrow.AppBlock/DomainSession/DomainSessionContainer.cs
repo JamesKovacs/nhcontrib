@@ -2,48 +2,67 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 
-namespace NHibernate.Burrow.AppBlock.DomainSession {
+namespace NHibernate.Burrow.AppBlock.DomainSession
+{
     /// <summary>
     /// Loader for getting the DLContainer
     /// </summary>
-    public class DomainSessionContainer {
+    public class DomainSessionContainer
+    {
         private readonly IDictionary<string, IDomainSession> dss = new Dictionary<string, IDomainSession>();
 
-        private DomainSessionContainer() {
+        private DomainSessionContainer()
+        {
             foreach (KeyValuePair<string, IDomainSession> pair in Factory.Create())
+            {
                 Set(pair.Key, pair.Value);
+            }
         }
 
-        public static DomainSessionContainer Instance {
+        public static DomainSessionContainer Instance
+        {
             get { return Nested.DomainSessionContainer; }
         }
 
-        private static IDomainSessionFactory Factory {
-            get {
+        private static IDomainSessionFactory Factory
+        {
+            get
+            {
                 return
                     (IDomainSessionFactory)
                     Util.Create(ConfigurationManager.AppSettings["NHibernate.Burrow.AppBlock.DomainSessionFactory"]);
             }
         }
 
-        public IDomainSession Get(string key) {
+        public IDomainSession Get(string key)
+        {
             IDomainSession retVal;
 
             if (IsInWebContext())
+            {
                 retVal = (IDomainSession) HttpContext.Current.Session[key];
+            }
             else
+            {
                 dss.TryGetValue(key, out retVal);
+            }
             return retVal;
         }
 
-        private void Set(string key, IDomainSession val) {
+        private void Set(string key, IDomainSession val)
+        {
             if (IsInWebContext())
+            {
                 HttpContext.Current.Session[key] = val;
+            }
             else
+            {
                 dss[key] = val;
+            }
         }
 
-        private static bool IsInWebContext() {
+        private static bool IsInWebContext()
+        {
             return HttpContext.Current != null;
         }
 
@@ -52,7 +71,8 @@ namespace NHibernate.Burrow.AppBlock.DomainSession {
         /// <summary>
         /// Assists with ensuring thread-safe, lazy singleton
         /// </summary>
-        private class Nested {
+        private class Nested
+        {
             internal static readonly DomainSessionContainer DomainSessionContainer = new DomainSessionContainer();
 
             static Nested() {}

@@ -4,7 +4,7 @@ using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil.Impl
 {
-    public class WorkSpaceSnifferByAttribute : IWorkSpaceNameSniffer
+    internal class WorkSpaceSnifferByAttribute : IWorkSpaceNameSniffer
     {
         #region IWorkSpaceNameSniffer Members
 

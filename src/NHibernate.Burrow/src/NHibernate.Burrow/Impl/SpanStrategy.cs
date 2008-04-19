@@ -48,7 +48,7 @@ namespace NHibernate.Burrow.Impl
 
             updateCookie(cookie, c.Response.Cookies);
             updateCookie(cookie, c.Request.Cookies);
-                //added here for so that even the states will be there even when request is Redirected and no reponse is generated
+            //added here for so that even the states will be there even when request is Redirected and no reponse is generated
         }
 
         private static void updateCookie(HttpCookie cookie, HttpCookieCollection cookies)

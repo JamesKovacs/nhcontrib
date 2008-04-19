@@ -149,14 +149,7 @@
     <Compile Include="Impl\SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Util\DAOBases\EntityLoader.cs" />
-    <Compile Include="Util\DAOBases\GenericDAO.cs" />
-    <Compile Include="Util\EntityBases\DeletableEntity.cs" />
-    <Compile Include="Util\EntityBases\IDeletable.cs" />
-    <Compile Include="Util\EntityBases\IWithId.cs" />
-    <Compile Include="Util\EntityBases\IWithIdNBizKey.cs" />
-    <Compile Include="Util\EntityBases\EntityWHashIdBase.cs" />
-    <Compile Include="Util\EntityBases\EntityWithIdNBizKeyBase.cs" />
+    <Compile Include="Util\EntityLoader.cs" />
     <Compile Include="Util\InstanceLoader.cs" />
     <Compile Include="Util\SchemaUtil.cs" />
     <Compile Include="Util\WebUtil.cs" />

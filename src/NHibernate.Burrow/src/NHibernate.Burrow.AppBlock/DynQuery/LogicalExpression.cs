@@ -1,8 +1,10 @@
 using System;
 using System.Text;
 
-namespace NHibernate.Burrow.AppBlock.DynQuery {
-    public enum LogicalOperator {
+namespace NHibernate.Burrow.AppBlock.DynQuery
+{
+    public enum LogicalOperator
+    {
         Null,
         And,
         Or,
@@ -10,11 +12,13 @@ namespace NHibernate.Burrow.AppBlock.DynQuery {
     }
 
     [Serializable]
-    public class LogicalExpression : IQueryPart {
+    public class LogicalExpression : IQueryPart
+    {
         private readonly string expression;
         private readonly LogicalOperator loperator;
 
-        internal LogicalExpression(LogicalOperator loperator, string expression) {
+        internal LogicalExpression(LogicalOperator loperator, string expression)
+        {
             this.loperator = loperator;
             this.expression = expression.Trim();
         }
@@ -26,10 +30,13 @@ namespace NHibernate.Burrow.AppBlock.DynQuery {
         /// <summary>
         /// The query complete clause.
         /// </summary>
-        public string Clause {
-            get {
+        public string Clause
+        {
+            get
+            {
                 StringBuilder result = new StringBuilder(200);
-                switch (loperator) {
+                switch (loperator)
+                {
                     case LogicalOperator.And:
                         result.Append(" and ").Append(Expression);
                         break;
@@ -51,7 +58,8 @@ namespace NHibernate.Burrow.AppBlock.DynQuery {
         /// <summary>
         /// The query part.
         /// </summary>
-        public string Expression {
+        public string Expression
+        {
             get { return string.Format("({0})", expression); }
         }
 

@@ -1,8 +1,10 @@
-namespace NHibernate.Burrow.AppBlock.Pagination {
+namespace NHibernate.Burrow.AppBlock.Pagination
+{
     /// <summary>
     /// Classic basic interface for any type of general purpose paginator.
     /// </summary>
-    public interface IPaginator {
+    public interface IPaginator
+    {
         /// <summary>
         /// The number of the current page.
         /// </summary>

@@ -1,4 +1,5 @@
 using System;
+using NHibernate.Burrow.WebUtil.Impl;
 
 namespace NHibernate.Burrow.WebUtil.Attributes
 {

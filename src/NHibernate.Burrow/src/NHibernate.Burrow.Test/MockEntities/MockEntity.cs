@@ -1,9 +1,6 @@
-using System;
-using NHibernate.Burrow.Util.EntityBases;
-
 namespace NHibernate.Burrow.Test.MockEntities
 {
-    public class MockEntity : IDeletable
+    public class MockEntity
     {
         private int id;
 
@@ -41,16 +38,12 @@ namespace NHibernate.Burrow.Test.MockEntities
             set { preDeletedPerformed = value; }
         }
 
-        #region IDeletable Members
-
         public bool Delete()
         {
             preDeletedPerformed++;
             new MockEntityDAO().Delete(this);
             return true;
         }
-
-        #endregion
 
         public void Save()
         {

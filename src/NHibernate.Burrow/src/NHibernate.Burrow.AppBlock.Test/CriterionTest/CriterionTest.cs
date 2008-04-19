@@ -7,16 +7,21 @@ using NHibernate.SqlCommand;
 using NHibernate.Util;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.CriterionTest {
+namespace NHibernate.Burrow.AppBlock.Test.CriterionTest
+{
     [TestFixture]
-    public class CriterionTest : TestCase {
-        protected override IList Mappings {
+    public class CriterionTest : TestCase
+    {
+        protected override IList Mappings
+        {
             get { return new string[] {"CriterionTest.Simple.hbm.xml"}; }
         }
 
         [Test]
-        public void EqOrNullTest() {
-            using (ISession session = OpenSession()) {
+        public void EqOrNullTest()
+        {
+            using (ISession session = OpenSession())
+            {
                 CriteriaImpl criteria = (CriteriaImpl) session.CreateCriteria(typeof (Simple));
                 CriteriaQueryTranslator criteriaQuery =
                     new CriteriaQueryTranslator((ISessionFactoryImplementor) sessions, criteria,

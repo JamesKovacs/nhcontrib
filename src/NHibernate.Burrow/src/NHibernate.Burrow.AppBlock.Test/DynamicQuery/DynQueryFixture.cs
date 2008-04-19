@@ -1,11 +1,14 @@
 using NHibernate.Burrow.AppBlock.DynQuery;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
+namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery
+{
     [TestFixture]
-    public class DynQueryFixture {
+    public class DynQueryFixture
+    {
         [Test]
-        public void CommonUse() {
+        public void CommonUse()
+        {
             // some times the select can be static in son place (the service of a DAO)
             Select s = new Select("f.Name, f.Description, b.Descriptoin").From("Foo f join f.Bar b");
 
@@ -37,7 +40,8 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void DirtyWhereCostruction() {
+        public void DirtyWhereCostruction()
+        {
             // This way, to construct the where clause, can be useful if 
             // you don't know which will be the first expression
             Where w = new Where();
@@ -50,14 +54,16 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void LogicalExpressionTest() {
+        public void LogicalExpressionTest()
+        {
             IQueryPart le = new LogicalExpression("   a = b  ");
             Assert.AreEqual("(a = b)", le.Expression);
             Assert.AreEqual(le.Expression, le.Clause);
         }
 
         [Test]
-        public void OrderByInjection() {
+        public void OrderByInjection()
+        {
             // Inject the OrderBy to an existing "from clause"
             OrderBy o = new OrderBy().Add("f.Name").Add("f.Id", true);
             From frm = new From("Foo");
@@ -66,7 +72,8 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void OrderByTest() {
+        public void OrderByTest()
+        {
             // OrderBy can be created away
             OrderBy o = new OrderBy().Add("f.Name").Add("f.Id", true).Add("f.Surname");
             Assert.AreEqual("f.Name, f.Id desc, f.Surname", o.Expression);
@@ -74,14 +81,16 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void SelectTest() {
+        public void SelectTest()
+        {
             Select s = new Select("f.Name, f.Description, b.Descriptoin").From("Foo f join f.Bar b");
             Assert.AreEqual("f.Name, f.Description, b.Descriptoin", s.Expression);
             Assert.AreEqual("select f.Name, f.Description, b.Descriptoin from Foo f join f.Bar b", s.Clause);
         }
 
         [Test]
-        public void SelectWhereTest() {
+        public void SelectWhereTest()
+        {
             Select s =
                 new Select("f.Name, f.Description, b.Descriptoin").From("Foo f join f.Bar b").Where("f.Name like :pName");
             Assert.AreEqual("f.Name, f.Description, b.Descriptoin", s.Expression);
@@ -91,7 +100,8 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void SimpleQuery() {
+        public void SimpleQuery()
+        {
             From frm = new From("Foo f");
             frm.Where("f.Name like :p1").And("length(f.Name)>2").Or("f.Name like 'N%'");
             Assert.AreEqual("from Foo f where ((f.Name like :p1) and (length(f.Name)>2) or (f.Name like 'N%'))",
@@ -99,7 +109,8 @@ namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
         }
 
         [Test]
-        public void WhereInjection() {
+        public void WhereInjection()
+        {
             // Create a where clause away of the from clause
             Where w = (new Where("f.Name like :p1")).And("length(f.Name)>2").Or("f.Name like 'N%'");
             From frm = new From("Foo f");

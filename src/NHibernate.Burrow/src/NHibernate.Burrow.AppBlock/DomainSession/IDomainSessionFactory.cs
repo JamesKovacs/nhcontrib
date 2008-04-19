@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 
-namespace NHibernate.Burrow.AppBlock.DomainSession {
+namespace NHibernate.Burrow.AppBlock.DomainSession
+{
     /// <summary>
     /// Factory of domainLayer<see cref="IDomainSession"/>
     /// </summary>
-    public interface IDomainSessionFactory {
+    public interface IDomainSessionFactory
+    {
         /// <summary>
         /// Create the domainLayer
         /// </summary>

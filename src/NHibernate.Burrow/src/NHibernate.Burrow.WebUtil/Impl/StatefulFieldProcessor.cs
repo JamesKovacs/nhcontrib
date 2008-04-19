@@ -8,7 +8,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using NHibernate.Burrow.WebUtil.Attributes;
 
-namespace NHibernate.Burrow.WebUtil
+namespace NHibernate.Burrow.WebUtil.Impl
 {
     internal abstract class StatefulFieldProcessor
     {

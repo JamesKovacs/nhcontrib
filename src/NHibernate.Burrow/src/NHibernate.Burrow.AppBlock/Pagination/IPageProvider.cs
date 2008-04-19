@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 
-namespace NHibernate.Burrow.AppBlock.Pagination {
+namespace NHibernate.Burrow.AppBlock.Pagination
+{
     /// <summary>
     /// Interface for pages provider.
     /// </summary>
     /// <typeparam name="T">The type of each row of the page.</typeparam>
     /// <seealso cref="IPaginator"/>
-    public interface IPageProvider<T> : IPaginator {
+    public interface IPageProvider<T> : IPaginator
+    {
         /// <summary>
         /// Number of visible objects of each page.
         /// </summary>

@@ -1,10 +1,12 @@
 using System;
 
-namespace NHibernate.Burrow.AppBlock.DomainSession {
+namespace NHibernate.Burrow.AppBlock.DomainSession
+{
     /// <summary>
     /// A container used to stored all the with-state helper class in the domainLayer
     /// </summary>
-    public interface IDomainSession : IDisposable {
+    public interface IDomainSession : IDisposable
+    {
         /// <summary>
         /// make sure all connections to outside resources are closed
         /// </summary>

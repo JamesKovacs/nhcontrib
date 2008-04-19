@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     /// <summary>
     /// interface for object that has business Key

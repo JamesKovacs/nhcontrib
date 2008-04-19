@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Iesi.Collections.Generic;
 using NHibernate.Criterion;
 
-namespace NHibernate.Burrow.Util.DAOBases
+namespace NHibernate.Burrow.AppBlock.DAOBases
 {
     /// <summary>
     /// A DAO that includes a set of shotcut methods. 

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Web.UI;
 using NHibernate.Burrow.WebUtil.Attributes;
 
-namespace NHibernate.Burrow.WebUtil
+namespace NHibernate.Burrow.WebUtil.Impl
 {
     internal class StatefulFieldLoader : StatefulFieldProcessor
     {

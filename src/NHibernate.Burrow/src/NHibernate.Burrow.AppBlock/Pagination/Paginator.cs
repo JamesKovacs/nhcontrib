@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace NHibernate.Burrow.AppBlock.Pagination {
+namespace NHibernate.Burrow.AppBlock.Pagination
+{
     /// <summary>
     /// Results paginator.
     /// </summary>
@@ -9,7 +10,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
     /// <seealso cref="IPaginator"/>
     /// <seealso cref="BasePaginator"/>
     /// <seealso cref="IPageProvider{T}"/>
-    public class Paginator<T> : BasePaginator, IPageProvider<T> {
+    public class Paginator<T> : BasePaginator, IPageProvider<T>
+    {
         private readonly IPaginable<T> source;
         private bool autoCalcPages = false;
         private IRowsCounter counter;
@@ -27,13 +29,18 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// If the <paramref name="paginable"/> implements <see cref="IRowsCounter"/> the <see cref="Counter"/> 
         /// property is set and the paginator work in "AutoCalcPages mode".
         /// </remarks>
-        public Paginator(int pageSize, IPaginable<T> paginable) {
+        public Paginator(int pageSize, IPaginable<T> paginable)
+        {
             if (paginable == null)
+            {
                 throw new ArgumentNullException("paginable");
+            }
             if (pageSize <= 0)
+            {
                 throw new ArgumentOutOfRangeException("pageSize",
                                                       string.Format("Page size expected greater than zero ; was {0}.",
                                                                     pageSize));
+            }
             this.pageSize = pageSize;
             source = paginable;
             // Check if the paginable implements IRowsCounter too
@@ -48,7 +55,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// <param name="autoCalcPages">Enable or disable the "AutoCalcPages mode"; for more detail <see cref="AutoCalcPages"/>.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="paginable"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">If <paramref name="pageSize"/> equal or less than zero.</exception>
-        public Paginator(int pageSize, IPaginable<T> paginable, bool autoCalcPages) : this(pageSize, paginable) {
+        public Paginator(int pageSize, IPaginable<T> paginable, bool autoCalcPages) : this(pageSize, paginable)
+        {
             this.autoCalcPages = autoCalcPages;
         }
 
@@ -70,7 +78,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Write your tests to be secure.
         /// </para>
         /// </remarks>
-        public Paginator(int pageSize, IPaginable<T> paginable, IRowsCounter counter) : this(pageSize, paginable) {
+        public Paginator(int pageSize, IPaginable<T> paginable, IRowsCounter counter) : this(pageSize, paginable)
+        {
             Counter = counter;
         }
 
@@ -91,16 +100,19 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// </para>
         /// The best practice is: use the constructor with <see cref="IRowsCounter"/>.
         /// </remarks>
-        public bool AutoCalcPages {
+        public bool AutoCalcPages
+        {
             get { return autoCalcPages; }
         }
 
         /// <summary>
         /// The <see cref="IRowsCounter"/> settled by constructor.
         /// </summary>
-        public IRowsCounter Counter {
+        public IRowsCounter Counter
+        {
             get { return counter; }
-            protected set {
+            protected set
+            {
                 counter = value;
                 autoCalcPages = counter != null;
             }
@@ -112,10 +124,13 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Number of visible objects of each page.
         /// </summary>
         /// <remarks>Change PageSize mean reset the <see cref="RowsCount"/>.</remarks>
-        public int PageSize {
+        public int PageSize
+        {
             get { return pageSize; }
-            set {
-                if (!pageSize.Equals(value)) {
+            set
+            {
+                if (!pageSize.Equals(value))
+                {
                     pageSize = value;
                     ResetLastPageNumber();
                 }
@@ -126,10 +141,14 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// The total rows count.
         /// </summary>
         /// <remarks>Return null if rows count is not available.</remarks>
-        public long? RowsCount {
-            get {
+        public long? RowsCount
+        {
+            get
+            {
                 if (!LastPageNumber.HasValue && AutoCalcPages)
+                {
                     CalcLastPage();
+                }
                 return rowsCount;
             }
         }
@@ -137,7 +156,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// <summary>
         /// Get True if the paginator has query results. False in other case.
         /// </summary>
-        public bool HasPages {
+        public bool HasPages
+        {
             get { return FirstPageNumber != 0; }
         }
 
@@ -147,7 +167,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// <param name="pageNumber">The page number.</param>
         /// <returns>The list of objects.</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public IList<T> GetPage(int pageNumber) {
+        public IList<T> GetPage(int pageNumber)
+        {
             GotoPageNumber(pageNumber);
             return source.GetPage(PageSize, CurrentPageNumber.Value);
         }
@@ -156,7 +177,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Get the list of objects of the first page and move the current page.
         /// </summary>
         /// <returns>The list of objects.</returns>
-        public IList<T> GetFirstPage() {
+        public IList<T> GetFirstPage()
+        {
             return GetPage(FirstPageNumber);
         }
 
@@ -165,9 +187,12 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// </summary>
         /// <returns>The list of objects.</returns>
         /// <exception cref="NotSupportedException">When <see cref="AutoCalcPages"/> is false</exception>
-        public IList<T> GetLastPage() {
+        public IList<T> GetLastPage()
+        {
             if (!LastPageNumber.HasValue)
+            {
                 throw new NotSupportedException("GetLastPage() is not supported when AutoCalcPages is false.");
+            }
             return GetPage(LastPageNumber.Value);
         }
 
@@ -175,7 +200,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Get the list of objects of the next page and move the current page.
         /// </summary>
         /// <returns>The list of objects.</returns>
-        public IList<T> GetNextPage() {
+        public IList<T> GetNextPage()
+        {
             return GetPage(NextPageNumber);
         }
 
@@ -183,7 +209,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Get the list of objects of the previous page and move the current page.
         /// </summary>
         /// <returns>The list of objects.</returns>
-        public IList<T> GetPreviousPage() {
+        public IList<T> GetPreviousPage()
+        {
             return GetPage(PreviousPageNumber);
         }
 
@@ -192,19 +219,26 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// </summary>
         /// <returns>The list of objects.</returns>
         /// <exception cref="NotSupportedException">When the current page is not available.</exception>
-        public IList<T> GetCurrentPage() {
+        public IList<T> GetCurrentPage()
+        {
             if (!CurrentPageNumber.HasValue)
+            {
                 throw new NotSupportedException("Current page not available.");
+            }
             return source.GetPage(PageSize, CurrentPageNumber.Value);
         }
 
         /// <summary>
         /// The number of the last page if available; otherwise null.
         /// </summary>
-        public override int? LastPageNumber {
-            get {
+        public override int? LastPageNumber
+        {
+            get
+            {
                 if (!base.LastPageNumber.HasValue && AutoCalcPages)
+                {
                     CalcLastPage();
+                }
                 return base.LastPageNumber;
             }
         }
@@ -215,21 +249,28 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// Move the current page to a given page number.
         /// </summary>
         /// <param name="pageNumber">The page number.</param>
-        public new void GotoPageNumber(int pageNumber) {
+        public new void GotoPageNumber(int pageNumber)
+        {
             base.GotoPageNumber(pageNumber);
         }
 
-        private void CalcLastPage() {
+        private void CalcLastPage()
+        {
             if (counter != null)
+            {
                 rowsCount = counter.GetRowsCount(source.GetSession());
+            }
             else
+            {
                 rowsCount = source.ListAll().Count;
+            }
             ResetLastPageNumber();
         }
 
-        private void ResetLastPageNumber() {
-            base.LastPageNumber = Convert.ToInt32(rowsCount.GetValueOrDefault()/PageSize)
-                                  + ((rowsCount.GetValueOrDefault()%PageSize) == 0 ? 0 : 1);
+        private void ResetLastPageNumber()
+        {
+            base.LastPageNumber = Convert.ToInt32(rowsCount.GetValueOrDefault() / PageSize)
+                                  + ((rowsCount.GetValueOrDefault() % PageSize) == 0 ? 0 : 1);
         }
     }
 }

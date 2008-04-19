@@ -1,4 +1,4 @@
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     /// <summary>
     /// an interface for entities that has Deletion logic in itself

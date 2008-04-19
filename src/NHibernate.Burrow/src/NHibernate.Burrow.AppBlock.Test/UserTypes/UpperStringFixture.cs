@@ -1,30 +1,38 @@
 using System.Collections;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.UserTypes {
+namespace NHibernate.Burrow.AppBlock.Test.UserTypes
+{
     [TestFixture]
-    public class UpperStringFixture : TestCase {
-        protected override IList Mappings {
+    public class UpperStringFixture : TestCase
+    {
+        protected override IList Mappings
+        {
             get { return new string[] {"UserTypes.UpperStringMappings.hbm.xml"}; }
         }
 
-        protected override void OnTearDown() {
-            using (ISession s = OpenSession()) {
+        protected override void OnTearDown()
+        {
+            using (ISession s = OpenSession())
+            {
                 s.Delete("from Foo");
                 s.Flush();
             }
         }
 
         [Test]
-        public void SaveNullPropertyAndGetItBack() {
+        public void SaveNullPropertyAndGetItBack()
+        {
             Foo f = new Foo(2, "Pat Metheny", null);
 
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 s.Save(f);
                 s.Flush();
             }
 
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 Foo upperFoo = s.Get<Foo>(2);
 
                 Assert.AreEqual(2, upperFoo.Id);
@@ -34,15 +42,18 @@ namespace NHibernate.Burrow.AppBlock.Test.UserTypes {
         }
 
         [Test]
-        public void SaveObjectWithStringChangedToUpper() {
+        public void SaveObjectWithStringChangedToUpper()
+        {
             Foo f = new Foo(1, "Astor Piazolla", "tango");
 
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 s.Save(f);
                 s.Flush();
             }
 
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 Foo upperFoo = s.Get<Foo>(1);
 
                 Assert.AreEqual(1, upperFoo.Id);

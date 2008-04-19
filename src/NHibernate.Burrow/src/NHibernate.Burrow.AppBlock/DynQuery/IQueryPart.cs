@@ -1,5 +1,7 @@
-namespace NHibernate.Burrow.AppBlock.DynQuery {
-    public interface IQueryPart {
+namespace NHibernate.Burrow.AppBlock.DynQuery
+{
+    public interface IQueryPart
+    {
         /// <summary>
         /// The query complete clause.
         /// </summary>

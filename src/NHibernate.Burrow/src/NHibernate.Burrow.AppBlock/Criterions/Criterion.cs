@@ -1,10 +1,12 @@
 using NHibernate.Criterion;
 
-namespace NHibernate.Burrow.AppBlock.Criterions {
+namespace NHibernate.Burrow.AppBlock.Criterions
+{
     /// <summary>
     /// Build in criterions.
     /// </summary>
-    public static class Criterion {
+    public static class Criterion
+    {
         /// <summary>
         /// Apply an "equal" or "is null" constraint to the named property
         /// </summary>
@@ -17,7 +19,8 @@ namespace NHibernate.Burrow.AppBlock.Criterions {
         /// </remarks>
         /// <seealso cref="Restrictions.Eq(string,object)"/>
         /// <seealso cref="NullExpression"/>
-        public static ICriterion EqOrNull(string propertyName, object value) {
+        public static ICriterion EqOrNull(string propertyName, object value)
+        {
             return new EqOrNullExpression(propertyName, value);
         }
     }

@@ -2,7 +2,8 @@ using System;
 using NHibernate.Burrow.AppBlock.Pagination;
 using NHibernate.Impl;
 
-namespace NHibernate.Burrow.AppBlock.GenericImpl {
+namespace NHibernate.Burrow.AppBlock.GenericImpl
+{
     /// <summary>
     /// Generic implementation of <see cref="IPaginable{T}"/> and <see cref="IRowsCounter"/> 
     /// based on <see cref="NHibernate.Impl.DetachedQuery"/>.
@@ -15,31 +16,40 @@ namespace NHibernate.Burrow.AppBlock.GenericImpl {
     /// An HQL is supported if contain only 'from' clause and/or 'where' clause.
     /// Any other clause throw an exception.
     /// </remarks>
-    public class PaginableRowsCounterQuery<T> : AbstractPaginableRowsCounterQuery<T> {
+    public class PaginableRowsCounterQuery<T> : AbstractPaginableRowsCounterQuery<T>
+    {
         private readonly DetachedQuery detachedQuery;
         private readonly ISession session;
 
-        public PaginableRowsCounterQuery(ISession session, DetachedQuery detachedQuery) {
+        public PaginableRowsCounterQuery(ISession session, DetachedQuery detachedQuery)
+        {
             if (detachedQuery == null)
+            {
                 throw new ArgumentNullException("detachedQuery");
+            }
             this.session = session;
             this.detachedQuery = detachedQuery;
         }
 
-        protected override IDetachedQuery DetachedQuery {
+        protected override IDetachedQuery DetachedQuery
+        {
             get { return detachedQuery; }
         }
 
-        public override ISession GetSession() {
+        public override ISession GetSession()
+        {
             return session;
         }
 
-        protected override IDetachedQuery GetRowCountQuery() {
+        protected override IDetachedQuery GetRowCountQuery()
+        {
             if (!detachedQuery.Hql.StartsWith("from", StringComparison.InvariantCultureIgnoreCase))
+            {
                 throw new HibernateException(
                     string.Format(
                         "Can't trasform the HQL to it's counter, the query must start with 'from' clause:{0}",
                         detachedQuery.Hql));
+            }
             DetachedQuery result = new DetachedQuery("select count(*) " + detachedQuery.Hql);
             result.CopyParametersFrom(detachedQuery);
             return result;

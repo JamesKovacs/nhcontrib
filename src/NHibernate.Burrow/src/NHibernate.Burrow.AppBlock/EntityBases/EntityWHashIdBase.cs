@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     /// <summary>
     /// A base class that use its inital hashcode as its Identity

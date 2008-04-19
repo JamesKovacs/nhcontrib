@@ -6,32 +6,39 @@ using NHibernate.Burrow.AppBlock.Pagination;
 using NHibernate.Impl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.Pagination {
+namespace NHibernate.Burrow.AppBlock.Test.Pagination
+{
     [TestFixture]
-    public class PaginatorFixture : TestCase {
-        protected override IList Mappings {
+    public class PaginatorFixture : TestCase
+    {
+        protected override IList Mappings
+        {
             get { return new string[] {"Pagination.PagTest.hbm.xml"}; }
         }
 
         public const int totalFoo = 15;
 
-        protected override void OnSetUp() {
+        protected override void OnSetUp()
+        {
             ISession s = OpenSession();
-            for (int i = 0; i < totalFoo; i++) {
+            for (int i = 0; i < totalFoo; i++)
+            {
                 Foo f = new Foo("N" + i, "D" + i);
                 s.Save(f);
             }
             s.Flush();
         }
 
-        protected override void OnTearDown() {
+        protected override void OnTearDown()
+        {
             LastOpenedSession.Delete("from Foo");
             LastOpenedSession.Flush();
             LastOpenedSession.Close();
         }
 
         [Test]
-        public void AutoCalcPages() {
+        public void AutoCalcPages()
+        {
             Paginator<NoFoo> ptor =
                 new Paginator<NoFoo>(3, new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All")), true);
             // check init state
@@ -55,7 +62,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
 
         [Test]
         [ExpectedException(typeof (ArgumentOutOfRangeException))]
-        public void HasNotPages() {
+        public void HasNotPages()
+        {
             string hql = "from Foo where Name = '-N123'";
             PaginableRowsCounterQuery<Foo> pag =
                 new PaginableRowsCounterQuery<Foo>(LastOpenedSession, new DetachedQuery(hql));
@@ -71,7 +79,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void HasPages() {
+        public void HasPages()
+        {
             string hql = "from Foo where Name = 'N1'";
             PaginableRowsCounterQuery<Foo> pag =
                 new PaginableRowsCounterQuery<Foo>(LastOpenedSession, new DetachedQuery(hql));
@@ -87,7 +96,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void PageMoving() {
+        public void PageMoving()
+        {
             Paginator<NoFoo> ptor =
                 new Paginator<NoFoo>(3, new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All")), true);
             IList<NoFoo> entities = ptor.GetFirstPage();
@@ -117,7 +127,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void SimplePaginator() {
+        public void SimplePaginator()
+        {
             // with "AutoCalcPages mode" DISABLED
             Paginator<NoFoo> ptor =
                 new Paginator<NoFoo>(3, new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All")));
@@ -135,7 +146,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void WithCounter() {
+        public void WithCounter()
+        {
             Paginator<NoFoo> ptor =
                 new Paginator<NoFoo>(5, new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All")),
                                      new NamedQueryRowsCounter("NoFoo.Count.All"));
@@ -143,7 +155,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void WithSelfCounter() {
+        public void WithSelfCounter()
+        {
             DetachedQuery dq = new DetachedQuery("from Foo f where f.Name like :p1");
             dq.SetString("p1", "%1_");
             IPaginable<Foo> fp = new PaginableRowsCounterQuery<Foo>(LastOpenedSession, dq);

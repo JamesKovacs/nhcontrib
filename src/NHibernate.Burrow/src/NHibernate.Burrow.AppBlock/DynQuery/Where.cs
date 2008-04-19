@@ -2,19 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NHibernate.Burrow.AppBlock.DynQuery {
+namespace NHibernate.Burrow.AppBlock.DynQuery
+{
     [Serializable]
-    public class Where : IDynClause {
+    public class Where : IDynClause
+    {
         private readonly bool negatingAll;
         private List<IQueryPart> expressions = new List<IQueryPart>();
 
         public Where() {}
 
-        public Where(bool negatingAll) {
+        public Where(bool negatingAll)
+        {
             this.negatingAll = negatingAll;
         }
 
-        public Where(string expression) : this(false) {
+        public Where(string expression) : this(false)
+        {
             expressions.Add(new LogicalExpression(LogicalOperator.Null, expression));
         }
 
@@ -23,8 +27,10 @@ namespace NHibernate.Burrow.AppBlock.DynQuery {
         /// <summary>
         /// The query clause.
         /// </summary>
-        public string Clause {
-            get {
+        public string Clause
+        {
+            get
+            {
                 return
                     (!HasMembers)
                         ? string.Empty
@@ -35,51 +41,62 @@ namespace NHibernate.Burrow.AppBlock.DynQuery {
         /// <summary>
         /// The query part.
         /// </summary>
-        public string Expression {
+        public string Expression
+        {
             get { return GetExpression(); }
         }
 
         /// <summary>
         /// The clause has some meber or not?
         /// </summary>
-        public bool HasMembers {
+        public bool HasMembers
+        {
             get { return expressions.Count > 0; }
         }
 
         #endregion
 
-        public Where And(string expression) {
+        public Where And(string expression)
+        {
             expressions.Add(new LogicalExpression((HasMembers) ? LogicalOperator.And : LogicalOperator.Null, expression));
             return this;
         }
 
-        public Where Or(string expression) {
+        public Where Or(string expression)
+        {
             expressions.Add(new LogicalExpression((HasMembers) ? LogicalOperator.Or : LogicalOperator.Null, expression));
             return this;
         }
 
-        public Where Not(string expression) {
+        public Where Not(string expression)
+        {
             expressions.Add(new LogicalExpression(LogicalOperator.Not, expression));
             return this;
         }
 
-        public Where Clone() {
+        public Where Clone()
+        {
             Where result = new Where(negatingAll);
             result.expressions = null;
             result.expressions = new List<IQueryPart>(expressions);
             return result;
         }
 
-        private string GetExpression() {
+        private string GetExpression()
+        {
             if (!HasMembers)
+            {
                 return string.Empty;
+            }
             StringBuilder clause = new StringBuilder();
 
             IEnumerator<IQueryPart> iter = expressions.GetEnumerator();
             iter.MoveNext();
             clause.Append(iter.Current.Expression);
             while (iter.MoveNext())
+            {
                 clause.Append(iter.Current.Clause);
+            }
             return clause.ToString();
         }
     }

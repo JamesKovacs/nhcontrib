@@ -1,8 +1,8 @@
-using NHibernate.Burrow.Util.DAOBases;
-using NHibernate.Burrow.Util.EntityBases;
+using NHibernate.Burrow.AppBlock.DAOBases;
+using NHibernate.Burrow.AppBlock.EntityBases;
 using NHibernate.Criterion;
 
-namespace NHibernate.Burrow.Test.PersistenceTests
+namespace NHibernate.Burrow.AppBlock.Test.EntityBases
 {
     public class HashIdMockClass : EntityWHashIdBase
     {

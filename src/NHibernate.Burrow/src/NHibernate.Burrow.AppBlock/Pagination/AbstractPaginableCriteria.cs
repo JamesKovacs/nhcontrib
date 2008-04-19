@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using NHibernate.Criterion;
 using NHibernate.Engine;
 
-namespace NHibernate.Burrow.AppBlock.Pagination {
-    public abstract class AbstractPaginableCriteria<T> : IPaginable<T> {
+namespace NHibernate.Burrow.AppBlock.Pagination
+{
+    public abstract class AbstractPaginableCriteria<T> : IPaginable<T>
+    {
         /// <summary>
         /// Take care <see cref="DetachedCriteria"/> is not <see cref="NHibernate.Criterion.DetachedCriteria"/>.
         /// The official 1.2.x DetachedCriteria don't ha methods for pagination.
@@ -23,7 +25,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// All results without paging.
         /// </summary>
         /// <returns>The list of all instances.</returns>
-        public IList<T> ListAll() {
+        public IList<T> ListAll()
+        {
             ResetPagination(Criteria);
             return InternalExecute(Criteria);
         }
@@ -35,28 +38,36 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
         /// <param name="pageNumber">The page number.</param>
         /// <returns>The page's elements list.</returns>
         /// <remarks>The max size of the list is <paramref name="pageSize"/>.</remarks>
-        public IList<T> GetPage(int pageSize, int pageNumber) {
+        public IList<T> GetPage(int pageSize, int pageNumber)
+        {
             SetPagination(Criteria, pageSize, pageNumber);
             return InternalExecute(Criteria);
         }
 
         #endregion
 
-        private IList<T> InternalExecute(DetachedCriteria criteria) {
+        private IList<T> InternalExecute(DetachedCriteria criteria)
+        {
             return criteria.GetExecutableCriteria(GetSession()).List<T>();
         }
 
-        private static void ResetPagination(DetachedCriteria criteria) {
+        private static void ResetPagination(DetachedCriteria criteria)
+        {
             if (criteria == null)
+            {
                 throw new ArgumentNullException("criteria");
+            }
 
             criteria.SetFirstResult(default(int)).SetMaxResults(RowSelection.NoValue);
         }
 
-        private static void SetPagination(DetachedCriteria criteria, int pageSize, int pageNumber) {
+        private static void SetPagination(DetachedCriteria criteria, int pageSize, int pageNumber)
+        {
             if (criteria == null)
+            {
                 throw new ArgumentNullException("criteria");
-            criteria.SetFirstResult(pageSize*(pageNumber < 1 ? 0 : pageNumber - 1)).SetMaxResults(pageSize);
+            }
+            criteria.SetFirstResult(pageSize * (pageNumber < 1 ? 0 : pageNumber - 1)).SetMaxResults(pageSize);
         }
     }
 }

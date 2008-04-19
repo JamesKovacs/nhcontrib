@@ -1,6 +1,7 @@
 using System;
 
-namespace NHibernate.Burrow.AppBlock.DomainSession {
+namespace NHibernate.Burrow.AppBlock.DomainSession
+{
     /// <summary>
     /// DomainSession is data container for a domainLayer. Helper class with states can be stored in 
     /// this container
@@ -10,7 +11,8 @@ namespace NHibernate.Burrow.AppBlock.DomainSession {
     /// Normally the domain Layer has the same lifetime as a HttpSession if the domain is runned under a httpApplication.
     /// So, please avoid store persistent objects in the domainLayer. It's mainly for storing non-entity ojbects.
     /// </remarks>
-    public abstract class DomainSessionBase : IDomainSession {
+    public abstract class DomainSessionBase : IDomainSession
+    {
         private bool isDisposing = false;
 
         /// <summary>
@@ -26,18 +28,24 @@ namespace NHibernate.Burrow.AppBlock.DomainSession {
         /// <remarks>
         /// 
         /// </remarks>
-        public void Dispose() {
+        public void Dispose()
+        {
             if (isDisposing)
+            {
                 return;
+            }
             isDisposing = true;
         }
 
         /// <summary>
         /// Call it when a http requests ends
         /// </summary>
-        public void Close() {
+        public void Close()
+        {
             if (PreClose != null)
+            {
                 PreClose(this, new EventArgs());
+            }
         }
 
         /// <summary>

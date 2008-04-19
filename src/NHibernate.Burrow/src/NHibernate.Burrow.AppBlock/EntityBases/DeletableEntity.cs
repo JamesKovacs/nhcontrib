@@ -1,7 +1,7 @@
 using System;
-using NHibernate.Burrow.Util.DAOBases;
+using NHibernate.Burrow.AppBlock.DAOBases;
 
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     public abstract class DeletableEntity : IDeletable
     {

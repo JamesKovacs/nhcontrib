@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     /// <summary>
     /// A base class that has an integer Identity that can be used to identify the persistant object, and a business key <see cref="BusinessKey"/> for calculating equality

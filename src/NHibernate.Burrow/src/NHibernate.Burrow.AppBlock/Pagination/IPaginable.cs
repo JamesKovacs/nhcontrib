@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-namespace NHibernate.Burrow.AppBlock.Pagination {
+namespace NHibernate.Burrow.AppBlock.Pagination
+{
     /// <summary>
     /// Interface for paginable results.
     /// </summary>
@@ -9,7 +10,8 @@ namespace NHibernate.Burrow.AppBlock.Pagination {
     /// The interface was inspired from some where on the NET, but now I can't found it anymore.
     /// Even if this interface is not the same, if somebody else found it, please let me know.
     /// </remarks>
-    public interface IPaginable<T> {
+    public interface IPaginable<T>
+    {
         /// <summary>
         /// Session getter.
         /// </summary>

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using NHibernate.Burrow.Util.DAOBases;
-using NHibernate.Burrow.Util.EntityBases;
+using NHibernate.Burrow.AppBlock.EntityBases;
+using NHibernate.Burrow.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestUtil

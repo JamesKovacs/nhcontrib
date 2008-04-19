@@ -1,8 +1,7 @@
 using System;
 using System.Web.UI;
-using NHibernate.Burrow.WebUtil.Impl;
 
-namespace NHibernate.Burrow.WebUtil
+namespace NHibernate.Burrow.WebUtil.Impl
 {
     internal class ConversationStatePageModule
     {

@@ -2,14 +2,17 @@ using NHibernate.Burrow.AppBlock.DynQuery;
 using NHibernate.Impl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery {
+namespace NHibernate.Burrow.AppBlock.Test.DynamicQuery
+{
     [TestFixture]
-    public class DetachedDynQueryFixture {
+    public class DetachedDynQueryFixture
+    {
         // DetachedDynQuery don't need a test for everything because it is based on the same class of
         // DetachedQuery and use a DynQuery (see the tests of these classes)
 
         [Test]
-        public void ToRowCount() {
+        public void ToRowCount()
+        {
             Select s = new Select("f.Name, f.Description, b.Descriptoin").From("Foo f join f.Bar b");
             Where where = new Where();
             where.And("f.Name like :pName");

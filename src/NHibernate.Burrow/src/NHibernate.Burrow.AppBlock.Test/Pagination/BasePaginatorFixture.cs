@@ -2,27 +2,33 @@ using System;
 using NHibernate.Burrow.AppBlock.Pagination;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.Pagination {
+namespace NHibernate.Burrow.AppBlock.Test.Pagination
+{
     [TestFixture]
-    public class BasePaginatorFixture {
-        private class GPPaginatorCrack : BasePaginator {
+    public class BasePaginatorFixture
+    {
+        private class GPPaginatorCrack : BasePaginator
+        {
             public GPPaginatorCrack() {}
 
             public GPPaginatorCrack(int lastPageNumber) : base(lastPageNumber) {}
 
-            public new void GotoPageNumber(int pageNumber) {
+            public new void GotoPageNumber(int pageNumber)
+            {
                 base.GotoPageNumber(pageNumber);
             }
         }
 
         [Test, ExpectedException(typeof (ArgumentOutOfRangeException))]
-        public void GotoOutOfPages() {
+        public void GotoOutOfPages()
+        {
             GPPaginatorCrack pg = new GPPaginatorCrack(10);
             pg.GotoPageNumber(11);
         }
 
         [Test]
-        public void KnowLastPage() {
+        public void KnowLastPage()
+        {
             GPPaginatorCrack pg = new GPPaginatorCrack(100);
             Assert.AreEqual(100, pg.LastPageNumber);
             Assert.AreEqual(1, pg.CurrentPageNumber);
@@ -46,7 +52,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void NoPageAvailable() {
+        public void NoPageAvailable()
+        {
             GPPaginatorCrack pg = new GPPaginatorCrack(0);
             Assert.AreEqual(0, pg.LastPageNumber);
             Assert.AreEqual(0, pg.CurrentPageNumber);
@@ -58,7 +65,8 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void UnknowLastPage() {
+        public void UnknowLastPage()
+        {
             GPPaginatorCrack pg = new GPPaginatorCrack();
             Assert.IsFalse(pg.CurrentPageNumber.HasValue);
             Assert.IsFalse(pg.LastPageNumber.HasValue);

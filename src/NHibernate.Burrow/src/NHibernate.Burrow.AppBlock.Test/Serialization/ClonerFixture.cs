@@ -1,11 +1,14 @@
 using NHibernate.Burrow.AppBlock.Serialization;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.Serialization {
+namespace NHibernate.Burrow.AppBlock.Test.Serialization
+{
     [TestFixture]
-    public class SerializeFixture {
+    public class SerializeFixture
+    {
         [Test]
-        public void Clone() {
+        public void Clone()
+        {
             Foo f = new Foo();
             f.Id = 1;
             f.Name = "f";

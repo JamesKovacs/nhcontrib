@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Criterions\Criterion.cs" />
     <Compile Include="Criterions\EqOrNullExpression.cs" />
+    <Compile Include="DAOBases\GenericDAO.cs" />
     <Compile Include="DomainSession\DomainSessionBase.cs" />
     <Compile Include="DomainSession\DomainSessionContainer.cs" />
     <Compile Include="DomainSession\IDomainSession.cs" />
@@ -64,6 +65,12 @@
     <Compile Include="DynQuery\PaginableDynQuery.cs" />
     <Compile Include="DynQuery\Select.cs" />
     <Compile Include="DynQuery\Where.cs" />
+    <Compile Include="EntityBases\DeletableEntity.cs" />
+    <Compile Include="EntityBases\EntityWHashIdBase.cs" />
+    <Compile Include="EntityBases\EntityWithIdNBizKeyBase.cs" />
+    <Compile Include="EntityBases\IDeletable.cs" />
+    <Compile Include="EntityBases\IWithId.cs" />
+    <Compile Include="EntityBases\IWithIdNBizKey.cs" />
     <Compile Include="GenericImpl\PaginableCriteria.cs" />
     <Compile Include="GenericImpl\PaginableQuery.cs" />
     <Compile Include="GenericImpl\PaginableRowsCounterQuery.cs" />
@@ -83,6 +90,12 @@
     <Compile Include="Serialization\Cloner.cs" />
     <Compile Include="Transform\PositionalToBeanResultTransformer.cs" />
     <Compile Include="UserTypes\UpperString.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
+      <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
+      <Name>NHibernate.Burrow</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace NHibernate.Burrow.Util.DAOBases
+namespace NHibernate.Burrow.Util
 {
     /// <summary>
     /// A generic helper loader for loading persistant object by Id

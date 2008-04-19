@@ -6,18 +6,24 @@ using NHibernate.Burrow.AppBlock.Pagination;
 using NHibernate.Criterion;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.Pagination {
+namespace NHibernate.Burrow.AppBlock.Test.Pagination
+{
     [TestFixture]
-    public class PaginableCriteriaFixture : TestCase {
-        protected override IList Mappings {
+    public class PaginableCriteriaFixture : TestCase
+    {
+        protected override IList Mappings
+        {
             get { return new string[] {"Pagination.PagTest.hbm.xml"}; }
         }
 
         public const int totalFoo = 15;
 
-        protected override void OnSetUp() {
-            using (ISession s = OpenSession()) {
-                for (int i = 0; i < totalFoo; i++) {
+        protected override void OnSetUp()
+        {
+            using (ISession s = OpenSession())
+            {
+                for (int i = 0; i < totalFoo; i++)
+                {
                     Foo f = new Foo("N" + i, "D" + i);
                     s.Save(f);
                 }
@@ -25,17 +31,21 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
             }
         }
 
-        protected override void OnTearDown() {
-            using (ISession s = OpenSession()) {
+        protected override void OnTearDown()
+        {
+            using (ISession s = OpenSession())
+            {
                 s.Delete("from Foo");
                 s.Flush();
             }
         }
 
         [Test]
-        public void GetPageTest() {
+        public void GetPageTest()
+        {
             // Page count start from 1
-            using (OpenSession()) {
+            using (OpenSession())
+            {
                 DetachedCriteria dc = DetachedCriteria.For<Foo>();
                 IPaginable<Foo> pg = new PaginableCriteria<Foo>(LastOpenedSession, dc);
                 IList<Foo> l = pg.GetPage(3, 2);
@@ -56,14 +66,16 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
 
             // Add an element from other session
             Foo fAdded;
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 fAdded = new Foo("NZ", "DZ");
                 s.Save(fAdded);
                 s.Flush();
             }
 
             // Reload the same page and have the new element
-            using (OpenSession()) {
+            using (OpenSession())
+            {
                 DetachedCriteria dc = DetachedCriteria.For<Foo>();
                 IPaginable<Foo> pg = new PaginableCriteria<Foo>(LastOpenedSession, dc);
                 IList<Foo> l = pg.GetPage(10, 2);
@@ -72,15 +84,18 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
             }
 
             // clean up
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 s.Delete(fAdded);
                 s.Flush();
             }
         }
 
         [Test]
-        public void ListAllTest() {
-            using (OpenSession()) {
+        public void ListAllTest()
+        {
+            using (OpenSession())
+            {
                 DetachedCriteria dc = DetachedCriteria.For<Foo>();
                 IPaginable<Foo> pg = new PaginableCriteria<Foo>(LastOpenedSession, dc);
                 IList<Foo> l = pg.ListAll();
@@ -89,14 +104,18 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void NullArgumentNotAllowed() {
-            try {
+        public void NullArgumentNotAllowed()
+        {
+            try
+            {
                 new PaginableCriteria<Foo>(null, DetachedCriteria.For<Foo>());
                 Assert.Fail("No exception for null argument.");
             }
             catch (ArgumentNullException) {}
-            try {
-                using (OpenSession()) {
+            try
+            {
+                using (OpenSession())
+                {
                     new PaginableCriteria<Foo>(LastOpenedSession, null);
                     Assert.Fail("No exception for null argument.");
                 }
@@ -105,10 +124,12 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void PaginableRowsCount() {
+        public void PaginableRowsCount()
+        {
             DetachedCriteria dc = DetachedCriteria.For<Foo>().Add(Restrictions.Like("Name", "N_"));
 
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 PaginableCriteria<Foo> fp = new PaginableCriteria<Foo>(LastOpenedSession, dc);
                 IList<Foo> l = fp.GetPage(5, 1);
                 Assert.AreEqual(5, l.Count);

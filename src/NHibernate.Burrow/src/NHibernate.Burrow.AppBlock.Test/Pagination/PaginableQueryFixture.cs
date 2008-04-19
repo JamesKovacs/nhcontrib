@@ -6,18 +6,24 @@ using NHibernate.Burrow.AppBlock.Pagination;
 using NHibernate.Impl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test.Pagination {
+namespace NHibernate.Burrow.AppBlock.Test.Pagination
+{
     [TestFixture]
-    public class PaginableQueryFixture : TestCase {
-        protected override IList Mappings {
+    public class PaginableQueryFixture : TestCase
+    {
+        protected override IList Mappings
+        {
             get { return new string[] {"Pagination.PagTest.hbm.xml"}; }
         }
 
         public const int totalFoo = 15;
 
-        protected override void OnSetUp() {
-            using (ISession s = OpenSession()) {
-                for (int i = 0; i < totalFoo; i++) {
+        protected override void OnSetUp()
+        {
+            using (ISession s = OpenSession())
+            {
+                for (int i = 0; i < totalFoo; i++)
+                {
                     Foo f = new Foo("N" + i, "D" + i);
                     s.Save(f);
                 }
@@ -25,17 +31,21 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
             }
         }
 
-        protected override void OnTearDown() {
-            using (ISession s = OpenSession()) {
+        protected override void OnTearDown()
+        {
+            using (ISession s = OpenSession())
+            {
                 s.Delete("from Foo");
                 s.Flush();
             }
         }
 
         [Test]
-        public void GetPageTest() {
+        public void GetPageTest()
+        {
             // Page count start from 1
-            using (OpenSession()) {
+            using (OpenSession())
+            {
                 IPaginable<NoFoo> pg = new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All"));
                 IList<NoFoo> l = pg.GetPage(3, 2);
                 Assert.AreEqual(3, l.Count);
@@ -55,14 +65,16 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
 
             // Add an element from other session
             Foo fAdded;
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 fAdded = new Foo("NZ", "DZ");
                 s.Save(fAdded);
                 s.Flush();
             }
 
             // Reload the same page and have the new element
-            using (OpenSession()) {
+            using (OpenSession())
+            {
                 IPaginable<NoFoo> pg = new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All"));
                 IList<NoFoo> l = pg.GetPage(10, 2);
                 // If pageSize=10 the page 2 have 6 elements
@@ -70,21 +82,25 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
             }
 
             // clean up
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 s.Delete(fAdded);
                 s.Flush();
             }
         }
 
         [Test]
-        public void ListAllTest() {
-            using (OpenSession()) {
+        public void ListAllTest()
+        {
+            using (OpenSession())
+            {
                 IPaginable<NoFoo> pg = new NoFooPaginable(LastOpenedSession, new DetachedNamedQuery("NoFoo.All"));
                 IList<NoFoo> l = pg.ListAll();
                 Assert.AreEqual(15, l.Count);
             }
 
-            using (OpenSession()) {
+            using (OpenSession())
+            {
                 IPaginable<Foo> pf = new PaginableQuery<Foo>(LastOpenedSession, new DetachedQuery("from Foo"));
                 IList<Foo> l = pf.ListAll();
                 Assert.AreEqual(15, l.Count);
@@ -92,14 +108,18 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void NullArgumentNotAllowed() {
-            try {
+        public void NullArgumentNotAllowed()
+        {
+            try
+            {
                 new PaginableQuery<Foo>(null, new DetachedQuery("from Foo"));
                 Assert.Fail("No exception for null argument.");
             }
             catch (ArgumentNullException) {}
-            try {
-                using (OpenSession()) {
+            try
+            {
+                using (OpenSession())
+                {
                     new PaginableQuery<Foo>(LastOpenedSession, null);
                     Assert.Fail("No exception for null argument.");
                 }
@@ -108,10 +128,12 @@ namespace NHibernate.Burrow.AppBlock.Test.Pagination {
         }
 
         [Test]
-        public void PaginableRowsCount() {
+        public void PaginableRowsCount()
+        {
             DetachedQuery dq = new DetachedQuery("from Foo f where f.Name like :p1");
             dq.SetString("p1", "N_");
-            using (ISession s = OpenSession()) {
+            using (ISession s = OpenSession())
+            {
                 IPaginable<Foo> fp = new PaginableRowsCounterQuery<Foo>(LastOpenedSession, dq);
                 IList<Foo> l = fp.GetPage(5, 1);
                 Assert.AreEqual(5, l.Count);

@@ -3,12 +3,14 @@ using System.Data;
 using NHibernate.SqlTypes;
 using NHibernate.UserTypes;
 
-namespace NHibernate.Burrow.AppBlock.UserTypes {
+namespace NHibernate.Burrow.AppBlock.UserTypes
+{
     /// <summary>
     /// Convert the String to Upper when the object it's saved
     /// or when you get it from the base.
     /// </summary>
-    public class UpperString : IUserType {
+    public class UpperString : IUserType
+    {
         #region IUserType Members
 
         /// <summary>
@@ -19,11 +21,14 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <param name="names"></param>
         /// <param name="owner"></param>
         /// <returns></returns>
-        public object NullSafeGet(IDataReader rs, string[] names, object owner) {
+        public object NullSafeGet(IDataReader rs, string[] names, object owner)
+        {
             //treat for the posibility of null values
             string resultString = (string) NHibernateUtil.String.NullSafeGet(rs, names[0]);
             if (resultString != null)
+            {
                 return resultString.ToUpper();
+            }
             return null;
         }
 
@@ -35,8 +40,10 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <param name="cmd"></param>
         /// <param name="value"></param>
         /// <param name="index"></param>
-        public void NullSafeSet(IDbCommand cmd, object value, int index) {
-            if (value == null) {
+        public void NullSafeSet(IDbCommand cmd, object value, int index)
+        {
+            if (value == null)
+            {
                 NHibernateUtil.String.NullSafeSet(cmd, null, index);
                 return;
             }
@@ -52,9 +59,12 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public object DeepCopy(object value) {
+        public object DeepCopy(object value)
+        {
             if (value == null)
+            {
                 return null;
+            }
             return string.Copy((String) value);
         }
 
@@ -70,7 +80,8 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <param name="target">the value in the managed entity</param>
         /// <param name="owner">the managed entity</param>
         /// <returns>Returns the first parameter because it is inmutable</returns>
-        public object Replace(object original, object target, object owner) {
+        public object Replace(object original, object target, object owner)
+        {
             return original;
         }
 
@@ -82,7 +93,8 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <param name="cached">the object to be cached</param>
         /// <param name="owner">the owner of the cached object</param>
         /// <returns>a reconstructed string from the cachable representation</returns>
-        public object Assemble(object cached, object owner) {
+        public object Assemble(object cached, object owner)
+        {
             return DeepCopy(cached);
         }
 
@@ -95,7 +107,8 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public object Disassemble(object value) {
+        public object Disassemble(object value)
+        {
             return DeepCopy(value);
         }
 
@@ -103,8 +116,10 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// The SQL types for the columns mapped by this type. 
         /// In this case just a SQL Type will be returned:<seealso cref="DbType.String"/>
         /// </summary>
-        public SqlType[] SqlTypes {
-            get {
+        public SqlType[] SqlTypes
+        {
+            get
+            {
                 SqlType[] types = new SqlType[1];
                 types[0] = new SqlType(DbType.String);
                 return types;
@@ -114,14 +129,16 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <summary>
         /// The returned type is a <see cref="string"/>
         /// </summary>
-        public System.Type ReturnedType {
+        public System.Type ReturnedType
+        {
             get { return typeof (String); }
         }
 
         /// <summary>
         /// The strings are not mutables.
         /// </summary>
-        public bool IsMutable {
+        public bool IsMutable
+        {
             get { return false; }
         }
 
@@ -131,9 +148,12 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// <param name="x">string to compare 1</param>
         /// <param name="y">string to compare 2</param>
         /// <returns>If are equals or not</returns>
-        public new bool Equals(object x, object y) {
+        public new bool Equals(object x, object y)
+        {
             if (x == null || y == null)
+            {
                 return false;
+            }
             return x.Equals(y);
         }
 
@@ -142,7 +162,8 @@ namespace NHibernate.Burrow.AppBlock.UserTypes {
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public int GetHashCode(object x) {
+        public int GetHashCode(object x)
+        {
             return x.GetHashCode();
         }
 

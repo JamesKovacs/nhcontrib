@@ -1,4 +1,4 @@
-namespace NHibernate.Burrow.WebUtil
+namespace NHibernate.Burrow.WebUtil.Impl
 {
     internal class ConversationalDataVSFInterceptor : IStatefulFieldInterceptor
     {

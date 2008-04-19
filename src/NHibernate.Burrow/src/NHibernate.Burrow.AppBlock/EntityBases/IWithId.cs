@@ -1,6 +1,6 @@
 using System;
 
-namespace NHibernate.Burrow.Util.EntityBases
+namespace NHibernate.Burrow.AppBlock.EntityBases
 {
     /// <summary>
     /// Class with an Integer Id that can identify persistant instances.

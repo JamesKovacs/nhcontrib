@@ -2,11 +2,13 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace NHibernate.Burrow.AppBlock.Serialization {
+namespace NHibernate.Burrow.AppBlock.Serialization
+{
     /// <summary>
     /// Helper to clone objects using Serialization.
     /// </summary>
-    public class Cloner {
+    public class Cloner
+    {
         /// <summary>
         /// Clone a object via Binary Serializing/Deserializing.
         /// The object to clone must have the attribute [Serializable]
@@ -29,7 +31,8 @@ namespace NHibernate.Burrow.AppBlock.Serialization {
         /// </summary>
         /// <param name="obj">Object to clone</param>
         /// <returns>Clone object</returns>
-        public static object Clone(object obj) {
+        public static object Clone(object obj)
+        {
             return Clone(obj, new BinaryFormatter());
         }
 
@@ -41,8 +44,10 @@ namespace NHibernate.Burrow.AppBlock.Serialization {
         /// <param name="obj">Object to clone</param>
         /// <param name="formatter">IFormatter implementation in order to Serialize/Deserialize</param>
         /// <returns>Clone object</returns>
-        public static object Clone(object obj, IFormatter formatter) {
-            using (MemoryStream buffer = new MemoryStream()) {
+        public static object Clone(object obj, IFormatter formatter)
+        {
+            using (MemoryStream buffer = new MemoryStream())
+            {
                 formatter.Serialize(buffer, obj);
                 buffer.Position = 0;
                 return formatter.Deserialize(buffer);

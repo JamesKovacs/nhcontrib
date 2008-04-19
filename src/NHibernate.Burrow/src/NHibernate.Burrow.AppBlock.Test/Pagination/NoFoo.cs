@@ -1,14 +1,18 @@
-namespace NHibernate.Burrow.AppBlock.Test.Pagination {
-    public class NoFoo {
+namespace NHibernate.Burrow.AppBlock.Test.Pagination
+{
+    public class NoFoo
+    {
         private string description;
         private string name;
 
-        public string Name {
+        public string Name
+        {
             get { return name; }
             set { name = value; }
         }
 
-        public string Description {
+        public string Description
+        {
             get { return description; }
             set { description = value; }
         }

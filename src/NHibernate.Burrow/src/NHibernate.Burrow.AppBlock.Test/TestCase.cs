@@ -3,25 +3,27 @@ using System.Collections;
 using System.Reflection;
 using log4net;
 using log4net.Config;
-using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
-namespace NHibernate.Burrow.AppBlock.Test {
+namespace NHibernate.Burrow.AppBlock.Test
+{
     /// <summary>
     /// Ported from NH oficial tests.
     /// </summary>
-    public abstract class TestCase {
+    public abstract class TestCase
+    {
         private const bool OutputDdl = false;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (TestCase));
-        protected Configuration cfg;
+        protected Cfg.Configuration cfg;
 
         private DebugConnectionProvider connectionProvider;
         private ISession lastOpenedSession;
         protected ISessionFactory sessions;
 
-        static TestCase() {
+        static TestCase()
+        {
             XmlConfigurator.Configure();
         }
 
@@ -33,11 +35,13 @@ namespace NHibernate.Burrow.AppBlock.Test {
         /// <summary>
         /// Assembly to load mapping files from (default is NHibernate.DomainModel).
         /// </summary>
-        protected virtual string MappingsAssembly {
+        protected virtual string MappingsAssembly
+        {
             get { return "NHibernate.Burrow.AppBlock.Test"; }
         }
 
-        public ISession LastOpenedSession {
+        public ISession LastOpenedSession
+        {
             get { return lastOpenedSession; }
         }
 
@@ -45,13 +49,16 @@ namespace NHibernate.Burrow.AppBlock.Test {
         /// Creates the tables used in this TestCase
         /// </summary>
         [TestFixtureSetUp]
-        public void TestFixtureSetUp() {
-            try {
+        public void TestFixtureSetUp()
+        {
+            try
+            {
                 Configure();
                 CreateSchema();
                 BuildSessionFactory();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 log.Error("Error while setting up the test fixture", e);
                 throw;
             }
@@ -67,7 +74,8 @@ namespace NHibernate.Burrow.AppBlock.Test {
         /// included as a previous one.
         /// </remarks>
         [TestFixtureTearDown]
-        public void TestFixtureTearDown() {
+        public void TestFixtureTearDown()
+        {
             DropSchema();
             Cleanup();
         }
@@ -79,7 +87,8 @@ namespace NHibernate.Burrow.AppBlock.Test {
         /// <see cref="OnSetUp" /> which is.
         /// </summary>
         [SetUp]
-        public void SetUp() {
+        public void SetUp()
+        {
             OnSetUp();
         }
 
@@ -90,7 +99,8 @@ namespace NHibernate.Burrow.AppBlock.Test {
         /// is not overridable, but it calls <see cref="OnTearDown" /> which is.
         /// </summary>
         [TearDown]
-        public void TearDown() {
+        public void TearDown()
+        {
             OnTearDown();
 
             bool wasClosed = CheckSessionWasClosed();
@@ -99,11 +109,15 @@ namespace NHibernate.Burrow.AppBlock.Test {
             bool fail = !wasClosed || !wasCleaned || !wereConnectionsClosed;
 
             if (fail)
+            {
                 Assert.Fail("Test didn't clean up after itself");
+            }
         }
 
-        private bool CheckSessionWasClosed() {
-            if (lastOpenedSession != null && lastOpenedSession.IsOpen) {
+        private bool CheckSessionWasClosed()
+        {
+            if (lastOpenedSession != null && lastOpenedSession.IsOpen)
+            {
                 log.Error("Test case didn't close a session, closing");
                 lastOpenedSession.Close();
                 return false;
@@ -112,19 +126,24 @@ namespace NHibernate.Burrow.AppBlock.Test {
             return true;
         }
 
-        private bool CheckDatabaseWasCleaned() {
+        private bool CheckDatabaseWasCleaned()
+        {
             if (sessions.GetAllClassMetadata().Count == 0)
+            {
                 // Return early in the case of no mappings, also avoiding
                 // a warning when executing the HQL below.
                 return true;
+            }
 
             bool empty;
-            using (ISession s = sessions.OpenSession()) {
+            using (ISession s = sessions.OpenSession())
+            {
                 IList objects = s.CreateQuery("from System.Object o").List();
                 empty = objects.Count == 0;
             }
 
-            if (!empty) {
+            if (!empty)
+            {
                 log.Error("Test case didn't clean up the database after itself, re-creating the schema");
                 DropSchema();
                 CreateSchema();
@@ -133,38 +152,48 @@ namespace NHibernate.Burrow.AppBlock.Test {
             return empty;
         }
 
-        private bool CheckConnectionsWereClosed() {
+        private bool CheckConnectionsWereClosed()
+        {
             if (connectionProvider == null || !connectionProvider.HasOpenConnections)
+            {
                 return true;
+            }
 
             log.Error("Test case didn't close all open connections, closing");
             connectionProvider.CloseAllConnections();
             return false;
         }
 
-        private void Configure() {
-            cfg = new Configuration();
+        private void Configure()
+        {
+            cfg = new Cfg.Configuration();
             Assembly assembly = Assembly.Load(MappingsAssembly);
             Configure(cfg);
 
             foreach (string file in Mappings)
+            {
                 cfg.AddResource(MappingsAssembly + "." + file, assembly);
+            }
         }
 
-        private void CreateSchema() {
+        private void CreateSchema()
+        {
             new SchemaExport(cfg).Create(OutputDdl, true);
         }
 
-        private void DropSchema() {
+        private void DropSchema()
+        {
             new SchemaExport(cfg).Drop(OutputDdl, true);
         }
 
-        protected virtual void BuildSessionFactory() {
+        protected virtual void BuildSessionFactory()
+        {
             sessions = cfg.BuildSessionFactory();
             connectionProvider = sessions.ConnectionProvider as DebugConnectionProvider;
         }
 
-        private void Cleanup() {
+        private void Cleanup()
+        {
             sessions.Close();
             sessions = null;
             connectionProvider = null;
@@ -172,14 +201,16 @@ namespace NHibernate.Burrow.AppBlock.Test {
             cfg = null;
         }
 
-        protected virtual ISession OpenSession() {
+        protected virtual ISession OpenSession()
+        {
             lastOpenedSession = sessions.OpenSession();
             return lastOpenedSession;
         }
 
         #region Properties overridable by subclasses
 
-        protected virtual void Configure(Configuration configuration) {
+        protected virtual void Configure(Cfg.Configuration configuration)
+        {
             configuration.Configure();
         }
 
