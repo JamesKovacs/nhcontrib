@@ -14,7 +14,7 @@ using NHibernate.Burrow.WebUtil.Attributes;
 
 public partial class CRUDtest : System.Web.UI.Page
 {
-    [EntityFieldNullSafe] protected MockEntity me;
+    [EntityFieldDeletionSafe] protected MockEntity me;
 
     protected void Page_Load(object sender, EventArgs e)
     {

@@ -50,7 +50,7 @@
     <Compile Include="Impl\WorkSpaceSnifferByAttribute.cs" />
     <Compile Include="IWorkSpaceNameSniffer.cs" />
     <Compile Include="Impl\StatefulFieldPageModule.cs" />
-    <Compile Include="Attributes\EntityFieldNullSafe.cs" />
+    <Compile Include="Attributes\EntityFieldDeletionSafe.cs" />
     <Compile Include="Attributes\EntityField.cs" />
     <Compile Include="Impl\EntityVSFInterceptor.cs" />
     <Compile Include="IStatefulFieldInterceptor.cs" />

@@ -7,7 +7,7 @@ using NHibernate.Burrow.WebUtil.Attributes;
 
 public partial class EditCustomer : UserControl {
     //EntityField attribute is added here so that the value of this field will be rememberred through multiple postbacks.
-    //you can use EntityFieldNullSafe attribute if the entity might be deleted and you don't have a way to reset this field to null before postback 
+    //you can use EntityFieldDeletionSafe attribute if the entity might be deleted and you don't have a way to reset this field to null before postback 
     [EntityField] protected Customer customer;
     public event EventHandler Updated;
 
