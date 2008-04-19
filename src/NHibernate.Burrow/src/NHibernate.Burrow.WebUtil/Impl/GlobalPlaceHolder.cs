@@ -13,7 +13,7 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 
 		public GlobalPlaceHolder(Page p) {
 			this.p = p;
-			p.Init += new EventHandler(p_Init);
+            p.Init += new EventHandler(p_Init);
 		}
 
 		public Control Holder {

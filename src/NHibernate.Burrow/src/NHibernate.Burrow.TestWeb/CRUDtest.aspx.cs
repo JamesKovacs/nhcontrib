@@ -16,9 +16,21 @@ public partial class CRUDtest : System.Web.UI.Page
 {
     [EntityFieldDeletionSafe] protected MockEntity me;
 
+
+
     protected void Page_Load(object sender, EventArgs e)
     {
-       
+        Checker.AssertEqual(Session["CRUDtestME"], me);
+    }
+
+    protected override void OnInit(EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            Session["CRUDtestME"] = null;
+        }
+      
+        base.OnInit(e);
     }
     protected void btnSave_Click(object sender, EventArgs e)
     {
@@ -30,11 +42,15 @@ public partial class CRUDtest : System.Web.UI.Page
         me = new MockEntity();
         me.Name = "New Mock entity";
         me.Save();
+        Session["CRUDtestME"] = me;
+        
     }
+
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         if(me != null)
             me.Delete();
+        Session["CRUDtestME"] = null;
         me = new MockEntityDAO().Get(me.Id);
     }
 
@@ -46,7 +62,6 @@ public partial class CRUDtest : System.Web.UI.Page
         btnDelete.Enabled = hasData;
         btnSave.Enabled = hasData;
         base.OnPreRender(e);
-        
     }
 
     protected void btnRefresh_Click(object sender, EventArgs e)
