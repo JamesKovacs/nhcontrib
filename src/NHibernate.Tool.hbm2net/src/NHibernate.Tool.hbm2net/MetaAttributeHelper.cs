@@ -81,7 +81,7 @@ namespace NHibernate.Tool.hbm2net
 		/// <returns> a MultiMap with all values from local and extra values
 		/// from inherited
 		/// </returns>
-		public static MultiMap mergeMetaMaps(MultiMap local, MultiMap inherited)
+		public static MultiMap MergeMetaMaps(MultiMap local, MultiMap inherited)
 		{
 			MultiHashMap result = new MultiHashMap();
 			SupportClass.PutAll(result, local);
@@ -117,12 +117,12 @@ namespace NHibernate.Tool.hbm2net
 		/// <summary> Method loadAndMergeMetaMap.</summary>
 		/// <returns> MultiMap
 		/// </returns>
-		public static MultiMap loadAndMergeMetaMap(Element classElement, MultiMap inheritedMeta)
+		public static MultiMap LoadAndMergeMetaMap(Element classElement, MultiMap inheritedMeta)
 		{
-			return mergeMetaMaps(loadMetaMap(classElement), inheritedMeta);
+			return MergeMetaMaps(loadMetaMap(classElement), inheritedMeta);
 		}
 
-		public static string getMetaAsString(SupportClass.ListCollectionSupport meta, string seperator)
+		public static string GetMetaAsString(SupportClass.ListCollectionSupport meta, string seperator)
 		{
 			StringBuilder buf = new StringBuilder();
 			bool first = true;
@@ -138,7 +138,7 @@ namespace NHibernate.Tool.hbm2net
 			return buf.ToString();
 		}
 
-		internal static bool getMetaAsBool(SupportClass.ListCollectionSupport c, bool defaultValue)
+		internal static bool GetMetaAsBool(SupportClass.ListCollectionSupport c, bool defaultValue)
 		{
 			if (c == null || c.IsEmpty())
 			{
@@ -158,7 +158,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 		}
 
-		internal static string getMetaAsString(SupportClass.ListCollectionSupport c)
+		internal static string GetMetaAsString(SupportClass.ListCollectionSupport c)
 		{
 			if (c == null || c.IsEmpty())
 			{

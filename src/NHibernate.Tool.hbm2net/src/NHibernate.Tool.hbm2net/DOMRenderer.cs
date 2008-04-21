@@ -9,7 +9,7 @@ namespace NHibernate.Tool.hbm2net
 	/// </summary>
 	public class DOMRenderer : AbstractRenderer
 	{
-		public override void render(string savedToPackage, string savedToClass, ClassMapping classMapping,
+		public override void Render(string savedToPackage, string savedToClass, ClassMapping classMapping,
 		                            IDictionary class2classmap, StreamWriter writer)
 		{
 		}

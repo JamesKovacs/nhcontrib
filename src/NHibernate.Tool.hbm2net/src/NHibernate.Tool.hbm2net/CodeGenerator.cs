@@ -44,12 +44,9 @@ namespace NHibernate.Tool.hbm2net
 				Console.Error.WriteLine("No arguments provided. Nothing to do. Exit.");
 				Environment.Exit(- 1);
 			}
-//			try
-//			{
+
 			ArrayList mappingFiles = new ArrayList();
-
 			string outputDir = null;
-
 			SupportClass.ListCollectionSupport generators = new SupportClass.ListCollectionSupport();
 
 			MultiMap globalMetas = new MultiHashMap();
@@ -65,7 +62,7 @@ namespace NHibernate.Tool.hbm2net
 						// parse config xml file
 						Document document = new XmlDocument();
 						document.Load(configFile.FullName);
-						globalMetas = MetaAttributeHelper.loadAndMergeMetaMap((document["codegen"]), null);
+						globalMetas = MetaAttributeHelper.LoadAndMergeMetaMap((document["codegen"]), null);
 						IEnumerator generateElements = document["codegen"].SelectNodes("generate").GetEnumerator();
 
 						while (generateElements.MoveNext())
@@ -96,69 +93,57 @@ namespace NHibernate.Tool.hbm2net
 			}
 
 			Hashtable classMappings = new Hashtable();
-			for (IEnumerator iter = mappingFiles.GetEnumerator(); iter.MoveNext();)
-			{
-//					try
-//					{
-				log.Info(iter.Current.ToString());
+            for (IEnumerator iter = mappingFiles.GetEnumerator(); iter.MoveNext(); )
+            {
+                log.Info(iter.Current.ToString());
 
-				string mappingFile = (string) iter.Current;
-				if (!Path.IsPathRooted(mappingFile))
-				{
-					mappingFile = Path.Combine(Environment.CurrentDirectory, mappingFile);
-				}
-				if (!File.Exists(mappingFile))
-					throw new FileNotFoundException("Mapping file does not exist.", mappingFile);
+                string mappingFile = (string)iter.Current;
+                if (!Path.IsPathRooted(mappingFile))
+                {
+                    mappingFile = Path.Combine(Environment.CurrentDirectory, mappingFile);
+                }
+                if (!File.Exists(mappingFile))
+                    throw new FileNotFoundException("Mapping file does not exist.", mappingFile);
 
-				// parse the mapping file
-				NameTable nt = new NameTable();
-				nt.Add("urn:nhibernate-mapping-2.2");
-				Document document = new XmlDocument(nt);
-				document.Load(mappingFile);
+                // parse the mapping file
+                NameTable nt = new NameTable();
+                nt.Add("urn:nhibernate-mapping-2.2");
+                Document document = new XmlDocument(nt);
+                document.Load(mappingFile);
 
-				Element rootElement = document["hibernate-mapping"];
+                Element rootElement = document["hibernate-mapping"];
 
-				if (rootElement == null)
-					continue;
+                if (rootElement == null)
+                    continue;
 
-				XmlAttribute a = rootElement.Attributes["namespace"];
-				string pkg = null;
-				if (a != null)
-				{
-					pkg = a.Value;
-				}
-				MappingElement me = new MappingElement(rootElement, null);
-				IEnumerator classElements = rootElement.SelectNodes("urn:class", nsmgr).GetEnumerator();
-				MultiMap mm = MetaAttributeHelper.loadAndMergeMetaMap(rootElement, globalMetas);
-				handleClass(pkg, me, classMappings, classElements, mm, false);
+                XmlAttribute a = rootElement.Attributes["namespace"];
+                string pkg = null;
+                if (a != null)
+                {
+                    pkg = a.Value;
+                }
+                MappingElement me = new MappingElement(rootElement, null);
+                IEnumerator classElements = rootElement.SelectNodes("urn:class", nsmgr).GetEnumerator();
+                MultiMap mm = MetaAttributeHelper.LoadAndMergeMetaMap(rootElement, globalMetas);
+                HandleClass(pkg, me, classMappings, classElements, mm, false);
 
-				classElements = rootElement.SelectNodes("urn:subclass", nsmgr).GetEnumerator();
-				handleClass(pkg, me, classMappings, classElements, mm, true);
+                classElements = rootElement.SelectNodes("urn:subclass", nsmgr).GetEnumerator();
+                HandleClass(pkg, me, classMappings, classElements, mm, true);
 
-				classElements = rootElement.SelectNodes("urn:joined-subclass", nsmgr).GetEnumerator();
-				handleClass(pkg, me, classMappings, classElements, mm, true);
-//					}
-//					catch(Exception exc)
-//					{
-//						log.Error("Error in map",exc);
-//					}
-			}
+                classElements = rootElement.SelectNodes("urn:joined-subclass", nsmgr).GetEnumerator();
+                HandleClass(pkg, me, classMappings, classElements, mm, true);
 
-			// Ok, pickup subclasses that we found before their superclasses
-			ProcessChildren(classMappings);
+                // Ok, pickup subclasses that we found before their superclasses
+                ProcessChildren(classMappings);
 
-			// generate source files
-			for (IEnumerator iterator = generators.GetEnumerator(); iterator.MoveNext();)
-			{
-				Generator g = (Generator) iterator.Current;
-				g.BaseDirName = outputDir;
-				g.generate(classMappings);
-			}
-//			}
-//			catch (Exception e)
-//			{
-//				SupportClass.WriteStackTrace(e, Console.Error);
-//			}
+                // generate source files
+                for (IEnumerator iterator = generators.GetEnumerator(); iterator.MoveNext(); )
+                {
+                    Generator g = (Generator)iterator.Current;
+                    g.BaseDirName = outputDir;
+                    g.Generate(classMappings);
+                }
+            }
 		}
 
 		private static ICollection GetFiles(string fileSpec)
@@ -184,7 +169,7 @@ namespace NHibernate.Tool.hbm2net
 			return fileNames;
 		}
 
-		private static void handleClass(string classPackage, MappingElement me, Hashtable classMappings,
+		private static void HandleClass(string classPackage, MappingElement me, Hashtable classMappings,
 		                                IEnumerator classElements, MultiMap mm, bool extendz)
 		{
 			while (classElements.MoveNext())
@@ -223,7 +208,7 @@ namespace NHibernate.Tool.hbm2net
 					else
 					{
 						ClassMapping subclassMapping = new ClassMapping(classPackage, me, superclass.ClassName, superclass, clazz, mm);
-						superclass.addSubClass(subclassMapping);
+						superclass.AddSubClass(subclassMapping);
 						SupportClass.PutElement(allMaps, subclassMapping.FullyQualifiedName, subclassMapping);
 					}
 				}
@@ -274,7 +259,7 @@ namespace NHibernate.Tool.hbm2net
 							ClassMapping subclassMapping =
 								new ClassMapping(child.ClassPackage, child.MappingElement, superclass.ClassName, superclass, child.Clazz,
 								                 child.MultiMap);
-							superclass.addSubClass(subclassMapping);
+							superclass.AddSubClass(subclassMapping);
 							// NB Can't remove it from the iterator, so record that we've found the parent.
 							child.Orphaned = false;
 							found = true;

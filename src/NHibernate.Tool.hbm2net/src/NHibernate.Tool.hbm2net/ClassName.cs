@@ -54,15 +54,15 @@ namespace NHibernate.Tool.hbm2net
 			get
 			{
 				string baseTypeName = StringHelper.Replace(fullyQualifiedName, "[]", "");
-				return PRIMITIVES.Contains(baseTypeName);
+				return Primitives.Contains(baseTypeName);
 			}
 		}
 
-		internal static readonly SupportClass.SetSupport PRIMITIVES = new SupportClass.HashSetSupport();
+		internal static readonly SupportClass.SetSupport Primitives = new SupportClass.HashSetSupport();
 
 		public ClassName(string fqn)
 		{
-			initFullyQualifiedName(fqn);
+			InitFullyQualifiedName(fqn);
 		}
 
 		private string fullyQualifiedName = null;
@@ -81,12 +81,12 @@ namespace NHibernate.Tool.hbm2net
 			return base.GetHashCode();
 		}
 
-		public virtual bool inJavaLang()
+		public virtual bool InJavaLang()
 		{
 			return "System".Equals(packageName);
 		}
 
-		public virtual bool inSamePackage(ClassName other)
+		public virtual bool InSamePackage(ClassName other)
 		{
 			return
 				(object) other.packageName == (Object) this.packageName ||
@@ -98,7 +98,7 @@ namespace NHibernate.Tool.hbm2net
 		* Initialize the class fields with info from a fully qualified name.
 		*/
 
-		private void initFullyQualifiedName(string fqn)
+		private void InitFullyQualifiedName(string fqn)
 		{
 			AssemblyQualifiedTypeName tn = TypeNameParser.Parse(fqn);
 
@@ -133,18 +133,18 @@ namespace NHibernate.Tool.hbm2net
 		static ClassName()
 		{
 			{
-				PRIMITIVES.Add("Byte");
-				PRIMITIVES.Add("Short");
-				PRIMITIVES.Add("Int32");
-				PRIMITIVES.Add("Long");
-				PRIMITIVES.Add("Float");
-				PRIMITIVES.Add("Double");
-				PRIMITIVES.Add("Char");
-				PRIMITIVES.Add("Boolean");
-				PRIMITIVES.Add("String");
-				PRIMITIVES.Add("Ticks");
-				PRIMITIVES.Add("TrueFalse");
-				PRIMITIVES.Add("YesNo");
+				Primitives.Add("Byte");
+				Primitives.Add("Short");
+				Primitives.Add("Int32");
+				Primitives.Add("Long");
+				Primitives.Add("Float");
+				Primitives.Add("Double");
+				Primitives.Add("Char");
+				Primitives.Add("Boolean");
+				Primitives.Add("String");
+				Primitives.Add("Ticks");
+				Primitives.Add("TrueFalse");
+				Primitives.Add("YesNo");
 			}
 		}
 	}

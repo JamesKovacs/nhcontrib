@@ -141,10 +141,10 @@ namespace NHibernate.Tool.hbm2net
 
 		/// <summary> Render finder classes.</summary>
 		/// <exception cref="Exception">Exception</exception>
-		public override void render(string savedToPackage, string savedToClass, ClassMapping classMapping,
+		public override void Render(string savedToPackage, string savedToClass, ClassMapping classMapping,
 		                            IDictionary class2classmap, StreamWriter mainwriter)
 		{
-			genPackageDelaration(savedToPackage, classMapping, mainwriter);
+			GeneratePackageDelaration(savedToPackage, classMapping, mainwriter);
 			mainwriter.WriteLine();
 
 			// switch to another writer to be able to insert the actually
@@ -167,14 +167,14 @@ namespace NHibernate.Tool.hbm2net
 			// veto- and changeSupport fields
 			StringWriter propWriter = new StringWriter();
 
-			doFinders(classMapping, class2classmap, propWriter);
+			DoFinders(classMapping, class2classmap, propWriter);
 
 			propWriter.WriteLine("}");
 
 			writer.Write(propWriter.ToString());
 
 			// finally write the imports
-			doImports(classMapping, mainwriter);
+			DoImports(classMapping, mainwriter);
 			mainwriter.Write(writer.ToString());
 		}
 
@@ -183,51 +183,51 @@ namespace NHibernate.Tool.hbm2net
 		/// finderName</meta> block defined. Also, create a findAll(Session) method.
 		/// 
 		/// </summary>
-		public virtual void doFinders(ClassMapping classMapping, IDictionary class2classmap, StringWriter writer)
+		public virtual void DoFinders(ClassMapping classMapping, IDictionary class2classmap, StringWriter writer)
 		{
 			// Find out of there is a system wide way to get sessions defined
-			string sessionMethod = classMapping.getMetaAsString("session-method").Trim();
+			string sessionMethod = classMapping.GetMetaAsString("session-method").Trim();
 
 			// fields
 			foreach (FieldProperty field in classMapping.Fields)
 			{
-				if (field.getMeta(MT_FINDERMETHOD) != null)
+				if (field.GetMeta(MT_FINDERMETHOD) != null)
 				{
-					string finderName = field.getMetaAsString(MT_FINDERMETHOD);
+					string finderName = field.GetMetaAsString(MT_FINDERMETHOD);
 
 					if ("".Equals(sessionMethod))
 					{
 						// Make the method signature require a session to be passed in
 						writer.WriteLine("    public static List " + finderName + "(Session session, " +
-						                 LanguageTool.getTrueTypeName(field, class2classmap) + " " + field.FieldName + ") " +
+						                 LanguageTool.GetTrueTypeName(field, class2classmap) + " " + field.FieldName + ") " +
 						                 "throws SQLException, HibernateException {");
 					}
 					else
 					{
 						// Use the session method to get the session to execute the query
 						writer.WriteLine("    public static List " + finderName + "(" +
-						                 LanguageTool.getTrueTypeName(field, class2classmap) + " " + field.FieldName + ") " +
+						                 LanguageTool.GetTrueTypeName(field, class2classmap) + " " + field.FieldName + ") " +
 						                 "throws SQLException, HibernateException {");
 						writer.WriteLine("        Session session = " + sessionMethod);
 					}
 
 					writer.WriteLine("        List finds = session.find(\"from " + classMapping.FullyQualifiedName + " as " +
 					                 classMapping.Name.ToLower() + " where " + classMapping.Name.ToLower() + "." + field.FieldName +
-					                 "=?\", " + getFieldAsObject(false, field) + ", " + getFieldAsHibernateType(false, field) + ");");
+					                 "=?\", " + GetFieldAsObject(false, field) + ", " + GetFieldAsHibernateType(false, field) + ");");
 					writer.WriteLine("        return finds;");
 					writer.WriteLine("    }");
 					writer.WriteLine();
 				}
-				else if (field.getMeta(MT_FOREIGNFINDERMETHOD) != null)
+				else if (field.GetMeta(MT_FOREIGNFINDERMETHOD) != null)
 				{
-					string finderName = field.getMetaAsString(MT_FOREIGNFINDERMETHOD);
-					string fieldName = field.getMetaAsString(MT_FOREIGNFINDERFIELD);
-					string joinFieldName = field.getMetaAsString(MT_FOREIGNJOINFIELD);
+					string finderName = field.GetMetaAsString(MT_FOREIGNFINDERMETHOD);
+					string fieldName = field.GetMetaAsString(MT_FOREIGNFINDERFIELD);
+					string joinFieldName = field.GetMetaAsString(MT_FOREIGNJOINFIELD);
 
 					// Build the query
 					QueryBuilder qb = new QueryBuilder();
 					qb.LocalClass = classMapping;
-					qb.setForeignClass(field.ForeignClass, class2classmap, joinFieldName);
+					qb.SetForeignClass(field.ForeignClass, class2classmap, joinFieldName);
 
 					ClassMapping foreignClass = (ClassMapping) class2classmap[field.ForeignClass.FullyQualifiedName];
 					if (foreignClass == null)
@@ -247,7 +247,7 @@ namespace NHibernate.Tool.hbm2net
 					}
 					if (foreignField != null)
 					{
-						qb.addCritera(foreignClass, foreignField, "=");
+						qb.AddCritera(foreignClass, foreignField, "=");
 					}
 					else
 					{
@@ -260,7 +260,7 @@ namespace NHibernate.Tool.hbm2net
 					if ("".Equals(sessionMethod))
 					{
 						// Make the method signature require a session to be passed in
-						msb.addParam("Session session");
+						msb.AddParameter("Session session");
 						/*
 						writer.println("    public static List " + finderName +
 						"(Session session, " + getTrueTypeName(foreignField, class2classmap) + " " + foreignField.getName() + ") "
@@ -276,15 +276,15 @@ namespace NHibernate.Tool.hbm2net
 						writer.println("        Session session = " + sessionMethod);*/
 					}
 					// Always need the object we're basing the query on
-					msb.addParam(classMapping.Name + " " + classMapping.Name.ToLower());
+					msb.AddParameter(classMapping.Name + " " + classMapping.Name.ToLower());
 
 					// And the foreign class field
-					msb.addParam(LanguageTool.getTrueTypeName(foreignField, class2classmap) + " " + foreignField.FieldName);
+					msb.AddParameter(LanguageTool.GetTrueTypeName(foreignField, class2classmap) + " " + foreignField.FieldName);
 
-					msb.addThrows("SQLException");
-					msb.addThrows("HibernateException");
+					msb.AddThrows("SQLException");
+					msb.AddThrows("HibernateException");
 
-					writer.WriteLine("    " + msb.buildMethodSignature());
+					writer.WriteLine("    " + msb.BuildMethodSignature());
 					if (!"".Equals(sessionMethod))
 					{
 						writer.WriteLine("        Session session = " + sessionMethod);
@@ -323,7 +323,7 @@ namespace NHibernate.Tool.hbm2net
 		/// <summary>  Generate the imports for the finder class.
 		/// 
 		/// </summary>
-		public virtual void doImports(ClassMapping classMapping, StreamWriter writer)
+		public virtual void DoImports(ClassMapping classMapping, StreamWriter writer)
 		{
 			// imports is not included from the class it self as this is a separate generated class.
 			/*   classMapping.getImports().add("java.io.Serializable");
@@ -351,7 +351,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		public static string getFieldAsObject(bool prependThis, FieldProperty field)
+		public static string GetFieldAsObject(bool prependThis, FieldProperty field)
 		{
 			ClassName type = field.ClassType;
 			if (type != null && type.Primitive && !type.Array)
@@ -376,7 +376,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		public static string getFieldAsHibernateType(bool prependThis, FieldProperty field)
+		public static string GetFieldAsHibernateType(bool prependThis, FieldProperty field)
 		{
 			ClassName type = field.ClassType;
 

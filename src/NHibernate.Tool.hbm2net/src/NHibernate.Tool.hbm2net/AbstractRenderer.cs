@@ -18,23 +18,23 @@ namespace NHibernate.Tool.hbm2net
 		internal NameValueCollection properties;
 		private DirectoryInfo workingDriectory;
 
-		public virtual void render(string savedToPackage, string savedToClass, ClassMapping classMapping,
+		public virtual void Render(string savedToPackage, string savedToClass, ClassMapping classMapping,
 		                           IDictionary class2classmap, StreamWriter writer)
 		{
 		}
 
-		public virtual void configure(DirectoryInfo workingDirectory, NameValueCollection props)
+		public virtual void Configure(DirectoryInfo workingDirectory, NameValueCollection props)
 		{
 			this.workingDriectory = workingDirectory;
 			this.properties = props;
 		}
 
-		public virtual string getFieldScope(FieldProperty field, string localScopeName, string defaultScope)
+		public virtual string GetFieldScope(FieldProperty field, string localScopeName, string defaultScope)
 		{
-			return field.getScope(localScopeName, defaultScope);
+			return field.GetScope(localScopeName, defaultScope);
 		}
 
-		public virtual string getPackageDeclaration(string savedToPackage, ClassMapping classMapping)
+		public virtual string GetPackageDeclaration(string savedToPackage, ClassMapping classMapping)
 		{
 			if ((Object) savedToPackage != null && !savedToPackage.Trim().Equals(""))
 			{
@@ -47,9 +47,9 @@ namespace NHibernate.Tool.hbm2net
 			return "";
 		}
 
-		protected internal virtual void genPackageDelaration(string savedToPackage, ClassMapping classMapping, StreamWriter w)
+		protected internal virtual void GeneratePackageDelaration(string savedToPackage, ClassMapping classMapping, StreamWriter w)
 		{
-			string string_Renamed = getPackageDeclaration(savedToPackage, classMapping);
+			string string_Renamed = GetPackageDeclaration(savedToPackage, classMapping);
 			if (string_Renamed.Length > 0)
 			{
 				w.WriteLine(string_Renamed);
@@ -60,12 +60,12 @@ namespace NHibernate.Tool.hbm2net
 			}
 		}
 
-		public virtual string getSaveToClassName(ClassMapping classMapping)
+		public virtual string GetSaveToClassName(ClassMapping classMapping)
 		{
 			return classMapping.GeneratedName;
 		}
 
-		public virtual string getSaveToPackage(ClassMapping classMapping)
+		public virtual string GetSaveToPackage(ClassMapping classMapping)
 		{
 			return classMapping.GeneratedPackageName;
 		}

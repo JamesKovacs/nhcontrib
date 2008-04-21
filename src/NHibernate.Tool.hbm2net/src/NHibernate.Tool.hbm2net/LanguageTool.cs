@@ -21,7 +21,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		public virtual string getPackageDeclaration(ClassMapping cm)
+		public virtual string GetPackageDeclaration(ClassMapping cm)
 		{
 			if ((object) cm.GeneratedPackageName != null)
 			{
@@ -47,13 +47,13 @@ namespace NHibernate.Tool.hbm2net
 		/// </param>
 		/// <returns> string return either name or the proxy name of the classmap
 		/// </returns>
-		public static string getTrueTypeName(FieldProperty field, IDictionary class2classmap)
+		public static string GetTrueTypeName(FieldProperty field, IDictionary class2classmap)
 		{
 			string name = (field.ClassType != null) ? field.ClassType.FullyQualifiedName : field.FullyQualifiedTypeName;
 
-			if (field.getMeta("property-type") != null)
+			if (field.GetMeta("property-type") != null)
 			{
-				name = field.getMetaAsString("property-type");
+				name = field.GetMetaAsString("property-type");
 			}
 			ClassMapping cmap = (ClassMapping) class2classmap[name];
 
@@ -67,7 +67,7 @@ namespace NHibernate.Tool.hbm2net
 			return name;
 		}
 
-		public virtual string getTrueTypeName(ClassName cn, IDictionary class2classmap)
+		public virtual string GetTrueTypeName(ClassName cn, IDictionary class2classmap)
 		{
 			string name = cn.FullyQualifiedName;
 			ClassMapping cmap = (ClassMapping) class2classmap[name];
@@ -89,7 +89,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns> String
 		/// </returns>
-		public static string shortenType(string type, SupportClass.SetSupport imports)
+		public static string ShortenType(string type, SupportClass.SetSupport imports)
 		{
 			string result = type;
 			if (imports.Contains(type))
@@ -98,7 +98,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 			else if (type.EndsWith("[]"))
 			{
-				result = shortenType(type.Substring(0, (type.Length - 2) - (0)), imports) + "[]";
+				result = ShortenType(type.Substring(0, (type.Length - 2) - (0)), imports) + "[]";
 			}
 			else if (type.StartsWith("java.lang."))
 			{
@@ -112,7 +112,7 @@ namespace NHibernate.Tool.hbm2net
 		/// comment.
 		/// Prefix each line with a star ('*').
 		/// </summary>
-		public virtual string toJavaDoc(string string_Renamed, int indent)
+		public virtual string ToJavaDoc(string string_Renamed, int indent)
 		{
 			StringBuilder result = new StringBuilder();
 			string padding = new String(' ', indent);
@@ -136,12 +136,12 @@ namespace NHibernate.Tool.hbm2net
 			return result.ToString().Substring(0, len - 2);
 		}
 
-		public virtual bool hasExtends(ClassMapping cmap)
+		public virtual bool HasExtends(ClassMapping cmap)
 		{
-			return getExtends(cmap).Length != 0;
+			return GetExtends(cmap).Length != 0;
 		}
 
-		public virtual string getExtends(ClassMapping cmap)
+		public virtual string GetExtends(ClassMapping cmap)
 		{
 			string extendz = string.Empty;
 
@@ -151,13 +151,13 @@ namespace NHibernate.Tool.hbm2net
 				{
 					extendz += cmap.SuperClassMapping.Name;
 				}
-				if (cmap.getMeta(extendz) != null)
+				if (cmap.GetMeta(extendz) != null)
 				{
 					if ((Object) extendz != null)
 					{
 						extendz += ",";
 					}
-					extendz = cmap.getMetaAsString("extends");
+					extendz = cmap.GetMetaAsString("extends");
 				}
 			}
 			else if ((Object) cmap.SuperClass != null)
@@ -171,20 +171,20 @@ namespace NHibernate.Tool.hbm2net
 					extendz = cmap.SuperClass;
 				}
 			}
-			else if (cmap.getMeta("extends") != null)
+			else if (cmap.GetMeta("extends") != null)
 			{
-				extendz = cmap.getMetaAsString("extends");
+				extendz = cmap.GetMetaAsString("extends");
 			}
 
 			return extendz;
 		}
 
-		public virtual bool hasImplements(ClassMapping cmap)
+		public virtual bool HasImplements(ClassMapping cmap)
 		{
-			return getImplements(cmap).Length != 0;
+			return GetImplements(cmap).Length != 0;
 		}
 
-		public virtual string getImplements(ClassMapping cmap)
+		public virtual string GetImplements(ClassMapping cmap)
 		{
 			SupportClass.ListCollectionSupport interfaces = new SupportClass.ListCollectionSupport();
 
@@ -200,9 +200,9 @@ namespace NHibernate.Tool.hbm2net
 				{
 					interfaces.Add(cmap.SuperClassMapping.ClassName.FullyQualifiedName);
 				}
-				if (cmap.getMeta("implements") != null)
+				if (cmap.GetMeta("implements") != null)
 				{
-					interfaces.AddAll(cmap.getMeta("implements"));
+					interfaces.AddAll(cmap.GetMeta("implements"));
 				}
 				//interfaces.Add(typeof(System.Runtime.Serialization.ISerializable).FullName);
 			}
@@ -222,7 +222,7 @@ namespace NHibernate.Tool.hbm2net
 						first = false;
 					else
 						sbuf.Append(",");
-					sbuf.Append(shortenType(iter.Current.ToString(), cmap.Imports));
+					sbuf.Append(ShortenType(iter.Current.ToString(), cmap.Imports));
 				}
 				return sbuf.ToString();
 			}
@@ -232,7 +232,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 		}
 
-		public virtual string fieldsAsParameters(SupportClass.ListCollectionSupport fieldslist, ClassMapping classMapping,
+		public virtual string FieldsAsParameters(SupportClass.ListCollectionSupport fieldslist, ClassMapping classMapping,
 		                                         IDictionary class2classmap)
 		{
 			StringBuilder buf = new StringBuilder();
@@ -244,12 +244,12 @@ namespace NHibernate.Tool.hbm2net
 				else
 					buf.Append(", ");
 				FieldProperty field = (FieldProperty) fields.Current;
-				buf.Append(shortenType(field.FullyQualifiedTypeName, classMapping.Imports) + " " + field.fieldcase);
+				buf.Append(ShortenType(field.FullyQualifiedTypeName, classMapping.Imports) + " " + field.fieldcase);
 			}
 			return buf.ToString();
 		}
 
-		public virtual string fieldsAsArguments(SupportClass.ListCollectionSupport fieldslist, ClassMapping classMapping,
+		public virtual string FieldsAsArguments(SupportClass.ListCollectionSupport fieldslist, ClassMapping classMapping,
 		                                        IDictionary class2classmap)
 		{
 			StringBuilder buf = new StringBuilder();
@@ -267,7 +267,7 @@ namespace NHibernate.Tool.hbm2net
 			return buf.ToString();
 		}
 
-		public virtual string genImports(ClassMapping classMapping)
+		public virtual string GenerateImports(ClassMapping classMapping)
 		{
 			StringBuilder buf = new StringBuilder();
 
@@ -277,7 +277,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 
 
-			SupportClass.ListCollectionSupport imports2 = classMapping.getMeta("extra-import");
+			SupportClass.ListCollectionSupport imports2 = classMapping.GetMeta("extra-import");
 			if (imports2 != null)
 			{
 				for (IEnumerator it = imports2.GetEnumerator(); it.MoveNext();)

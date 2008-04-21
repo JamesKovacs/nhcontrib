@@ -20,7 +20,6 @@ namespace NHibernate.Tool.hbm2net
 		public virtual string BaseDirName
 		{
 			get { return baseDirName; }
-
 			set
 			{
 				if ((Object) value != null)
@@ -51,7 +50,6 @@ namespace NHibernate.Tool.hbm2net
 		/// <summary> Constructs a new Generator, configured from XML.</summary>
 		public Generator(DirectoryInfo workingDirectory, Element generateElement) : this(workingDirectory)
 		{
-//			InitBlock();			
 			string value_Renamed = null;
 
 			// set rendererClass field
@@ -123,66 +121,66 @@ namespace NHibernate.Tool.hbm2net
 		}
 
 		/// <summary> </summary>
-		public virtual void generate(IDictionary classMappingsCol)
+		public virtual void Generate(IDictionary classMappingsCol)
 		{
 			log.Info("Generating " + classMappingsCol.Count + " in " + BaseDirName);
 			Renderer renderer = (Renderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
 
 			//Configure renderer
-			renderer.configure(workingDirectory, params_Renamed);
+			renderer.Configure(workingDirectory, params_Renamed);
 
 			//Running through actual classes
 			for (IEnumerator classMappings = classMappingsCol.Values.GetEnumerator(); classMappings.MoveNext();)
 			{
 				ClassMapping classMapping = (ClassMapping) classMappings.Current;
-				writeRecur(classMapping, classMappingsCol, renderer);
+				WriteRecursive(classMapping, classMappingsCol, renderer);
 			}
 			//Running through components
 			for (IEnumerator cmpMappings = ClassMapping.Components; cmpMappings.MoveNext();)
 			{
 				ClassMapping mapping = (ClassMapping) cmpMappings.Current;
-				write(mapping, classMappingsCol, renderer);
+				Write(mapping, classMappingsCol, renderer);
 			}
 		}
 
-		private void writeRecur(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
+		private void WriteRecursive(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
 		{
-			write(classMapping, class2classmap, renderer);
+			Write(classMapping, class2classmap, renderer);
 
 			if (!(classMapping.Subclasses.Count == 0))
 			{
 				IEnumerator it = classMapping.Subclasses.GetEnumerator();
 				while (it.MoveNext())
 				{
-					writeRecur((ClassMapping) it.Current, class2classmap, renderer);
+					WriteRecursive((ClassMapping) it.Current, class2classmap, renderer);
 				}
 			}
 		}
 
 
 		/// <summary> </summary>
-		private void write(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
+		private void Write(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
 		{
-			string saveToPackage = renderer.getSaveToPackage(classMapping);
-			string saveToClassName = renderer.getSaveToClassName(classMapping);
-			FileInfo dir = this.getDir(saveToPackage);
-			FileInfo file = new FileInfo(Path.Combine(dir.FullName, this.getFileName(saveToClassName)));
+			string saveToPackage = renderer.GetSaveToPackage(classMapping);
+			string saveToClassName = renderer.GetSaveToClassName(classMapping);
+			FileInfo dir = this.GetDir(saveToPackage);
+			FileInfo file = new FileInfo(Path.Combine(dir.FullName, this.GetFileName(saveToClassName)));
 			log.Debug("Writing " + file);
 
 			StreamWriter writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
 
-			renderer.render(getPackageName(saveToPackage), getName(saveToClassName), classMapping, class2classmap, writer);
+			renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
 			writer.Close();
 		}
 
 		/// <summary> </summary>
-		private string getFileName(string className)
+		private string GetFileName(string className)
 		{
-			return this.getName(className) + "." + this.extension;
+			return this.GetName(className) + "." + this.extension;
 		}
 
 		/// <summary> </summary>
-		private string getName(string className)
+		private string GetName(string className)
 		{
 			string name = null;
 
@@ -198,7 +196,7 @@ namespace NHibernate.Tool.hbm2net
 			return this.prefix + name + this.suffix;
 		}
 
-		private string getPackageName(string packageName)
+		private string GetPackageName(string packageName)
 		{
 			if ((Object) this.packageName == null)
 			{
@@ -211,12 +209,12 @@ namespace NHibernate.Tool.hbm2net
 		}
 
 		/// <summary> </summary>
-		private FileInfo getDir(string packageName)
+		private FileInfo GetDir(string packageName)
 		{
 			FileInfo baseDir = new FileInfo(this.baseDirName);
 			FileInfo dir = null;
 
-			string p = getPackageName(packageName);
+			string p = GetPackageName(packageName);
 
 			dir = new FileInfo(Path.Combine(baseDir.FullName, p.Replace(StringHelper.Dot, Path.DirectorySeparatorChar)));
 

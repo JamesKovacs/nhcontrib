@@ -55,14 +55,14 @@ namespace NHibernate.Tool.hbm2net
 		}
 
 		/// <summary>Returns true if this element has the meta attribute </summary>
-		public virtual bool hasMeta(string attribute)
+		public virtual bool HasMeta(string attribute)
 		{
 			return metaattribs.ContainsKey(attribute);
 		}
 
 		/* Given a key, return the list of metaattribs. Can return null! */
 
-		public virtual SupportClass.ListCollectionSupport getMeta(string attribute)
+		public virtual SupportClass.ListCollectionSupport GetMeta(string attribute)
 		{
 			return (SupportClass.ListCollectionSupport) metaattribs[attribute];
 		}
@@ -72,28 +72,28 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns> String
 		/// </returns>
-		public virtual string getMetaAsString(string attribute)
+		public virtual string GetMetaAsString(string attribute)
 		{
-			SupportClass.ListCollectionSupport c = getMeta(attribute);
+			SupportClass.ListCollectionSupport c = GetMeta(attribute);
 
-			return MetaAttributeHelper.getMetaAsString(c);
+			return MetaAttributeHelper.GetMetaAsString(c);
 		}
 
-		public virtual string getMetaAsString(string attribute, string seperator)
+		public virtual string GetMetaAsString(string attribute, string seperator)
 		{
-			return MetaAttributeHelper.getMetaAsString(getMeta(attribute), seperator);
+			return MetaAttributeHelper.GetMetaAsString(GetMeta(attribute), seperator);
 		}
 
-		public virtual bool getMetaAsBool(string attribute)
+		public virtual bool GetMetaAsBool(string attribute)
 		{
-			return getMetaAsBool(attribute, false);
+			return GetMetaAsBool(attribute, false);
 		}
 
-		public virtual bool getMetaAsBool(string attribute, bool defaultValue)
+		public virtual bool GetMetaAsBool(string attribute, bool defaultValue)
 		{
-			SupportClass.ListCollectionSupport c = getMeta(attribute);
+			SupportClass.ListCollectionSupport c = GetMeta(attribute);
 
-			return MetaAttributeHelper.getMetaAsBool(c, defaultValue);
+			return MetaAttributeHelper.GetMetaAsBool(c, defaultValue);
 		}
 	}
 }

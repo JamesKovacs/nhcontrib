@@ -67,7 +67,7 @@ namespace NHibernate.Tool.hbm2net
 			this.accessModifier = accessModifier;
 		}
 
-		public virtual string buildMethodSignature()
+		public virtual string BuildMethodSignature()
 		{
 			StringBuilder sb = new StringBuilder(accessModifier + " " + returnType + " " + name + "(");
 
@@ -102,12 +102,12 @@ namespace NHibernate.Tool.hbm2net
 			return sb.ToString();
 		}
 
-		public virtual void addParam(string param)
+		public virtual void AddParameter(string param)
 		{
 			this.paramList.Add(param);
 		}
 
-		public virtual void addThrows(string throwsString)
+		public virtual void AddThrows(string throwsString)
 		{
 			this.throwsList.Add(throwsString);
 		}

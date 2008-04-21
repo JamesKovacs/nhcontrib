@@ -22,7 +22,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 		}
 
-		public string propcase
+		public string Propcase
 		{
 			get { return fieldName; }
 		}
@@ -104,7 +104,7 @@ namespace NHibernate.Tool.hbm2net
 
 		public virtual bool GeneratedAsProperty
 		{
-			get { return getMetaAsBool("gen-property", true); }
+			get { return GetMetaAsBool("gen-property", true); }
 		}
 
 		/// <summary> </summary>
@@ -124,17 +124,17 @@ namespace NHibernate.Tool.hbm2net
 
 		public virtual string FieldScope
 		{
-			get { return getScope("scope-field", "private"); }
+			get { return GetScope("scope-field", "private"); }
 		}
 
 		public virtual string PropertyGetScope
 		{
-			get { return getScope("scope-get", "public"); }
+			get { return GetScope("scope-get", "public"); }
 		}
 
 		public virtual string PropertySetScope
 		{
-			get { return getScope("scope-set", "public"); }
+			get { return GetScope("scope-set", "public"); }
 		}
 
 		/// <summary>the field name </summary>
@@ -152,31 +152,29 @@ namespace NHibernate.Tool.hbm2net
 		private ClassName classType;
 		private ClassName foreignClass;
 		private SupportClass.SetSupport foreignKeys;
-
 		private ClassName implementationClassName;
-
 		private ClassMapping parentClass = null;
 
 		public FieldProperty(Element element, MappingElement parent, string name, ClassName type, bool nullable,
 		                     MultiMap metaattribs) : base(element, parent)
 		{
-			initWith(name, type, type, nullable, id, false, null, null, metaattribs);
+			InitWith(name, type, type, nullable, id, false, null, null, metaattribs);
 		}
 
 		public FieldProperty(Element element, MappingElement parent, string name, ClassName type, bool nullable, bool id,
 		                     bool generated, MultiMap metaattribs) : base(element, parent)
 		{
-			initWith(name, type, type, nullable, id, generated, null, null, metaattribs);
+			InitWith(name, type, type, nullable, id, generated, null, null, metaattribs);
 		}
 
 		public FieldProperty(Element element, MappingElement parent, string name, ClassName type,
 		                     ClassName implementationClassName, bool nullable, ClassName foreignClass,
 		                     SupportClass.SetSupport foreignKeys, MultiMap metaattribs) : base(element, parent)
 		{
-			initWith(name, type, implementationClassName, nullable, id, false, foreignClass, foreignKeys, metaattribs);
+			InitWith(name, type, implementationClassName, nullable, id, false, foreignClass, foreignKeys, metaattribs);
 		}
 
-		protected internal virtual void initWith(string name, ClassName type, ClassName implementationClassName, bool nullable,
+		protected internal virtual void InitWith(string name, ClassName type, ClassName implementationClassName, bool nullable,
 		                                         bool id, bool generated, ClassName foreignClass,
 		                                         SupportClass.SetSupport foreignKeys, MultiMap metaattribs)
 		{
@@ -186,7 +184,7 @@ namespace NHibernate.Tool.hbm2net
 			this.id = id;
 			this.generated = generated;
 			this.implementationClassName = implementationClassName;
-			this.accessorName = beancapitalize(name);
+			this.accessorName = BeanCapitalize(name);
 			this.foreignClass = foreignClass;
 			this.foreignKeys = foreignKeys;
 			MetaAttribs = metaattribs;
@@ -200,7 +198,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		private string beancapitalize(string fieldname)
+		private string BeanCapitalize(string fieldname)
 		{
 			if ((Object) fieldname == null || fieldname.Length == 0)
 			{
@@ -221,11 +219,11 @@ namespace NHibernate.Tool.hbm2net
 			return FullyQualifiedTypeName + ":" + FieldName;
 		}
 
-		public virtual string getScope(string localScopeName, string defaultScope)
+		public virtual string GetScope(string localScopeName, string defaultScope)
 		{
 			if ((Object) defaultScope == null)
 				defaultScope = "private";
-			return (getMeta(localScopeName) == null) ? defaultScope : getMetaAsString(localScopeName);
+			return (GetMeta(localScopeName) == null) ? defaultScope : GetMetaAsString(localScopeName);
 		}
 	}
 }

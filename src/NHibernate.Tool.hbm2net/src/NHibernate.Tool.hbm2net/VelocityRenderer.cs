@@ -41,7 +41,7 @@ namespace NHibernate.Tool.hbm2net
 		*      java.util.Map, java.io.PrintWriter)
 		*/
 
-		public override void render(string savedToPackage, string savedToClass, ClassMapping classMapping,
+		public override void Render(string savedToPackage, string savedToClass, ClassMapping classMapping,
 		                            IDictionary class2classmap, StreamWriter writer)
 		{
 			VelocityContext context = new VelocityContext();
@@ -63,13 +63,13 @@ namespace NHibernate.Tool.hbm2net
 			// First run - writes to in-memory string
 			template.Merge(context, sw);
 
-			context.Put("classimports", new LanguageTool().genImports(classMapping));
+			context.Put("classimports", new LanguageTool().GenerateImports(classMapping));
 
 			// Second run - writes to file (allows for placing imports correctly and optimized ;)
 			ve.Evaluate(context, writer, "hbm2net", sw.ToString());
 		}
 
-		public override void configure(DirectoryInfo workingDirectory, NameValueCollection props)
+		public override void Configure(DirectoryInfo workingDirectory, NameValueCollection props)
 		{
 			try
 			{
@@ -84,7 +84,7 @@ namespace NHibernate.Tool.hbm2net
 				// investigate further.
 				;
 			}
-			base.configure(workingDirectory, props);
+			base.Configure(workingDirectory, props);
 			ExtendedProperties p = new ExtendedProperties();
 			string templateName = props["template"];
 			string templateSrc;

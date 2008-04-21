@@ -161,19 +161,19 @@ namespace NHibernate.Tool.hbm2net
 			InitBlock();
 		}
 
-		public virtual void setForeignClass(ClassName foreignClass, IDictionary classMappings, string joinFieldName)
+		public virtual void SetForeignClass(ClassName foreignClass, IDictionary classMappings, string joinFieldName)
 		{
 			ClassMapping classMapToAdd = (ClassMapping) classMappings[foreignClass.FullyQualifiedName];
 			this.foreignClass = classMapToAdd;
 			this.joinFieldName = joinFieldName;
 		}
 
-		public virtual void addCritera(ClassMapping criteriaClass, FieldProperty field, string condition)
+		public virtual void AddCritera(ClassMapping criteriaClass, FieldProperty field, string condition)
 		{
 			string newCritera = criteriaClass.Name.ToLower() + "." + field.FieldName + condition + "?";
-			params_Renamed.Add(FinderRenderer.getFieldAsObject(false, field));
+			params_Renamed.Add(FinderRenderer.GetFieldAsObject(false, field));
 			criteria.Add(newCritera);
-			criteriaParamTypes.Add(FinderRenderer.getFieldAsHibernateType(false, field));
+			criteriaParamTypes.Add(FinderRenderer.GetFieldAsHibernateType(false, field));
 		}
 	}
 }
