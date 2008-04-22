@@ -13,7 +13,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
         {
             this.page = page;
             gph = globalPlaceHolder;
-            page.Init += new EventHandler(page_Init);
+            page.PreLoad += new EventHandler(LoadData);
             page.PreRenderComplete += new EventHandler(page_PreRenderComplete);
         }
 
@@ -22,7 +22,13 @@ namespace NHibernate.Burrow.WebUtil.Impl
             new StatefulFieldSaver(page, gph.Holder).Process();
         }
 
-        private void page_Init(object sender, EventArgs e)
+
+		/// <summary>
+		/// process has to happen after all controls are initiated otherwise will cause ASP.net control initiation problem - sub control even failed to register
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void LoadData(object sender, EventArgs e)
         {
             if (!page.IsPostBack || dataLoaded)
             {

@@ -74,8 +74,8 @@ namespace NHibernate.Burrow.WebUtil
                 Page p = (Page) handler;
                 p.Init += new EventHandler(p_Init);
                 GlobalPlaceHolder gph = new GlobalPlaceHolder(p);
-                new StatefulFieldPageModule(p, gph);
-                new ConversationStatePageModule(p, gph);
+               new StatefulFieldPageModule(p, gph);
+               new ConversationStatePageModule(p, gph);
             }
         }
 
