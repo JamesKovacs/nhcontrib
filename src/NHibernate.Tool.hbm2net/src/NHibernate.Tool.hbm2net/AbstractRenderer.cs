@@ -13,7 +13,7 @@ namespace NHibernate.Tool.hbm2net
 {
 	/// <author>  max
 	/// </author>
-	public abstract class AbstractRenderer : Renderer
+	public abstract class AbstractRenderer : IRenderer
 	{
 		internal NameValueCollection properties;
 		private DirectoryInfo workingDriectory;

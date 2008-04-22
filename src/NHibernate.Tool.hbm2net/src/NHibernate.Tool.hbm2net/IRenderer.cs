@@ -5,7 +5,7 @@ using System.IO;
 
 namespace NHibernate.Tool.hbm2net
 {
-	public interface Renderer
+	public interface IRenderer
 	{
 		/// <summary>Called with the optional list of properties from config.xml </summary>
 		void Configure(DirectoryInfo workingDirectory, NameValueCollection properties);

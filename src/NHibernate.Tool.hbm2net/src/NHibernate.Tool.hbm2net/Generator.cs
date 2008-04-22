@@ -124,7 +124,7 @@ namespace NHibernate.Tool.hbm2net
 		public virtual void Generate(IDictionary classMappingsCol)
 		{
 			log.Info("Generating " + classMappingsCol.Count + " in " + BaseDirName);
-			Renderer renderer = (Renderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
+			IRenderer renderer = (IRenderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
 
 			//Configure renderer
 			renderer.Configure(workingDirectory, params_Renamed);
@@ -143,7 +143,7 @@ namespace NHibernate.Tool.hbm2net
 			}
 		}
 
-		private void WriteRecursive(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
+		private void WriteRecursive(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer)
 		{
 			Write(classMapping, class2classmap, renderer);
 
@@ -159,7 +159,7 @@ namespace NHibernate.Tool.hbm2net
 
 
 		/// <summary> </summary>
-		private void Write(ClassMapping classMapping, IDictionary class2classmap, Renderer renderer)
+		private void Write(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer)
 		{
 			string saveToPackage = renderer.GetSaveToPackage(classMapping);
 			string saveToClassName = renderer.GetSaveToClassName(classMapping);

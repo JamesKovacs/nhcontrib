@@ -146,7 +146,7 @@
     <Compile Include="QueryBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Renderer.cs">
+    <Compile Include="IRenderer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="StringResourceLoader.cs">
