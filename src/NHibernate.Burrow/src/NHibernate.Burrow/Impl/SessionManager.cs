@@ -56,26 +56,25 @@ namespace NHibernate.Burrow.Impl
         #region public methods
 
         /// <summary>
-        /// get a un managed session
-        /// </summary>
-        /// <returns></returns>
-        public ISession GetUnManagedSession()
-        {
-            if (isDisposing)
-            {
-                throw new GeneralException("SessionManager already disposed");
-            }
-            return SessionFactory.OpenSession();
-        }
-
-        /// <summary>
         /// Get a managed Session
         /// </summary>
         /// <returns></returns>
         public ISession GetSession()
         {
-            //Todo: exploit a better solution for injecting Interceptor
-            return GetSession(null);
+            if (threadSession == null)
+            {
+                IInterceptor interceptor = PersistenceUnit.CreateInterceptor();
+                if (interceptor != null)
+                {
+                    threadSession = SessionFactory.OpenSession(interceptor);
+                }
+                else
+                {
+                    threadSession = SessionFactory.OpenSession();
+                }
+            }
+
+            return threadSession;
         }
 
         /// <summary>
@@ -208,24 +207,17 @@ namespace NHibernate.Burrow.Impl
         }
 
         /// <summary>
-        /// Gets a session with or without an interceptor.  This method is not called directly; instead,
-        /// it gets invoked from other public methods.
+        /// get a un managed session
         /// </summary>
-        private ISession GetSession(IInterceptor interceptor)
+        /// <returns></returns>
+        public ISession GetUnManagedSession(IInterceptor interceptor)
         {
-            if (threadSession == null)
+            if (isDisposing)
             {
-                if (interceptor != null)
-                {
-                    threadSession = SessionFactory.OpenSession(interceptor);
-                }
-                else
-                {
-                    threadSession = SessionFactory.OpenSession();
-                }
+                throw new GeneralException("SessionManager already disposed");
             }
 
-            return threadSession;
+            return interceptor != null ? SessionFactory.OpenSession(interceptor) : SessionFactory.OpenSession();
         }
 
         #endregion

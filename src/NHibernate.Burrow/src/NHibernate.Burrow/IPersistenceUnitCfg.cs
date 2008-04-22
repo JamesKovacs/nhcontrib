@@ -7,5 +7,10 @@ namespace NHibernate.Burrow
         string NHConfigFile { get; set; }
 
         bool ManualTransactionManagement { get; set; }
+
+        /// <summary>
+        /// designates the implementation of IInterceptorFactory with which Burrow will create managed Session 
+        /// </summary>
+        string InterceptorFactory { get; set; }
     }
 }

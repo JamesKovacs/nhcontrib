@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using NHibernate;
 using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow
@@ -96,7 +97,7 @@ namespace NHibernate.Burrow
         }
 
         /// <summary>
-        /// overloaded version of <see cref="GetSession(Type)"/> in a single-SessionFactory environment
+        /// overloaded version of <see cref="GetSession(Type)"/> in a single-Database environment
         /// </summary>
         /// <returns></returns>
         public ISession GetSession()
@@ -107,14 +108,31 @@ namespace NHibernate.Burrow
         /// <summary>
         /// Gets a managed ISession
         /// </summary>
-        /// <param name="entityType"></param>
-        /// <returns></returns>
+        /// <param name="entityType">the entity type whose mapping is included in the SessionFactory, when there are multiple databases, Burrow use this to locate the right one</param>
+        /// <returns>The Burrow managed ISession</returns>
         /// <remarks>
-        /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow
+        /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow.
+        /// To setup the interceptor for every managed ISession for a persistent Unit, <see cref="IPersistenceUnitCfg.InterceptorFactory"/>
+        /// To get a temporary un managed ISession with interceptor, <see cref="GetUnManagedSession"/> 
         /// </remarks>
         public ISession GetSession(System.Type entityType)
         {
             return ((ConversationImpl) CurrentConversation).GetSessionManager(entityType).GetSession();
+        }
+
+        /// <summary>
+        /// Gets an un managed ISession
+        /// </summary>
+        /// <param name="entityType">the entity type whose mapping is included in the SessionFactory, when there are multiple databases, Burrow use this to locate the right one</param>
+        /// <param name="interceptor">the <see cref="IInterceptor"/> with which the Session is created, leave it null if you don't need any</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// It's un-managed ISession, so it's always going to be fresh new and you are responsible of closing it.
+        /// </remarks>
+        public ISession GetUnManagedSession(System.Type entityType, IInterceptor interceptor)
+        {
+            return
+                ((ConversationImpl) CurrentConversation).GetSessionManager(entityType).GetUnManagedSession(interceptor);
         }
     }
 }

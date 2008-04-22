@@ -6,9 +6,12 @@ namespace NHibernate.Burrow.Configuration
     /// <summary>
     /// Configuration Section for a Persistence Unit
     /// </summary>
+    /// <remarks>
+    /// Each Persistence Unit represents a Database (RDBMS) (
+    /// </remarks>
     public class PersistenceUnitElement : ConfigurationElement, IPersistenceUnitCfg
     {
-        //Todo: eliminate the duplicate code in this class and NHiberanteBurrowCfgSection
+        //Fixme: eliminate the duplicate code in this class and NHiberanteBurrowCfgSection
         private readonly IDictionary<string, object> savedSettings = new Dictionary<string, object>();
 
         #region IPersistenceUnitCfg Members
@@ -26,15 +29,27 @@ namespace NHibernate.Burrow.Configuration
         }
 
         /// <summary>
-        /// 
+        /// designate the NHibernate config file of this persistent unit.
         /// </summary>
         [ConfigurationProperty("nh-config-file", IsRequired = true, IsKey = false)]
         [StringValidator(InvalidCharacters =
-                         " !@#$%^&*()[]{};'\"|", MaxLength=160)]
+                         "!@#$%^&*()[]{};'\"|", MaxLength=160)]
         public string NHConfigFile
         {
             get { return (string) Get("nh-config-file"); }
             set { Set("nh-config-file", value); }
+        }
+
+        /// <summary>
+        /// designates the implementation of IInterceptorFactory with which Burrow will create managed Session 
+        /// </summary>
+        [ConfigurationProperty("interceptorFactory", IsRequired = false, IsKey = false)]
+        [StringValidator(InvalidCharacters =
+                         "!@#$%^&*()[]{};'\"|", MaxLength=160)]
+        public string InterceptorFactory
+        {
+            get { return (string) Get("interceptorFactory"); }
+            set { Set("interceptorFactory", value); }
         }
 
         ///<summary>

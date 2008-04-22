@@ -1,4 +1,5 @@
 using System;
+using NHibernate.Burrow.Util;
 
 namespace NHibernate.Burrow.Impl
 {
@@ -90,6 +91,15 @@ namespace NHibernate.Burrow.Impl
             //foreach (Assembly assembly in domainLayerAssemblies)
             //    retVal.AddAssembly(assembly);
             return retVal;
+        }
+
+        public IInterceptor CreateInterceptor()
+        {
+            if (string.IsNullOrEmpty(Configuration.InterceptorFactory))
+            {
+                return null;
+            }
+            return InstanceLoader.Load<IInterceptorFactory>(Configuration.InterceptorFactory).Create(NHConfiguration);
         }
     }
 }

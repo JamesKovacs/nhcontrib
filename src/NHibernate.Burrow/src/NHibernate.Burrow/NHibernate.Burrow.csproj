@@ -111,6 +111,7 @@
     <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
     <Compile Include="Exceptions\FrameworkAlreadyShutDownException.cs" />
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
+    <Compile Include="IInterceptorFactory.cs" />
     <Compile Include="Impl\FrameworkEnvironment.cs" />
     <Compile Include="IFrameworkEnvironment.cs" />
     <Compile Include="Impl\ITransactionManager.cs" />
