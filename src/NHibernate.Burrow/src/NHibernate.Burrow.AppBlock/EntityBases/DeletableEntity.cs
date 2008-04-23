@@ -7,11 +7,6 @@ namespace NHibernate.Burrow.AppBlock.EntityBases
     {
         private bool deleted;
 
-        public DeletableEntity()
-        {
-            long result = (long) (DateTime.Now - new DateTime(2000, 1, 1)).TotalMilliseconds;
-        }
-
         #region IDeletable Members
 
         public bool Delete()
