@@ -62,14 +62,14 @@
     </CodeAnalysisRules>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\build\NHibernate.Burrow-1.0.0.Alpha1-Release\</OutputPath>
+    <OutputPath>..\..\build\NHibernate.Burrow-1.0.0.Alpha\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha1-Release\NHibernate.Burrow.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha\NHibernate.Burrow.XML</DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>

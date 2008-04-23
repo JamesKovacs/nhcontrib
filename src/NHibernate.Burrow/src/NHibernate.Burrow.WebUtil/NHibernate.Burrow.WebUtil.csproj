@@ -23,11 +23,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\NHibernate.Burrow-1.0.0.Alpha1-Release\</OutputPath>
+    <OutputPath>..\..\build\NHibernate.Burrow-1.0.0.Alpha\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha1-Release\NHibernate.Burrow.WebUtil.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha\NHibernate.Burrow.WebUtil.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
