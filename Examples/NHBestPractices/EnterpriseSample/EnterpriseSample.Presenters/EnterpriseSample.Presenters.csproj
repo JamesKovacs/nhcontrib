@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EditCustomerPresenter.cs" />
+    <Compile Include="EventsArgs\CustomerEventArgs.cs" />
     <Compile Include="ListCustomersPresenter.cs" />
     <Compile Include="ListCustomerOrdersPresenter.cs" />
     <Compile Include="ListHistoricalOrderSummariesPresenter.cs" />

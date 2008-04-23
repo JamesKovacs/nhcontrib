@@ -20,7 +20,7 @@ namespace EnterpriseSample.Tests.Presenters
             ListHistoricalOrderSummaryViewStub view = new ListHistoricalOrderSummaryViewStub();
             ListHistoricalOrderSummariesPresenter presenter = new ListHistoricalOrderSummariesPresenter(view,
                 new MockHistoricalOrderSummaryDaoFactory().CreateMockHistoricalOrderSummariesDao());
-            presenter.InitViewWith(TestGlobals.TestCustomer.ID);
+            presenter.InitViewWith(TestGlobals.TestCustomer);
 
             Assert.IsNotNull(view.ObjectsToList);
             Assert.AreEqual(4, view.ObjectsToList.Count);

@@ -1,6 +1,7 @@
 using EnterpriseSample.Core.DataInterfaces;
 using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters.ViewInterfaces;
+using ProjectBase.Data;
 using ProjectBase.Utils;
 
 namespace EnterpriseSample.Presenters
@@ -22,11 +23,13 @@ namespace EnterpriseSample.Presenters
             view.Customer = customerDao.GetById(customerId, false);
         }
 
-        public void Update(string customerId) {
-            Check.Require(!string.IsNullOrEmpty(customerId), "customerId may not be empty");
+        public void Update(Customer customer)
+        {
+            Check.Require(customer!=null, "customerId may not be empty");
 
-            Customer customerToUpdate = customerDao.GetById(customerId, true);
-            view.UpdateValuesOn(customerToUpdate);
+            view.UpdateValuesOn(customer);
+            
+            customerDao.SaveOrUpdate(customer);
         }
 
         private IEditCustomerView view;

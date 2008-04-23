@@ -23,7 +23,7 @@ public partial class EditCustomer : BasePage
 
         InitEditCustomerView();
         //InitListOrdersView();
-        InitListHistoricalOrderSummariesView();
+        //InitListHistoricalOrderSummariesView();
     }
 
     private void InitEditCustomerView() {
@@ -33,6 +33,7 @@ public partial class EditCustomer : BasePage
         ctrlEditCustomerView.UpdateCompleted += HandleUpdateCompleted;
         ctrlEditCustomerView.UpdateCancelled += HandleUpdateCancelled;
         ctrlEditCustomerView.OrdersView += HandleOrdersView;
+        ctrlEditCustomerView.HistoricalOrdersView += HandleHistoricalOrdersView;
 
         if (!IsPostBack) {
             presenter.InitViewWith(CustomerId);
@@ -42,7 +43,7 @@ public partial class EditCustomer : BasePage
     private void HandleUpdateCancelled(object sender, EventArgs e) {
         BurrowFramework burrow = new BurrowFramework();
         burrow.CurrentConversation.FinishSpan();
-        Response.Redirect("ListCustomers.aspx");
+        Response.Redirect("ListCustomers.aspx", false);
     }
 
     private void HandleUpdateCompleted(object sender, EventArgs e) {
@@ -50,7 +51,7 @@ public partial class EditCustomer : BasePage
         // definitely use it with your web apps instead of the following.
         BurrowFramework burrow = new BurrowFramework();
         burrow.CurrentConversation.FinishSpan();
-        Response.Redirect("ListCustomers.aspx?action=updated");
+        Response.Redirect("ListCustomers.aspx?action=updated", false);
     }
 
     private void HandleOrdersView(object sender, CustomerEventArgs e)
@@ -58,19 +59,24 @@ public partial class EditCustomer : BasePage
         InitListOrdersView(e.Customer);
     }
 
-    private void InitListOrdersView(Customer customer) {
+    private void HandleHistoricalOrdersView(object sender, CustomerEventArgs e)
+    {
+        InitListHistoricalOrderSummariesView(e.Customer);
+    }
+
+    private void InitListOrdersView(Customer customer)
+    {
         ListCustomerOrdersPresenter presenter = new ListCustomerOrdersPresenter(ctrlListOrdersView,
             DaoFactory.GetCustomerDao());
         presenter.InitViewWith(customer);
     }
 
-    private void InitListHistoricalOrderSummariesView() {
+    private void InitListHistoricalOrderSummariesView(Customer customer)
+    {
         ListHistoricalOrderSummariesPresenter presenter = new ListHistoricalOrderSummariesPresenter(
             ctrlListHistoricalOrderSummariesView, DaoFactory.GetHistoricalOrderSummaryDao());
 
-        if (!IsPostBack) {
-            presenter.InitViewWith(CustomerId);
-        }
+        presenter.InitViewWith(customer);
     }
 
     private string CustomerId {

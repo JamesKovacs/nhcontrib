@@ -10,6 +10,7 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
     public EventHandler UpdateCompleted;
     public EventHandler UpdateCancelled;
     public EventHandler<CustomerEventArgs> OrdersView;
+    public EventHandler<CustomerEventArgs> HistoricalOrdersView;
     
     public void AttachPresenter(EditCustomerPresenter presenter) {
         this.presenter = presenter;
@@ -47,7 +48,7 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
     }
 
     protected void btnUpdate_OnClick(object sender, EventArgs e) {
-        presenter.Update(hidCustomerID.Value);
+        presenter.Update(Customer);
 
         // The view itself shouldn't be handling any redirects, so simply raise an event letting 
         // whomever know that the action has completed
@@ -67,6 +68,13 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
         if (OrdersView != null)
             OrdersView(this, new CustomerEventArgs(this.Customer));
     }
+
+    protected void btnHistoricalOrdersView_OnClick(object sender, EventArgs e)
+    {
+        if (HistoricalOrdersView != null)
+            HistoricalOrdersView(this, new CustomerEventArgs(Customer));
+    }
+    
 
     private EditCustomerPresenter presenter;
 }

@@ -10,6 +10,6 @@ namespace EnterpriseSample.Core.DataInterfaces
     /// </summary>
     public interface IHistoricalOrderSummaryDao
     {
-        List<HistoricalOrderSummary> GetCustomerOrderHistoryFor(string customerId);
+        List<HistoricalOrderSummary> GetCustomerOrderHistoryFor(Customer customer);
     }
 }

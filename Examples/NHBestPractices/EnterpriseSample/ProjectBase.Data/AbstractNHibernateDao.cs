@@ -104,12 +104,12 @@ namespace ProjectBase.Data
         /// Commits changes regardless of whether there's an open transaction or not
         /// </summary>
         public void CommitChanges() {
-            if (NHibernateSessionManager.Instance.HasOpenTransaction()) {
-                NHibernateSessionManager.Instance.CommitTransaction();
+            if (NHibernateSessionManager.Instance.HasOpenTransaction(persitentType)) {
+                NHibernateSessionManager.Instance.CommitTransaction(persitentType);
             }
             else {
                 // If there's no transaction, just flush the changes
-                NHibernateSessionManager.Instance.GetSession().Flush();
+                NHibernateSessionManager.Instance.GetSession(persitentType).Flush();
             }
         }
 
@@ -118,11 +118,10 @@ namespace ProjectBase.Data
         /// </summary>
         private ISession NHibernateSession {
             get {
-                return NHibernateSessionManager.Instance.GetSession();
+                return NHibernateSessionManager.Instance.GetSession(persitentType);
             }
         }
 
         private Type persitentType = typeof(T);
-        protected readonly string SessionFactoryConfigPath;
     }
 }

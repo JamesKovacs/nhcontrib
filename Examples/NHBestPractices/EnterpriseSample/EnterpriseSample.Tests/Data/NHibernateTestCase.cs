@@ -12,9 +12,9 @@ namespace EnterpriseSample.Tests.Data
         /// </summary>
         [TestFixtureSetUp]
         public void Setup() {
-            new BurrowFramework().InitWorkSpace();
-            NHibernateSessionManager.Init(TestGlobals.SessionFactoryConfigPath);
-            NHibernateSessionManager.Instance.BeginTransaction();
+            BurrowFramework framework = new BurrowFramework();
+            framework.InitWorkSpace();
+            NHibernateSessionManager.Instance.BeginTransaction(null);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace EnterpriseSample.Tests.Data
         /// </summary>
         [TestFixtureTearDown]
         public void Dispose() {
-            NHibernateSessionManager.Instance.RollbackTransaction();
+            NHibernateSessionManager.Instance.RollbackTransaction(null);
             new BurrowFramework().CloseWorkSpace();
         }
     }

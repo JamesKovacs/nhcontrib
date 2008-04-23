@@ -13,23 +13,23 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
         /// an open session attached to the HttpContext.  If you have an interceptor to be used, modify
         /// the HttpModule to call this before calling BeginTransaction().
         /// </summary>
-        public void RegisterInterceptor(IInterceptor interceptor)
+        public void RegisterInterceptor(Type type, IInterceptor interceptor)
         {
             throw new NotImplementedException();
         }
 
-        public ISession GetSession()
+        public ISession GetSession(Type type)
         {
             BurrowFramework facade = new BurrowFramework();
-            return facade.GetSession();
+            return facade.GetSession(type);
         }
 
         /// <summary>
         /// Flushes anything left in the session and closes the connection.
         /// </summary>
-        public void CloseSession()
+        public void CloseSession(Type type)
         {
-            ISession session = GetSession();
+            ISession session = GetSession(type);
             if (session != null && session.IsOpen)
             {
                 session.Flush();
@@ -37,9 +37,9 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
             }
         }
 
-        public ITransaction BeginTransaction()
+        public ITransaction BeginTransaction(Type type)
         {
-            ISession session = GetSession();
+            ISession session = GetSession(type);
 
             ITransaction transaction=null;
             if (session != null && session.IsOpen)
@@ -51,9 +51,9 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
             return transaction;
         }
 
-        public void CommitTransaction()
+        public void CommitTransaction(Type type)
         {
-            ISession session = GetSession();
+            ISession session = GetSession(type);
 
             ITransaction transaction;
             if (session != null && session.IsOpen)
@@ -64,9 +64,9 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
             }
         }
 
-        public bool HasOpenTransaction()
+        public bool HasOpenTransaction(Type type)
         {
-            ISession session = GetSession();
+            ISession session = GetSession(type);
 
             ITransaction transaction;
             if (session != null && session.IsOpen)
@@ -78,9 +78,9 @@ namespace ProjectBase.Data.NHibernateSessionMgmt
             return false;
         }
 
-        public void RollbackTransaction()
+        public void RollbackTransaction(Type type)
         {
-            ISession session = GetSession();
+            ISession session = GetSession(type);
 
             ITransaction transaction;
             if (session != null && session.IsOpen)

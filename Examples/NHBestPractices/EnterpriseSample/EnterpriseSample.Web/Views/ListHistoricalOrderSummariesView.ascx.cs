@@ -8,9 +8,7 @@ public partial class Views_ListHistoricalOrderSummariesView : BaseUserControl, I
 {
     public IList<HistoricalOrderSummary> ObjectsToList {
         set {
-            IHistoricalOrderSummaryDao orderSummaryDao = DaoFactory.GetHistoricalOrderSummaryDao();
-
-            grdProductsOrdered.DataSource = orderSummaryDao.GetCustomerOrderHistoryFor(Request.QueryString["customerID"]);
+            grdProductsOrdered.DataSource = value;
             grdProductsOrdered.DataBind();
         }
     }

@@ -9,11 +9,12 @@ namespace EnterpriseSample.Data
 {
     public class HistoricalOrderSummaryDao : IHistoricalOrderSummaryDao
     {
-        public List<HistoricalOrderSummary> GetCustomerOrderHistoryFor(string customerId) {
-            Check.Require(! string.IsNullOrEmpty(customerId), "customerId may not be null or empty");
+        public List<HistoricalOrderSummary> GetCustomerOrderHistoryFor(Customer customer)
+        {
+            Check.Require(customer!=null, "customerId may not be null or empty");
 
             IQuery query = NHibernateSession.GetNamedQuery("GetCustomerOrderHistory")
-                .SetString("CustomerID", customerId)
+                .SetString("CustomerID", customer.ID)
                 .SetResultTransformer(
                 new NHibernate.Transform.AliasToBeanConstructorResultTransformer(
                     typeof (HistoricalOrderSummary).GetConstructors()[0]));
@@ -26,7 +27,7 @@ namespace EnterpriseSample.Data
         /// </summary>
         private ISession NHibernateSession {
             get {
-                return NHibernateSessionManager.Instance.GetSession();
+                return NHibernateSessionManager.Instance.GetSession(typeof(HistoricalOrderSummary));
             }
         }
 

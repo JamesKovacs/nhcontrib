@@ -26,7 +26,7 @@ namespace EnterpriseSample.Tests.Presenters
             EditCustomerPresenter presenter = new EditCustomerPresenter(view,
                                 new MockCustomerDaoFactory().CreateMockCustomerDao());
 
-            presenter.Update(TestGlobals.TestCustomer.ID);
+            presenter.Update(TestGlobals.TestCustomer);
         }
 
         private class EditCustomerViewStub : IEditCustomerView

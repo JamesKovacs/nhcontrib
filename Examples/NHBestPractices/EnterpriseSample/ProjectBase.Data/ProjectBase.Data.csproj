@@ -48,11 +48,6 @@
     <Compile Include="NHibernateSessionMgmt\INHibernateSessionManager.cs" />
     <Compile Include="NHibernateSessionMgmt\NHibernateSessionManager.cs" />
     <Compile Include="NHibernateSessionMgmt\NHibernateSessionManagerImplBurrow.cs" />
-    <Compile Include="NHibernateSessionMgmt\NHibernateSessionManagerImplDefault.cs" />
-    <Compile Include="NHibernateSessionMgmt\NHibernateSessionModule.cs" />
-    <Compile Include="NHibernateSessionMgmt\OpenSessionInViewSection.cs" />
-    <Compile Include="NHibernateSessionMgmt\SessionFactoriesCollection.cs" />
-    <Compile Include="NHibernateSessionMgmt\SessionFactoryElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

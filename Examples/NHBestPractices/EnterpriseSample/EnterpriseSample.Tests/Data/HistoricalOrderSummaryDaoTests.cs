@@ -15,7 +15,7 @@ namespace EnterpriseSample.Tests.Data
             IDaoFactory daoFactory = new NHibernateDaoFactory();
             IHistoricalOrderSummaryDao historicalOrderSummaryDao = daoFactory.GetHistoricalOrderSummaryDao();
 
-            List<HistoricalOrderSummary> foundSummaries = historicalOrderSummaryDao.GetCustomerOrderHistoryFor(TestGlobals.TestCustomer.ID);
+            List<HistoricalOrderSummary> foundSummaries = historicalOrderSummaryDao.GetCustomerOrderHistoryFor(TestGlobals.TestCustomer);
 
             Assert.AreEqual(11, foundSummaries.Count);
         }

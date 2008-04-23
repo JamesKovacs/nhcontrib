@@ -31,6 +31,8 @@ Use this form to update the customer's information.<br />
     <tr>
         <td colspan="3" align="center">
             <asp:Button ID="btnOrdersView" runat="server" OnClick="btnOrdersView_OnClick" Text="View orders" />
+            <asp:Button ID="btnHistoricalOrdersView" runat="server" OnClick="btnHistoricalOrdersView_OnClick" Text="View historical orders" />
+            
             <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_OnClick" Text="Update" /> 
             <asp:Button ID="btnCancel" runat="server" OnClick="btnCancel_OnClick" Text="Cancel" CausesValidation="false" />
         </td>

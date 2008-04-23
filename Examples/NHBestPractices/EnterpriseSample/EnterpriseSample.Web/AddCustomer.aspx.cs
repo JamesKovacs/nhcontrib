@@ -25,7 +25,7 @@ public partial class AddCustomer : BasePage
 
             if (!IsDuplicateOfExisting(newCustomer, customerDao)) {
                 customerDao.Save(newCustomer);
-                Response.Redirect("ListCustomers.aspx?action=added");
+                Response.Redirect("ListCustomers.aspx?action=added", false);
             }
             else {
                 lblMessage.Text =
@@ -67,6 +67,6 @@ public partial class AddCustomer : BasePage
     }
 
     protected void btnCancel_OnClick(object sender, EventArgs e) {
-        Response.Redirect("ListCustomers.aspx");
+        Response.Redirect("ListCustomers.aspx", false);
     }
 }

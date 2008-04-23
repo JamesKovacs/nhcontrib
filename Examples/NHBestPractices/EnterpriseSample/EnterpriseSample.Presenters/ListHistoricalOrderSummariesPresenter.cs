@@ -16,10 +16,10 @@ namespace EnterpriseSample.Presenters
             this.historicalOrderSummaryDao = historicalOrderSummaryDao;
         }
 
-        public void InitViewWith(string customerId) {
-            Check.Require(!string.IsNullOrEmpty(customerId), "customerId may not be empty");
+        public void InitViewWith(Customer customer) {
+            Check.Require(customer!=null, "customerId may not be empty");
 
-            view.ObjectsToList = historicalOrderSummaryDao.GetCustomerOrderHistoryFor(customerId);
+            view.ObjectsToList = historicalOrderSummaryDao.GetCustomerOrderHistoryFor(customer);
         }
 
         private IListObjectsView<HistoricalOrderSummary> view;

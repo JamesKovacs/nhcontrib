@@ -28,33 +28,17 @@ namespace ProjectBase.Data
         }
 
         /// <summary>
-        /// Initialize this Manager with a nhibernate's config file.
-        /// </summary>
-        /// <param name="sessionFactoryConfigFile"></param>
-        public static void Init(string sessionFactoryConfigFile)
-        {
-            sessionFactoryConfigPath = sessionFactoryConfigFile;
-        }
-
-        /// <summary>
         /// Assists with ensuring thread-safe, lazy singleton
         /// </summary>
         private class Nested
         {
             static Nested() { }
 
-            /*
             internal static readonly INHibernateSessionManager NHibernateSessionManager =
-                new NHibernateSessionManagerImplDefault(sessionFactoryConfigPath);
-            */
-
-            internal static readonly INHibernateSessionManager NHibernateSessionManager =
-                //new NHibernateSessionManagerImplDefault(sessionFactoryConfigPath);
                 new NHibernateSessionManagerImplBurrow();
         }
 
         #endregion
 
-        private static string sessionFactoryConfigPath;
     }
 }
