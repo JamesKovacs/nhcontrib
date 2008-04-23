@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.WebUtil
         public void Init(HttpApplication context)
         {
             context.PreRequestHandlerExecute += new EventHandler(BeginContext);
-            context.PostRequestHandlerExecute += new EventHandler(CloseContext);
+            context.EndRequest += new EventHandler(CloseContext);
             context.Error += new EventHandler(OnError);
         }
 
@@ -115,11 +115,6 @@ namespace NHibernate.Burrow.WebUtil
         /// </summary>
         private void CloseContext(object sender, EventArgs e)
         {
-            HttpApplication ctx = (HttpApplication) sender;
-            if (HandlerIsIrrelavant(ctx))
-            {
-                return;
-            }
             bf.CloseWorkSpace();
         }
     }
