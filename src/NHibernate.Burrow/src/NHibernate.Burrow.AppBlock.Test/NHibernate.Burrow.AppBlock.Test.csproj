@@ -57,8 +57,6 @@
     <Compile Include="CriterionTest\CriterionTest.cs" />
     <Compile Include="CriterionTest\Simple.cs" />
     <Compile Include="DebugConnectionProvider.cs" />
-    <Compile Include="DomainSession\BooDomainSession.cs" />
-    <Compile Include="DomainSession\BooDomainSessionFactory.cs" />
     <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
     <Compile Include="DynamicQuery\DynQueryFixture.cs" />
     <Compile Include="EntityBases\HashIdMockClass.cs" />

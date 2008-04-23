@@ -51,12 +51,6 @@
     <Compile Include="Criterions\Criterion.cs" />
     <Compile Include="Criterions\EqOrNullExpression.cs" />
     <Compile Include="DAOBases\GenericDAO.cs" />
-    <Compile Include="DomainSession\DomainSessionBase.cs" />
-    <Compile Include="DomainSession\DomainSessionContainer.cs" />
-    <Compile Include="DomainSession\IDomainSession.cs" />
-    <Compile Include="DomainSession\IDomainSessionFactory.cs" />
-    <Compile Include="DomainSession\IHasUserId.cs" />
-    <Compile Include="DomainSession\InstanceLoader.cs" />
     <Compile Include="DynQuery\DetachedDynQuery.cs" />
     <Compile Include="DynQuery\From.cs" />
     <Compile Include="DynQuery\IDynClause.cs" />
