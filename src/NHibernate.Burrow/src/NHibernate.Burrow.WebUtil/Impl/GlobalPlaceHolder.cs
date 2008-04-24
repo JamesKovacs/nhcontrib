@@ -10,14 +10,29 @@ namespace NHibernate.Burrow.WebUtil.Impl
     {
         private const string holderId = "NHibernate.Burrow.WebUtil.GlobalPlaceHolder";
         private const string UpdatePanelId = "NHibernate.Burrow.WebUtil.GlobalPlaceHolderUpdatePanel";
-        private Control holder;
-        private Page p;
+        private readonly Control holder;
+        private readonly Page page;
 
         public GlobalPlaceHolder(Page p)
         {
-            this.p = p;
-            p.Init += new EventHandler(p_Init);
+            this.page = p;
+			holder = new PlaceHolder();
+			holder.ID = holderId;
+			p.PreRender += new EventHandler(p_PreRender);
         }
+
+		void p_PreRender(object sender, EventArgs e)
+		{
+			if(IsInAjaxMode()) {
+			    UpdatePanel up = new UpdatePanel();
+				up.ID = UpdatePanelId;
+				up.UpdateMode = UpdatePanelUpdateMode.Always;
+				page.Form.Controls.Add(up);
+				up.ContentTemplateContainer.Controls.Add(holder);
+			}else {
+					page.Form.Controls.Add(holder);
+			}
+		}
 
         public Control Holder
         {
@@ -31,31 +46,11 @@ namespace NHibernate.Burrow.WebUtil.Impl
             }
         }
 
-        private void p_Init(object sender, EventArgs e)
-        {
-            holder = IsInAjaxMode() ? GetParentInAjax(p.Form) : Normal(p.Form);
-        }
-
-        private Control Normal(HtmlForm form)
-        {
-            PlaceHolder ph = new PlaceHolder();
-            ph.ID = holderId;
-            form.Controls.Add(ph);
-            return ph;
-        }
-
-        private Control GetParentInAjax(HtmlForm form)
-        {
-            UpdatePanel up = new UpdatePanel();
-            up.ID = UpdatePanelId;
-            up.UpdateMode = UpdatePanelUpdateMode.Always;
-            form.Controls.Add(up);
-            return up.ContentTemplateContainer;
-        }
+  
 
         private bool IsInAjaxMode()
         {
-            ScriptManager current = ScriptManager.GetCurrent(p);
+            ScriptManager current = ScriptManager.GetCurrent(page);
             if (current != null && current.EnablePartialRendering)
             {
                 return true;
