@@ -9,8 +9,7 @@ namespace NHibernate.Burrow.Util
         {
             foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
             {
-                SchemaExport se = new SchemaExport(pu.NHConfiguration);
-                se.Drop(true, true);
+                SchemaExport se = new SchemaExport(pu.NHConfiguration); 
                 se.Create(true, true);
             }
         }
