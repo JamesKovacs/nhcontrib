@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -36,26 +37,36 @@ namespace NHibernate.Burrow.Impl
             return name;
         }
 
-        public abstract void AddOverspanStateWhenRendering(Control c, string key, string val);
 
-        public void UpdateSpanStates(HttpContext c, string key, string value)
+        public void UpdateSpanState(HttpContext c, string key, string value)
         {
             HttpCookie cookie = new HttpCookie(key, UseCookie ? value : string.Empty);
             if (!UseCookie)
             {
                 cookie.Expires = DateTime.Now.AddDays(-1);
             }
-
             updateCookie(cookie, c.Response.Cookies);
             updateCookie(cookie, c.Request.Cookies);
             //added here for so that even the states will be there even when request is Redirected and no reponse is generated
         }
+
+        /// <summary>
+        /// Generate the postback fields 
+        /// </summary>
+        /// <param name="spanstates"></param>
+        /// <returns></returns>
+        public abstract IDictionary<string, string> GetPostBackFields(IDictionary<string, string> spanstates);
+      
+
+
 
         private static void updateCookie(HttpCookie cookie, HttpCookieCollection cookies)
         {
             cookies.Remove(cookie.Name);
             cookies.Add(cookie);
         }
+
+      
 
         #region Nested type: CookieStrategy
 
@@ -68,7 +79,16 @@ namespace NHibernate.Burrow.Impl
                 get { return true; }
             }
 
-            public override void AddOverspanStateWhenRendering(Control c, string key, string val) {}
+ 
+            /// <summary>
+            /// Generate the postback fields 
+            /// </summary>
+            /// <param name="spanstates"></param>
+            /// <returns></returns>
+            public override IDictionary<string, string> GetPostBackFields(IDictionary<string, string> spanstates)
+            {
+                 return new Dictionary<string, string>();  
+            }
         }
 
         #endregion
@@ -88,8 +108,16 @@ namespace NHibernate.Burrow.Impl
             {
                 get { return false; }
             }
-
-            public override void AddOverspanStateWhenRendering(Control c, string key, string val) {}
+ 
+            /// <summary>
+            /// Generate the postback fields 
+            /// </summary>
+            /// <param name="spanstates"></param>
+            /// <returns></returns>
+            public override IDictionary<string, string> GetPostBackFields(IDictionary<string, string> spanstates)
+            {
+                 return new Dictionary<string, string>();  
+            }
         }
 
         #endregion
@@ -104,14 +132,15 @@ namespace NHibernate.Burrow.Impl
             {
                 get { return false; }
             }
-
-            public override void AddOverspanStateWhenRendering(Control c, string key, string val)
+ 
+            /// <summary>
+            /// Generate the postback fields 
+            /// </summary>
+            /// <param name="spanstates"></param>
+            /// <returns></returns>
+            public override IDictionary<string, string> GetPostBackFields(IDictionary<string, string> spanstates)
             {
-                HtmlInputHidden hi = new HtmlInputHidden();
-                hi.Name = key;
-                hi.ID = key;
-                hi.Value = val;
-                c.Controls.Add(hi);
+                return spanstates;
             }
         }
 
@@ -134,7 +163,15 @@ namespace NHibernate.Burrow.Impl
                 get { return false; }
             }
 
-            public override void AddOverspanStateWhenRendering(Control c, string key, string val) {}
+             /// <summary>
+            /// Generate the postback fields 
+            /// </summary>
+            /// <param name="spanstates"></param>
+            /// <returns></returns>
+            public override IDictionary<string, string> GetPostBackFields(IDictionary<string, string> spanstates)
+            {
+                 return new Dictionary<string, string>();  
+            }
         }
 
         #endregion

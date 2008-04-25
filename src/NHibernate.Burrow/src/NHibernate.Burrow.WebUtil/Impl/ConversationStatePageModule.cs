@@ -17,7 +17,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
 
         private void Page_PreRender(object sender, EventArgs e)
         {
-            Util.WebUtil.AddConversationStates(gph.Holder);
+            gph.AddPostBackFields(Util.WebUtil.GetPostBackFields());
         }
     }
 }

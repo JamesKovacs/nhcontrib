@@ -19,7 +19,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
 
         private void page_PreRenderComplete(object sender, EventArgs e)
         {
-            new StatefulFieldSaver(page, gph.Holder).Process();
+            new StatefulFieldSaver(page, gph).Process();
         }
 
 
@@ -35,7 +35,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
                 return;
             }
             dataLoaded = true;
-            new StatefulFieldLoader(page, gph.Holder).Process();
+            new StatefulFieldLoader(page, gph).Process();
         }
     }
 }

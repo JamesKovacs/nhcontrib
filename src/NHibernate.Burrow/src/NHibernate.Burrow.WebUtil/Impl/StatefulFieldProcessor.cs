@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NHibernate.Burrow.WebUtil.Attributes;
 
@@ -16,12 +17,12 @@ namespace NHibernate.Burrow.WebUtil.Impl
             new Dictionary<Type, IDictionary<FieldInfo, StatefulField>>();
 
         private readonly Control ctl;
-        private readonly Control globalPlaceHolder;
+        private readonly GlobalPlaceHolder globalPlaceHolder;
         private readonly string stateKeyPrefix;
         private readonly StateBag states;
         protected IDictionary<FieldInfo, StatefulField> statefulfields;
 
-        public StatefulFieldProcessor(Control c, Control globalPlaceHolder)
+        public StatefulFieldProcessor(Control c, GlobalPlaceHolder globalPlaceHolder)
         {
             ctl = c;
             this.globalPlaceHolder = globalPlaceHolder;
@@ -69,7 +70,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
             }
         }
 
-        protected abstract StatefulFieldProcessor CreateSubProcessor(Control c, Control globalPlaceHolder);
+        protected abstract StatefulFieldProcessor CreateSubProcessor(Control c, GlobalPlaceHolder globalPlaceHolder);
 
         protected abstract void DoProcess();
 
@@ -109,12 +110,11 @@ namespace NHibernate.Burrow.WebUtil.Impl
 
         protected void SaveStates()
         {
+            
             foreach (DictionaryEntry state in states)
-            {
-                HiddenField hf = new HiddenField();
-                hf.ID = stateKeyPrefix + (string) state.Key;
-                hf.Value = Serialize(state.Value != null ? ((StateItem) state.Value).Value : null);
-                globalPlaceHolder.Controls.Add(hf);
+            { 
+                string value = Serialize(state.Value != null ? ((StateItem) state.Value).Value : null);
+                globalPlaceHolder.AddPostBackField(stateKeyPrefix + (string) state.Key, value);
             }
         }
 

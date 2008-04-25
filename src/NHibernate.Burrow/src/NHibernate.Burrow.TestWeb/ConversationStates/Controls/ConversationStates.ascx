@@ -5,4 +5,4 @@
         <asp:Button ID="btnCommit" runat="server" Text="Commit" OnClick="btnCommit_Click" />
         <asp:Button ID="btnCancel" runat="server" Text="Cancel" OnClick="btnCancel_Click" />
         <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" /><br />
-        <asp:Label ID="lConversationStatus" runat="server" Text=""></asp:Label>
+        <asp:Label ID="lresult" runat="server" Text=""></asp:Label>

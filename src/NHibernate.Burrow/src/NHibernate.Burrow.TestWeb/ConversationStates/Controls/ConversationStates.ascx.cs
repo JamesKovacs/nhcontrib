@@ -51,6 +51,7 @@ public partial class Controls_ConversationStates : UserControl
         base.OnPreRender(e);
         Checker.AssertEqual(Session["me"], me);
         Checker.AssertEqual(Session["meInDb"], meInDb);
+
     }
 
     private string GetNumber(MockEntity m)
@@ -70,7 +71,7 @@ public partial class Controls_ConversationStates : UserControl
         MEInConversation = new MockEntity();
         BurrowFramework f = new BurrowFramework();
         f.CurrentConversation.SpanWithPostBacks();
-        lConversationStatus.Text = f.CurrentConversation.IsSpanning.ToString();
+        
     }
 
     protected void btnUpdate_Click(object sender, EventArgs e)
@@ -84,6 +85,7 @@ public partial class Controls_ConversationStates : UserControl
         MEInDB = me;
         MEInConversation = null;
         new BurrowFramework().CurrentConversation.FinishSpan();
+        lresult.Text = "Congratulations test passed!";
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)

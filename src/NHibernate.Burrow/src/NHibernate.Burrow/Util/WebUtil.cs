@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Web.UI;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
@@ -31,9 +32,11 @@ namespace NHibernate.Burrow.Util
             }
         }
 
-        public static void AddConversationStates(Control c)
+      
+
+        public static IDictionary<string, string> GetPostBackFields()
         {
-            WorkSpace.Current.UpdateToControl(c);
+          return  WorkSpace.Current.GetPostBackFields();
         }
     }
 }

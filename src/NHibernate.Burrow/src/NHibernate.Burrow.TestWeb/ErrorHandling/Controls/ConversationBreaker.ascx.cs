@@ -32,6 +32,8 @@ public partial class Controls_ConversationBreaker : UserControl
     {
         Status = ErrorTestStatus.ErrorOccurred;
         conversationNum--;
+        hdClose.Value = "1";
         throw new Exception("Exception thrown to break conversation");
+       
     }
 }

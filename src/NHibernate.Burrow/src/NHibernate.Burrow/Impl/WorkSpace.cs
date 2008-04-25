@@ -197,18 +197,17 @@ namespace NHibernate.Burrow.Impl
             }
             foreach (KeyValuePair<string, string> p in SpanStates())
             {
-                SpanStrategy.UpdateSpanStates(c, p.Key, p.Value);
+                SpanStrategy.UpdateSpanState(c, p.Key, p.Value);
             }
         }
 
-        public void UpdateToControl(Control c)
+       
+
+
+        public IDictionary<string, string> GetPostBackFields()
         {
-            foreach (KeyValuePair<string, string> pair in SpanStates())
-            {
-                SpanStrategy.AddOverspanStateWhenRendering(c, pair.Key, pair.Value);
-            }
-        }
-
+            return SpanStrategy.GetPostBackFields(SpanStates());
+        } 
         public static NameValueCollection CreateState(Guid id, string workSpaceName)
         {
             NameValueCollection nvc = new NameValueCollection();
@@ -219,5 +218,7 @@ namespace NHibernate.Burrow.Impl
         #region private memebers
 
         #endregion
+
+    
     }
 }

@@ -16,6 +16,7 @@ public partial class CRUDtest : Page
     {
         if (!IsPostBack)
         {
+            Util.ResetEnvironment();
             Session["CRUDtestME"] = null;
         }
 

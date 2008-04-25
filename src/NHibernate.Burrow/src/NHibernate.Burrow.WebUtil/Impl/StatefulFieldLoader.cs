@@ -7,7 +7,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
 {
     internal class StatefulFieldLoader : StatefulFieldProcessor
     {
-        public StatefulFieldLoader(Control c, Control globalPlaceHolder) : base(c, globalPlaceHolder) {}
+        public StatefulFieldLoader(Control c, GlobalPlaceHolder globalPlaceHolder) : base(c, globalPlaceHolder) { }
 
         protected override void DoProcess()
         {
@@ -23,7 +23,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
             }
         }
 
-        protected override StatefulFieldProcessor CreateSubProcessor(Control c, Control globalPlaceHolder)
+        protected override StatefulFieldProcessor CreateSubProcessor(Control c, GlobalPlaceHolder globalPlaceHolder)
         {
             return new StatefulFieldLoader(c, globalPlaceHolder);
         }
@@ -31,7 +31,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
 
     internal class StatefulFieldSaver : StatefulFieldProcessor
     {
-        public StatefulFieldSaver(Control c, Control globalPlaceHolder) : base(c, globalPlaceHolder) {}
+        public StatefulFieldSaver(Control c, GlobalPlaceHolder globalPlaceHolder) : base(c, globalPlaceHolder) { }
 
         protected override void DoProcess()
         {
@@ -52,7 +52,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
             }
         }
 
-        protected override StatefulFieldProcessor CreateSubProcessor(Control c, Control globalPlaceHolder)
+        protected override StatefulFieldProcessor CreateSubProcessor(Control c, GlobalPlaceHolder globalPlaceHolder)
         {
             return new StatefulFieldSaver(c, globalPlaceHolder);
         }
