@@ -34,7 +34,8 @@ namespace NHibernate.Burrow.WebUtil.Impl
                 NameValueCollection form = c.Page.Request.Form;
                 foreach (string key in form.AllKeys)
                 {
-                    if (key.Contains(stateKeyPrefix))
+
+                    if (key!= null && key.Contains(stateKeyPrefix))
                     {
                         states.Add(key.Replace(stateKeyPrefix, ""), Deserialize(form[key]));
                     }
