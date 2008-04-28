@@ -11,19 +11,6 @@ namespace EnterpriseSample.Data
     /// </summary>
     public class NHibernateDaoFactory : IDaoFactory
     {
-        #region singleton
-        
-        private static NHibernateDaoFactory instance;
-
-        public static NHibernateDaoFactory getInstance()
-        {
-            if (instance==null)
-                instance=new NHibernateDaoFactory();
-            return instance;
-        }
-        
-        #endregion
-
         public ICustomerDao GetCustomerDao() {
             return new CustomerDao();
         }

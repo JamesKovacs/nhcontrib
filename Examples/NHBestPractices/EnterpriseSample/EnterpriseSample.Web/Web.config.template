@@ -4,7 +4,8 @@
 		<section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler,log4net"/>
 		<section name="nhibernateSettings" type="ProjectBase.Data.OpenSessionInViewSection, ProjectBase.Data"/>
 		<section name="NHibernate.Burrow" type="NHibernate.Burrow.Configuration.NHibernateBurrowCfgSection, NHibernate.Burrow, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" allowDefinition="Everywhere" allowExeDefinition="MachineToApplication" restartOnExternalChanges="true"/>
-	</configSections>
+    <section name="castle" type="Castle.Windsor.Configuration.AppDomain.CastleSectionHandler,Castle.Windsor"/>
+  </configSections>
 	<nhibernateSettings>
 		<!-- List every session factory that will be needed; transaction management and closing sessions 
 		will be managed with the open-session-in-view module -->
@@ -33,7 +34,17 @@
 			<add name="PersistenceUnit1" nh-config-file="D:\nhcontrib\trunk\Examples\EnterpriseSample\EnterpriseSample.Web\Config\BurrowTest.cfg.xml"/>
 		</persistantUnits>
 	</NHibernate.Burrow>
-	<!-- Compatible with IIS 6 -->
+
+  <castle>
+    <components>
+      <component id="DaoFactory" 
+                 service="EnterpriseSample.Core.DataInterfaces.IDaoFactory, EnterpriseSample.Core" 
+                 type="EnterpriseSample.Data.NHibernateDaoFactory, EnterpriseSample.Data">
+      </component>
+    </components>
+  </castle>
+
+  <!-- Compatible with IIS 6 -->
 	<system.web>
 		<compilation debug="true">
 			<assemblies>

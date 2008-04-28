@@ -18,8 +18,8 @@ namespace EnterpriseSample.Tests.Presenters
         [Test]
         public void TestInitView() {
             ListHistoricalOrderSummaryViewStub view = new ListHistoricalOrderSummaryViewStub();
-            ListHistoricalOrderSummariesPresenter presenter = new ListHistoricalOrderSummariesPresenter(view,
-                new MockHistoricalOrderSummaryDaoFactory().CreateMockHistoricalOrderSummariesDao());
+            ListHistoricalOrderSummariesPresenter presenter = new ListHistoricalOrderSummariesPresenter(view);
+                //new MockHistoricalOrderSummaryDaoFactory().CreateMockHistoricalOrderSummariesDao());
             presenter.InitViewWith(TestGlobals.TestCustomer);
 
             Assert.IsNotNull(view.ObjectsToList);

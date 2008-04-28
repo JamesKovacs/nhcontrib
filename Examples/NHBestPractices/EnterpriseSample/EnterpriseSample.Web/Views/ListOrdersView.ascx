@@ -1,3 +1,5 @@
+<%@ Import namespace="System.Collections.Generic"%>
+<%@ Import namespace="EnterpriseSample.Core.Domain"%>
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="ListOrdersView.ascx.cs" Inherits="Views_ListOrdersView" %>
 
 <h2>Past Orders</h2>

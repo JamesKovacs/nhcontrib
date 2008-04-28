@@ -13,8 +13,8 @@ namespace EnterpriseSample.Tests.Presenters
         [Test]
         public void TestInitView() {
             ListCustomersViewStub view = new ListCustomersViewStub();
-            ListCustomersPresenter presenter = new ListCustomersPresenter(view, 
-                new MockCustomerDaoFactory().CreateMockCustomerDao());
+            ListCustomersPresenter presenter = new ListCustomersPresenter(view);
+                //new MockCustomerDaoFactory().CreateMockCustomerDao());
             presenter.InitView();
 
             Assert.IsNotNull(view.Customers);

@@ -5,15 +5,13 @@ using ProjectBase.Utils;
 
 namespace EnterpriseSample.Presenters
 {
-    public class ListHistoricalOrderSummariesPresenter
+    public class ListHistoricalOrderSummariesPresenter : PresenterBase
     {
-        public ListHistoricalOrderSummariesPresenter(IListObjectsView<HistoricalOrderSummary> view, 
-            IHistoricalOrderSummaryDao historicalOrderSummaryDao) {
+        public ListHistoricalOrderSummariesPresenter(IListObjectsView<HistoricalOrderSummary> view) {
             Check.Require(view != null, "view may not be null");
-            Check.Require(historicalOrderSummaryDao != null, "historicalOrderSummaryDao may not be null");
 
             this.view = view;
-            this.historicalOrderSummaryDao = historicalOrderSummaryDao;
+            this.historicalOrderSummaryDao = DaoFactory.GetHistoricalOrderSummaryDao();
         }
 
         public void InitViewWith(Customer customer) {

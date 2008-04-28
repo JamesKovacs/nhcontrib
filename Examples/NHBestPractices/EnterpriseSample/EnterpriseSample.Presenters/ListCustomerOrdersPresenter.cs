@@ -6,14 +6,13 @@ using ProjectBase.Utils;
 
 namespace EnterpriseSample.Presenters
 {
-    public class ListCustomerOrdersPresenter
+    public class ListCustomerOrdersPresenter : PresenterBase
     {
-        public ListCustomerOrdersPresenter(IListObjectsView<Order> view, ICustomerDao customerDao) {
+        public ListCustomerOrdersPresenter(IListObjectsView<Order> view) {
             Check.Require(view != null, "view may not be null");
-            Check.Require(customerDao != null, "customerDao may not be null");
 
             this.view = view;
-            this.customerDao = customerDao;
+            this.customerDao = DaoFactory.GetCustomerDao();
         }
 
         public void InitViewWith(Customer customer) {

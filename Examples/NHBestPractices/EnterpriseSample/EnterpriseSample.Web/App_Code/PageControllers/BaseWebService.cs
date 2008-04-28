@@ -14,7 +14,7 @@ namespace EnterpriseSample.Web
         /// </summary>
         public IDaoFactory DaoFactory {
             get {
-                return (IDaoFactory)NHibernateDaoFactory.getInstance(); ;
+                return new NHibernateDaoFactory();
             }
         }
     }

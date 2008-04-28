@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Web.UI;
 using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters;
 using EnterpriseSample.Presenters.ViewInterfaces;
@@ -8,9 +10,10 @@ using EnterpriseSample.Web;
 /// In this page, as opposed to within EditCustomer.aspx, the view and the ASPX-view-initializer
 /// are one and the same.
 /// </summary>
-public partial class ListCustomers : BasePage, IListCustomersView
+public partial class ListCustomers : Page, IListCustomersView
 {
-    protected override void PageLoad() {
+    protected void Page_Load(object sender, EventArgs e)
+    {
         if (!IsPostBack) {
             DisplayMessage();
             InitView();
@@ -18,7 +21,7 @@ public partial class ListCustomers : BasePage, IListCustomersView
     }
 
     private void InitView() {
-        ListCustomersPresenter presenter = new ListCustomersPresenter(this, DaoFactory.GetCustomerDao());
+        ListCustomersPresenter presenter = new ListCustomersPresenter(this);
         presenter.InitView();
     }
 

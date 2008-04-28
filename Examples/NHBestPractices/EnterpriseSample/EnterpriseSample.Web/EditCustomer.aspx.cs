@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Web.UI;
 using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters;
+using EnterpriseSample.Presenters.ViewInterfaces;
 using EnterpriseSample.Web;
 using NHibernate.Burrow;
 
@@ -12,9 +15,12 @@ using NHibernate.Burrow;
 /// but it serves well to demonstrate using multiple views on the same page.  If you only plan 
 /// on having one view on a page, take a look at ListCustomers.aspx.
 /// </summary>
-public partial class EditCustomer : BasePage
+public partial class EditCustomer : Page, IEditCustomerView
 {
-    protected override void PageLoad() {
+    private EditCustomerPresenter presenter;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
         if (!IsPostBack)
         {
             BurrowFramework burrow = new BurrowFramework();
@@ -22,31 +28,32 @@ public partial class EditCustomer : BasePage
         }
 
         InitEditCustomerView();
-        //InitListOrdersView();
-        //InitListHistoricalOrderSummariesView();
     }
 
-    private void InitEditCustomerView() {
-        EditCustomerPresenter presenter = new EditCustomerPresenter(ctrlEditCustomerView, DaoFactory.GetCustomerDao());
+    private void InitEditCustomerView()
+    {
+        presenter = new EditCustomerPresenter(this);
         ctrlEditCustomerView.AttachPresenter(presenter);
+
         // Listen for events coming from the view
         ctrlEditCustomerView.UpdateCompleted += HandleUpdateCompleted;
         ctrlEditCustomerView.UpdateCancelled += HandleUpdateCancelled;
-        ctrlEditCustomerView.OrdersView += HandleOrdersView;
-        ctrlEditCustomerView.HistoricalOrdersView += HandleHistoricalOrdersView;
 
-        if (!IsPostBack) {
+        if (!IsPostBack)
+        {
             presenter.InitViewWith(CustomerId);
         }
     }
 
-    private void HandleUpdateCancelled(object sender, EventArgs e) {
+    private void HandleUpdateCancelled(object sender, EventArgs e)
+    {
         BurrowFramework burrow = new BurrowFramework();
         burrow.CurrentConversation.FinishSpan();
         Response.Redirect("ListCustomers.aspx", false);
     }
 
-    private void HandleUpdateCompleted(object sender, EventArgs e) {
+    private void HandleUpdateCompleted(object sender, EventArgs e)
+    {
         // PageMethods is perfect for managing strongly-typed redirects...
         // definitely use it with your web apps instead of the following.
         BurrowFramework burrow = new BurrowFramework();
@@ -54,37 +61,38 @@ public partial class EditCustomer : BasePage
         Response.Redirect("ListCustomers.aspx?action=updated", false);
     }
 
-    private void HandleOrdersView(object sender, CustomerEventArgs e)
+    private string CustomerId
     {
-        InitListOrdersView(e.Customer);
-    }
-
-    private void HandleHistoricalOrdersView(object sender, CustomerEventArgs e)
-    {
-        InitListHistoricalOrderSummariesView(e.Customer);
-    }
-
-    private void InitListOrdersView(Customer customer)
-    {
-        ListCustomerOrdersPresenter presenter = new ListCustomerOrdersPresenter(ctrlListOrdersView,
-            DaoFactory.GetCustomerDao());
-        presenter.InitViewWith(customer);
-    }
-
-    private void InitListHistoricalOrderSummariesView(Customer customer)
-    {
-        ListHistoricalOrderSummariesPresenter presenter = new ListHistoricalOrderSummariesPresenter(
-            ctrlListHistoricalOrderSummariesView, DaoFactory.GetHistoricalOrderSummaryDao());
-
-        presenter.InitViewWith(customer);
-    }
-
-    private string CustomerId {
-        get {
+        get
+        {
             // This is a terrible way to manage querystring data...there's no enforcement
             // of business rules whatsoever.  Instead, I highly recommend using 
             // PageMethods found at http://metasapiens.com/PageMethods
             return Request.QueryString["customerID"];
         }
     }
+
+    #region IEditCustomerView Members
+
+    public Customer Customer
+    {
+        set { ctrlEditCustomerView.Customer = value; }
+    }
+
+    public void UpdateValuesOn(Customer customer)
+    {
+        ctrlEditCustomerView.UpdateValuesOn(customer);
+    }
+
+    public IList<Order> Orders
+    {
+        set { ctrlListOrdersView.Orders = value; }
+    }
+
+    public IList<HistoricalOrderSummary> HistoricalOrders
+    {
+        set { ctrlListHistoricalOrderSummariesView.HistoricalOrderSummary = value; }
+    }
+
+    #endregion
 }

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using System.Web.UI;
 using EnterpriseSample.Core.Domain;
-using EnterpriseSample.Presenters.ViewInterfaces;
-using EnterpriseSample.Web;
 
-public partial class Views_ListOrdersView : BaseUserControl, IListObjectsView<Order>
+public partial class Views_ListOrdersView : UserControl
 {
-    public IList<Order> ObjectsToList {
+    public IList<Order> Orders {
         set {
             grdOrders.DataSource = value;
             grdOrders.DataBind();

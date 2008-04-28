@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using EnterpriseSample.Core.DataInterfaces;
+using System.Web.UI;
 using EnterpriseSample.Core.Domain;
-using EnterpriseSample.Presenters.ViewInterfaces;
-using EnterpriseSample.Web;
 
-public partial class Views_ListHistoricalOrderSummariesView : BaseUserControl, IListObjectsView<HistoricalOrderSummary>
+public partial class Views_ListHistoricalOrderSummariesView : UserControl
 {
-    public IList<HistoricalOrderSummary> ObjectsToList {
+    public IList<HistoricalOrderSummary> HistoricalOrderSummary
+    {
         set {
             grdProductsOrdered.DataSource = value;
             grdProductsOrdered.DataBind();

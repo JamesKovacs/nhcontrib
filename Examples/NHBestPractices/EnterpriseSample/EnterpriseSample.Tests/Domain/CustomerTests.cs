@@ -9,7 +9,7 @@ using ProjectBase.Utils;
 namespace EnterpriseSample.Tests.Domain
 {
     [TestFixture]
-    public class CustomerTests
+    public class CustomerTests : TestCase
     {
         [Test]
         public void CanCreateCustomer() {
@@ -61,7 +61,7 @@ namespace EnterpriseSample.Tests.Domain
         public void CanGetOrdersOrderedOnDateUsingMockedDao() {
             Customer customer = new Customer("Acme Anvils");
             new DomainObjectIdSetter<string>().SetIdOf(customer, "ACME");
-            customer.OrderDao = new MockOrderDaoFactory().CreateMockOrderDao();
+            customer.OrderDao = DaoFactory.GetOrderDao();
 
             IOrderDao orderDao = new MockOrderDaoFactory().CreateMockOrderDao();
             Assert.IsNotNull(orderDao);

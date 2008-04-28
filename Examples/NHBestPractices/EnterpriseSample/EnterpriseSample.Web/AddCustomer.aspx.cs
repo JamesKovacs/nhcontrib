@@ -1,15 +1,18 @@
 using System;
+using System.Web.UI;
 using EnterpriseSample.Core.DataInterfaces;
 using EnterpriseSample.Core.Domain;
+using EnterpriseSample.Data;
 using EnterpriseSample.Web;
 using NHibernate;
 
 /// <summary>
 /// This could alternatively be hooked up via MVP; for simplicity of the sample, it's not.  See EditCustomer.aspx for a good example of MVP.
 /// </summary>
-public partial class AddCustomer : BasePage
+public partial class AddCustomer : Page
 {
-    protected override void PageLoad() {
+    protected void Page_Load(object sender, EventArgs e)
+    {
         if (!IsPostBack) {
             lblMessage.Text = "Use this form to add a new customer.";
         }
@@ -21,7 +24,7 @@ public partial class AddCustomer : BasePage
             newCustomer.SetAssignedIdTo(txtCustomerID.Text);
             newCustomer.ContactName = txtContactName.Text;
 
-            ICustomerDao customerDao = DaoFactory.GetCustomerDao();
+            ICustomerDao customerDao = new NHibernateDaoFactory().GetCustomerDao();
 
             if (!IsDuplicateOfExisting(newCustomer, customerDao)) {
                 customerDao.Save(newCustomer);

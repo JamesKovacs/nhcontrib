@@ -6,6 +6,7 @@
     <section name="NHibernate.Burrow"
 				   type="NHibernate.Burrow.Configuration.NHibernateBurrowCfgSection, NHibernate.Burrow, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 				   allowDefinition="Everywhere" allowExeDefinition="MachineToApplication" restartOnExternalChanges="true" />
+    <section name="castle" type="Castle.Windsor.Configuration.AppDomain.CastleSectionHandler,Castle.Windsor"/>
   </configSections>
 
   <NHibernate.Burrow>
@@ -23,4 +24,14 @@
       <sessionFactory name="northwind" factoryConfigPath="D:\nhcontrib\trunk\Examples\EnterpriseSample\EnterpriseSample.Web\Config\NorthwindNHibernate.config" isTransactional="true" />
     </sessionFactories>
   </nhibernateSettings>
+
+  <castle>
+    <components>
+      <component id="DaoFactory"
+                 service="EnterpriseSample.Core.DataInterfaces.IDaoFactory, EnterpriseSample.Core"
+                 type="EnterpriseSample.Tests.Data.DaoTestDoubles.TestDaoFactory, EnterpriseSample.Tests"
+                 lifestyle="singleton" />
+    </components>
+  </castle>
+
 </configuration>

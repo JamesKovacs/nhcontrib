@@ -11,7 +11,7 @@ namespace EnterpriseSample.Tests
         }
 
         public static string TargetHttpServer {
-            get { return "http://localhost:1635/EnterpriseSample.Web/"; } 
+            get { return "http://localhost:1460/EnterpriseSample.Web/"; } 
         }
 
         // The following can be uncommented to pre-load all the ASPX pages on the production server

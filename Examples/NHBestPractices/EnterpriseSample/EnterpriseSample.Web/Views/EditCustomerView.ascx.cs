@@ -1,16 +1,14 @@
 using System;
+using System.Web.UI;
 using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters;
 using EnterpriseSample.Presenters.ViewInterfaces;
-using EnterpriseSample.Web;
 using ProjectBase.Utils;
 
-public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
+public partial class Views_EditCustomerView : UserControl
 {
     public EventHandler UpdateCompleted;
     public EventHandler UpdateCancelled;
-    public EventHandler<CustomerEventArgs> OrdersView;
-    public EventHandler<CustomerEventArgs> HistoricalOrdersView;
     
     public void AttachPresenter(EditCustomerPresenter presenter) {
         this.presenter = presenter;
@@ -20,10 +18,6 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
         set {
             Check.Require(value != null, "Customer may not be null");
             ShowCustomerDetails(value);
-            Session[ClientID + "Customer"] = value;
-        }
-        get { 
-            return Session[ClientID + "Customer"] as Customer; 
         }
     }
 
@@ -48,7 +42,7 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
     }
 
     protected void btnUpdate_OnClick(object sender, EventArgs e) {
-        presenter.Update(Customer);
+        presenter.Update();
 
         // The view itself shouldn't be handling any redirects, so simply raise an event letting 
         // whomever know that the action has completed
@@ -65,14 +59,12 @@ public partial class Views_EditCustomerView : BaseUserControl, IEditCustomerView
 
     protected void btnOrdersView_OnClick(object sender, EventArgs e)
     {
-        if (OrdersView != null)
-            OrdersView(this, new CustomerEventArgs(this.Customer));
+            presenter.ShowOrders();
     }
 
     protected void btnHistoricalOrdersView_OnClick(object sender, EventArgs e)
     {
-        if (HistoricalOrdersView != null)
-            HistoricalOrdersView(this, new CustomerEventArgs(Customer));
+            presenter.ShowHistoricalOrders();
     }
     
 
