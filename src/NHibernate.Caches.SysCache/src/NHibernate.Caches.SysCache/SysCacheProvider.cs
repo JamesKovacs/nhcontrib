@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 
@@ -53,6 +54,22 @@ namespace NHibernate.Caches.SysCache
 				}
 			}
 		}
+
+
+        /// <summary>
+        /// build a new SysCache
+        /// </summary>
+        /// <param name="regionName"></param>
+        /// <param name="properties"></param>
+        /// <returns></returns>
+        public ICache BuildCache(string regionName, IDictionary<string,string> properties) {
+            Hashtable props = new Hashtable(properties.Count);
+            foreach (KeyValuePair<string, string> pair in properties) 
+                props.Add(pair.Key, pair.Value);
+            
+            return BuildCache(regionName, props);
+        }
+
 
 		/// <summary>
 		/// build a new SysCache
@@ -105,7 +122,7 @@ namespace NHibernate.Caches.SysCache
 
 		/// <summary></summary>
 		/// <param name="properties"></param>
-		public void Start(IDictionary properties)
+		public void Start(IDictionary<string, string> properties)
 		{
 		}
 

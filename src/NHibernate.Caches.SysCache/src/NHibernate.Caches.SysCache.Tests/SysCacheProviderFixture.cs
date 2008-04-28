@@ -36,7 +36,7 @@ namespace NHibernate.Caches.SysCache.Tests
 	[TestFixture]
 	public class SysCacheProviderFixture
 	{
-		private ICacheProvider provider;
+		private SysCacheProvider provider;
 		private Hashtable props;
 
 		[TestFixtureSetUp]
@@ -57,21 +57,21 @@ namespace NHibernate.Caches.SysCache.Tests
 		[Test]
 		public void TestBuildCacheFromConfig()
 		{
-			ICache cache = provider.BuildCache("foo", null);
+			ICache cache = provider.BuildCache("foo", (IDictionary) null);
 			Assert.IsNotNull(cache, "pre-configured cache not found");
 		}
 
 		[Test]
 		public void TestBuildCacheNullNull()
 		{
-			ICache cache = provider.BuildCache(null, null);
+            ICache cache = provider.BuildCache(null, (IDictionary)null);
 			Assert.IsNotNull(cache, "no cache returned");
 		}
 
 		[Test]
 		public void TestBuildCacheStringNull()
 		{
-			ICache cache = provider.BuildCache("a_region", null);
+            ICache cache = provider.BuildCache("a_region", (IDictionary)null);
 			Assert.IsNotNull(cache, "no cache returned");
 		}
 
