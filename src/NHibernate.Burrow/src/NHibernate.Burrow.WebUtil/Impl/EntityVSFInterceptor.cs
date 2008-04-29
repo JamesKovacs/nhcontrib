@@ -30,6 +30,10 @@ namespace NHibernate.Burrow.WebUtil.Impl
             }
 
             object[] vs = (object[]) objectOriginallyLoaded;
+			
+			if ( vs[0] is int && (int) vs[0] ==  0)
+				return null;
+				
             if (UseLoad)
             {
                 return EntityLoader.Instance.Load((Type) vs[1], vs[0]);

@@ -30,6 +30,10 @@
     <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha\NHibernate.Burrow.WebUtil.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\net\2.0\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
@@ -40,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\HasStatefulField.cs" />
     <Compile Include="Attributes\WorkSpaceInfo.cs" />
     <Compile Include="Exceptions\BurrowWebUtilException.cs" />
     <Compile Include="Exceptions\DuplicatedGlobalHolderException.cs" />
@@ -47,6 +52,8 @@
     <Compile Include="Attributes\ConversationalField.cs" />
     <Compile Include="Impl\ConversationStatePageModule.cs" />
     <Compile Include="Impl\GlobalPlaceHolder.cs" />
+    <Compile Include="Impl\LogFactory.cs" />
+    <Compile Include="Impl\StatefulFieldsControlFilter.cs" />
     <Compile Include="Impl\WorkSpaceSnifferByAttribute.cs" />
     <Compile Include="IWorkSpaceNameSniffer.cs" />
     <Compile Include="Impl\StatefulFieldPageModule.cs" />

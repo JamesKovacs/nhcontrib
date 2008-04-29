@@ -14,6 +14,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
         private readonly Control holder;
         private readonly Page page;
         private UpdatePanel up;
+		
         public GlobalPlaceHolder(Page p)
         {
             this.page = p;
