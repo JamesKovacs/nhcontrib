@@ -50,12 +50,15 @@ namespace NHibernate.Burrow.WebUtil.Impl
 			}
 			dataLoaded = true;
 			LoadStates();
+            LogFactory.Log.Debug("Injecting values for StatefulFields");
 			new StatefulFieldLoader(page, this).Process();
 		}
 
 
     	private void page_PreRenderComplete(object sender, EventArgs e)
         {
+            LogFactory.Log.Debug("Retrieving values of StatefulFields");
+
             new StatefulFieldSaver(page, this).Process();
 			SaveStates();
         }
@@ -96,8 +99,6 @@ namespace NHibernate.Burrow.WebUtil.Impl
 				}
 			}
 		}
-
-    	 
 
     	private object Deserialize(string value)
 		{

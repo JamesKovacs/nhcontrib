@@ -51,7 +51,7 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 				ProcessFields();
 
 			foreach (Control control in Control.Controls)
-				if (new StatefulFieldsControlFilter().CanHaveStatefulFields(control))
+				if (StatefulFieldsControlFilter.Instance.CanHaveStatefulFields(control))
 					CreateSubProcessor(control, pageModule).Process();
 		}
 

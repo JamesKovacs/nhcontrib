@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.TestUtil"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.ApplicationBlock", "NHibernate.Burrow.AppBlock\NHibernate.Burrow.AppBlock.csproj", "{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.AppBlock", "NHibernate.Burrow.AppBlock\NHibernate.Burrow.AppBlock.csproj", "{EBD9BE3A-D540-4705-B3C7-BA577D1691AE}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -48,11 +48,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\NHibernate.Burrow.Te
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3822"
+		VWDPort = "2612"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Util.Test", "NHibernate.Burrow.AppBlock.Test\NHibernate.Burrow.AppBlock.Test.csproj", "{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.AppBlock.Test", "NHibernate.Burrow.AppBlock.Test\NHibernate.Burrow.AppBlock.Test.csproj", "{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
