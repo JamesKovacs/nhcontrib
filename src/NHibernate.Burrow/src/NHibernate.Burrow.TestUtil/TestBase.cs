@@ -100,7 +100,7 @@ namespace NHibernate.Burrow.TestUtil
 
         protected void DropSchema()
         {
-            new SchemaUtil().DropSchemas();
+            new SchemaUtil().DropSchemas(true, true);
         }
     }
 }
