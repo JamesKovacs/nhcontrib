@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Web;
+using System.Runtime.Remoting.Messaging;
+
 
 namespace NHibernate.Burrow.DataContainers
 {
@@ -10,7 +12,12 @@ namespace NHibernate.Burrow.DataContainers
     /// <typeparam name="T"></typeparam>
     public class LocalSafe<T>
     {
-        [ThreadStatic] private static IDictionary threadLocalDictionary;
+        private const string CallContextKey = "NHibernate.Burrow.DataContainers.LocalSafeKey";
+        private IDictionary callContextDictionary
+        {
+            get { return CallContext.GetData(CallContextKey) as IDictionary; }
+            set { CallContext.SetData(CallContextKey, value); }
+        }
 
         private readonly Guid gid = Guid.NewGuid();
 
@@ -22,11 +29,11 @@ namespace NHibernate.Burrow.DataContainers
                 {
                     return HttpContext.Current.Items;
                 }
-                if (threadLocalDictionary == null)
+                if (callContextDictionary == null)
                 {
-                    threadLocalDictionary = new Hashtable();
+                    callContextDictionary = new Hashtable();
                 }
-                return threadLocalDictionary;
+                return callContextDictionary;
             }
         }
 
