@@ -1,22 +1,35 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using EnterpriseSample.Core.DataInterfaces;
-using EnterpriseSample.Tests.Data.DaoTestDoubles;
+using NHibernate;
+using NHibernate.Cfg;
+using NHibernate.Dialect;
 
 namespace EnterpriseSample.Tests
 {
-    public class TestCase
+    public abstract class TestCase
     {
+        //protected abstract IList<string> Assemblies { get; }
+        //protected ISessionFactory sessions;
+
+        //public TestCase()
+        //{
+        //    Configuration cfg = new Configuration();
+        //    foreach (string assembly in Assemblies)
+        //        cfg.AddAssembly(assembly);
+
+        //    cfg.GenerateSchemaCreationScript(Dialect.GetDialect());
+
+        //    sessions = cfg.BuildSessionFactory();
+        //}
+
         public IDaoFactory DaoFactory
         {
             get
             {
-                //IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
-                //return (IDaoFactory)container.Resolve("DaoFactory");
-                return new TestDaoFactory();
+                IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
+                return (IDaoFactory)container.Resolve("DaoFactory");
             }
         }
     }

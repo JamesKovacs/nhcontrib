@@ -52,28 +52,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Solution Items\NHibernate.Burrow.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.Burrow.AppBlock, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Solution Items\NHibernate.Burrow.AppBlock.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate.Burrow.TestUtil, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Solution Items\NHibernate.Burrow.TestUtil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddCustomerPresenter.cs" />
     <Compile Include="EditCustomerPresenter.cs" />
     <Compile Include="ListCustomersPresenter.cs" />
-    <Compile Include="ListCustomerOrdersPresenter.cs" />
-    <Compile Include="ListHistoricalOrderSummariesPresenter.cs" />
     <Compile Include="PresenterBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewInterfaces\IAddCustomerView.cs" />
     <Compile Include="ViewInterfaces\IEditCustomerView.cs" />
     <Compile Include="ViewInterfaces\IListCustomersView.cs" />
-    <Compile Include="ViewInterfaces\IListObjectsView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EnterpriseSample.Core\EnterpriseSample.Core.csproj">

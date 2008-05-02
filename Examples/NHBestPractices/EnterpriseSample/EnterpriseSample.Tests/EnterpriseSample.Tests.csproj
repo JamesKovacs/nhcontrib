@@ -64,10 +64,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Solution Items\NUnitAsp.dll</HintPath>
     </Reference>
-    <Reference Include="Rhino.Mocks, Version=3.0.518.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Solution Items\Rhino.Mocks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
@@ -75,23 +71,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\CustomerDaoTests.cs" />
-    <Compile Include="Data\DaoTestDoubles\MockCustomerDaoFactory.cs" />
-    <Compile Include="Data\DaoTestDoubles\MockHistoricalOrderSummaryDaoFactory.cs" />
-    <Compile Include="Data\DaoTestDoubles\MockOrderDaoFactory.cs" />
     <Compile Include="Data\HistoricalOrderSummaryDaoTests.cs" />
     <Compile Include="Data\NHibernateTestCase.cs" />
-    <Compile Include="Data\DaoTestDoubles\TestDaoFactory.cs" />
     <Compile Include="Domain\CustomerTests.cs" />
     <Compile Include="Domain\DomainObjectIdSetter.cs" />
     <Compile Include="Domain\Dto\CustomerDtoTests.cs" />
     <Compile Include="Domain\OrderTests.cs" />
     <Compile Include="NUnitAdapter.cs" />
-    <Compile Include="Presenters\ListHistoricalOrderSummariesPresenterTests.cs" />
-    <Compile Include="Presenters\ListOrdersPresenterTests.cs" />
     <Compile Include="TestCase.cs" />
     <Compile Include="TestFactories\TestHistoricalOrderSummariesFactory.cs" />
     <Compile Include="TestGlobals.cs" />
-    <Compile Include="Data\DaoTestDoubles\OrderDaoStub.cs" />
     <Compile Include="Presenters\EditCustomerPresenterTests.cs" />
     <Compile Include="Presenters\ListCustomersPresenterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +114,9 @@
     <None Include="App.config" />
     <None Include="App.config.template" />
     <None Include="EnterpiseSample.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BurrowTest.cfg.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

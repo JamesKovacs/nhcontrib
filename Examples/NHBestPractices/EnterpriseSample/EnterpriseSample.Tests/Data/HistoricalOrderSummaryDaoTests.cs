@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace EnterpriseSample.Tests.Data
 {
-    [TestFixture]
+    [TestFixture, Ignore("need refactor")]
     [Category("Database Tests")]
     public class HistoricalOrderSummaryDaoTests : NHibernateTestCase
     {

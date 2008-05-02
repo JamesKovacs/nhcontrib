@@ -11,7 +11,6 @@ namespace EnterpriseSample.Presenters
     public class EditCustomerPresenter : PresenterBase
     {
         private readonly IEditCustomerView view;
-        private readonly ICustomerDao customerDao;
 
         private readonly EditCustomerModel model;
 
@@ -19,8 +18,6 @@ namespace EnterpriseSample.Presenters
         {
             Check.Require(view != null, "view may not be null");
             this.view = view;
-
-            customerDao = DaoFactory.GetCustomerDao();
 
             BurrowFramework burrow = new BurrowFramework();
 
@@ -34,9 +31,7 @@ namespace EnterpriseSample.Presenters
         public void InitViewWith(string customerId) {
             Check.Require(!string.IsNullOrEmpty(customerId), "customerId may not be empty");
 
-            // No need to lock the customer since we're just viewing the data
-            model.Customer = customerDao.GetById(customerId, false);
-            
+            model.setCustomer (customerId);
             view.Customer = model.Customer;
         }
 
@@ -45,7 +40,8 @@ namespace EnterpriseSample.Presenters
             Check.Require(model.Customer != null, "customerId may not be empty");
 
             view.UpdateValuesOn(model.Customer);
-            customerDao.SaveOrUpdate(model.Customer);
+
+            model.Update();
         }
 
         public void ShowOrders()

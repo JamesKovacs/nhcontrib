@@ -3,7 +3,6 @@ using EnterpriseSample.Core.Domain;
 using EnterpriseSample.Presenters;
 using EnterpriseSample.Presenters.ViewInterfaces;
 using EnterpriseSample.Tests.Data;
-using EnterpriseSample.Tests.Data.DaoTestDoubles;
 using NUnit.Framework;
 
 namespace EnterpriseSample.Tests.Presenters

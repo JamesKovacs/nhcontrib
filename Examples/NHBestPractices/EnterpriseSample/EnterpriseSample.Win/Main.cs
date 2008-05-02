@@ -98,5 +98,11 @@ namespace EnterpriseSample.Win
                 childForm.Close();
             }
         }
+
+        private void customersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListCustomers window = new ListCustomers();
+            window.Show();
+        }
     }
 }

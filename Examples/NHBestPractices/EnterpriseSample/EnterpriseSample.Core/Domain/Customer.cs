@@ -24,26 +24,6 @@ namespace EnterpriseSample.Core.Domain
 
         #region Properties
 
-        /// <summary>
-        /// Provides an accessor for injecting an IOrderDao so that this class does 
-        /// not have to create one itself.  Can be set from a controller, using 
-        /// IoC, or from another business object.  As a rule-of-thumb, I do not like
-        /// domain objects to use DAOs directly; but there are exceptional cases; 
-        /// therefore, this shows a way to do it without having a concrete dependency on the DAO.
-        /// </summary>
-        public IOrderDao OrderDao {
-            get {
-                if (orderDao == null) {
-                    throw new MemberAccessException("OrderDao has not yet been initialized");
-                }
-
-                return orderDao;
-            }
-            set {
-                orderDao = value;
-            }
-        }
-
         public string CompanyName {
             get { return companyName; }
             set {
@@ -62,7 +42,10 @@ namespace EnterpriseSample.Core.Domain
             protected set { orders = value; }
         }
 
-        public void AddOrder(Order order) {
+        #region Methods
+
+        public void AddOrder(Order order)
+        {
             if (order != null && !orders.Contains(order)) {
                 orders.Add(order);
             }
@@ -76,45 +59,7 @@ namespace EnterpriseSample.Core.Domain
 
         #endregion
 
-        #region Methods
-
-        /// <summary>
-        /// To get all the orders ordered on a particular date, we could loop through 
-        /// each item in the Orders collection.  But if a customer has thousands of 
-        /// orders, we don't want all the orders to have to be loaded from the database.  
-        /// Instead, we can let the data layer do the filtering for us.
-        /// </summary>
-        public List<Order> GetOrdersOrderedOn(DateTime orderedDate) {
-            Order exampleOrder = new Order(this);
-            exampleOrder.OrderDate = orderedDate;
-
-            // Make sure you use "OrderDao" and not "orderDao" so it'll be checked for proper initialization;
-            // otherwise, you may get the oh-so-fun-to-track-down "object reference" exception.
-            List<Order> allMatchingOrders = OrderDao.GetByExample(exampleOrder);
-
-            // One downside to "GetByExample" is that the NHibernate "example fetcher" is rather shallow;
-            // it'll only match on primitive properties - so even though Order.OrderedBy is set, it won't
-            // match on it.  So we have to go through each of the returned results looking for any that
-            // were orderd by this customer.  For situations like this, it would be better to expose a 
-            // more specialized IOrderDao method, but this'll work for the demonstration at hand.
-            List<Order> matchingOrdersForThisCustomer = new List<Order>();
-
-            foreach (Order matchingOrder in allMatchingOrders) {
-                if (matchingOrder.OrderedBy.ID == ID) {
-                    matchingOrdersForThisCustomer.Add(matchingOrder);
-                }
-            }
-
-            return matchingOrdersForThisCustomer;
-        }
-
         public void SetAssignedIdTo(string assignedId) {
-            Check.Require(! string.IsNullOrEmpty(assignedId), "assignedId may not be null or empty");
-
-            // As an alternative to Check.Require, which throws an exception, the 
-            // Validation Application Block could be used to validate the following
-            Check.Require(assignedId.Trim().Length == 5, "assignedId must be exactly 5 characters");
-
             ID = assignedId.Trim().ToUpper();
         }
 
@@ -131,7 +76,6 @@ namespace EnterpriseSample.Core.Domain
 
         #region Members
 
-        private IOrderDao orderDao;
         private string companyName = "";
         private string contactName = "";
         private IList<Order> orders = new List<Order>();

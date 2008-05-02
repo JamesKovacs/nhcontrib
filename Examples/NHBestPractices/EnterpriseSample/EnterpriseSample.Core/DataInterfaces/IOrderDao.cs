@@ -13,5 +13,7 @@ namespace EnterpriseSample.Core.DataInterfaces
     public interface IOrderDao : IDao<Order, long>
     {
         List<Order> GetOrdersPlacedBetween(DateTime startDate, DateTime endDate);
+
+        IList<Order> GetOrdersOrderedOn(Customer customer, DateTime orderedDate);
     }
 }

@@ -18,7 +18,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\EnterpriseSample.Web
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "1460"
+		VWDPort = "3225"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseSample.Core", "EnterpriseSample.Core\EnterpriseSample.Core.csproj", "{8CF24AF8-714C-4029-8E0E-3BA26C27FA7C}"

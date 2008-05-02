@@ -2,7 +2,6 @@ using System;
 using System.Web.UI;
 using EnterpriseSample.Core.DataInterfaces;
 using EnterpriseSample.Data;
-using EnterpriseSample.Web;
 
 /// <summary>
 /// This could alternatively be hooked up via MVP; for simplicity of the sample, it's not.  See EditCustomer.aspx for a good example of MVP.

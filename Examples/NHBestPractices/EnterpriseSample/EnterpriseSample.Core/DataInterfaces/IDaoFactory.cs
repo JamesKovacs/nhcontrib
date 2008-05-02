@@ -1,5 +1,6 @@
 using EnterpriseSample.Core.Domain;
 using ProjectBase.Data;
+using System.Collections.Generic;
 
 namespace EnterpriseSample.Core.DataInterfaces
 {
@@ -19,6 +20,7 @@ namespace EnterpriseSample.Core.DataInterfaces
     #region Inline interface declarations
 
     public interface ICustomerDao : IDao<Customer, string> { }
+
     public interface ISupplierDao : IDao<Supplier, long> { }
 
     #endregion
