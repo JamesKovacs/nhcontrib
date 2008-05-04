@@ -27,12 +27,16 @@ namespace EnterpriseSample.Win
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            base.InitWorkSpace();
+
             AddCustomerPresenter presenter = new AddCustomerPresenter(this);
             if (presenter.Create())
             {
                 actionResult = "updated";
                 Hide();
             }
+
+            base.CloseWorkSpace();
         }
 
         #region IAddCustomerView Members

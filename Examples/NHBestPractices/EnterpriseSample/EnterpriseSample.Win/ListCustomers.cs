@@ -28,8 +28,10 @@ namespace EnterpriseSample.Win
 
         private void InitView()
         {
+            base.InitWorkSpace();
             ListCustomersPresenter presenter = new ListCustomersPresenter(this);
             presenter.InitView();
+            base.CloseWorkSpace();
         }
 
     private void DisplayMessage() {

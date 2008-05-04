@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using NHibernate.Burrow;
+using System.Threading;
 
 namespace EnterpriseSample.Win
 {
     public class FormBase : Form
     {
-        private readonly BurrowFramework burrow;
-        
-        public FormBase()
+        protected BurrowFramework burrow;
+
+        protected void InitWorkSpace()
         {
-            burrow=new BurrowFramework();
+            burrow = new BurrowFramework();
             burrow.InitWorkSpace();
         }
 
-        protected override void Dispose(bool disposing)
+        protected void CloseWorkSpace()
         {
-            base.Dispose(disposing);
             burrow.CloseWorkSpace();
         }
     }
