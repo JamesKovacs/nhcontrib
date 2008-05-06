@@ -6,28 +6,31 @@ namespace NHibernate.Burrow.Impl
     /// <remarks>
     /// this is for in manual transaction mode, so that client can control the transaction itself.
     /// </remarks>
-    internal class VoidTransactionManager : ITransactionManager
+    internal class VoidTransaction : ITransaction
     {
-        #region ITransactionManager Members
+        #region ITransaction Members
 
-        public void BeginTransaction(ISession sess)
+        public void Begin()
         {
             return;
         }
 
-        public void CommitTransaction()
+        public void Commit()
         {
             return;
         }
 
-        public void RollbackTransaction()
+        public void Rollback()
         {
             return;
         }
 
-        public void Dispose()
+        /// <summary>
+        /// whether a transaction has begun
+        /// </summary>
+        public bool InTransaction
         {
-            return;
+            get { return false; }
         }
 
         #endregion

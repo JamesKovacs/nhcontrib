@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Specialized;
-using NHibernate;
 using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow
@@ -69,11 +68,11 @@ namespace NHibernate.Burrow
             {
                 CloseWorkSpace();
             }
-            FrameworkEnvironment.Instance.StartNewWorkSpace(states, currentWorkSpaceName);
+            FrameworkEnvironment.Instance.InitWorkSpace(states, currentWorkSpaceName);
         }
 
         /// <summary>
-        /// Initialize the WorkSpace and join the conversation with <paramref name="conversationId"/>
+        /// StartNew the WorkSpace and join the conversation with <paramref name="conversationId"/>
         /// </summary>
         /// <param name="conversationId"></param>
         public void InitWorkSpace(Guid conversationId)
@@ -81,12 +80,26 @@ namespace NHibernate.Burrow
             InitWorkSpace(false, WorkSpace.CreateState(conversationId, string.Empty), string.Empty);
         }
 
+        ///<summary>
+        /// Initiate a work space that can have a long life time. 
+        /// On the other hand it requires semi-auto transaction management by you, see <see cref="ITransactionManager"/>.
+        /// You can use it within a winform environment where you need 
+        /// long session and multiple transactions within the session. 
+        ///</summary>
+        public void InitStickyWorkSpace()
+        {
+            FrameworkEnvironment.Instance.InitMultipleTransactionEnabledWorkSpace();
+        }
+
         /// <summary>
         /// close the Burrow environment for the current visit to your Domain Layer
         /// </summary>
         /// <remarks>
-        /// This should be called after the current visit to the domainlayer is finished and the time of next visit is unknow, for example, at the very end of handling the http request
-        /// if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
+        /// This should be called after the current visit to the domainlayer is finished 
+        /// and the time of next visit is unknow, for example, 
+        /// at the very end of handling the http request.
+        /// If you are using  NHibernate.Burrow.WebUtil's HttpModule,
+        /// it will call this for you, you don't need to worry about this.
         /// </remarks>
         public void CloseWorkSpace()
         {
@@ -102,13 +115,16 @@ namespace NHibernate.Burrow
         /// <returns></returns>
         public ISession GetSession()
         {
-            return ((ConversationImpl) CurrentConversation).GetSessionManager().GetSession();
+            return ((AbstractConversation) CurrentConversation).GetSessionManager().GetSession();
         }
 
         /// <summary>
         /// Gets a managed ISession
         /// </summary>
-        /// <param name="entityType">the entity type whose mapping is included in the SessionFactory, when there are multiple databases, Burrow use this to locate the right one</param>
+        /// <param name="entityType">
+        /// The entity type whose mapping is included in the SessionFactory,
+        /// when there are multiple databases, Burrow use this to locate the right one
+        /// </param>
         /// <returns>The Burrow managed ISession</returns>
         /// <remarks>
         /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow.
@@ -117,7 +133,7 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISession GetSession(System.Type entityType)
         {
-            return ((ConversationImpl) CurrentConversation).GetSessionManager(entityType).GetSession();
+            return ((AbstractConversation) CurrentConversation).GetSessionManager(entityType).GetSession();
         }
 
         /// <summary>
@@ -132,7 +148,8 @@ namespace NHibernate.Burrow
         public ISession GetUnManagedSession(System.Type entityType, IInterceptor interceptor)
         {
             return
-                ((ConversationImpl) CurrentConversation).GetSessionManager(entityType).GetUnManagedSession(interceptor);
+                ((AbstractConversation) CurrentConversation).GetSessionManager(entityType).GetUnManagedSession(
+                    interceptor);
         }
     }
 }

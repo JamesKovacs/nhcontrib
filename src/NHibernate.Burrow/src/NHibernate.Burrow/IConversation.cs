@@ -51,7 +51,24 @@ namespace NHibernate.Burrow
         /// </summary>
         DateTime LastVisit { get; }
 
-        bool Canceled { get; }
+
+        /// <summary>
+        /// Gets if the conversation is already given up (it's data change will no long be committed)
+        /// </summary>
+        bool GivenUp { get; }
+
+        /// <summary>
+        /// Gets the <see cref="ITransactionManager"/> when in an Sticky WorkSpace.
+        /// </summary>
+        /// <remarks>
+        /// For this property to be available, you must call 
+        /// <see cref="BurrowFramework.InitStickyWorkSpace()"/> instead of
+        /// <see cref="BurrowFramework.InitWorkSpace()"/> at the very begninning
+        /// </remarks>
+        ITransactionManager TransactionManager
+        {
+            get;
+        }
 
         /// <summary>
         /// Span with Http Session
@@ -84,7 +101,13 @@ namespace NHibernate.Burrow
         /// call this method when all operations in a long span conversation are successfully done
         /// </remarks>
         bool FinishSpan();
+        
 
+        /// <summary>
+        /// fired when it is closed
+        /// </summary>
         event EventHandler Closed;
+
+
     }
 }

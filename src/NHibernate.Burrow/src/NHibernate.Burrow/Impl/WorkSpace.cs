@@ -17,9 +17,9 @@ namespace NHibernate.Burrow.Impl
     {
         private const string ConversationIdKeyName = "_NHibernate.Burrow.ConversationId_";
         private bool closed = false;
-        private ConversationImpl conversation;
+        private AbstractConversation conversation;
 
-        private WorkSpace(ConversationImpl c)
+        private WorkSpace(AbstractConversation c)
         {
             c.Closed += new EventHandler(conversation_Closed);
             conversation = c;
@@ -65,26 +65,41 @@ namespace NHibernate.Burrow.Impl
             get { return FrameworkEnvironment.Instance.CurrentWorkSpace; }
         }
 
-        public ConversationImpl Conversation
+        public AbstractConversation Conversation
         {
             get { return conversation; }
         }
 
-        public static WorkSpace Initialize(NameValueCollection states, string currentWorkSpaceName)
+        /// <summary>
+        /// create a workspace in which transaction is automatically managed and has the same life cycle as conversation
+        /// </summary>
+        /// <param name="states"></param>
+        /// <param name="currentWorkSpaceName"></param>
+        /// <returns></returns>
+        public static WorkSpace Create(NameValueCollection states, string currentWorkSpaceName)
         {
             string cid = GetWorkSpaceState(states, ConversationIdKeyName, currentWorkSpaceName);
-            Guid gcid = !string.IsNullOrEmpty(cid) ? new Guid(cid) : Guid.Empty;
-            return new WorkSpace(InitializeConversation(gcid));
+            if (!string.IsNullOrEmpty(cid))
+            {
+                return new WorkSpace(ConversationPool.Instance[new Guid(cid)]);
+            }else
+            {
+                return new WorkSpace(new AtomicConversationImpl());
+            }
         }
 
-        private static ConversationImpl InitializeConversation(Guid cid)
+         
+        /// <summary>
+        /// Create a workspace that is enabled to allow multiple transaction
+        /// </summary>
+        /// <returns></returns>
+        public static WorkSpace CreateMultipleTransactionEnabled()
         {
-            if (cid != Guid.Empty)
-            {
-                return ConversationPool.Instance[cid];
-            }
-            return ConversationImpl.StartNew();
+            return new WorkSpace(new ManualTransactionConversationImpl());
         }
+
+
+ 
 
         private void CheckConversation()
         {
@@ -162,6 +177,7 @@ namespace NHibernate.Burrow.Impl
         private void conversation_Closed(object sender, EventArgs e)
         {
             conversation = null;
+            Close();
         }
 
         /// <summary>
@@ -176,11 +192,12 @@ namespace NHibernate.Burrow.Impl
             {
                 return;
             }
+            closed = true;
             if (conversation != null)
             {
                 conversation.OnWorkSpaceClose();
             }
-            closed = true;
+ 
         }
 
         private static string UrlEncode(string s)

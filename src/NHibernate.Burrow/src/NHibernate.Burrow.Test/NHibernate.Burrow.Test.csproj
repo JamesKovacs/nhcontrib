@@ -72,12 +72,14 @@
     <Compile Include="ConverstationTests\WrapUrlFixture.cs" />
     <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
     <Compile Include="FrameworkEnvironment\ShutDownFixture.cs" />
+    <Compile Include="ManualTransaction\ManualTransactionFexture.cs" />
     <Compile Include="MockEntities\MockEntity.cs" />
     <Compile Include="MockEntities\MockEntityDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Concurrency\SessionConcurency.cs" />
     <Compile Include="SpecialTests\CreateDB.cs" />
     <Compile Include="Transaction\ManualTransactionFixture.cs" />
+    <Compile Include="WorkSpace\MultipleWorkSpaceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

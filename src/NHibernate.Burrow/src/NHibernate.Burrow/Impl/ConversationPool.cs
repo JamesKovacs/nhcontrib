@@ -46,7 +46,7 @@ namespace NHibernate.Burrow.Impl
         ///<param name="key">The key of the element to get or set.</param>
         ///<exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"></see> is read-only.</exception>
         ///<exception cref="T:System.ArgumentNullException">key is null.</exception>
-        public ConversationImpl this[Guid key]
+        public AbstractConversation this[Guid key]
         {
             get
             {
@@ -75,7 +75,7 @@ namespace NHibernate.Burrow.Impl
             }
         }
 
-        public void Add(Guid key, ConversationImpl value)
+        public void Add(Guid key, AbstractConversation value)
         {
             CheckGuid(key);
             lock (this)
@@ -152,14 +152,14 @@ namespace NHibernate.Burrow.Impl
     /// </remark>
     internal class ConversationPoolItem
     {
-        private readonly ConversationImpl conversation;
+        private readonly AbstractConversation conversation;
 
-        public ConversationPoolItem(ConversationImpl conversation)
+        public ConversationPoolItem(AbstractConversation conversation)
         {
             this.conversation = conversation;
         }
 
-        public ConversationImpl Conversation
+        public AbstractConversation Conversation
         {
             get { return conversation; }
         }

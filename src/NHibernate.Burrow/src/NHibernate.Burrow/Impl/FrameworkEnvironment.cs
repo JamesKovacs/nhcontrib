@@ -9,7 +9,7 @@ namespace NHibernate.Burrow.Impl
     {
         private static readonly FrameworkEnvironment instance = new FrameworkEnvironment();
         private NHibernateBurrowCfgSection cfg;
-        private LocalSafe<WorkSpace> currentDomainContextHolder;
+        private LocalSafe<WorkSpace> currentWorkSpaceHolder;
 
         private FrameworkEnvironment()
         {
@@ -30,13 +30,16 @@ namespace NHibernate.Burrow.Impl
             get
             {
                 CheckRunning();
-                if (currentDomainContextHolder.Value != null && currentDomainContextHolder.Value.Closed)
+                if (currentWorkSpaceHolder.Value != null && currentWorkSpaceHolder.Value.Closed)
                 {
-                    currentDomainContextHolder.Value = null;
+                    currentWorkSpaceHolder.Value = null;
                 }
-                return currentDomainContextHolder.Value;
+                return currentWorkSpaceHolder.Value;
             }
-            private set { currentDomainContextHolder.Value = value; }
+           set
+           {
+                currentWorkSpaceHolder.Value = value;
+           }
         }
 
         #region IFrameworkEnvironment Members
@@ -56,12 +59,12 @@ namespace NHibernate.Burrow.Impl
                     "Domain must be closed before ShutDown, call BurrowFramework.CloseWorkSpace() first");
             }
             ConversationPool.Instance.Clear();
-            currentDomainContextHolder = null;
+            currentWorkSpaceHolder = null;
         }
 
         public bool IsRunning
         {
-            get { return currentDomainContextHolder != null; }
+            get { return currentWorkSpaceHolder != null; }
         }
 
         public IBurrowConfig Configuration
@@ -76,7 +79,7 @@ namespace NHibernate.Burrow.Impl
                 throw new GeneralException("Burrow Environment is already running");
             }
 
-            currentDomainContextHolder = new LocalSafe<WorkSpace>();
+            currentWorkSpaceHolder = new LocalSafe<WorkSpace>();
         }
 
         /// <summary>
@@ -90,7 +93,7 @@ namespace NHibernate.Burrow.Impl
         #endregion
 
         /// <summary>
-        /// Initialize a Domain Context 
+        /// Initialize the WorkSpace 
         /// </summary>
         /// <remarks>
         /// Please read the remarks of the <see cref="NHibernate.Burrow.Impl.WorkSpace"/>
@@ -100,13 +103,24 @@ namespace NHibernate.Burrow.Impl
         /// Initialized the domain context with a collection of states
         /// </param>
         /// <param name="currentWorkSpaceName"></param>
-        public void StartNewWorkSpace(NameValueCollection states, string currentWorkSpaceName)
+        public void InitWorkSpace(NameValueCollection states, string currentWorkSpaceName)
         {
-            if (CurrentWorkSpace == null)
-            {
-                CurrentWorkSpace = WorkSpace.Initialize(states, currentWorkSpaceName);
-            }
-            else
+            CheckCurrentWorkSpace();
+
+            CurrentWorkSpace = WorkSpace.Create(states, currentWorkSpaceName);
+        }
+
+        public void InitMultipleTransactionEnabledWorkSpace()
+        { 
+            CheckCurrentWorkSpace();
+
+            CurrentWorkSpace = WorkSpace.CreateMultipleTransactionEnabled();
+            
+        }
+
+        private void CheckCurrentWorkSpace()
+        {
+            if (CurrentWorkSpace != null)
             {
                 throw new BurrowException("WorkSpace is already initialized");
             }

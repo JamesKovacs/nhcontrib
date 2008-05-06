@@ -111,12 +111,17 @@
     <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
     <Compile Include="Exceptions\FrameworkAlreadyShutDownException.cs" />
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
+    <Compile Include="Exceptions\IncorrectTransactionStatusException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
+    <Compile Include="Impl\AtomicConversationImpl.cs" />
     <Compile Include="Impl\FrameworkEnvironment.cs" />
     <Compile Include="IFrameworkEnvironment.cs" />
-    <Compile Include="Impl\ITransactionManager.cs" />
+    <Compile Include="Impl\ITransaction.cs" />
+    <Compile Include="Impl\LogFactory.cs" />
+    <Compile Include="Impl\ManualTransactionConversationImpl.cs" />
+    <Compile Include="Impl\TransactionImpl.cs" />
     <Compile Include="Impl\TransactionManagerImpl.cs" />
-    <Compile Include="Impl\VoidTransactionManager.cs" />
+    <Compile Include="Impl\VoidTransaction.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
     <Compile Include="IBurrowConfig.cs" />
     <Compile Include="Configuration\NHibernateBurrowCfgSection.cs" />
@@ -131,7 +136,7 @@
     <Compile Include="Exceptions\TypeNotFoundException.cs" />
     <Compile Include="Exceptions\UnableToGetPersistenceUnitException.cs" />
     <Compile Include="BurrowFramework.cs" />
-    <Compile Include="Impl\ConversationImpl.cs" />
+    <Compile Include="Impl\AbstractConversation.cs" />
     <Compile Include="ConversationalData.cs" />
     <Compile Include="Impl\ConversationPool.cs" />
     <Compile Include="Exceptions\ConversationUnavailableException.cs" />
@@ -150,6 +155,7 @@
     <Compile Include="Impl\SessionManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ITransactionManager.cs" />
     <Compile Include="Util\EntityLoader.cs" />
     <Compile Include="Util\InstanceLoader.cs" />
     <Compile Include="Util\SchemaUtil.cs" />

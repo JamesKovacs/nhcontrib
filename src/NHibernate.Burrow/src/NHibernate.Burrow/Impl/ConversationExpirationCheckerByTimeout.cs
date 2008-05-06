@@ -30,7 +30,7 @@ namespace NHibernate.Burrow.Impl
 
         public bool IsConversationExpired(IConversation c)
         {
-            return (((ConversationImpl) c).LastVisit + timeout) < DateTime.Now;
+            return (((AbstractConversation) c).LastVisit + timeout) < DateTime.Now;
         }
 
         public TimeSpan CleanUpTimeSpan

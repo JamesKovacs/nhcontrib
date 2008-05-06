@@ -12,29 +12,33 @@ namespace NHibernate.Burrow.Impl
     /// Actually you shouldn't need to use this class. We may hide it to internal in the future. 
     /// Currently we leave it public mainly for testing purpose. 
     /// </remarks>
-    internal class ConversationImpl : IConversation
+    internal abstract class AbstractConversation : IConversation
     {
         private readonly Guid id = Guid.NewGuid();
         private readonly IDictionary<string, object> items = new Dictionary<string, object>();
         private readonly GuidDataContainer safeItems = new GuidDataContainer();
-
-        private readonly IDictionary<PersistenceUnit, SessionManager> sessManagers =
+        protected readonly IDictionary<PersistenceUnit, SessionManager> sessManagers =
             new Dictionary<PersistenceUnit, SessionManager>();
-
-        private bool canceled = false;
+        private bool givenUp = false;
         private DateTime lastVisit = DateTime.Now;
         private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
         private string workSpaceName;
 
         #region Constructors
 
-        private ConversationImpl()
+        protected AbstractConversation()
         {
             foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
             {
-                sessManagers.Add(pu, new SessionManager(pu));
+                sessManagers.Add(pu, CreateSessionManager(pu));
+            }
+            foreach (SessionManager sm in sessManagers.Values)
+            {
+                sm.OnConversationStarts();
             }
         }
+
+        protected abstract SessionManager CreateSessionManager(PersistenceUnit pu);
 
         #endregion
 
@@ -65,9 +69,21 @@ namespace NHibernate.Burrow.Impl
             private set { spanStrategy = value; }
         }
 
-        public bool Canceled
+        public bool GivenUp
         {
-            get { return canceled; }
+            get { return givenUp; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ITransactionManager"/> when in an Sticky WorkSpace.
+        /// </summary>
+        /// <remarks>
+        /// For this property to be available, you must call 
+        /// <see cref="BurrowFramework.InitStickyWorkSpace()"/> instead of
+        /// <see cref="BurrowFramework.InitWorkSpace()"/> at the very begninning
+        /// </remarks>
+        public abstract ITransactionManager TransactionManager
+        { get;
         }
 
         /// <summary>
@@ -118,7 +134,7 @@ namespace NHibernate.Burrow.Impl
         /// </remarks>
         public void GiveUp()
         {
-            canceled = true;
+            givenUp = true;
             StopSpanning();
         }
 
@@ -131,7 +147,7 @@ namespace NHibernate.Burrow.Impl
         /// </remarks>
         public bool FinishSpan()
         {
-            if (canceled)
+            if (givenUp)
             {
                 return false;
             }
@@ -192,7 +208,7 @@ namespace NHibernate.Burrow.Impl
             {
                 throw new ArgumentException(om + "is not an accetable overspan strategy for spanning");
             }
-            if (Canceled)
+            if (GivenUp)
             {
                 throw new ConversationAlreadyCancelledException();
             }
@@ -244,7 +260,10 @@ namespace NHibernate.Burrow.Impl
 
             try
             {
-                CommitNHibernateTransactions();
+                foreach (SessionManager sm in sessManagers.Values)
+                {
+                    sm.OnConversationFinish();
+                }
             }
             finally
             {
@@ -255,35 +274,14 @@ namespace NHibernate.Burrow.Impl
 
         private void CheckState()
         {
-            if (Canceled)
+            if (GivenUp)
             {
                 throw new ConversationUnavailableException("Conversation was already canceld");
             }
         }
+ 
 
-        /// <summary>
-        /// Force commit the data 
-        /// </summary>
-        /// <remarks>
-        /// Call it for real special cases as it will break the atomicity of the conversation
-        /// basically it will commit a database transaction and start a new one. 
-        /// Multiple DB transaction in one conversation actually does not follow the design intention. 
-        /// </remarks>
-        //public void ForceCommitChange()
-        //{
-        //    Visited();
-        //    CheckState();
-        //    try
-        //    {
-        //        CommitNHibernateTransactions();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        Close();
-        //        throw;
-        //    }
-        //    BeginNHibernateTransactions();
-        //}
+
         /// <summary>
         /// immediately rollback 
         /// </summary>
@@ -291,7 +289,10 @@ namespace NHibernate.Burrow.Impl
         {
             try
             {
-                RollbackNHibernateTransacitons();
+                foreach (SessionManager sm in sessManagers.Values)
+                {
+                    sm.OnConversationRollback();
+                }
             }
             finally
             {
@@ -309,36 +310,9 @@ namespace NHibernate.Burrow.Impl
                 sm.GetSession().Flush();
             }
         }
+ 
 
-        /// <summary>
-        /// Begin Transactions for all SessionManagers in All PersistenceUnits
-        /// </summary>
-        internal void BeginNHibernateTransactions()
-        {
-            foreach (SessionManager sm in sessManagers.Values)
-            {
-                sm.BeginTransaction();
-            }
-        }
-
-        /// <summary>
-        /// Commit Transactions for all SessionManagers in All PersistenceUnits
-        /// </summary>
-        internal void CommitNHibernateTransactions()
-        {
-            foreach (SessionManager sm in sessManagers.Values)
-            {
-                sm.CommitTransaction();
-            }
-        }
-
-        internal void RollbackNHibernateTransacitons()
-        {
-            foreach (SessionManager sm in sessManagers.Values)
-            {
-                sm.RollbackTransaction();
-            }
-        }
+         
 
         internal void CloseNHibernateSessions()
         {
@@ -363,7 +337,7 @@ namespace NHibernate.Burrow.Impl
 
         internal void OnWorkSpaceClose()
         {
-            if (Canceled)
+            if (GivenUp)
             {
                 RollbackAndClose();
             }
@@ -387,12 +361,6 @@ namespace NHibernate.Burrow.Impl
                 }
             }
         }
-
-        public static ConversationImpl StartNew()
-        {
-            ConversationImpl ci = new ConversationImpl();
-            ci.BeginNHibernateTransactions();
-            return ci;
-        }
+ 
     }
 }

@@ -1,108 +1,62 @@
 using System;
 using System.Collections.Generic;
-using log4net;
+using System.Text;
 
 namespace NHibernate.Burrow.Impl
 {
     internal class TransactionManagerImpl : ITransactionManager
     {
-        private readonly IDictionary<TransactionManagerImpl, ITransaction> transactionRepo =
-            new Dictionary<TransactionManagerImpl, ITransaction>();
-
-        private ITransaction threadTransaction
-        {
-            get
-            {
-                IDictionary<TransactionManagerImpl, ITransaction> repo = transactionRepo;
-                if (!repo.ContainsKey(this))
-                {
-                    return null;
-                }
-                return repo[this];
-            }
-            set { transactionRepo[this] = value; }
+        private IList<ITransaction> transactions;
+        public event System.EventHandler RolledBack;
+        public TransactionManagerImpl(IList<ITransaction> transactions) {
+            this.transactions = transactions;
         }
 
-        #region ITransactionManager Members
-
         /// <summary>
-        /// 
+        /// begin transactions
         /// </summary>
-        public void BeginTransaction(ISession sess)
+        public void Begin()
         {
-            if (threadTransaction == null)
+            foreach (ITransaction transaction in transactions)
             {
-                threadTransaction = sess.BeginTransaction();
+                transaction.Begin();
             }
         }
 
         /// <summary>
-        /// Try commit the transaction, if failed the transaction will be rollback and the session will be close
+        /// Commit transactions
         /// </summary>
-        public void CommitTransaction()
+        public void Commit()
         {
-            try
-            {
-                if (threadTransaction != null && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
-                {
-                    threadTransaction.Commit();
-                }
-            }
-            catch (Exception)
+            bool someTransactionHasCommitted = false;
+            foreach (ITransaction transaction in transactions)
             {
                 try
                 {
-                    RollbackTransaction();
+                    transaction.Commit();
+                    someTransactionHasCommitted = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    //Catch the exception thrown from RollBackTransaction() to prevent the original exception from being swallowed.
-
-                    ILog log = LogManager.GetLogger(typeof (SessionManager));
-                    if (log.IsErrorEnabled)
-                    {
-                        log.Error("NHibernate.Burrow Rollback failed", e);
-                    }
-                    else
-                    {
-                        Console.WriteLine(e);
-                    }
+                    if(someTransactionHasCommitted)
+                        LogFactory.Log.Error("transaction atmoc broke");
+                    Rollback();
+                    throw;
                 }
-                throw;
-            }
-            finally
-            {
-                threadTransaction = null;
             }
         }
 
         /// <summary>
-        /// Rollback the Transaction and Close Session
+        /// Rollback transactions
         /// </summary>
-        /// <remarks>
-        /// if the tranasaction has already been rollback or the session closed this will do nothing. 
-        /// You can perform this method multiple times, only the first time will take effect. 
-        /// </remarks>
-        public void RollbackTransaction()
+        public void Rollback()
         {
-            try
+            foreach (ITransaction transaction in transactions)
             {
-                if (threadTransaction != null && !threadTransaction.WasCommitted && !threadTransaction.WasRolledBack)
-                {
-                    threadTransaction.Rollback();
-                }
+               transaction.Rollback();
             }
-            finally
-            {
-                threadTransaction = null;
-            }
+            if (RolledBack != null)
+                RolledBack(this, new EventArgs());
         }
-
-        public void Dispose()
-        {
-            threadTransaction = null;
-        }
-
-        #endregion
     }
 }
