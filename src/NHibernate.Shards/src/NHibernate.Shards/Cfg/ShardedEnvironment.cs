@@ -21,6 +21,6 @@ namespace NHibernate.Shards.Cfg
 		/// <summary>
 		/// Unique identifier for a shard.  Must be an Integer.
 		/// </summary>
-		public static readonly string SHARD_ID_PROPERTY = "hibernate.connection.shard_id";
+		public static readonly string ShardIdProperty = "hibernate.connection.shard_id";
 	}
 }

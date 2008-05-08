@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseHasShardIdList.cs" />
+    <Compile Include="Cfg\ConfigurationToShardConfigurationAdapter.cs" />
     <Compile Include="Cfg\IShardConfiguration.cs" />
     <Compile Include="Cfg\ShardedEnvironment.cs" />
     <Compile Include="Criteria\CriteriaId.cs" />

@@ -12,7 +12,9 @@ using NHibernate.Context;
 using NHibernate.Dialect.Function;
 using NHibernate.Engine;
 using NHibernate.Engine.Query;
+using NHibernate.Event;
 using NHibernate.Exceptions;
+using NHibernate.Hql;
 using NHibernate.Id;
 using NHibernate.Metadata;
 using NHibernate.Persister.Collection;
@@ -837,6 +839,21 @@ namespace NHibernate.Shards.Session
 			return GetSecondLevelCacheRegion(regionName);
 		}
 
+		public IQueryTranslator[] GetQuery(string queryString, bool shallow, IDictionary<string, IFilter> enabledFilters)
+		{
+			throw new NotImplementedException();
+		}
+
+		public NamedQueryDefinition GetNamedQuery(string queryName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public NamedSQLQueryDefinition GetNamedSQLQuery(string queryName)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary> Statistics SPI</summary>
 		public IStatisticsImplementor StatisticsImplementor
 		{
@@ -846,6 +863,11 @@ namespace NHibernate.Shards.Session
 		public QueryPlanCache QueryPlanCache
 		{
 			get { return AnyFactory.QueryPlanCache; }
+		}
+
+		public EventListeners EventListeners
+		{
+			get { throw new NotImplementedException(); }
 		}
 
 		public IType GetIdentifierType(string className)

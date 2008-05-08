@@ -4,9 +4,11 @@ using System.Data;
 using log4net;
 using NHibernate.Shards.Engine;
 using NHibernate.Shards.Session;
+using NHibernate.Transaction;
 
 namespace NHibernate.Shards.Transaction
 {
+	//TODO: some methods without implementation
 	public class ShardedTransactionImpl : IShardedTransaction
 	{
 		private readonly ILog log = LogManager.GetLogger(typeof (ShardedTransactionImpl));
@@ -193,6 +195,11 @@ namespace NHibernate.Shards.Transaction
 					throw new TransactionException(ExceptionMessage, ex);
 				}
 			}
+		}
+
+		public void RegisterSynchronization(ISynchronization synchronization)
+		{
+			throw new NotImplementedException();
 		}
 
 		public bool IsActive
