@@ -59,8 +59,6 @@
     <Compile Include="DebugConnectionProvider.cs" />
     <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
     <Compile Include="DynamicQuery\DynQueryFixture.cs" />
-    <Compile Include="EntityBases\HashIdMockClass.cs" />
-    <Compile Include="EntityBases\PersistantTests.cs" />
     <Compile Include="Pagination\BasePaginatorFixture.cs" />
     <Compile Include="Pagination\Foo.cs" />
     <Compile Include="Pagination\NamedQueryRowsCounterFixture.cs" />
@@ -102,9 +100,6 @@
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EntityBases\HashIdMockClass.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
