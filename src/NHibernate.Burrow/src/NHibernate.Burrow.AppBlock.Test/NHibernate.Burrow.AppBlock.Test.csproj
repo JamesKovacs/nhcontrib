@@ -72,6 +72,9 @@
     <Compile Include="Serialization\ClonerFixture.cs" />
     <Compile Include="Serialization\Foo.cs" />
     <Compile Include="Serialization\FooChild.cs" />
+    <Compile Include="SoftDelete\RandomEntity.cs" />
+    <Compile Include="SoftDelete\SoftDeleteFixture.cs" />
+    <Compile Include="SoftDelete\SoftDeleter.cs" />
     <Compile Include="TestCase.cs" />
     <Compile Include="Transform\PosToBeanResultTransformer.cs" />
     <Compile Include="UserTypes\Foo.cs" />
@@ -90,6 +93,7 @@
     <None Include="ConfigurationTemplates\Oracle.cfg.xml.tmpl" />
     <None Include="ConfigurationTemplates\PostgreSQL.cfg.xml.tmpl" />
     <None Include="ConfigurationTemplates\SQLite.cfg.xml.tmpl" />
+    <Content Include="hibernate.cfg.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Burrow.AppBlock\NHibernate.Burrow.AppBlock.csproj">
@@ -100,6 +104,12 @@
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SoftDelete\SoftDeleter.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SoftDelete\RandomEntity.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
