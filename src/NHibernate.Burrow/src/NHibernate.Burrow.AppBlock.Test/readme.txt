@@ -1,0 +1,1 @@
+Please copy a template file from ConfigurationTemplates folder to here and rename it to hibernate.cfg.xml

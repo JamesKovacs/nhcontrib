@@ -128,28 +128,34 @@ namespace NHibernate.Burrow
         /// <returns>The Burrow managed ISession</returns>
         /// <remarks>
         /// Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow.
+        /// To get an unmanaged session please use GetSessionFactory()
         /// To setup the interceptor for every managed ISession for a persistent Unit, <see cref="IPersistenceUnitCfg.InterceptorFactory"/>
-        /// To get a temporary un managed ISession with interceptor, <see cref="GetUnManagedSession"/> 
         /// </remarks>
         public ISession GetSession(System.Type entityType)
         {
-            return ((AbstractConversation) CurrentConversation).GetSessionManager(entityType).GetSession();
+            return GetSessionManager(entityType).GetSession();
+        }
+
+        private SessionManager GetSessionManager(System.Type entityType) {
+            return ((AbstractConversation) CurrentConversation).GetSessionManager(entityType);
         }
 
         /// <summary>
-        /// Gets an un managed ISession
+        /// Gets the ISessionFactory
         /// </summary>
-        /// <param name="entityType">the entity type whose mapping is included in the SessionFactory, when there are multiple databases, Burrow use this to locate the right one</param>
-        /// <param name="interceptor">the <see cref="IInterceptor"/> with which the Session is created, leave it null if you don't need any</param>
-        /// <returns></returns>
+        /// <param name="entityType">the entity type whose mapping is included in the SessionFactory, 
+        /// when there are multiple databases, Burrow use this to locate the right one</param>
+        /// <returns>the sessionFactory</returns>
         /// <remarks>
-        /// It's un-managed ISession, so it's always going to be fresh new and you are responsible of closing it.
+        /// For getting a Session please use <see cref="GetSession(Type)"/> as it's managed by Burrow. 
+        /// If you use OpenSession() of this SessionFactory, 
+        /// the session you get won't be managed by Burrow 
+        /// and you will be responsible for managing the status of that session yourself 
         /// </remarks>
-        public ISession GetUnManagedSession(System.Type entityType, IInterceptor interceptor)
+        public ISessionFactory GetSessionFactory(System.Type entityType)
         {
-            return
-                ((AbstractConversation) CurrentConversation).GetSessionManager(entityType).GetUnManagedSession(
-                    interceptor);
-        }
+            return GetSessionManager(entityType).SessionFactory;
+        } 
+        
     }
 }

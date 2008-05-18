@@ -167,24 +167,20 @@ namespace NHibernate.Burrow.Impl
 
         #region private members
 
-        private ISessionFactory SessionFactory
+        public ISessionFactory SessionFactory
         {
             get { return PersistenceUnit.SessionFactory; }
         }
 
-        /// <summary>
-        /// get a un managed session
-        /// </summary>
-        /// <returns></returns>
-        public ISession GetUnManagedSession(IInterceptor interceptor)
-        {
+       
+
+        private void CheckDisposed() {
             if (isDisposing)
             {
                 throw new GeneralException("SessionManager already disposed");
             }
-
-            return interceptor != null ? SessionFactory.OpenSession(interceptor) : SessionFactory.OpenSession();
         }
+
 
         #endregion
     }
