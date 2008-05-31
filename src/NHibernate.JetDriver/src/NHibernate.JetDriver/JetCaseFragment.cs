@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 using NHibernate.SqlCommand;
@@ -14,33 +14,18 @@ namespace NHibernate.JetDriver
 	/// </remarks>
 	public class JetCaseFragment : CaseFragment
 	{
-		private Dialect.Dialect dialect;
+		readonly List<string> caseStatements = new List<string>();
 
 		public JetCaseFragment(Dialect.Dialect dialect):base(dialect)
 		{
-			this.dialect = dialect;
 		}
 
-		private string returnColumnName;
-
-		private IList cases = new ArrayList();
-
-		public override CaseFragment SetReturnColumnName(string returnColumnName)
-		{
-			this.returnColumnName = returnColumnName;
-			return this;
-		}
-
-		public override CaseFragment SetReturnColumnName(string returnColumnName, string suffix)
-		{
-			return SetReturnColumnName(new Alias(suffix).ToAliasString(returnColumnName, dialect));
-		}
 
 		public override CaseFragment AddWhenColumnNotNull(string alias, string columnName, string columnValue)
 		{
 			string key = alias + StringHelper.Dot + columnName + " is not null";
 
-			cases.Add(key + ", " + columnValue);
+			caseStatements.Add(key + ", " + columnValue);
 			return this;
 		}
 
@@ -48,16 +33,10 @@ namespace NHibernate.JetDriver
 		{
 			StringBuilder buf = new StringBuilder(cases.Count * 15 + 10);
 
-			buf.Append("Switch(");
-
-			for (int i = 0; i < cases.Count - 1; i++)
-			{
-				buf.Append(cases[i]);
-				buf.Append(", ");
-			}
-			buf.Append(cases[cases.Count - 1]);
-
-			buf.Append(" )");
+			buf
+				.Append("Switch(")
+				.Append(string.Join(", ", caseStatements.ToArray()))
+                .Append(" )");
 
 			if (returnColumnName != null)
 			{
