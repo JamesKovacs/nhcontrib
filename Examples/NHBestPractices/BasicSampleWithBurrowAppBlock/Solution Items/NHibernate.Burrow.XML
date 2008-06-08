@@ -4,6 +4,48 @@
         <name>NHibernate.Burrow</name>
     </assembly>
     <members>
+        <member name="T:NHibernate.Burrow.Exceptions.BurrowException">
+            <summary>
+            Summary description for DomainException.
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:NHibernate.Burrow.IInterceptorFactory">
+            <summary>
+            implement this and set the type in the <see cref="P:NHibernate.Burrow.IPersistenceUnitCfg.InterceptorFactory"/> so that Burrow will use <see cref="M:NHibernate.Burrow.IInterceptorFactory.Create(NHibernate.Cfg.Configuration)"/> when creating the managed Session
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.IInterceptorFactory.Create(NHibernate.Cfg.Configuration)">
+            <summary>
+            Creates the IInterceptor with which Burrow will create managed Session 
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.AbstractConversation">
+            <summary>
+             Represents a conversation between user and the system
+            </summary>
+             <remarks>
+             Actually you shouldn't need to use this class. We may hide it to internal in the future. 
+             Currently we leave it public mainly for testing purpose. 
+             </remarks>
+        </member>
         <member name="T:NHibernate.Burrow.IConversation">
              <summary>
             
@@ -83,179 +125,139 @@
             Gets the last time this conversation is visited
             </summary>
         </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationPool.Item(System.Guid)">
+        <member name="P:NHibernate.Burrow.IConversation.GivenUp">
             <summary>
-            Gets or sets the element with the specified key.
-            </summary>
-            
-            <returns>
-            The element with the specified key.
-            </returns>
-            
-            <param name="key">The key of the element to get or set.</param>
-            <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"></see> is read-only.</exception>
-            <exception cref="T:System.ArgumentNullException">key is null.</exception>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.ConversationPoolItem">
-            <summary>
-            
-            </summary>
-            <remark>
-            not sure if this is needed any more as I moved both timeout and last visited information into <see cref="F:NHibernate.Burrow.Impl.ConversationPoolItem.conversation"/>
-            but it still maybe needed in the future, so I keep it here. 
-            </remark>
-        </member>
-        <member name="T:NHibernate.Burrow.DataContainers.GuidDataContainer">
-            <summary>
-            A data container which uses guid as key
+            Gets if the conversation is already given up (it's data change will no long be committed)
             </summary>
         </member>
-        <member name="T:NHibernate.Burrow.Configuration.PersistenceUnitElement">
+        <member name="P:NHibernate.Burrow.IConversation.TransactionManager">
             <summary>
-            Configuration Section for a Persistence Unit
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.Name">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.NHConfigFile">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.ManualTransactionManagement">
-            <summary>
-             wheather the transaction under this persistence Unit is manually managed by client    
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.IConversationExpirationChecker.CleanUpTimeSpan">
-            <summary>
-            Gets the period for the conversation pool cleaning.
+            Gets the <see cref="T:NHibernate.Burrow.ITransactionManager"/> when in an Sticky WorkSpace.
             </summary>
             <remarks>
-            in another sentence, it articulates the frequency of the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>'s cleaning of expired <see cref="T:NHibernate.Burrow.Impl.ConversationImpl"/>. 
+            For this property to be available, you must call 
+            <see cref="M:NHibernate.Burrow.BurrowFramework.InitStickyWorkSpace"/> instead of
+            <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace"/> at the very begninning
             </remarks>
         </member>
-        <member name="T:NHibernate.Burrow.DataContainers.LocalSafe`1">
+        <member name="E:NHibernate.Burrow.IConversation.Closed">
             <summary>
-            This storage wrapper can be used as a static field and will garuntee localness - either HttpContext local if in a HttpContext environment or ThreadLocal otherwise 
+            fired when it is closed
             </summary>
-            <typeparam name="T"></typeparam>
         </member>
-        <member name="M:NHibernate.Burrow.Util.WebUtil.WrapUrlWithConversationInfo(System.String)">
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.SpanWithPostBacks">
             <summary>
-            Wraps a url with Conversation Information so that conversation can span with Request query
+            Start a long Coversation that spans over multiple http requests
             </summary>
-            <param name="originalUrl"></param>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.SpanWithCookie(System.String)">
+            <summary>
+            Start a long Coversation that spans over the whole session
+            </summary>
+            <param name="inWorkSpaceName">span in the work space</param>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.GiveUp">
+            <summary>
+            Give up the data change made in this conversation and stop spanning
+            </summary>
+            <remarks>
+            This won't imediately close the conversation, it tells the conversation not to commit the DB change when it is closed. 
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.FinishSpan">
+            <summary>
+            tells the conversation to stop spanning itself and commit the data change made in it when it's closed
+            </summary>
             <returns></returns>
             <remarks>
-            Please deter calling this method as late as possible. And only call it when you are spanning the conversation. 
-            If you wrap a url with conversation info and finish or cancel that conversation later in the same request handle, hitting the url will cause a conversationUnavailable error.
+            call this method when all operations in a long span conversation are successfully done
             </remarks>
-            <exception cref="T:NHibernate.Burrow.Exceptions.IncorrectConversationSpanStatusException">
-            thrown if called when the current conversation isn't spanning. 
-            </exception>
         </member>
-        <member name="T:NHibernate.Burrow.Impl.PersistenceUnit">
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.Span(NHibernate.Burrow.Impl.SpanStrategy,System.String)">
             <summary>
-            A persistant Unit is a unit of a ORM management
+            Add conversation to the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
             </summary>
             <remarks>
-            it consists of a Database, a NHibernate SessionManager, a Nhibernate SessionFactory.
-            It can be shared by multiple domain layer assemblies 
-            It's heavy weight
+            if already in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>, do simply change the SpanStrategy if there is any change
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.PersistenceUnit.ReBuildSessionfactory">
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.StopSpanning">
             <summary>
-            Rebuild the Session factory
+            Remove this from the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
             </summary>
             <remarks>
-            in case you need to change the NHConfiguration on the fly
+            if not in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>, do nothing
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.PersistenceUnit.CreateNHConfiguration">
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.CommitAndClose">
             <summary>
-             Create a NHibernate Configuration
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.Name">
-            <summary>
-            the name of the PU
+            Commit the data changes happened in this conversation and close it.
             </summary>
             <remarks>
-            Set at the configuration File
+            The NHibernate session will also be discard after you close the conversation
             </remarks>
         </member>
-        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.Configuration">
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.RollbackAndClose">
             <summary>
-            The configuration section that sets this Persistence Unit in the configuration file
+            immediately rollback 
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.Flush">
+            <summary>
+            Shortcut to flush the session
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.AbstractConversation.GetSessionManager">
+            <summary>
+            The singleton Instance 
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.IsInPool">
+            <summary>
+            Indicates if this convesation is in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
             </summary>
             <remarks>
-            This class stored the setting information associated with this PU
+            Conversation in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/> will be persistent until they are closed.
+            Conversation not in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/> will be garbage collected once the httpContext or thread is discarded. 
             </remarks>
         </member>
-        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.NHConfiguration">
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.TransactionManager">
             <summary>
-            The nhibernate configuration of this session Manager
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.VoidTransactionManager">
-            <summary>
-            a transaction manager that does no transaction management
+            Gets the <see cref="T:NHibernate.Burrow.ITransactionManager"/> when in an Sticky WorkSpace.
             </summary>
             <remarks>
-            this is for in manual transaction mode, so that client can control the transaction itself.
+            For this property to be available, you must call 
+            <see cref="M:NHibernate.Burrow.BurrowFramework.InitStickyWorkSpace"/> instead of
+            <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace"/> at the very begninning
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ITransactionManager.BeginTransaction(NHibernate.ISession)">
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.SafeItems">
             <summary>
-            
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Exceptions.BurrowException">
-            <summary>
-            Summary description for DomainException.
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:NHibernate.Burrow.Exceptions.BurrowException.#ctor(System.String,System.Exception)">
-            <summary>
-            
-            </summary>
-            <param name="msg"></param>
-            <param name="innerException"></param>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.SpanStrategy">
-            <summary>
-            the strategy with which Burrow span the Conversation
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.SpanStrategy.ValidForSpan">
-            <summary>
-            indicate if this strategy does span
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.SpanStrategy.UrlQueryOnlyStrategy">
-            <summary>
-            This Strategy span by using Url Query only 
+            Gets the data bag the conversation holds
             </summary>
             <remarks>
-            
+            You can use this item to store conversation span data
             </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.Id">
+            <summary>
+            Gets the unique id of this conversation
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.IsSpanning">
+            <summary>
+            Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.AbstractConversation.LastVisit">
+            <summary>
+            Gets the last time this conversation is visited
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.AtomicConversationImpl.TransactionManager">
+            <summary>
+            This is not support in AtomicConversation, will throw an Exception
+            </summary>
         </member>
         <member name="T:NHibernate.Burrow.IFrameworkEnvironment">
             <summary>
@@ -283,9 +285,9 @@
             it will roll back every conversation in the pool
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.FrameworkEnvironment.StartNewWorkSpace(System.Collections.Specialized.NameValueCollection,System.String)">
+        <member name="M:NHibernate.Burrow.Impl.FrameworkEnvironment.InitWorkSpace(System.Collections.Specialized.NameValueCollection,System.String)">
             <summary>
-            Initialize a Domain Context 
+            Initialize the WorkSpace 
             </summary>
             <remarks>
             Please read the remarks of the <see cref="T:NHibernate.Burrow.Impl.WorkSpace"/>
@@ -306,22 +308,27 @@
             Gets the num of Spanning Conversations
             </summary>
         </member>
-        <member name="T:NHibernate.Burrow.Impl.ConversationExpirationCheckerFactory">
-            <summary>
-            static factory for <see cref="T:NHibernate.Burrow.IConversationExpirationChecker"/>
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.BeginTransaction(NHibernate.ISession)">
+        <member name="M:NHibernate.Burrow.Impl.ITransaction.Begin">
             <summary>
             
             </summary>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.CommitTransaction">
+        <member name="P:NHibernate.Burrow.Impl.ITransaction.InTransaction">
             <summary>
-            Try commit the transaction, if failed the transaction will be rollback and the session will be close
+            whether the transaction has begun
             </summary>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.RollbackTransaction">
+        <member name="M:NHibernate.Burrow.Impl.TransactionImpl.Begin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.TransactionImpl.Commit">
+            <summary>
+            Try commit the nhtransaction, if failed the nhtransaction will be rollback and the session will be close
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.TransactionImpl.Rollback">
             <summary>
             Rollback the Transaction and Close Session
             </summary>
@@ -330,102 +337,60 @@
             You can perform this method multiple times, only the first time will take effect. 
             </remarks>
         </member>
-        <member name="T:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection">
+        <member name="P:NHibernate.Burrow.Impl.TransactionImpl.InTransaction">
             <summary>
-            ConfigurationElementCollection for Persistence Unit Section
+            whether the transaction has begun and not committed yet
             </summary>
         </member>
-        <member name="M:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection.CreateNewElement">
+        <member name="M:NHibernate.Burrow.ITransactionManager.Begin">
             <summary>
-            When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"></see>.
+            begin transactions
             </summary>
-            
-            <returns>
-            A new <see cref="T:System.Configuration.ConfigurationElement"></see>.
-            </returns>
-            
         </member>
-        <member name="M:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+        <member name="M:NHibernate.Burrow.ITransactionManager.Commit">
             <summary>
-            Gets the element key for a specified configuration element when overridden in a derived class.
+            Commit transactions
             </summary>
-            
-            <returns>
-            An <see cref="T:System.Object"></see> that acts as the key for the specified <see cref="T:System.Configuration.ConfigurationElement"></see>.
-            </returns>
-            
-            <param name="element">The <see cref="T:System.Configuration.ConfigurationElement"></see> to return the key for. </param>
         </member>
-        <member name="T:NHibernate.Burrow.BurrowFramework">
+        <member name="M:NHibernate.Burrow.ITransactionManager.Rollback">
             <summary>
-            Facade of Burrow 
+            Rollback transactions
             </summary>
             <remarks>
-            Creating an instance of this class is free. The instance is stateless and can be stored anywhere
+            afterwords the work Space will become inavailable
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace">
+        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.Begin">
             <summary>
-            a shotcut to <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Boolean,System.Collections.Specialized.NameValueCollection,System.String)"/> with (false, null, string.Empty) as the parameter
+            begin transactions
             </summary>
         </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Boolean,System.Collections.Specialized.NameValueCollection,System.String)">
+        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.Commit">
             <summary>
-             prepare the Burrow environment for the current visit to your Domain Layer
+            Commit transactions
             </summary>
-            <param name="ignoreUnclosedWorkSpace">if there is an existing WorkSpace, ignoreUnclosedWorkSpace = true will close it first. 
-                                                ignoreUnclosedWorkSpace = false will throw an Exception .</param>
-            <param name="states">the span states that should be used to initialized it, if you are not spanning the conversation, leave it null</param>
-            <remarks>
-            This should be called before any NHibernate related operation and actually, for example, in the begining of handling a http request
-            if you are using  NHibernate.Burrow.WebUtil's HttpModule, as you should in an Web Application, it will call this for you, you don't need to worry about this.
-            </remarks>
-            <param name="currentWorkSpaceName">the workSpaceName of the current context (usually defined by the handler side)</param>
         </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Guid)">
+        <member name="M:NHibernate.Burrow.Impl.TransactionManagerImpl.Rollback">
             <summary>
-            Initialize the WorkSpace and join the conversation with <paramref name="conversationId"/>
+            Rollback transactions
             </summary>
-            <param name="conversationId"></param>
         </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.CloseWorkSpace">
+        <member name="T:NHibernate.Burrow.Impl.VoidTransaction">
             <summary>
-            close the Burrow environment for the current visit to your Domain Layer
+            a transaction manager that does no transaction management
             </summary>
             <remarks>
-            This should be called after the current visit to the domainlayer is finished and the time of next visit is unknow, for example, at the very end of handling the http request
-            if you are using  NHibernate.Burrow.WebUtil's HttpModule, it will call this for you, you don't need to worry about this.
+            this is for in manual transaction mode, so that client can control the transaction itself.
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.GetSession">
+        <member name="P:NHibernate.Burrow.Impl.VoidTransaction.InTransaction">
             <summary>
-            overloaded version of <see cref="!:GetSession(Type)"/> in a single-SessionFactory environment
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.BurrowFramework.GetSession(System.Type)">
-            <summary>
-            Gets a managed ISession
-            </summary>
-            <param name="entityType"></param>
-            <returns></returns>
-            <remarks>
-            Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow
-            </remarks>
-        </member>
-        <member name="P:NHibernate.Burrow.BurrowFramework.CurrentConversation">
-            <summary>
-            Gets the current <see cref="T:NHibernate.Burrow.IConversation"/>
+            whether a transaction has begun
             </summary>
         </member>
-        <member name="P:NHibernate.Burrow.BurrowFramework.BurrowEnvironment">
+        <member name="P:NHibernate.Burrow.IPersistenceUnitCfg.InterceptorFactory">
             <summary>
-            Gets the <see cref="T:NHibernate.Burrow.IFrameworkEnvironment"/>
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.BurrowFramework.WorkSpaceIsReady">
-            <summary>
-            gets if the Burrow workspace is already <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace"/> and not <see cref="M:NHibernate.Burrow.BurrowFramework.CloseWorkSpace"/>  yet.
+            designates the implementation of IInterceptorFactory with which Burrow will create managed Session 
             </summary>
         </member>
         <member name="M:NHibernate.Burrow.IBurrowConfig.DBConnectionString(System.Type)">
@@ -459,231 +424,6 @@
             <summary>
             for user to set a customer IWorkSpaceNameSniffer for WebUtil to use
             </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Util.InstanceLoader">
-            <summary>
-            A loader writen to load instance of singleton types
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.LoadByConstrutor(System.Type)">
-            <summary>
-            Load the singleton of the type by constructor 
-            </summary>
-            <param name="t"></param>
-            <returns>null if there is no public non-parameter constructor</returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.LoadByInstanceProperty(System.Type)">
-            <summary>
-            Load the singleton by static property named "Instance"
-            </summary>
-            <param name="t"></param>
-            <returns>return null if there is no such 
-            </returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load(System.Type)">
-            <summary>
-            Load the singleton by all means
-            </summary>
-            <param name="t"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load``1(System.String)">
-            <summary>
-            Load type by name
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load``1">
-            <summary>
-            Generic version of Load(System.Type t)
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-            <remarks>
-            <see cref="!:InstanceLoader.Load(System.Type t)"/>
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Loadable(System.Type)">
-            <summary>
-            judge if Type t is a loadable singleton
-            </summary>
-            <param name="t"></param>
-            <returns></returns>
-        </member>
-        <member name="T:NHibernate.Burrow.Util.EntityLoader">
-            <summary>
-            A generic helper loader for loading persistant object by Id
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.EntityLoader.Load(System.Type,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="t"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Util.EntityLoader.Get(System.Type,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="t"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="P:NHibernate.Burrow.Util.EntityLoader.Instance">
-            <summary>
-            a instance of the loader
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.SessionManager">
-            <summary>
-            Handlers creation and management of sessions and transactions. 
-            </summary>
-            <remarks>
-            Lifespan : application, Threadsafe
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.GetUnManagedSession">
-            <summary>
-            get a un managed session
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.GetSession">
-            <summary>
-            Get a managed Session
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.CloseSession">
-            <summary>
-            Close the session.
-            </summary>
-            <remarks>
-            if the session is already closed, this will do nothing
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.BeginTransaction">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.CommitTransaction">
-            <summary>
-            Try commit the transaction, if failed the transaction will be rollback and the session will be close
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.RollbackTransaction">
-            <summary>
-            Rollback the Transaction and Close Session
-            </summary>
-            <remarks>
-            if the tranasaction has already been rollback or the session closed this will do nothing. 
-            You can perform this method multiple times, only the first time will take effect. 
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.SessionManager.GetSession(NHibernate.IInterceptor)">
-            <summary>
-            Gets a session with or without an interceptor.  This method is not called directly; instead,
-            it gets invoked from other public methods.
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.SessionManager.PersistenceUnit">
-            <summary>
-            The PersistenceUnit it belongs to.
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Impl.WorkSpace">
-            <summary>
-            Represents the current work space
-            </summary>
-            <remarks>
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.WorkSpace.WrapUrlWithSpanInfo(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="originalUrl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.WorkSpace.Close">
-            <summary>
-            Close the current domain context. call this after you are done with all the domain operations that requires interaction with NHibernate
-            </summary>
-            <remarks>
-            Please read the remarks of the <see cref="T:NHibernate.Burrow.Impl.WorkSpace"/>
-            </remarks>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.WorkSpace.Current">
-            <summary>
-            The current WorkSpace your code is working in
-            </summary>
-        </member>
-        <member name="F:NHibernate.Burrow.ConversationalDataMode.Normal">
-            <summary>
-            Data will only be available in conversation it is created, outside of the conversation, exception will be thrown if it is accessed 
-            </summary>
-        </member>
-        <member name="F:NHibernate.Burrow.ConversationalDataMode.OutOfConversationSafe">
-            <summary>
-            Data will only be available in conversation it is created, once visited outside of the conversation, data will automatically reset to null 
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.ConversationalData`1">
-            <summary>
-            A Data container for conversational data that needs to have the same life span with a conversation
-            </summary>
-            <typeparam name="T"></typeparam>
-            <remarks>
-            use it when you need some data to have the same life span as the current conversation.
-            this class does not actually hold a reference to the <see cref="P:NHibernate.Burrow.ConversationalData`1.Value"/> which is actually stored in <see cref="P:NHibernate.Burrow.IConversation.SafeItems"/> 
-            Thus <see cref="T:NHibernate.Burrow.ConversationalData`1"/> can be cheaply serialized and stored. 
-            for example, in a Asp.net application, you can put an entity into a ConversationalData(entity) and then save the conversationalData instance into the ViewState or HttpSession 
-            </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.ConversationalData`1.#ctor(NHibernate.Burrow.ConversationalDataMode)">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.ConversationalData`1.#ctor(`0)">
-            <summary>
-            
-            </summary>
-            <param name="value">the real data you want this container to hold</param>
-            <remarks>
-            The default <see cref="P:NHibernate.Burrow.ConversationalData`1.Mode"/> is <see cref="F:NHibernate.Burrow.ConversationalDataMode.OutOfConversationSafe"/>
-            </remarks>
-        </member>
-        <member name="P:NHibernate.Burrow.ConversationalData`1.Value">
-            <summary>
-            Gets and sets the data stored in this container
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.ConversationalData`1.OutOfConversation">
-            <summary>
-            indicates if this data is out of conversation 
-            </summary>
-        </member>
-        <member name="T:NHibernate.Burrow.Exceptions.GeneralException">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Exceptions.GeneralException.#ctor">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Exceptions.GeneralException.#ctor(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="msg"></param>
         </member>
         <member name="T:NHibernate.Burrow.Configuration.NHibernateBurrowCfgSection">
             <summary>
@@ -748,6 +488,409 @@
             for user to set a customer IWorkSpaceNameSniffer for WebUtil to use
             </summary>
         </member>
+        <member name="T:NHibernate.Burrow.Configuration.PersistenceUnitElement">
+            <summary>
+            Configuration Section for a Persistence Unit
+            </summary>
+            <remarks>
+            Each Persistence Unit represents a Database (RDBMS) (
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.NHConfigFile">
+            <summary>
+            designate the NHibernate config file of this persistent unit.
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.InterceptorFactory">
+            <summary>
+            designates the implementation of IInterceptorFactory with which Burrow will create managed Session 
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Configuration.PersistenceUnitElement.ManualTransactionManagement">
+            <summary>
+             wheather the transaction under this persistence Unit is manually managed by client    
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection">
+            <summary>
+            ConfigurationElementCollection for Persistence Unit Section
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection.CreateNewElement">
+            <summary>
+            When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"></see>.
+            </summary>
+            
+            <returns>
+            A new <see cref="T:System.Configuration.ConfigurationElement"></see>.
+            </returns>
+            
+        </member>
+        <member name="M:NHibernate.Burrow.Configuration.PersistenceUnitElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+            <summary>
+            Gets the element key for a specified configuration element when overridden in a derived class.
+            </summary>
+            
+            <returns>
+            An <see cref="T:System.Object"></see> that acts as the key for the specified <see cref="T:System.Configuration.ConfigurationElement"></see>.
+            </returns>
+            
+            <param name="element">The <see cref="T:System.Configuration.ConfigurationElement"></see> to return the key for. </param>
+        </member>
+        <member name="P:NHibernate.Burrow.IConversationExpirationChecker.CleanUpTimeSpan">
+            <summary>
+            Gets the period for the conversation pool cleaning.
+            </summary>
+            <remarks>
+            in another sentence, it articulates the frequency of the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>'s cleaning of expired <see cref="T:NHibernate.Burrow.Impl.AbstractConversation"/>. 
+            </remarks>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.ConversationExpirationCheckerFactory">
+            <summary>
+            static factory for <see cref="T:NHibernate.Burrow.IConversationExpirationChecker"/>
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.DataContainers.GuidDataContainer">
+            <summary>
+            A data container which uses guid as key
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.DataContainers.LocalSafe`1">
+            <summary>
+            This storage wrapper can be used as a static field and will garuntee localness - either HttpContext local if in a HttpContext environment or ThreadLocal otherwise 
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:NHibernate.Burrow.BurrowFramework">
+            <summary>
+            Facade of Burrow 
+            </summary>
+            <remarks>
+            Creating an instance of this class is free. The instance is stateless and can be stored anywhere
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace">
+            <summary>
+            a shotcut to <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Boolean,System.Collections.Specialized.NameValueCollection,System.String)"/> with (false, null, string.Empty) as the parameter
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Boolean,System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+             prepare the Burrow environment for the current visit to your Domain Layer
+            </summary>
+            <param name="ignoreUnclosedWorkSpace">if there is an existing WorkSpace, ignoreUnclosedWorkSpace = true will close it first. 
+                                                ignoreUnclosedWorkSpace = false will throw an Exception .</param>
+            <param name="states">the span states that should be used to initialized it, if you are not spanning the conversation, leave it null</param>
+            <remarks>
+            This should be called before any NHibernate related operation and actually, for example, in the begining of handling a http request
+            if you are using  NHibernate.Burrow.WebUtil's HttpModule, as you should in an Web Application, it will call this for you, you don't need to worry about this.
+            </remarks>
+            <param name="currentWorkSpaceName">the workSpaceName of the current context (usually defined by the handler side)</param>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace(System.Guid)">
+            <summary>
+            StartNew the WorkSpace and join the conversation with <paramref name="conversationId"/>
+            </summary>
+            <param name="conversationId"></param>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.InitStickyWorkSpace">
+            <summary>
+             Initiate a work space that can have a long life time. 
+             On the other hand it requires semi-auto transaction management by you, see <see cref="T:NHibernate.Burrow.ITransactionManager"/>.
+             You can use it within a winform environment where you need 
+             long session and multiple transactions within the session. 
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.CloseWorkSpace">
+            <summary>
+            close the Burrow environment for the current visit to your Domain Layer
+            </summary>
+            <remarks>
+            This should be called after the current visit to the domainlayer is finished 
+            and the time of next visit is unknow, for example, 
+            at the very end of handling the http request.
+            If you are using  NHibernate.Burrow.WebUtil's HttpModule,
+            it will call this for you, you don't need to worry about this.
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.GetSession">
+            <summary>
+            overloaded version of <see cref="!:GetSession(Type)"/> in a single-Database environment
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.GetSession(System.Type)">
+            <summary>
+            Gets a managed ISession
+            </summary>
+            <param name="entityType">
+            The entity type whose mapping is included in the SessionFactory,
+            when there are multiple databases, Burrow use this to locate the right one
+            </param>
+            <returns>The Burrow managed ISession</returns>
+            <remarks>
+            Please do not try to close or commit transaction of this session as its status and transaction are controlled by Burrow.
+            To get an unmanaged session please use GetSessionFactory()
+            To setup the interceptor for every managed ISession for a persistent Unit, <see cref="P:NHibernate.Burrow.IPersistenceUnitCfg.InterceptorFactory"/>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.BurrowFramework.GetSessionFactory(System.Type)">
+            <summary>
+            Gets the ISessionFactory
+            </summary>
+            <param name="entityType">the entity type whose mapping is included in the SessionFactory, 
+            when there are multiple databases, Burrow use this to locate the right one</param>
+            <returns>the sessionFactory</returns>
+            <remarks>
+            For getting a Session please use <see cref="!:GetSession(Type)"/> as it's managed by Burrow. 
+            If you use OpenSession() of this SessionFactory, 
+            the session you get won't be managed by Burrow 
+            and you will be responsible for managing the status of that session yourself 
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.BurrowFramework.CurrentConversation">
+            <summary>
+            Gets the current <see cref="T:NHibernate.Burrow.IConversation"/>
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.BurrowFramework.BurrowEnvironment">
+            <summary>
+            Gets the <see cref="T:NHibernate.Burrow.IFrameworkEnvironment"/>
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.BurrowFramework.WorkSpaceIsReady">
+            <summary>
+            gets if the Burrow workspace is already <see cref="M:NHibernate.Burrow.BurrowFramework.InitWorkSpace"/> and not <see cref="M:NHibernate.Burrow.BurrowFramework.CloseWorkSpace"/>  yet.
+            </summary>
+        </member>
+        <member name="F:NHibernate.Burrow.ConversationalDataMode.Normal">
+            <summary>
+            Data will only be available in conversation it is created, outside of the conversation, exception will be thrown if it is accessed 
+            </summary>
+        </member>
+        <member name="F:NHibernate.Burrow.ConversationalDataMode.OutOfConversationSafe">
+            <summary>
+            Data will only be available in conversation it is created, once visited outside of the conversation, data will automatically reset to null 
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.ConversationalData`1">
+            <summary>
+            A Data container for conversational data that needs to have the same life span with a conversation
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>
+            use it when you need some data to have the same life span as the current conversation.
+            this class does not actually hold a reference to the <see cref="P:NHibernate.Burrow.ConversationalData`1.Value"/> which is actually stored in <see cref="P:NHibernate.Burrow.IConversation.SafeItems"/> 
+            Thus <see cref="T:NHibernate.Burrow.ConversationalData`1"/> can be cheaply serialized and stored. 
+            for example, in a Asp.net application, you can put an entity into a ConversationalData(entity) and then save the conversationalData instance into the ViewState or HttpSession 
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.ConversationalData`1.#ctor(NHibernate.Burrow.ConversationalDataMode)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.ConversationalData`1.#ctor(`0)">
+            <summary>
+            
+            </summary>
+            <param name="value">the real data you want this container to hold</param>
+            <remarks>
+            The default <see cref="P:NHibernate.Burrow.ConversationalData`1.Mode"/> is <see cref="F:NHibernate.Burrow.ConversationalDataMode.OutOfConversationSafe"/>
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.ConversationalData`1.Value">
+            <summary>
+            Gets and sets the data stored in this container
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.ConversationalData`1.OutOfConversation">
+            <summary>
+            indicates if this data is out of conversation 
+            </summary>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.ConversationPool.Item(System.Guid)">
+            <summary>
+            Gets or sets the element with the specified key.
+            </summary>
+            
+            <returns>
+            The element with the specified key.
+            </returns>
+            
+            <param name="key">The key of the element to get or set.</param>
+            <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"></see> is read-only.</exception>
+            <exception cref="T:System.ArgumentNullException">key is null.</exception>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.ConversationPoolItem">
+            <summary>
+            
+            </summary>
+            <remark>
+            not sure if this is needed any more as I moved both timeout and last visited information into <see cref="F:NHibernate.Burrow.Impl.ConversationPoolItem.conversation"/>
+            but it still maybe needed in the future, so I keep it here. 
+            </remark>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.WorkSpace">
+            <summary>
+            Represents the current work space
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.WorkSpace.Create(System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+            create a workspace in which transaction is automatically managed and has the same life cycle as conversation
+            </summary>
+            <param name="states"></param>
+            <param name="currentWorkSpaceName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.WorkSpace.CreateMultipleTransactionEnabled">
+            <summary>
+            Create a workspace that is enabled to allow multiple transaction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.WorkSpace.WrapUrlWithSpanInfo(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="originalUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.WorkSpace.Close">
+            <summary>
+            Close the current domain context. call this after you are done with all the domain operations that requires interaction with NHibernate
+            </summary>
+            <remarks>
+            Please read the remarks of the <see cref="T:NHibernate.Burrow.Impl.WorkSpace"/>
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.WorkSpace.Current">
+            <summary>
+            The current WorkSpace your code is working in
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.Exceptions.GeneralException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Exceptions.GeneralException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Exceptions.GeneralException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.SpanStrategy">
+            <summary>
+            the strategy with which Burrow span the Conversation
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SpanStrategy.GetPostBackFields(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Generate the postback fields 
+            </summary>
+            <param name="spanstates"></param>
+            <returns></returns>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.SpanStrategy.ValidForSpan">
+            <summary>
+            indicate if this strategy does span
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SpanStrategy.CookieStrategy.GetPostBackFields(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Generate the postback fields 
+            </summary>
+            <param name="spanstates"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SpanStrategy.DoNotSpanStrategy.GetPostBackFields(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Generate the postback fields 
+            </summary>
+            <param name="spanstates"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SpanStrategy.PostStrategy.GetPostBackFields(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Generate the postback fields 
+            </summary>
+            <param name="spanstates"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.SpanStrategy.UrlQueryOnlyStrategy">
+            <summary>
+            This Strategy span by using Url Query only 
+            </summary>
+            <remarks>
+            
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SpanStrategy.UrlQueryOnlyStrategy.GetPostBackFields(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Generate the postback fields 
+            </summary>
+            <param name="spanstates"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NHibernate.Burrow.Impl.PersistenceUnit">
+            <summary>
+            A persistant Unit is a unit of a ORM management
+            </summary>
+            <remarks>
+            it consists of a Database, a NHibernate SessionManager, a Nhibernate SessionFactory.
+            It can be shared by multiple domain layer assemblies 
+            It's heavy weight
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.PersistenceUnit.ReBuildSessionfactory">
+            <summary>
+            Rebuild the Session factory
+            </summary>
+            <remarks>
+            in case you need to change the NHConfiguration on the fly
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.PersistenceUnit.CreateNHConfiguration">
+            <summary>
+             Create a NHibernate Configuration
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.Name">
+            <summary>
+            the name of the PU
+            </summary>
+            <remarks>
+            Set at the configuration File
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.Configuration">
+            <summary>
+            The configuration section that sets this Persistence Unit in the configuration file
+            </summary>
+            <remarks>
+            This class stored the setting information associated with this PU
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Burrow.Impl.PersistenceUnit.NHConfiguration">
+            <summary>
+            The nhibernate configuration of this session Manager
+            </summary>
+        </member>
         <member name="T:NHibernate.Burrow.Impl.PersistenceUnitRepo">
             <summary>
             A repository for the perstitant Units
@@ -766,123 +909,148 @@
             All the existing persistant Units in this application
             </summary>
         </member>
-        <member name="T:NHibernate.Burrow.Impl.ConversationImpl">
+        <member name="T:NHibernate.Burrow.Impl.SessionManager">
             <summary>
-             Represents a conversation between user and the system
-            </summary>
-             <remarks>
-             Actually you shouldn't need to use this class. We may hide it to internal in the future. 
-             Currently we leave it public mainly for testing purpose. 
-             </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.SpanWithPostBacks">
-            <summary>
-            Start a long Coversation that spans over multiple http requests
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.SpanWithCookie(System.String)">
-            <summary>
-            Start a long Coversation that spans over the whole session
-            </summary>
-            <param name="inWorkSpaceName">span in the work space</param>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.GiveUp">
-            <summary>
-            Give up the data change made in this conversation and stop spanning
+            Handlers creation and management of sessions and transactions. 
             </summary>
             <remarks>
-            This won't imediately close the conversation, it tells the conversation not to commit the DB change when it is closed. 
+            Lifespan : application, Threadsafe
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.FinishSpan">
+        <member name="F:NHibernate.Burrow.Impl.SessionManager.transactionWithSession">
             <summary>
-            tells the conversation to stop spanning itself and commit the data change made in it when it's closed
+            Whether transaction share the same life cycle as session
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SessionManager.GetSession">
+            <summary>
+            Get a managed Session
             </summary>
             <returns></returns>
-            <remarks>
-            call this method when all operations in a long span conversation are successfully done
-            </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.Span(NHibernate.Burrow.Impl.SpanStrategy,System.String)">
+        <member name="M:NHibernate.Burrow.Impl.SessionManager.CloseSession">
             <summary>
-            Add conversation to the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
+            Close the session.
             </summary>
             <remarks>
-            if already in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>, do simply change the SpanStrategy if there is any change
+            if the session is already closed, this will do nothing
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.StopSpanning">
+        <member name="M:NHibernate.Burrow.Impl.SessionManager.OnConversationStarts">
             <summary>
-            Remove this from the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SessionManager.OnConversationFinish">
+            <summary>
+            Try commit the transaction, if failed the transaction will be rollback and the session will be close
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Impl.SessionManager.OnConversationRollback">
+            <summary>
+            Rollback the Transaction and Close Session
             </summary>
             <remarks>
-            if not in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>, do nothing
+            if the tranasaction has already been rollback or the session closed this will do nothing. 
+            You can perform this method multiple times, only the first time will take effect. 
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.CommitAndClose">
+        <member name="P:NHibernate.Burrow.Impl.SessionManager.PersistenceUnit">
             <summary>
-            Commit the data changes happened in this conversation and close it.
+            The PersistenceUnit it belongs to.
             </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.Util.EntityLoader">
+            <summary>
+            A generic helper loader for loading persistant object by Id
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.EntityLoader.Load(System.Type,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.EntityLoader.Get(System.Type,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="P:NHibernate.Burrow.Util.EntityLoader.Instance">
+            <summary>
+            a instance of the loader
+            </summary>
+        </member>
+        <member name="T:NHibernate.Burrow.Util.InstanceLoader">
+            <summary>
+            A loader writen to load instance of singleton types
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.LoadByConstrutor(System.Type)">
+            <summary>
+            Load the singleton of the type by constructor 
+            </summary>
+            <param name="t"></param>
+            <returns>null if there is no public non-parameter constructor</returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.LoadByInstanceProperty(System.Type)">
+            <summary>
+            Load the singleton by static property named "Instance"
+            </summary>
+            <param name="t"></param>
+            <returns>return null if there is no such 
+            </returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load(System.Type)">
+            <summary>
+            Load the singleton by all means
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load``1(System.String)">
+            <summary>
+            Load type by name
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Load``1">
+            <summary>
+            Generic version of Load(System.Type t)
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
             <remarks>
-            The NHibernate session will also be discard after you close the conversation
+            <see cref="!:InstanceLoader.Load(System.Type t)"/>
             </remarks>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.RollbackAndClose">
+        <member name="M:NHibernate.Burrow.Util.InstanceLoader.Loadable(System.Type)">
             <summary>
-            immediately rollback 
+            judge if Type t is a loadable singleton
             </summary>
+            <param name="t"></param>
+            <returns></returns>
         </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.Flush">
+        <member name="M:NHibernate.Burrow.Util.WebUtil.WrapUrlWithConversationInfo(System.String)">
             <summary>
-            Shortcut to flush the session
+            Wraps a url with Conversation Information so that conversation can span with Request query
             </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.BeginNHibernateTransactions">
-            <summary>
-            Begin Transactions for all SessionManagers in All PersistenceUnits
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.CommitNHibernateTransactions">
-            <summary>
-            Commit Transactions for all SessionManagers in All PersistenceUnits
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.Impl.ConversationImpl.GetSessionManager">
-            <summary>
-            The singleton Instance 
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationImpl.IsInPool">
-            <summary>
-            Indicates if this convesation is in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/>
-            </summary>
+            <param name="originalUrl"></param>
+            <returns></returns>
             <remarks>
-            Conversation in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/> will be persistent until they are closed.
-            Conversation not in the <see cref="T:NHibernate.Burrow.Impl.ConversationPool"/> will be garbage collected once the httpContext or thread is discarded. 
+            Please deter calling this method as late as possible. And only call it when you are spanning the conversation. 
+            If you wrap a url with conversation info and finish or cancel that conversation later in the same request handle, hitting the url will cause a conversationUnavailable error.
             </remarks>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationImpl.SafeItems">
-            <summary>
-            Gets the data bag the conversation holds
-            </summary>
-            <remarks>
-            You can use this item to store conversation span data
-            </remarks>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationImpl.Id">
-            <summary>
-            Gets the unique id of this conversation
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationImpl.IsSpanning">
-            <summary>
-            Gets if this conversation is Spanning (either with Postbacks or HttpSessions)
-            </summary>
-        </member>
-        <member name="P:NHibernate.Burrow.Impl.ConversationImpl.LastVisit">
-            <summary>
-            Gets the last time this conversation is visited
-            </summary>
+            <exception cref="T:NHibernate.Burrow.Exceptions.IncorrectConversationSpanStatusException">
+            thrown if called when the current conversation isn't spanning. 
+            </exception>
         </member>
     </members>
 </doc>
