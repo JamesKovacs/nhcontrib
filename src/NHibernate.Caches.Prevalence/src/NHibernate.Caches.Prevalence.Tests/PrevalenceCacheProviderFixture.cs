@@ -22,7 +22,7 @@
 
 #endregion
 
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 using log4net.Config;
@@ -37,14 +37,14 @@ namespace NHibernate.Caches.Prevalence.Tests
 	public class PrevalenceCacheProviderFixture
 	{
 		private PrevalenceCacheProvider provider;
-		private Hashtable props;
+		private Dictionary<string, string> props;
 		private string testDir;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
 			XmlConfigurator.Configure();
-			props = new Hashtable();
+			props = new Dictionary<string, string>();
 			testDir = @"C:\temp\prevalence";
 			props.Add("prevalenceBase", testDir);
 		}

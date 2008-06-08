@@ -1,7 +1,7 @@
 using System;
 using System.Data.SqlTypes;
 
-namespace NHibernate.UserTypes.Tests
+namespace NHibernate.UserTypes.SqlTypes.Tests
 {
 	public class SqlTypesClass
 	{

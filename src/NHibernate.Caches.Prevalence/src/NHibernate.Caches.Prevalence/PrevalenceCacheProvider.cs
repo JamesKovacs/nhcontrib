@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -35,7 +35,7 @@ namespace NHibernate.Caches.Prevalence
 		/// doesn't exist, it will be created.</remarks>
 		/// <returns></returns>
 		[CLSCompliant(false)]
-		public ICache BuildCache(string regionName, IDictionary properties)
+		public ICache BuildCache(string regionName, IDictionary<string, string> properties)
 		{
 			if (regionName == null)
 			{
@@ -43,20 +43,20 @@ namespace NHibernate.Caches.Prevalence
 			}
 			if (properties == null)
 			{
-				properties = new Hashtable();
+				properties = new Dictionary<string, string>();
 			}
 			if (log.IsDebugEnabled)
 			{
 				StringBuilder sb = new StringBuilder();
-				foreach (DictionaryEntry de in properties)
+				foreach (KeyValuePair<string, string> de in properties)
 				{
 					sb.Append("name=");
-					sb.Append(de.Key.ToString());
+					sb.Append(de.Key);
 					sb.Append("&value=");
-					sb.Append(de.Value.ToString());
+					sb.Append(de.Value);
 					sb.Append(";");
 				}
-				log.Debug("building cache with region: " + regionName + ", properties: " + sb.ToString());
+				log.Debug(string.Format("building cache with region: {0}, properties: {1}", regionName, sb));
 			}
 			_dataDir = GetDataDirFromConfig(regionName, properties);
 			if (_system == null)
@@ -74,15 +74,15 @@ namespace NHibernate.Caches.Prevalence
 			_taker = new SnapshotTaker(_engine, TimeSpan.FromMinutes(5), CleanUpAllFilesPolicy.Default);
 		}
 
-		private string GetDataDirFromConfig(string region, IDictionary properties)
+		private static string GetDataDirFromConfig(string region, IDictionary<string, string> properties)
 		{
 			string dataDir = Path.Combine(Environment.CurrentDirectory, region);
 
 			if (properties != null)
 			{
-				if (properties["prevalenceBase"] != null)
+				if (properties.ContainsKey("prevalenceBase"))
 				{
-					string prevalenceBase = properties["prevalenceBase"].ToString();
+					string prevalenceBase = properties["prevalenceBase"];
 					if (Path.IsPathRooted(prevalenceBase))
 					{
 						dataDir = prevalenceBase;
@@ -92,9 +92,9 @@ namespace NHibernate.Caches.Prevalence
 						dataDir = Path.Combine(Environment.CurrentDirectory, prevalenceBase);
 					}
 
-					if (properties["regionPrefix"] != null)
+					if (properties.ContainsKey("regionPrefix"))
 					{
-						string regionPrefix = properties["regionPrefix"].ToString();
+						string regionPrefix = properties["regionPrefix"];
 
 						if (log.IsDebugEnabled)
 						{
@@ -129,7 +129,7 @@ namespace NHibernate.Caches.Prevalence
 
 		/// <summary></summary>
 		/// <param name="properties"></param>
-		public void Start(IDictionary properties)
+		public void Start(IDictionary<string, string> properties)
 		{
 			if (_dataDir == null || _dataDir.Length < 1)
 			{

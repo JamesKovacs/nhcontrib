@@ -1,64 +1,61 @@
 <?xml version="1.0"?>
 <project
-		name="NHibernate.Caches.MemCache"
+		name="NHibernate.JetDriver"
 		default="build"
-		description="NHibernate distributed cache provider using memcached"
+		description="NHibernate driver and dialect for Microsoft Access"
 		xmlns="http://nant.sf.net/release/0.85/nant.xsd">
 
 	<property name="framework.family" value="${framework::get-family(framework::get-target-framework())}"/>
 	<property name="framework.version" value="${framework::get-version(framework::get-target-framework())}"/>
-	
-	<property name="folders.lib" value="../../lib/${framework.family}/${framework.version}" />
-	<property name="folders.locallib" value="lib/${framework.family}/${framework.version}" />
-	<property name="folders.build" value="build" />
 
+	<property name="folders.lib" value="../../lib/${framework.family}/${framework.version}" />
+	<property name="folders.build" value="build" />
+	
 	<target name="build">
 		<mkdir dir="${folders.build}"/>
 
 		<csc target="library"
-			 output="${folders.build}/NHibernate.Caches.MemCache.dll"
+			 output="${folders.build}/NHibernate.JetDriver.dll"
 		>
 			<nowarn>
 				<warning number="1591" />
 				<!-- No XML comment for publicly visible member -->
 			</nowarn>
-			<sources basedir="src/NHibernate.Caches.MemCache">
+			<sources basedir="src/NHibernate.JetDriver">
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
 				<include name="${folders.lib}/NHibernate.dll"/>
 				<include name="${folders.lib}/log4net.dll"/>
-				<include name="${folders.locallib}/Memcached.ClientLibrary.dll"/>
 			</references>
 		</csc>
 
 		<csc target="library"
-			 output="${folders.build}/NHibernate.Caches.MemCache.Tests.dll"
+			 output="${folders.build}/NHibernate.JetDriver.Tests.dll"
 		>
 			<nowarn>
 				<warning number="1591" />
 				<!-- No XML comment for publicly visible member -->
 			</nowarn>
-			<sources basedir="src/NHibernate.Caches.MemCache.Tests">
+			<sources basedir="src/NHibernate.JetDriver.Tests">
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
 				<include name="${folders.lib}/NHibernate.dll"/>
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
-				<include name="${folders.locallib}/Memcached.ClientLibrary.dll"/>
-				<include name="${folders.build}/NHibernate.Caches.MemCache.dll"/>
+				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
-			<resources basedir="src/NHibernate.Caches.MemCache.Tests" prefix="NHibernate.Caches.MemCache.Tests" dynamicprefix="true">
+			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
 				<include name="**/*.hbm.xml"/>
 				<exclude name="**/bin/**/*.hbm.xml"/>
 				<exclude name="**/obj/**/*.hbm.xml"/>
 			</resources>
 		</csc>
 
-		<copy file="src/NHibernate.Caches.MemCache.Tests/App.config"
-			  tofile="${folders.build}/NHibernate.Caches.MemCache.Tests.dll.config"
-			  if="${file::exists('src/NHibernate.Caches.MemCache.Tests/App.config')}"
+		<copy file="src/NHibernate.JetDriver.Tests/App.config"
+			  tofile="${folders.build}/NHibernate.JetDriver.Tests.dll.config"
+			  if="${file::exists('src/NHibernate.JetDriver.Tests/App.config')}"
 		/>
 
 		<copy todir="${folders.build}" flatten="true">
@@ -68,8 +65,6 @@
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
-				<include name="${folders.locallib}/Memcached.ClientLibrary.dll"/>
-				<include name="lib/${framework.family}/ICSharpCode.SharpZipLib.dll"/>
 			</fileset>
 		</copy>
 	</target>
@@ -80,7 +75,7 @@
 			<formatter type="Xml"
 			           usefile="true"
 			           extension=".xml" />
-			<test assemblyname="${folders.build}/NHibernate.Caches.MemCache.Tests.dll"/>
+			<test assemblyname="${folders.build}/NHibernate.JetDriver.Tests.dll"/>
 		</nunit2>
 	</target>
 

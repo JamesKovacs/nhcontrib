@@ -12,10 +12,10 @@ using System.Reflection;
 //------------------------------------------------------------------------------
 
 [assembly: CLSCompliantAttribute(true)]
-[assembly: AssemblyTitleAttribute("NHibernate.UserTypes.Tests")]
-[assembly: AssemblyDescriptionAttribute("Tests for NHibernate.UserTypes group of assemblies")]
+[assembly: AssemblyTitleAttribute("NHibernate.UserTypes.SqlTypes.Tests")]
+[assembly: AssemblyDescriptionAttribute("Tests for NHibernate.UserTypes.SqlTypes group of assemblies")]
 [assembly: AssemblyCompanyAttribute("NHibernate.org")]
-[assembly: AssemblyProductAttribute("NHibernate.UserTypes.Tests")]
+[assembly: AssemblyProductAttribute("NHibernate.UserTypes.SqlTypes.Tests")]
 [assembly: AssemblyCopyrightAttribute("Licensed under LGPL.")]
 [assembly: AssemblyVersionAttribute("2.0.0.1001")]
 [assembly: AssemblyInformationalVersionAttribute("2.0.0.1001")]

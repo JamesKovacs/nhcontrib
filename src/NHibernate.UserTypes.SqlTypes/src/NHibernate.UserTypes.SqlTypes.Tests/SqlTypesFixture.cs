@@ -6,7 +6,7 @@ using NHibernate.UserTypes.SqlTypes;
 
 using NUnit.Framework;
 
-namespace NHibernate.UserTypes.Tests
+namespace NHibernate.UserTypes.SqlTypes.Tests
 {
 	[TestFixture]
 	public class SqlTypesFixture : TestCase

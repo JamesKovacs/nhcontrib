@@ -9,7 +9,7 @@ using NHibernate.Tool.hbm2ddl;
 
 using NUnit.Framework;
 
-namespace NHibernate.UserTypes.Tests
+namespace NHibernate.UserTypes.SqlTypes.Tests
 {
 	public abstract class TestCase
 	{
@@ -32,7 +32,7 @@ namespace NHibernate.UserTypes.Tests
 		/// </summary>
 		protected virtual string MappingsAssembly
 		{
-			get { return "NHibernate.UserTypes.Tests"; }
+			get { return "NHibernate.UserTypes.SqlTypes.Tests"; }
 		}
 
 		/// <summary>

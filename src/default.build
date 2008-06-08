@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<project 
+	name="NHContrib" 
+	default="build-all"
+	xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd">
+
+	<property name="root.dir" value="." />
+	<property name="test" value="false" />
+	<property name="targets.build" value="build" />
+	<property name="targets.test" value="test" />
+
+	<target name="init">
+		<if test="${test}">
+			<property name="targets" value="${targets.build} ${targets.test}" />
+		</if>
+		<if test="${not test}">
+			<property name="targets" value="${targets.build}" />
+		</if>
+	</target>
+
+	<target name="build-all" depends="init"
+					description="Builds all projects">
+
+		<!-- Not available yet: <call target="Burrow" /> -->
+		<call target="Caches.MemCache" />
+		<call target="Caches.Prevalence" />
+		<call target="Caches.SysCache" />
+		<call target="Caches.SysCache2" />
+		<call target="JetDriver" />
+		<call target="Mapping.Attributes" />
+		<call target="Search" />
+		<call target="Shards" />
+		<call target="Tasks" />
+		<call target="Tool.hbm2net" />
+		<call target="UserTypes.Oracle" />
+		<call target="UserTypes.SqlTypes" />
+		<!-- Not available yet: <call target="Validator" /> -->
+
+	</target>
+
+	<target name="Burrow" depends="init"
+					description="Builds NHibernate.Burrow">
+		<nant buildfile="${root.dir}\NHibernate.Burrow\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.MemCache" depends="init"
+					description="Builds NHibernate.Caches.MemCache">
+		<nant buildfile="${root.dir}\NHibernate.Caches.MemCache\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.Prevalence" depends="init"
+					description="Builds NHibernate.Caches.Prevalence">
+		<nant buildfile="${root.dir}\NHibernate.Caches.Prevalence\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.SysCache" depends="init"
+					description="Builds NHibernate.Caches.SysCache">
+		<nant buildfile="${root.dir}\NHibernate.Caches.SysCache\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.SysCache2" depends="init"
+					description="Builds NHibernate.Caches.SysCache2">
+		<nant buildfile="${root.dir}\NHibernate.Caches.SysCache2\default.build" target="${targets}" />
+	</target>
+
+	<target name="JetDriver" depends="init"
+					description="Builds NHibernate.JetDriver">
+		<nant buildfile="${root.dir}\NHibernate.JetDriver\default.build" target="${targets}" />
+	</target>
+
+	<target name="Mapping.Attributes" depends="init"
+					description="Builds NHibernate.Mapping.Attributes">
+		<nant buildfile="${root.dir}\NHibernate.Mapping.Attributes\default.build" target="${targets}" />
+	</target>
+
+	<target name="Search" depends="init"
+					description="Builds NHibernate.Search">
+		<nant buildfile="${root.dir}\NHibernate.Search\default.build" target="${targets}" />
+	</target>
+
+	<target name="Shards" depends="init"
+					description="Builds NHibernate.Shards">
+		<nant buildfile="${root.dir}\NHibernate.Shards\default.build" target="${targets}" />
+	</target>
+
+	<target name="Tasks" depends="init"
+					description="Builds NHibernate.Tasks">
+		<nant buildfile="${root.dir}\NHibernate.Tasks\default.build" target="${targets}" />
+	</target>
+
+	<target name="Tool.hbm2net" depends="init"
+					description="Builds NHibernate.Tool.hbm2net">
+		<nant buildfile="${root.dir}\NHibernate.Tool.hbm2net\default.build" target="${targets}" />
+	</target>
+
+	<target name="UserTypes.Oracle" depends="init"
+					description="Builds NHibernate.UserTypes.Oracle">
+		<nant buildfile="${root.dir}\NHibernate.UserTypes.Oracle\default.build" target="${targets}" />
+	</target>
+
+	<target name="UserTypes.SqlTypes" depends="init"
+					description="Builds NHibernate.UserTypes.SqlTypes">
+		<nant buildfile="${root.dir}\NHibernate.UserTypes.SqlTypes\default.build" target="${targets}" />
+	</target>
+
+	<target name="Validator" depends="init"
+					description="Builds NHibernate.Validator">
+		<nant buildfile="${root.dir}\NHibernate.Validator\default.build" target="${targets}" />
+	</target>
+
+</project>
