@@ -51,8 +51,6 @@ namespace NHibernate.Burrow.AppBlock.Criterions
             return realCriterion.ToSqlString(criteria, criteriaQuery, enabledFilters);
         }
 
-    	public override IProjection[] GetProjections() {
-    		return realCriterion.GetProjections();
-    	}
+    	 
     }
 }
