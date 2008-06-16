@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvNHFunctionTests\ManualSessionFeature.cs" />
     <Compile Include="ConfigurationTests\ConfigReadWriteFixture.cs" />
     <Compile Include="ConverstationTests\ConversationalDataFixture.cs" />
     <Compile Include="ConverstationTests\ConversationManagementFixture.cs" />

@@ -154,7 +154,7 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISessionFactory GetSessionFactory(System.Type entityType)
         {
-            return GetSessionManager(entityType).SessionFactory;
+            return PersistenceUnitRepo.Instance.GetPU(entityType).SessionFactory;
         } 
         
     }
