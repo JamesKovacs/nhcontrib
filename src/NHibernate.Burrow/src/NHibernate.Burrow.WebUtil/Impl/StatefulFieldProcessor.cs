@@ -1,35 +1,26 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using System.Reflection;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using log4net;
 using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil.Impl {
+	using Type = System.Type;
 	internal abstract class StatefulFieldProcessor {
-		
 		private static readonly IDictionary<Type, IDictionary<FieldInfo, StatefulField>> fieldInfoCache =
 			new Dictionary<Type, IDictionary<FieldInfo, StatefulField>>();
 
 		private readonly Control ctl;
 		private readonly StatefulFieldPageModule pageModule;
+		private readonly Assembly webAssembly = Assembly.GetAssembly(typeof (Control));
 		protected IDictionary<FieldInfo, StatefulField> statefulfields;
-		private string stateKeyPrefix;
-		private StateBag states;
-		 
-		private readonly Assembly webAssembly = Assembly.GetAssembly(typeof(System.Web.UI.Control));
+		private readonly StateBag states;
 
 		public StatefulFieldProcessor(Control c, StatefulFieldPageModule sfpm) {
 			ctl = c;
 			statefulfields = GetStatefulFields();
 			pageModule = sfpm;
 			states = pageModule.GetControlState(Control.UniqueID);
-		 
 		}
 
 		protected StateBag States {
@@ -39,13 +30,11 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		public Control Control {
 			get { return ctl; }
 		}
-		
 
 		private bool HasStatefulField {
 			get { return statefulfields != null && statefulfields.Count > 0; }
 		}
 
- 
 		public void Process() {
 			if (HasStatefulField)
 				ProcessFields();
@@ -54,7 +43,6 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 				if (StatefulFieldsControlFilter.Instance.CanHaveStatefulFields(control))
 					CreateSubProcessor(control, pageModule).Process();
 		}
-
 
 		protected abstract StatefulFieldProcessor CreateSubProcessor(Control c, StatefulFieldPageModule sfpm);
 
@@ -76,7 +64,7 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		protected IDictionary<FieldInfo, StatefulField> GetStatefulFields() {
 			IDictionary<FieldInfo, StatefulField> retVal;
 			Type controlType = Control.GetType();
-			if(controlType.Assembly == webAssembly)
+			if (controlType.Assembly == webAssembly)
 				return null;
 			if (!fieldInfoCache.TryGetValue(controlType, out retVal))
 				fieldInfoCache[controlType] = retVal = GetFieldInfo<StatefulField>();
@@ -86,7 +74,5 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		private FieldInfo[] GetFields() {
 			return Control.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 		}
-
- 
 	}
 }

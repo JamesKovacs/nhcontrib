@@ -22,24 +22,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\NHibernate.Burrow-1.0.0.Alpha\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\NHibernate.Burrow-1.0.0.Alpha\NHibernate.Burrow.AppBlock.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\NHibernate.Burrow.AppBlock.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\lib\NHibernate\net\2.0\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\log4net.dll</HintPath>
+      <HintPath>..\..\lib\NHibernate\net\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=2.0.0.1001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\NHibernate.dll</HintPath>
+      <HintPath>..\..\lib\NHibernate\net\2.0\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -81,7 +81,6 @@
     <Compile Include="Pagination\NamedQueryRowsCounter.cs" />
     <Compile Include="Pagination\Paginator.cs" />
     <Compile Include="Pagination\QueryRowsCounter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\Cloner.cs" />
     <Compile Include="SoftDelete\ISoftDelete.cs" />
     <Compile Include="SoftDelete\SoftDeleteEventListener.cs" />
@@ -93,6 +92,9 @@
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,11 @@
+Build 1.0.0.Alpha4
+========================
+** Bug Fix
+	* some button not working in masterpage 
+	
+** Improvement
+    * allow user to GetSessionFactory without initializing the BurrowEnvironment 
+    * updated lib to the NH 2.0.0 Alpha2
+    * added GetSessionFactory(), removed GetUnManagedSession() from BurrowFramework
+	* added nant build scripts
+	* improved StatefulFieldPageModule performance

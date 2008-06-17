@@ -90,9 +90,6 @@ namespace NHibernate.Burrow.Util
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        /// <remarks>
-        /// <see cref="InstanceLoader.Load(System.Type t)"/>
-        /// </remarks>
         public static T Load<T>()
         {
             return (T) Load(typeof (T));

@@ -13,7 +13,6 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
         {
             new BurrowFramework().InitWorkSpace();
             string cs = new BurrowFramework().BurrowEnvironment.Configuration.DBConnectionString(typeof (MockEntity));
-            Console.WriteLine(cs);
             Assert.IsTrue(cs.IndexOf("Server") >= 0);
             new BurrowFramework().CloseWorkSpace();
         }
@@ -27,7 +26,6 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
 
             foreach (IPersistenceUnitCfg puSection in section.PersistenceUnitCfgs)
             {
-                Console.WriteLine(puSection.NHConfigFile);
                 Assert.IsTrue(puSection.NHConfigFile.IndexOf(".xml") > 0);
                 Assert.IsFalse(puSection.ManualTransactionManagement);
             }

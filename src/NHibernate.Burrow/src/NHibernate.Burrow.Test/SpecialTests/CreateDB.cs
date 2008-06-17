@@ -10,7 +10,7 @@ namespace NHibernate.Burrow.Test.SpecialTests
         [Test, Explicit]
         public void CreateTestDataBase()
         {
-            new SchemaUtil().CreateSchemas();
+            new SchemaUtil().CreateSchemas(false, true);
         }
     }
 }

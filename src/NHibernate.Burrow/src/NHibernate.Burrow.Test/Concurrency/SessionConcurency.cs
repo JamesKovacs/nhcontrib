@@ -11,8 +11,9 @@ namespace NHibernate.Burrow.Test.Concurrency
         public static ISet<int> sesss = new HashedSet<int>();
         public static int error = 0;
         public static int threadPerformed = 0;
+    	private static bool loudly = false;
 
-        public class ThreadTestProcessor
+    	public class ThreadTestProcessor
         {
             private int num;
 
@@ -31,12 +32,12 @@ namespace NHibernate.Burrow.Test.Concurrency
                     int code = session.GetHashCode();
                     session.Flush();
                     Assert.IsTrue(sesss.Add(code));
-                    Console.WriteLine("Thread # " + num + " succeeded.");
+                   Output("Thread # " + num + " succeeded.");
                     threadPerformed++;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Thread #" + num + " occurs error:" + e.Message);
+					Output("Thread #" + num + " occurs error:" + e.Message);
                     error++;
                     throw;
                 }
@@ -77,7 +78,7 @@ namespace NHibernate.Burrow.Test.Concurrency
             {
                 if (i % 100 == 0)
                 {
-                    Console.WriteLine("MainThread sleeping waiting for all thread done " + i + "/2000");
+					Output("MainThread sleeping waiting for all thread done " + i + "/2000");
                 }
                 if (threadPerformed == 50)
                 {
@@ -85,7 +86,7 @@ namespace NHibernate.Burrow.Test.Concurrency
                 }
                 Thread.Sleep(10); //Wait for all thread to stop.
             }
-            Console.WriteLine("Waitting done");
+			Output("Waitting done");
             Assert.AreEqual(50, threadPerformed, "not all thread are performed");
             Assert.AreEqual(0, error, error + " Errors occured");
         }
@@ -95,5 +96,11 @@ namespace NHibernate.Burrow.Test.Concurrency
         {
             new ThreadTestProcessor(1).ThreadProc();
         }
+
+		private static void Output(string line) {
+			if(loudly)
+				Console.WriteLine(line);
+
+		}
     }
 }

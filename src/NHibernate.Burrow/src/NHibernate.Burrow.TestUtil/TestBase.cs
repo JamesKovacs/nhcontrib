@@ -76,6 +76,8 @@ namespace NHibernate.Burrow.TestUtil
             if (CleanAndCreateSchema)
             {
                 CreateSchema();
+            }else {
+				new SchemaUtil().UpdateSchemas(false, true);
             }
         }
 
@@ -95,12 +97,12 @@ namespace NHibernate.Burrow.TestUtil
 
         protected void CreateSchema()
         {
-            new SchemaUtil().CreateSchemas();
+            new SchemaUtil().CreateSchemas(false, true);
         }
 
         protected void DropSchema()
         {
-            new SchemaUtil().DropSchemas(true, true);
+            new SchemaUtil().DropSchemas(false, true);
         }
     }
 }

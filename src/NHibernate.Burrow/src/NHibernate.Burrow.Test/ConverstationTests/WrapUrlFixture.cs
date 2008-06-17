@@ -17,7 +17,6 @@ namespace NHibernate.Burrow.Test.ConverstationTests
             Assert.IsTrue(wrapped.Contains("http://test.com?_NHibernate.Burrow.ConversationId_="));
             wrapped = new WebUtil().WrapUrlWithConversationInfo("http://test.com?t=1");
             Assert.IsTrue(wrapped.Contains("http://test.com?t=1&_NHibernate.Burrow.ConversationId_="));
-            Console.WriteLine(wrapped);
             new BurrowFramework().CurrentConversation.FinishSpan();
             new BurrowFramework().CloseWorkSpace();
         }

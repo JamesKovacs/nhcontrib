@@ -20,7 +20,7 @@ namespace NHibernate.Burrow.Test.ManualTransaction
         public void Setup()
         {
             bf.InitStickyWorkSpace();
-            new SchemaUtil().CreateSchemas();
+            new SchemaUtil().CreateSchemas(false, true);
         }
 
         #endregion

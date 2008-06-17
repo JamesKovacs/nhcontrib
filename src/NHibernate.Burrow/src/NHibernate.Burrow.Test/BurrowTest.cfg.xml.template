@@ -3,8 +3,10 @@
 	<session-factory name="NHibernate.Burrow.Test">
 		<property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
 		<property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
-		<property name="connection.connection_string">Server=localhost;initial catalog=NHBurrowTest;User Id=;Password=</property>
+		<property name="connection.connection_string">
+			Server=(local);initial catalog=NHBurrowTest;Integrated Security=SSPI
+		</property>
 		<property name="dialect">NHibernate.Dialect.MsSql2005Dialect</property>
-    <mapping assembly='NHibernate.Burrow.Test' />
+		<mapping assembly='NHibernate.Burrow.Test' />
 	</session-factory>
 </hibernate-configuration>

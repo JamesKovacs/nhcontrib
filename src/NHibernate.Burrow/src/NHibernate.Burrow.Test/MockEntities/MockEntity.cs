@@ -67,6 +67,13 @@ namespace NHibernate.Burrow.Test.MockEntities
             }
         }
 
+		public override int GetHashCode()
+		{
+			if (Id == 0)
+				return base.GetHashCode();
+			else return Id.GetHashCode();
+		}
+
         public override string ToString()
         {
             return Id.ToString();

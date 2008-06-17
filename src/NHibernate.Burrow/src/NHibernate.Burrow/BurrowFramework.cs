@@ -110,7 +110,7 @@ namespace NHibernate.Burrow
         }
 
         /// <summary>
-        /// overloaded version of <see cref="GetSession(Type)"/> in a single-Database environment
+        /// overloaded version of <see cref="GetSession(System.Type)"/> in a single-Database environment
         /// </summary>
         /// <returns></returns>
         public ISession GetSession()
@@ -147,7 +147,7 @@ namespace NHibernate.Burrow
         /// when there are multiple databases, Burrow use this to locate the right one</param>
         /// <returns>the sessionFactory</returns>
         /// <remarks>
-        /// For getting a Session please use <see cref="GetSession(Type)"/> as it's managed by Burrow. 
+        /// For getting a Session please use <see cref="GetSession()"/> as it's managed by Burrow. 
         /// If you use OpenSession() of this SessionFactory, 
         /// the session you get won't be managed by Burrow 
         /// and you will be responsible for managing the status of that session yourself 

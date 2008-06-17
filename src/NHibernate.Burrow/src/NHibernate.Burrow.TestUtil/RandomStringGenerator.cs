@@ -1,25 +1,7 @@
 using System;
 using System.Security.Cryptography;
 
-namespace NHibernate.Burrow.TestUtil
-{
-    /// <summary>
-    /// Summary description for Random.
-    /// </summary>
-    ///////////////////////////////////////////////////////////////////////////////
-    // SAMPLE: Generates random password, which complies with the strong password
-    //         rules and does not contain ambiguous characters.
-    //
-    // To run this sample, create a new Visual C# project using the Console
-    // Application template and replace the contents of the Class1.cs file with
-    // the code below.
-    //
-    // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
-    // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
-    // WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
-    // 
-    // Copyright (C) Obviex(TM). All rights reserved.
-    // 
+namespace NHibernate.Burrow.TestUtil{
     /// <summary>
     /// This class can generate random passwords, which do not include ambiguous 
     /// characters, such as I, l, and 1. The generated password will be made of

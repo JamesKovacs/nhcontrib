@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<project name="NHibernate.Burrow.Test" default="build" xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd">
+	<property name="root.dir" value="../.." />
+	<property name="config.FileName" value="BurrowTest.cfg.xml" />
+	<include buildfile="${root.dir}/build-common/common-project.xml" />
+	<target name="init" depends="common.init">
+		<property name="assembly.description" value="The Unit Tests for NHibernate.Burrow." />
+		<property name="assembly.is-cls-compliant" value="false" />
+		<property name="clover.instrument" value="false" />
+		<assemblyfileset id="project.references" basedir="${bin.dir}">
+			<include name="System.dll" />
+			<include name="System.Transactions.dll" />
+			<include name="System.Configuration.dll" />
+			<include name="System.XML.dll" />
+			<include name="System.Data.dll" />
+			<include name="Iesi.Collections.dll" />
+			<include name="log4net.dll" /> 
+			<include name="NHibernate.dll" />
+			<include name="NHibernate.Burrow.dll" />
+			<include name="NHibernate.Burrow.AppBlock.dll" />
+			<include name="NHibernate.Burrow.TestUtil.dll" />
+			<include name="NHibernate.Test.dll" />
+			<include name="Castle.DynamicProxy2.dll" />
+			<include name="Castle.Core.dll" />
+			<include name="nunit.framework.dll" />
+		</assemblyfileset>
+		<resourcefileset id="project.resources" prefix="NHibernate.Burrow.Test" dynamicprefix="true">
+			<include name="**/*.xml" />
+			<exclude name="bin/**/*.xml" />
+		    <exclude name="obj/**/*.xml"/>
+		</resourcefileset>
+	</target>
+	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
+	<target name="build" depends="init generate-assemblyinfo common.compile-tests">
+
+        <copy file="${config.FileName}.Template"
+			  tofile="${bin.dir}/${config.FileName}"
+			  if="${not file::exists('${config.FileName}')}"
+		/>		
+		<copy file="${config.FileName}"
+			  tofile="${bin.dir}/${config.FileName}"
+			  if="${file::exists('${config.FileName}')}"
+		/>   
+	</target>
+	<target name="test" depends="init build common.run-tests" />
+</project>

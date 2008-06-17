@@ -1,0 +1,19 @@
+## 
+##	This file contains sample commands to build NHibernate.Burrow using the build files.
+##	It should be run from the nhibernate directory that contains this file.
+##	
+##	If you are going to run the Test make sure to set the connection information.
+##
+##
+
+
+NAnt -D:project.config=release clean build test>output-release-build.log
+
+NAnt clean build >output-debug-build.log
+
+NAnt -D:project.config=release clean package >output-release-package.log
+
+
+
+
+
