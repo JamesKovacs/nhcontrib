@@ -22,10 +22,14 @@ namespace EnterpriseSample.Presenters
             BurrowFramework burrow = new BurrowFramework();
 
             //Save model in current conversation.
-            if (!burrow.CurrentConversation.Items.ContainsKey("EditCustomerModel"))
-                burrow.CurrentConversation.Items.Add("EditCustomerModel", new EditCustomerModel());
-            model = burrow.CurrentConversation.Items["EditCustomerModel"] as EditCustomerModel;
-
+            object mod;
+            if (!burrow.CurrentConversation.Items.TryGetValue("EditCustomerModel", out mod))
+            {
+                model = new EditCustomerModel();
+                burrow.CurrentConversation.Items.Add("EditCustomerModel",model);
+            }
+            else
+                model = mod as EditCustomerModel;
         }
 
         public void InitViewWith(string customerId) {
