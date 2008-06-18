@@ -15,10 +15,10 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		                                                                               	typeof (HtmlForm),
 		                                                                               	typeof (HtmlTable),
 		                                                                               	typeof (HtmlTableCell),
-		                                                                               	typeof (HtmlTableRow)
+		                                                                               	typeof (HtmlTableRow),
 		                                                                               });
 
-		private readonly Type[] filteredBaseTypes = new Type[] {typeof (HtmlControl), typeof (BaseValidator)};
+		private readonly Type[] filteredBaseTypes = new Type[] {typeof (BaseValidator)};
 
 		private readonly HashedSet<Type> filteredTypes = new HashedSet<Type>(new Type[] {
 		                                                                                	typeof (FileUpload),
@@ -32,7 +32,8 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		                                                                                	typeof (ValidationSummary),
 		                                                                                	typeof (FileUpload),
 		                                                                                	typeof (Literal),
-		                                                                                	typeof (LiteralControl)
+		                                                                                	typeof (LiteralControl),
+		                                                                                	typeof (HtmlHead)
 		                                                                                });
 
 		private StatefulFieldsControlFilter() {}
