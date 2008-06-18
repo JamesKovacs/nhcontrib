@@ -7,7 +7,7 @@
 ##
 
 
-NAnt -D:project.config=release clean build test>output-release-build.log
+NAnt -D:project.config=release clean build >output-release-build.log
 
 NAnt clean build >output-debug-build.log
 
