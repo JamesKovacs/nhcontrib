@@ -7,10 +7,8 @@ namespace NHibernate.Burrow.Impl
     internal class TransactionImpl : ITransaction
     {
         private NHibernate.ITransaction nhtransaction;
-        private SessionManager sessManager;
         
-        public TransactionImpl(SessionManager sessManager) {
-            this.sessManager = sessManager;
+        public TransactionImpl() {
         }
 
         #region ITransaction Members
@@ -18,13 +16,13 @@ namespace NHibernate.Burrow.Impl
         /// <summary>
         /// 
         /// </summary>
-        public void Begin()
+        public void Begin(ISession sess)
         {
             if (InTransaction)
             {
                 throw new Exceptions.IncorrectTransactionStatusException("Transaction has already begun");
             }
-            nhtransaction = sessManager.GetSession().BeginTransaction();
+            nhtransaction = sess.BeginTransaction();
 
         }
         /// <summary>

@@ -5,7 +5,7 @@ namespace NHibernate.Burrow.Impl
         /// <summary>
         /// 
         /// </summary>
-        void Begin( );
+        void Begin(ISession sess );
 
         void Commit();
 

@@ -10,7 +10,7 @@ namespace NHibernate.Burrow.Impl
     {
         #region ITransaction Members
 
-        public void Begin()
+        public void Begin(ISession sess)
         {
             return;
         }

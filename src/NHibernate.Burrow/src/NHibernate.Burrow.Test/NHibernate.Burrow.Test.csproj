@@ -74,7 +74,6 @@
     <Compile Include="MockEntities\MockEntityDAO.cs" />
     <Compile Include="Concurrency\SessionConcurency.cs" />
     <Compile Include="SpecialTests\CreateDB.cs" />
-    <Compile Include="Transaction\ManualTransactionFixture.cs" />
     <Compile Include="WorkSpace\MultipleWorkSpaceTest.cs" />
   </ItemGroup>
   <ItemGroup>

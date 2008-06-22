@@ -8,19 +8,26 @@ namespace NHibernate.Burrow.Impl
     {
         private IList<ITransaction> transactions;
         public event System.EventHandler RolledBack;
-        public TransactionManagerImpl(IList<ITransaction> transactions) {
-            this.transactions = transactions;
+        public ManualTransactionConversationImpl conversation;
+        public TransactionManagerImpl(ManualTransactionConversationImpl conversation)
+        {
+            this.conversation = conversation;
         }
+    
 
         /// <summary>
         /// begin transactions
         /// </summary>
         public void Begin()
         {
-            foreach (ITransaction transaction in transactions)
+
+            transactions = new List<ITransaction>();
+            foreach (SessionManager sm in conversation.SessionManagers)
             {
-                transaction.Begin();
+                transactions.Add(sm.Transaction);
+                sm.Transaction.Begin(sm.GetSession());
             }
+           
         }
 
         /// <summary>

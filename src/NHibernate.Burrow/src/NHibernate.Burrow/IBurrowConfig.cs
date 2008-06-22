@@ -34,6 +34,12 @@ namespace NHibernate.Burrow
         [ConfigurationProperty("workSpaceNameSniffer", DefaultValue = "", IsRequired = false, IsKey = false)]
         string WorkSpaceNameSniffer { get; set; }
 
+        ///<summary>
+        /// wheather the transaction under this persistence Unit is manually managed by client    
+        ///</summary>
+        [ConfigurationProperty("manualTransactionManagement", DefaultValue = false, IsRequired = false, IsKey = false)]
+        bool ManualTransactionManagement { get; set; }
+
         /// <summary>
         /// Get the DBConnectionString for the DB where <paramref name="entityType"/> is persistent in
         /// </summary>

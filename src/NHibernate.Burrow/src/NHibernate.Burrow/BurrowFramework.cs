@@ -80,16 +80,7 @@ namespace NHibernate.Burrow
             InitWorkSpace(false, WorkSpace.CreateState(conversationId, string.Empty), string.Empty);
         }
 
-        ///<summary>
-        /// Initiate a work space that can have a long life time. 
-        /// On the other hand it requires semi-auto transaction management by you, see <see cref="ITransactionManager"/>.
-        /// You can use it within a winform environment where you need 
-        /// long session and multiple transactions within the session. 
-        ///</summary>
-        public void InitStickyWorkSpace()
-        {
-            FrameworkEnvironment.Instance.InitMultipleTransactionEnabledWorkSpace();
-        }
+    
 
         /// <summary>
         /// close the Burrow environment for the current visit to your Domain Layer
@@ -115,7 +106,7 @@ namespace NHibernate.Burrow
         /// <returns></returns>
         public ISession GetSession()
         {
-            return ((AbstractConversation) CurrentConversation).GetSessionManager().GetSession();
+            return GetSession(null);
         }
 
         /// <summary>
@@ -133,12 +124,11 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISession GetSession(System.Type entityType)
         {
-            return GetSessionManager(entityType).GetSession();
+            AbstractConversation c = ((AbstractConversation) CurrentConversation);
+            return c.GetSession(entityType);
         }
 
-        private SessionManager GetSessionManager(System.Type entityType) {
-            return ((AbstractConversation) CurrentConversation).GetSessionManager(entityType);
-        }
+      
 
         /// <summary>
         /// Gets the ISessionFactory

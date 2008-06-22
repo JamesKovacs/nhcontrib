@@ -9,12 +9,8 @@ namespace NHibernate.Burrow.Impl
 
         public ManualTransactionConversationImpl() : base()
         {
-            IList<ITransaction> transactions = new List<ITransaction>();
-            foreach (SessionManager sm in sessManagers.Values)
-            {
-                transactions.Add(sm.Transaction);
-            }
-            transactionManager = new TransactionManagerImpl(transactions);
+            
+            transactionManager = new TransactionManagerImpl(this);
             transactionManager.RolledBack +=new System.EventHandler(TransactionRolledBack);
         }
 
@@ -28,9 +24,15 @@ namespace NHibernate.Burrow.Impl
             get { return transactionManager; }
         }
 
-        protected override SessionManager CreateSessionManager(PersistenceUnit pu)
+        protected override TransactionStrategy TransactionStrategy
         {
-            return new SessionManager(pu, false);
+            get { return TransactionStrategy.ManualTransaction; }
+            set
+            {
+                
+            }
         }
+
+      
     }
 }

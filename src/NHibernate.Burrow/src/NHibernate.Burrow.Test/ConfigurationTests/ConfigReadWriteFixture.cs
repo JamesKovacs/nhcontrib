@@ -27,7 +27,6 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
             foreach (IPersistenceUnitCfg puSection in section.PersistenceUnitCfgs)
             {
                 Assert.IsTrue(puSection.NHConfigFile.IndexOf(".xml") > 0);
-                Assert.IsFalse(puSection.ManualTransactionManagement);
             }
         }
 

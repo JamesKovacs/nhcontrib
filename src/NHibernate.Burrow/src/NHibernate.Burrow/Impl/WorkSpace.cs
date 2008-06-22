@@ -84,19 +84,14 @@ namespace NHibernate.Burrow.Impl
                 return new WorkSpace(ConversationPool.Instance[new Guid(cid)]);
             }else
             {
-                return new WorkSpace(new ConversationWithManagedTransactionImpl());
+                AbstractConversation c =
+                    new BurrowFramework().BurrowEnvironment.Configuration.ManualTransactionManagement ?
+                    (AbstractConversation) new ManualTransactionConversationImpl() : new ConversationWithManagedTransactionImpl();
+                return new WorkSpace(c);
             }
         }
 
-         
-        /// <summary>
-        /// Create a workspace that is enabled to allow multiple transaction
-        /// </summary>
-        /// <returns></returns>
-        public static WorkSpace CreateMultipleTransactionEnabled()
-        {
-            return new WorkSpace(new ManualTransactionConversationImpl());
-        }
+     
 
 
  

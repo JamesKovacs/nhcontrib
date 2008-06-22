@@ -61,9 +61,7 @@ namespace NHibernate.Burrow
         /// Gets the <see cref="ITransactionManager"/> when in an Sticky WorkSpace.
         /// </summary>
         /// <remarks>
-        /// For this property to be available, you must call 
-        /// <see cref="BurrowFramework.InitStickyWorkSpace()"/> instead of
-        /// <see cref="BurrowFramework.InitWorkSpace()"/> at the very begninning
+        /// For this property to be available, you must call trun on manualTransactionManagement in the configuration
         /// </remarks>
         ITransactionManager TransactionManager
         {
@@ -108,6 +106,13 @@ namespace NHibernate.Burrow
         /// </summary>
         event EventHandler Closed;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ts">Controls the TransactionStrategy</param>
+        /// <returns></returns>
+        bool SpanWithPostBacks(TransactionStrategy ts);
 
+        bool SpanWithCookie(string inWorkSpaceName, TransactionStrategy ts);
     }
 }

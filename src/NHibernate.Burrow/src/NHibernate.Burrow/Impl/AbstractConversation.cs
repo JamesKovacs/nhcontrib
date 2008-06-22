@@ -23,16 +23,17 @@ namespace NHibernate.Burrow.Impl
         private DateTime lastVisit = DateTime.Now;
         private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
         private string workSpaceName;
-        private TransactionStrategy transactionStrategyInSpanning;
-        private readonly TransactionStrategy DefaultLongTransactionStrategy = TransactionStrategy.NonAtomicConversation;
-
+        protected abstract TransactionStrategy TransactionStrategy
+        {
+            get; set;
+        }
         #region Constructors
 
         protected AbstractConversation()
         {
             foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
             {
-                sessManagers.Add(pu, CreateSessionManager(pu));
+                sessManagers.Add(pu,  new SessionManager(pu));
             }
             foreach (SessionManager sm in sessManagers.Values)
             {
@@ -40,8 +41,7 @@ namespace NHibernate.Burrow.Impl
             }
         }
 
-        protected abstract SessionManager CreateSessionManager(PersistenceUnit pu);
-
+        
         #endregion
 
         #region public methods
@@ -76,14 +76,7 @@ namespace NHibernate.Burrow.Impl
             get { return givenUp; }
         }
 
-        /// <summary>
-        /// Gets the <see cref="ITransactionManager"/> when in an Sticky WorkSpace.
-        /// </summary>
-        /// <remarks>
-        /// For this property to be available, you must call 
-        /// <see cref="BurrowFramework.InitStickyWorkSpace()"/> instead of
-        /// <see cref="BurrowFramework.InitWorkSpace()"/> at the very begninning
-        /// </remarks>
+        
         public abstract ITransactionManager TransactionManager
         { get;
         }
@@ -114,15 +107,18 @@ namespace NHibernate.Burrow.Impl
         /// <summary>
         /// Start a long Coversation that spans over multiple http requests
         /// </summary>
+        /// <remarks>
+        /// it will start a Non-Atomic conversation
+        /// </remarks>
         public bool SpanWithPostBacks()
         {
-            return SpanWithPostBacks( DefaultLongTransactionStrategy);
+            return SpanWithPostBacks( null);
         }
         
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="ts">Controls the transactionStrategy, default is BusinessTransaction</param>
+        /// <param name="ts">Controls the TransactionStrategy</param>
         /// <returns></returns>
         public bool SpanWithPostBacks(TransactionStrategy ts)
         {
@@ -135,7 +131,7 @@ namespace NHibernate.Burrow.Impl
         /// <param name="inWorkSpaceName">span in the work space</param>
         public bool SpanWithCookie(string inWorkSpaceName)
         {
-            return SpanWithCookie(inWorkSpaceName, DefaultLongTransactionStrategy);
+            return SpanWithCookie(inWorkSpaceName, null);
         }
 
 
@@ -219,7 +215,7 @@ namespace NHibernate.Burrow.Impl
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do simply change the SpanStrategy if there is any change
         /// </remarks>
-        private bool Span(SpanStrategy om, string inWorkSpaceName, TransactionStrategy trnStrgWhenSpanning)
+        private bool Span(SpanStrategy om, string inWorkSpaceName, TransactionStrategy ts)
         {
             Visited();
             if (!om.ValidForSpan)
@@ -238,8 +234,9 @@ namespace NHibernate.Burrow.Impl
                 ConversationPool.Instance.Add(id, this); 
                 retVal = true;
             }
-            transactionStrategyInSpanning = trnStrgWhenSpanning;
-            transactionStrategyInSpanning.ChangeFlushModeOnConversationBeginsSpan(sessManagers.Values);
+            if(ts != null)
+                TransactionStrategy = ts;
+            TransactionStrategy.ChangeFlushModeOnConversationBeginsSpan(sessManagers.Values);
             
             workSpaceName = inWorkSpaceName;
             WorkSpaceUpdate();
@@ -282,10 +279,7 @@ namespace NHibernate.Burrow.Impl
 
             try
             {
-                foreach (SessionManager sm in sessManagers.Values)
-                {
-                    sm.OnConversationFinish();
-                }
+                this.TransactionStrategy.OnConversationEnds(sessManagers.Values);
             }
             finally
             {
@@ -321,17 +315,7 @@ namespace NHibernate.Burrow.Impl
                 Close();
             }
         }
-
-        /// <summary>
-        /// Shortcut to flush the session
-        /// </summary>
-        public void Flush()
-        {
-            foreach (SessionManager sm in sessManagers.Values)
-            {
-                sm.GetSession().Flush();
-            }
-        }
+ 
  
 
          
@@ -357,6 +341,11 @@ namespace NHibernate.Burrow.Impl
             return sessManagers[PersistenceUnitRepo.Instance.GetPU(t)];
         }
 
+        internal IEnumerable<SessionManager> SessionManagers
+        {
+            get { return sessManagers.Values; }
+        }
+
         internal void OnWorkSpaceClose()
         {
             if (GivenUp)
@@ -368,7 +357,7 @@ namespace NHibernate.Burrow.Impl
                 CommitAndClose();
             }else
             {
-                transactionStrategyInSpanning.OnWorkSpaceClosedBeforeConversationEnds(sessManagers.Values);
+                TransactionStrategy.OnWorkSpaceClosedBeforeConversationEnds(sessManagers.Values);
             }
         }
 
@@ -386,6 +375,13 @@ namespace NHibernate.Burrow.Impl
                 }
             }
         }
- 
+
+        public ISession GetSession(System.Type entityType)
+        {
+            SessionManager sm = entityType == null ? GetSessionManager() : GetSessionManager(entityType);
+            ISession sess = sm.GetSession();
+            TransactionStrategy.OnSessionUsed(sm);
+            return sess;
+        }
     }
 }

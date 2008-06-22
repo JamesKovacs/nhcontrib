@@ -52,15 +52,7 @@ namespace NHibernate.Burrow.Configuration
             set { Set("interceptorFactory", value); }
         }
 
-        ///<summary>
-        /// wheather the transaction under this persistence Unit is manually managed by client    
-        ///</summary>
-        [ConfigurationProperty("manualTransactionManagement", DefaultValue = false, IsRequired = false, IsKey = false)]
-        public bool ManualTransactionManagement
-        {
-            get { return (bool) Get("manualTransactionManagement"); }
-            set { Set("manualTransactionManagement", value); }
-        }
+   
 
         #endregion
 

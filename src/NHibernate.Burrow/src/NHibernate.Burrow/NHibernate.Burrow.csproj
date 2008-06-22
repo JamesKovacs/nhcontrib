@@ -121,7 +121,7 @@
     <Compile Include="Impl\ManualTransactionConversationImpl.cs" />
     <Compile Include="Impl\TransactionImpl.cs" />
     <Compile Include="Impl\TransactionManagerImpl.cs" />
-    <Compile Include="Impl\TransactionStrategy.cs" />
+    <Compile Include="TransactionStrategy.cs" />
     <Compile Include="Impl\VoidTransaction.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
     <Compile Include="IBurrowConfig.cs" />

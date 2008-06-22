@@ -17,11 +17,7 @@ namespace NHibernate.Burrow.Impl
         private readonly ITransaction transaction;
         private bool isDisposing = false;
         private ISession session;
-
-        /// <summary>
-        /// Whether transaction share the same life cycle as session
-        /// </summary>
-        private bool transactionWithSession = true;
+ 
 
         private FlushMode flushMode = FlushMode.Auto;
 
@@ -29,18 +25,11 @@ namespace NHibernate.Burrow.Impl
 
         #region constructors
 
-        internal SessionManager(PersistenceUnit pu, bool transactionWithSession)
-        {
-            this.transactionWithSession = transactionWithSession;
+        internal SessionManager(PersistenceUnit pu)
+        { 
             persistenceUnit = pu;
-            if (pu.Configuration.ManualTransactionManagement)
-            {
-                transaction = new VoidTransaction();
-            }
-            else
-            {
-                transaction = new TransactionImpl(this);
-            }
+
+            transaction = new TransactionImpl();
         }
 
         #endregion
@@ -78,14 +67,13 @@ namespace NHibernate.Burrow.Impl
                     session = SessionFactory.OpenSession();
                 }
                 session.FlushMode = flushMode;
-                if (transactionWithSession)
-                {
-                    transaction.Begin();
-                }
+              
             }else if(!session.IsConnected)
             {
                 session.Reconnect();
-            }
+            } 
+            
+       
 
             return session;
         }
@@ -122,7 +110,7 @@ namespace NHibernate.Burrow.Impl
         /// <summary>
         /// Try commit the transaction, if failed the transaction will be rollback and the session will be close
         /// </summary>
-        public void OnConversationFinish()
+        public void CommitAndClose()
         {
             if (session == null)
             {
@@ -136,11 +124,9 @@ namespace NHibernate.Burrow.Impl
 
             try
             {
-                if (transactionWithSession)
-                {
-                    session.Flush();
-                    transaction.Commit();
-                }
+                GetSession().Flush();
+                transaction.Commit();
+                
             }
             finally
             {
@@ -204,8 +190,17 @@ namespace NHibernate.Burrow.Impl
         {
             if(session != null && session.IsConnected)
             {
-               Transaction.Commit();
+               if( Transaction.InTransaction ) //if session is never used, there could be no transaction started in this request
+                    Transaction.Commit();
                session.Disconnect();
+            }
+        }
+
+        public void Disconnect()
+        {
+            if (session != null && session.IsConnected)
+            { 
+                session.Disconnect();
             }
         }
     }

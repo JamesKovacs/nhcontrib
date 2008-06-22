@@ -109,14 +109,7 @@ namespace NHibernate.Burrow.Impl
 
             CurrentWorkSpace = WorkSpace.Create(states, currentWorkSpaceName);
         }
-
-        public void InitMultipleTransactionEnabledWorkSpace()
-        { 
-            CheckCurrentWorkSpace();
-
-            CurrentWorkSpace = WorkSpace.CreateMultipleTransactionEnabled();
-            
-        }
+ 
 
         private void CheckCurrentWorkSpace()
         {

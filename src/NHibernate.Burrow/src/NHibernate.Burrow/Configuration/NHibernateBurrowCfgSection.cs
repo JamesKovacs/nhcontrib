@@ -96,6 +96,20 @@ namespace NHibernate.Burrow.Configuration
             set { Set("workSpaceNameSniffer", value); }
         }
 
+
+        ///<summary>
+        /// whether the transaction is manually managed by client    
+        ///</summary>
+        [ConfigurationProperty("manualTransactionManagement", DefaultValue = false, IsRequired = false, IsKey = false)]
+        public bool ManualTransactionManagement
+        {
+            get { return (bool)Get("manualTransactionManagement"); }
+            set { Set("manualTransactionManagement", value); }
+        }
+
+
+
+
         /// <summary>
         /// Get the DBConnectionString for the DB where <paramref name="entityType"/> is persistent in
         /// </summary>

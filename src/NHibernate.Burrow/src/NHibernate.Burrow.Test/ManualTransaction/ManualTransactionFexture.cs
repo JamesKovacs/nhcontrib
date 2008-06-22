@@ -19,8 +19,15 @@ namespace NHibernate.Burrow.Test.ManualTransaction
         [SetUp]
         public void Setup()
         {
-            bf.InitStickyWorkSpace();
+            bf.InitWorkSpace();
             new SchemaUtil().CreateSchemas(false, true);
+            bf.CloseWorkSpace();
+            bf.BurrowEnvironment.ShutDown();
+
+            bf.BurrowEnvironment.Configuration.ManualTransactionManagement = true;
+
+            bf.BurrowEnvironment.Start();
+            bf.InitWorkSpace();
         }
 
         #endregion

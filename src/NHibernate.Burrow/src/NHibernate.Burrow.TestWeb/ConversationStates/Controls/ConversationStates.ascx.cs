@@ -48,6 +48,7 @@ public partial class Controls_ConversationStates : UserControl
         btnCommit.Enabled = spanning;
         btnCancel.Enabled = spanning;
         btnStart.Enabled = !spanning;
+        phStrategies.Visible = !spanning;
         base.OnPreRender(e);
         Checker.AssertEqual(Session["me"], me);
         Checker.AssertEqual(Session["meInDb"], meInDb);
@@ -66,12 +67,23 @@ public partial class Controls_ConversationStates : UserControl
         }
     }
 
+    public TransactionStrategy GetStrategy()
+    {
+        if (rbNonAtmoic.Checked)
+            return null;
+        if (rbLongDB.Checked)
+            return TransactionStrategy.LongDBTransaction;
+        if (rbBusniess.Checked)
+            return TransactionStrategy.BusinessTransaction;
+         
+            throw new NotImplementedException();
+    }
+    
     protected void btnStart_Click(object sender, EventArgs e)
     {
         MEInConversation = new MockEntity();
         BurrowFramework f = new BurrowFramework();
-        f.CurrentConversation.SpanWithPostBacks();
-        
+        f.CurrentConversation.SpanWithPostBacks(GetStrategy());
     }
 
     protected void btnUpdate_Click(object sender, EventArgs e)
