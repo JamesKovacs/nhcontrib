@@ -6,7 +6,7 @@ namespace NHibernate.Burrow.Impl
     /// Handlers creation and management of sessions and transactions. 
     /// </summary>
     /// <remarks>
-    /// Lifespan : application, Threadsafe
+    /// Lifespan : conversation
     /// </remarks>
     internal sealed class SessionManager
     {
@@ -22,6 +22,8 @@ namespace NHibernate.Burrow.Impl
         /// Whether transaction share the same life cycle as session
         /// </summary>
         private bool transactionWithSession = true;
+
+        private FlushMode flushMode = FlushMode.Auto;
 
         #endregion
 
@@ -75,10 +77,14 @@ namespace NHibernate.Burrow.Impl
                 {
                     session = SessionFactory.OpenSession();
                 }
+                session.FlushMode = flushMode;
                 if (transactionWithSession)
                 {
                     transaction.Begin();
                 }
+            }else if(!session.IsConnected)
+            {
+                session.Reconnect();
             }
 
             return session;
@@ -132,6 +138,7 @@ namespace NHibernate.Burrow.Impl
             {
                 if (transactionWithSession)
                 {
+                    session.Flush();
                     transaction.Commit();
                 }
             }
@@ -163,6 +170,15 @@ namespace NHibernate.Burrow.Impl
             }
         }
 
+
+        public void SetFlushMode(FlushMode fm)
+        {
+            this.flushMode = fm;
+            if(session != null)
+                session.FlushMode = fm;
+        }
+
+
         #endregion
 
         #region private members
@@ -183,5 +199,14 @@ namespace NHibernate.Burrow.Impl
 
 
         #endregion
+
+        public void CommitAndDisconnect()
+        {
+            if(session != null && session.IsConnected)
+            {
+               Transaction.Commit();
+               session.Disconnect();
+            }
+        }
     }
 }

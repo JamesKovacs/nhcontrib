@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NHibernate.Burrow.Impl
 {
-    internal class AtomicConversationImpl : AbstractConversation, IConversation
+    internal class ConversationWithManagedTransactionImpl : AbstractConversation, IConversation
     {
         protected override SessionManager CreateSessionManager(PersistenceUnit pu)
         {

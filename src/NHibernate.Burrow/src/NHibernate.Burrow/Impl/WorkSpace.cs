@@ -84,7 +84,7 @@ namespace NHibernate.Burrow.Impl
                 return new WorkSpace(ConversationPool.Instance[new Guid(cid)]);
             }else
             {
-                return new WorkSpace(new AtomicConversationImpl());
+                return new WorkSpace(new ConversationWithManagedTransactionImpl());
             }
         }
 

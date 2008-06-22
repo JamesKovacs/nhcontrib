@@ -23,6 +23,8 @@ namespace NHibernate.Burrow.Impl
         private DateTime lastVisit = DateTime.Now;
         private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
         private string workSpaceName;
+        private TransactionStrategy transactionStrategyInSpanning;
+        private readonly TransactionStrategy DefaultLongTransactionStrategy = TransactionStrategy.NonAtomicConversation;
 
         #region Constructors
 
@@ -114,7 +116,17 @@ namespace NHibernate.Burrow.Impl
         /// </summary>
         public bool SpanWithPostBacks()
         {
-            return Span(SpanStrategy.Post, string.Empty);
+            return SpanWithPostBacks( DefaultLongTransactionStrategy);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ts">Controls the transactionStrategy, default is BusinessTransaction</param>
+        /// <returns></returns>
+        public bool SpanWithPostBacks(TransactionStrategy ts)
+        {
+            return Span(SpanStrategy.Post, string.Empty, ts);
         }
 
         /// <summary>
@@ -123,7 +135,13 @@ namespace NHibernate.Burrow.Impl
         /// <param name="inWorkSpaceName">span in the work space</param>
         public bool SpanWithCookie(string inWorkSpaceName)
         {
-            return Span(SpanStrategy.Cookie, inWorkSpaceName);
+            return SpanWithCookie(inWorkSpaceName, DefaultLongTransactionStrategy);
+        }
+
+
+        public bool SpanWithCookie(string inWorkSpaceName, TransactionStrategy ts)
+        {
+            return Span(SpanStrategy.Cookie, inWorkSpaceName, ts);
         }
 
         /// <summary>
@@ -201,7 +219,7 @@ namespace NHibernate.Burrow.Impl
         /// <remarks>
         /// if already in the <see cref="ConversationPool"/>, do simply change the SpanStrategy if there is any change
         /// </remarks>
-        private bool Span(SpanStrategy om, string inWorkSpaceName)
+        private bool Span(SpanStrategy om, string inWorkSpaceName, TransactionStrategy trnStrgWhenSpanning)
         {
             Visited();
             if (!om.ValidForSpan)
@@ -212,13 +230,17 @@ namespace NHibernate.Burrow.Impl
             {
                 throw new ConversationAlreadyCancelledException();
             }
+           
             SpanStrategy = om;
             bool retVal = false;
             if (!IsInPool)
             {
-                ConversationPool.Instance.Add(id, this);
+                ConversationPool.Instance.Add(id, this); 
                 retVal = true;
             }
+            transactionStrategyInSpanning = trnStrgWhenSpanning;
+            transactionStrategyInSpanning.ChangeFlushModeOnConversationBeginsSpan(sessManagers.Values);
+            
             workSpaceName = inWorkSpaceName;
             WorkSpaceUpdate();
             return retVal;
@@ -344,6 +366,9 @@ namespace NHibernate.Burrow.Impl
             else if (!IsInPool)
             {
                 CommitAndClose();
+            }else
+            {
+                transactionStrategyInSpanning.OnWorkSpaceClosedBeforeConversationEnds(sessManagers.Values);
             }
         }
 

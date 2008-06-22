@@ -113,7 +113,7 @@
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
     <Compile Include="Exceptions\IncorrectTransactionStatusException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
-    <Compile Include="Impl\AtomicConversationImpl.cs" />
+    <Compile Include="Impl\ConversationWithManagedTransactionImpl.cs" />
     <Compile Include="Impl\FrameworkEnvironment.cs" />
     <Compile Include="IFrameworkEnvironment.cs" />
     <Compile Include="Impl\ITransaction.cs" />
@@ -121,6 +121,7 @@
     <Compile Include="Impl\ManualTransactionConversationImpl.cs" />
     <Compile Include="Impl\TransactionImpl.cs" />
     <Compile Include="Impl\TransactionManagerImpl.cs" />
+    <Compile Include="Impl\TransactionStrategy.cs" />
     <Compile Include="Impl\VoidTransaction.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
     <Compile Include="IBurrowConfig.cs" />
