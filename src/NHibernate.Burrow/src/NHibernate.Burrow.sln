@@ -58,6 +58,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.AppBlock.
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.TestWeb.UnitTest", "NHibernate.Burrow.TestWeb.UnitTest\NHibernate.Burrow.TestWeb.UnitTest.csproj", "{A21E3169-C842-49B3-A100-4EA6E12DFD9A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -138,6 +144,16 @@ Global
 		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9B9C74DF-1F3E-46E6-A294-42E1A4CD380F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Release|.NET.ActiveCfg = Release|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A21E3169-C842-49B3-A100-4EA6E12DFD9A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

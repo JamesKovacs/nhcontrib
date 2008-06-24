@@ -21,18 +21,14 @@ namespace NHibernate.Burrow.Util
         /// </exception>
         public string WrapUrlWithConversationInfo(string originalUrl)
         {
-            if (new BurrowFramework().CurrentConversation.IsSpanning)
+            BurrowFramework bf = new BurrowFramework();
+            
+            if (bf.CurrentConversation !=null && bf.CurrentConversation.IsSpanning)
             {
                 return WorkSpace.Current.WrapUrlWithSpanInfo(originalUrl);
             }
-            else
-            {
-                throw new IncorrectConversationSpanStatusException(
-                    "CurrentConversation Must Be In Span Before you can wrap a url");
-            }
+            return originalUrl;
         }
-
-      
 
         public static IDictionary<string, string> GetPostBackFields()
         {
