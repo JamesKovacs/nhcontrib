@@ -21,20 +21,6 @@ namespace NHibernate.Burrow.Test.ConverstationTests
             new BurrowFramework().CloseWorkSpace();
         }
 
-        [Test]
-        public void WrapWithoutSpanTest()
-        {
-            try
-            {
-                new BurrowFramework().InitWorkSpace();
-                new WebUtil().WrapUrlWithConversationInfo("http://test.com");
-                Assert.Fail("failed to throw IncorrectConversationSpanStatusException");
-            }
-            catch (IncorrectConversationSpanStatusException) {}
-            finally
-            {
-                new BurrowFramework().CloseWorkSpace();
-            }
-        }
+      
     }
 }
