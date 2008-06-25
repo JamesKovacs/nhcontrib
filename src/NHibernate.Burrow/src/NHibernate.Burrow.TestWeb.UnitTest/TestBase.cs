@@ -30,16 +30,11 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
         {
             bool IsWebStarted;
             rootUrl = string.Format("http://localhost:{0}/", devServerPort);
-            try
-            {
+          
                 // Check if Dev WebServer runs
                 ie = new IE(rootUrl);
                 IsWebStarted = ie.ContainsText("Directory Listing -- /");
-            }
-            catch
-            {
-                IsWebStarted = false;
-            }
+            
 
             if (!IsWebStarted)
             {

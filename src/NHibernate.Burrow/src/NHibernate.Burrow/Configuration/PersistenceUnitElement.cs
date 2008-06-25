@@ -52,6 +52,19 @@ namespace NHibernate.Burrow.Configuration
             set { Set("interceptorFactory", value); }
         }
 
+
+
+
+		///<summary>
+		/// whether Burrow should automatically update the schema for this persistant unit, default is false  
+		///</summary>
+		[ConfigurationProperty("autoUpdateSchema", DefaultValue = false, IsRequired = false, IsKey = false)]
+		public bool AutoUpdateSchema
+		{
+			get { return (bool)Get("autoUpdateSchema"); }
+			set { Set("autoUpdateSchema", value); }
+		}
+
    
 
         #endregion

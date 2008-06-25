@@ -31,9 +31,13 @@ namespace NHibernate.Burrow.Util
 		public void UpdateSchemas(bool script, bool update) {
 			foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
 			{
-				SchemaUpdate su = new SchemaUpdate(pu.NHConfiguration);
-				su.Execute(script, update);
+				UpdateSchema(script, update, pu.NHConfiguration);
 			}
 		}
+
+    	public void UpdateSchema( bool script, bool update, Cfg.Configuration configuration) {
+    		SchemaUpdate su = new SchemaUpdate(configuration);
+    		su.Execute(script, update);
+    	}
     }
 }
