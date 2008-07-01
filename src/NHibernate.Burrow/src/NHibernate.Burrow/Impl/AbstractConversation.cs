@@ -379,9 +379,24 @@ namespace NHibernate.Burrow.Impl
         public ISession GetSession(System.Type entityType)
         {
             SessionManager sm = entityType == null ? GetSessionManager() : GetSessionManager(entityType);
+            return GetSession(sm);
+        }
+
+        private ISession GetSession(SessionManager sm) {
             ISession sess = sm.GetSession();
             TransactionStrategy.OnSessionUsed(sm);
             return sess;
+        }
+
+        /// <summary>
+        /// reconnect the session
+        /// </summary>
+        public void Reconnect()
+        {
+            foreach (SessionManager sm in sessManagers.Values)
+            {
+               GetSession(sm);
+            }
         }
     }
 }

@@ -72,9 +72,6 @@ namespace NHibernate.Burrow.Impl
             {
                 session.Reconnect();
             } 
-            
-       
-
             return session;
         }
 

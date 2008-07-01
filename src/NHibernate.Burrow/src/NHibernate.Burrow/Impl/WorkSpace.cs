@@ -81,8 +81,11 @@ namespace NHibernate.Burrow.Impl
             string cid = GetWorkSpaceState(states, ConversationIdKeyName, currentWorkSpaceName);
             if (!string.IsNullOrEmpty(cid))
             {
-                return new WorkSpace(ConversationPool.Instance[new Guid(cid)]);
-            }else
+                AbstractConversation c = ConversationPool.Instance[new Guid(cid)];
+                c.Reconnect();
+                return new WorkSpace(c);
+            }
+            else
             {
                 AbstractConversation c =
                     new BurrowFramework().BurrowEnvironment.Configuration.ManualTransactionManagement ?
