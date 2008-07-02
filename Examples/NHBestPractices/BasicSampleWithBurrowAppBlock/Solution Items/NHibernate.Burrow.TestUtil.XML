@@ -9,6 +9,11 @@
             a persistant field attribute that indicates that the field will be persisted by UserControlBase
             </summary>
         </member>
+        <member name="M:NHibernate.Burrow.TestUtil.DataProviderBase.ClearData">
+            <summary>
+            Delete the test data in a FIFO fashion
+            </summary>
+        </member>
         <member name="T:NHibernate.Burrow.TestUtil.RandomStringGenerator">
             <summary>
             This class can generate random passwords, which do not include ambiguous 
@@ -85,11 +90,6 @@
         <member name="M:NHibernate.Burrow.TestUtil.TestBase.SetUp">
             <summary>
             override to add SetUp logic
-            </summary>
-        </member>
-        <member name="M:NHibernate.Burrow.TestUtil.DataProviderBase.ClearData">
-            <summary>
-            Delete the test data in a FIFO fashion
             </summary>
         </member>
     </members>

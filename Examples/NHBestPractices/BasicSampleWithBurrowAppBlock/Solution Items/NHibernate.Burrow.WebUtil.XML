@@ -4,6 +4,11 @@
         <name>NHibernate.Burrow.WebUtil</name>
     </assembly>
     <members>
+        <member name="T:NHibernate.Burrow.WebUtil.Attributes.StatefulField">
+            <summary>
+            Mark the field to span over multiple requests/responses for a control
+            </summary>
+        </member>
         <member name="M:NHibernate.Burrow.WebUtil.IStatefulFieldInterceptor.OnLoad(System.Object)">
             <summary>
             called after loaded from States
@@ -25,10 +30,19 @@
             </remarks>
             <param name="objectInStateContainer">object currently in the state container (could be ViewState or Session)</param>
         </member>
-        <member name="T:NHibernate.Burrow.WebUtil.Attributes.StatefulField">
+        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldProcessor.GetFieldInfo``1">
             <summary>
-            Mark the field to span over multiple requests/responses for a control
+            Get the FieldInfo - Attribute pairs that have the customer attribute of type <typeparamref name="AT"/> 
             </summary>
+            <typeparam name="AT"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldPageModule.LoadData(System.Object,System.EventArgs)">
+            <summary>
+            process has to happen after all controls are initiated otherwise will cause ASP.net control initiation problem - sub control even failed to register
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
         </member>
         <member name="T:NHibernate.Burrow.WebUtil.IWorkSpaceNameSniffer">
             <summary>
@@ -38,20 +52,6 @@
             implement this and set IBurrowConfig.WorkSpaceNameSniffer to the type name of your implementation to realize your own workspace management.
             By default, system will use attribute placed on handler the get the current workspacename
             </remarks>
-        </member>
-        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldPageModule.LoadData(System.Object,System.EventArgs)">
-            <summary>
-            process has to happen after all controls are initiated otherwise will cause ASP.net control initiation problem - sub control even failed to register
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldProcessor.GetFieldInfo``1">
-            <summary>
-            Get the FieldInfo - Attribute pairs that have the customer attribute of type <typeparamref name="AT"/> 
-            </summary>
-            <typeparam name="AT"></typeparam>
-            <returns></returns>
         </member>
         <member name="T:NHibernate.Burrow.WebUtil.WebUtilHTTPModule">
             <summary>

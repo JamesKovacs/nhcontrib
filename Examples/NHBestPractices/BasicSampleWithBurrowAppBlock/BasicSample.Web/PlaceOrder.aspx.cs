@@ -36,7 +36,7 @@ public partial class PlaceOrder : Page {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     protected void btnSelectCustomer_Click(object sender, EventArgs e) {
-        bf.CurrentConversation.SpanWithPostBacks(); //start a Conversation that span over postbacks
+        bf.CurrentConversation.SpanWithPostBacks(TransactionStrategy.BusinessTransaction); //start a Conversation that span over postbacks
         Customer selectedCustomer = daoFactory.GetCustomerDao().Get(ddlCustomers.SelectedValue);
         placingOrder =  new Order(selectedCustomer);
 
