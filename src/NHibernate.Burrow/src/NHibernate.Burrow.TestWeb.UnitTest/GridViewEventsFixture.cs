@@ -1,17 +1,15 @@
-
-
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestWeb.UnitTest
 {
     [TestFixture]
-    public class PropagationFixture : TestBase
+    public class GridViewEventsFixture : TestBase
     {
         [Test]
         public void Test()
         {
-            GoTo("Propagation/Default.aspx");
-            IE.Link("BurrowLink1").Click();
+            GoTo("GridViewEvents/Default.aspx");
+            IE.Link("GridView1_ctl02_LinkButton1").Click();
             AssertTestSuccessMessageShown();
         }
     }

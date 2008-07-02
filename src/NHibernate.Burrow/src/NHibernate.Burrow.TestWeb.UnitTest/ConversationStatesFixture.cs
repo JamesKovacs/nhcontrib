@@ -30,9 +30,26 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
         private string page = "ConversationStates/ConversationNormal.aspx";
 
         [Test]
-        public void CommitTest()
+        public void CommitInBusinessTransactionTest()
         {
+            CheckConversationMode("rbBusniess");
+        } 
+        
+        [Test]
+        public void CommitInLongDBTransactionTest()
+        {
+            CheckConversationMode("rbLongDB");
+        } 
+        
+        [Test]
+        public void CommitInNonAtmoicTest()
+        {
+            CheckConversationMode("rbNonAtmoic");
+        }
+
+        private void CheckConversationMode(string radioButtonName) {
             GoTo(page);
+            IE.RadioButton("ConversationStates1_" + radioButtonName).Checked = true;
             IE.Link("ConversationStates1_btnStart").Click();
             AssertText("MockEntity In Conversation: 0");
             IE.Button("ConversationStates1_btnUpdate").Click();
@@ -42,6 +59,7 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
             AssertText("MockEntity In Conversation: NULL");
             AssertText("MockEntity in DB: 1");
         }
+
         [Test]
         public void CancelTest()
         {
@@ -58,6 +76,11 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
         }
 
 
-     
+        [Test]
+        public void LazyLoadInConversationTest(){
+            GoTo("ConversationStates/ConversationLazyLoad.aspx");
+            IE.Button("btnNext").Click();
+            AssertTestSuccessMessageShown();
+        }
     }
 }

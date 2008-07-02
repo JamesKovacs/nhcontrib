@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Result.aspx.cs" Inherits="Propagation_Result" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ConversationLazyLoad.aspx.cs" Inherits="ConversationStates_ConversationLazyLoad" %>
 
 <%@ Register Src="../GenControl/SuccessMessage.ascx" TagName="SuccessMessage" TagPrefix="uc1" %>
 
@@ -11,8 +11,10 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        &nbsp;&nbsp;<uc1:SuccessMessage ID="SuccessMessage1" runat="server" />
+     <asp:Button ID="btnNext" runat="server" Text="Next" OnClick="Next" />
+        <uc1:SuccessMessage ID="SuccessMessage1" runat="server" />
     </div>
+       
     </form>
 </body>
 </html>

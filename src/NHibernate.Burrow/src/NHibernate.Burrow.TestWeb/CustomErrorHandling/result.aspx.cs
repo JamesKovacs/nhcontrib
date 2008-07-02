@@ -17,6 +17,7 @@ public partial class CustomerErrorHandling_result : System.Web.UI.Page
 		if (!IsPostBack) {
 			Checker.AssertEqual(0, MockEntityDAO.Instance.FindAll().Count);
 			CustomHTTPModule.Enabled = false;
+            SuccessMessage1.Show();
 		}
 	}
 }

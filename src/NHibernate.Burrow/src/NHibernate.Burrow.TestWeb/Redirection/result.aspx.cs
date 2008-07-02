@@ -19,7 +19,7 @@ public partial class Redirection_result : System.Web.UI.Page
 			try {
 				IList<MockEntity> result = MockEntityDAO.Instance.FindAll();
 			if (result.Contains((MockEntity)Session["mo"]))
-				Literal1.Text = "congratulations, test passed";
+				SuccessMessage1.Show();
 			else
 				Literal1.Text = "rediection failed, transaction in the last page isn't committed ";
 			}

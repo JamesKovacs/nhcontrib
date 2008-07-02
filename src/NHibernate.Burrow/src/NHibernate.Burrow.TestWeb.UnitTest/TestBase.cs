@@ -72,14 +72,23 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
 
         protected  void GoTo(string path)
         {
+            if (path.IndexOf(".aspx") < 0)
+                path = path + "/Default.aspx";
             ie.GoTo(rootUrl + path);
         }
+
+        
         #endregion
 
 
         protected void AssertText(string s)
         {
             Assert.IsTrue(IE.ContainsText(s));
+        }
+
+        protected  void AssertTestSuccessMessageShown()
+        {
+            AssertText("Congratulations! Test passed.");
         }
 
     }

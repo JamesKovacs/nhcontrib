@@ -1,17 +1,15 @@
-
-
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestWeb.UnitTest
 {
     [TestFixture]
-    public class PropagationFixture : TestBase
+    public class MasterPageFixture : TestBase
     {
         [Test]
         public void Test()
         {
-            GoTo("Propagation/Default.aspx");
-            IE.Link("BurrowLink1").Click();
+            GoTo("Materpage");
+            IE.Button("ctl00_ContentPlaceHolder1_Button1").Click();
             AssertTestSuccessMessageShown();
         }
     }

@@ -1,17 +1,15 @@
-
-
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.TestWeb.UnitTest
 {
     [TestFixture]
-    public class PropagationFixture : TestBase
+    public class StatefulFieldInDynamicallyLoadControlsTest : TestBase
     {
         [Test]
         public void Test()
         {
-            GoTo("Propagation/Default.aspx");
-            IE.Link("BurrowLink1").Click();
+            GoTo("StatefulFieldInDynamicallyLoadControls");
+            IE.Button("ctl02_btn").Click();
             AssertTestSuccessMessageShown();
         }
     }

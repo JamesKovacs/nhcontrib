@@ -21,7 +21,7 @@ public partial class StatefulFieldInDynamicallyLoadControls_DLoadControl : Syste
 
 	protected void btnClick(object sender, EventArgs e) {
 		Checker.AssertEqual(2, i);
-		Label1.Text = "Cong!";
 		btn.Visible = false;
+        SuccessMessage1.Show();
 	}
 }

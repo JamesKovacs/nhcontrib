@@ -24,7 +24,7 @@ public partial class Materpage_Default : System.Web.UI.Page
     protected void Button1_Click(object sender, EventArgs e)
 	{
 		Checker.AssertEqual(1, count);
-		Label1.Text = "Congratulations, test passed";
+        SuccessMessage1.Show();
         Button1.Visible = false;
 
 	}

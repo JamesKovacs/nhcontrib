@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace NHibernate.Burrow.Test.MockEntities
 {
     public class MockEntity
@@ -8,7 +10,9 @@ namespace NHibernate.Burrow.Test.MockEntities
         private int number;
 
         private int preDeletedPerformed = 0;
+        private IList<string> stringList = new List<string>();
 
+       
         public MockEntity()
         {
             Name = string.Empty;
@@ -19,6 +23,13 @@ namespace NHibernate.Burrow.Test.MockEntities
             get { return id; }
             set { id = value; }
         }
+
+        public IList<string> StringList
+        {
+            get { return stringList; }
+            set { stringList = value; }
+        }
+
 
         public int Number
         {

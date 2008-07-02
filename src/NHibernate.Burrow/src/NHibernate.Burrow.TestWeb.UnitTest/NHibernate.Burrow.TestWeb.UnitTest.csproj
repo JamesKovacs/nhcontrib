@@ -50,9 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConversationStatesFixture.cs" />
+    <Compile Include="CustomerErrorHandlingFixture.cs" />
+    <Compile Include="GridViewEventsFixture.cs" />
+    <Compile Include="MasterPageFixture.cs" />
     <Compile Include="PropagationFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectionFixture.cs" />
+    <Compile Include="StatefulFieldInDynamicallyLoadControlsTest.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>

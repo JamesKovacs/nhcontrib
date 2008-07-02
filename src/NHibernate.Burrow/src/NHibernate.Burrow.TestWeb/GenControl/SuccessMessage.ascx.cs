@@ -8,14 +8,23 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-using NHibernate.Burrow;
 
-public partial class Propagation_Result : System.Web.UI.Page
+public partial class GenControl_SuccessMessage : System.Web.UI.UserControl
 {
+    protected override void OnInit(EventArgs e)
+    {
+        if(!IsPostBack)
+        {
+            Visible = false;
+        }
+        base.OnInit(e);
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
-        Checker.AssertEqual(new BurrowFramework().CurrentConversation.IsSpanning, true);
-        Checker.AssertEqual( Session["conversationId"] , new BurrowFramework().CurrentConversation.Id);
-        SuccessMessage1.Show();
+        
+    }
+    public void Show()
+    {
+        Visible = true;
     }
 }

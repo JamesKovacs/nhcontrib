@@ -20,15 +20,14 @@ public partial class GridViewEvents_Default : System.Web.UI.Page
 				IList<string> l = new List<string>();
 				l.Add("string0");
 				GridView1.DataSource = l;
-				GridView1.DataBind();
-				Literal1.Text = "click the link button in the gridview to test if the event fires";
+				GridView1.DataBind(); 
 			}
 		}
 
 		protected void LinkButton1_Click(object sender, EventArgs e)
 		{
 			GridView1.Visible = false;
-			Literal1.Text = "Congratulations! test passed";
+			SuccessMessage1.Show();
 			
 		}
 	}

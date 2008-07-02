@@ -10,7 +10,7 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
         {
             GoTo("Redirection/Default.aspx");
             IE.Button("btnRedirect").Click();
-            AssertText("test passed");
+            AssertTestSuccessMessageShown();
 
         }
     }

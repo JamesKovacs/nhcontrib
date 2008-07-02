@@ -6,5 +6,9 @@
     </id>
     <property name="Name" />
     <property name="Number" />
+    <bag name="StringList" table="tblStringList" lazy="true" >
+      <key />
+      <element type="String" />
+    </bag>
   </class>
 </hibernate-mapping>
