@@ -13,10 +13,10 @@ using System.Runtime.CompilerServices;
 //------------------------------------------------------------------------------
 
 [assembly: CLSCompliantAttribute(false)]
-[assembly: AssemblyTitleAttribute("NHibernate.Burrow.Test")]
+[assembly: AssemblyTitleAttribute("NHibernate.Burrow.TestWeb.UnitTest")]
 [assembly: AssemblyDescriptionAttribute("The Unit Tests for NHibernate.Burrow.")]
 [assembly: AssemblyCompanyAttribute("NHibernate.org")]
-[assembly: AssemblyProductAttribute("NHibernate.Burrow.Test")]
+[assembly: AssemblyProductAttribute("NHibernate.Burrow.TestWeb.UnitTest")]
 [assembly: AssemblyCopyrightAttribute("Licensed under LGPL.")]
 [assembly: AssemblyVersionAttribute("1.0.0.2001")]
 [assembly: AssemblyInformationalVersionAttribute("1.0.0.2001")]

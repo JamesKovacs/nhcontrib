@@ -13,6 +13,10 @@ NAnt clean build >output-debug-build.log
 
 NAnt -D:project.config=release clean package >output-release-package.log
 
+#To test ( you need to have a Database named "NHibernateBurrow" in your RMDBS )
+# During the test, some IE browser will be open and closed your mouse might freeze. 
+NAnt -D:project.config=debug test >output-test.log
+
 
 
 
