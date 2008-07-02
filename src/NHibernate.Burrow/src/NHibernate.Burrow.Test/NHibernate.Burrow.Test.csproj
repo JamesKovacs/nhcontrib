@@ -81,6 +81,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NHibernate.Burrow.TestUtil\NHibernate.Burrow.TestUtil.csproj">
+      <Project>{32112377-D3FC-4A1C-8C90-BBDFF166ED3B}</Project>
+      <Name>NHibernate.Burrow.TestUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Burrow\NHibernate.Burrow.csproj">
       <Project>{3ED19982-3C23-4B7D-BE81-D40846A6CB16}</Project>
       <Name>NHibernate.Burrow</Name>

@@ -8,6 +8,8 @@
 	<property name="root.dir" value="." />
 	<include buildfile="${root.dir}/build-common/common.xml" />
 	<property name="lib.dir" value="${root.dir}/lib" />
+	<property name="doc.dir" value="${root.dir}/doc" />
+	<property name="example.file" value="NHibernate.Burrow-1.0-example.zip" />
 
 
 	<!-- Pass -D:skip.tests=true to NAnt to skip running tests when building -->
@@ -201,7 +203,9 @@
 				<include name="bin/NHibernate.Burrow-${project.version}-bin.zip" />
 			</fileset>
 		</move>
-        
+   		<copy file="${doc.dir}/${example.file}"
+			  tofile="${dist.output.dir}/${example.file}"
+		/>		
 		<echo message="Created a '${project.config}' package in ${dist.output.dir}" />
         <call target="clean" />
 	</target>
