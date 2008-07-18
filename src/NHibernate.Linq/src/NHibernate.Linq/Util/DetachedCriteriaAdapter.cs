@@ -208,6 +208,11 @@ namespace NHibernate.Linq.Util
 			return _detachedCriteria.GetRootEntityTypeIfAvailable();
 		}
 
+		public void ClearOrders()
+		{
+			_detachedCriteria.ClearOrders();
+		}
+
 		#endregion
 
 		#region ICloneable Members
