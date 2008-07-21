@@ -45,6 +45,13 @@ namespace NHibernate.Linq
         {
             action(criteria);
         }
-        
+
+        public void AddExpansion(string path)
+        {
+          action += criteria =>
+            {
+              criteria.SetFetchMode(path, FetchMode.Eager);
+            };
+        }
 	}
 }

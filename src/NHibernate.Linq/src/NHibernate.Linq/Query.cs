@@ -57,6 +57,13 @@ namespace NHibernate.Linq
 			get { return queryOptions; }
     	}
 
+      public IQueryable<T> Expand(string path)
+      {
+          queryOptions.AddExpansion(path);
+
+          return this;
+      }
+
     	public IEnumerator<T> GetEnumerator()
         {
             return ((IEnumerable<T>)this.provider.Execute(this.expression)).GetEnumerator();
