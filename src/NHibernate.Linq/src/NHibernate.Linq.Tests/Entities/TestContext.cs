@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 
 namespace NHibernate.Linq.Tests.Entities
 {
@@ -12,5 +13,15 @@ namespace NHibernate.Linq.Tests.Entities
 		{
 			get { return Session.Linq<User>(); }
 		}
-	}
+
+    public IOrderedQueryable<Role> Roles
+    {
+      get { return Session.Linq<Role>(); }
+    }
+
+    public IOrderedQueryable<Timesheet> Timesheets
+    {
+      get { return Session.Linq<Timesheet>(); }
+    }
+  }
 }
