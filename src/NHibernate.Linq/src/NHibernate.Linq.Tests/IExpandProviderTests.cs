@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+#if USING_NET_35_SP1
 using System.Data.Services;
+#endif
 using Northwind.Entities;
 using System.Collections;
 using NHibernate.Linq.Tests.Entities;

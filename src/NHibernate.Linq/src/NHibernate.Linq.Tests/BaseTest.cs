@@ -39,7 +39,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[TearDown]
-		public void TearDown()
+		public virtual void TearDown()
 		{
 			session.Connection.Dispose();
 			session.Dispose();
