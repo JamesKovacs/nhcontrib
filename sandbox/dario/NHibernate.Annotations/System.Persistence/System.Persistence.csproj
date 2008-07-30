@@ -43,6 +43,10 @@
     <Compile Include="Id.cs" />
     <Compile Include="IdClass.cs" />
     <Compile Include="INameable.cs" />
+    <Compile Include="JoinColumn.cs" />
+    <Compile Include="JoinTable.cs" />
+    <Compile Include="OptimisticLockType.cs" />
+    <Compile Include="PolymorphismType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="Transient.cs" />

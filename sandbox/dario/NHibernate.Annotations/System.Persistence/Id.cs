@@ -1,7 +1,7 @@
 ﻿namespace System.Persistence
 {
     [AttributeUsage(AttributeTargets.Field|AttributeTargets.Property)]
-    public class Id : Attribute
+    public class IdAttribute : Attribute
     {
     }
 }
