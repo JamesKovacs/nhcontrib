@@ -28,6 +28,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using log4net;
@@ -45,20 +47,22 @@ namespace NHibernate.Caches.MemCache
 	public class MemCacheProvider : ICacheProvider
 	{
 		private static readonly ILog _log;
-		private static int[] _weights;
-		private static string[] _servers;
-
+		private static readonly int[] _weights;
+		private static readonly string[] _servers;
+		
+		private static object syncObject = new object();
+		
 		static MemCacheProvider()
 		{
 			_log = LogManager.GetLogger(typeof(MemCacheProvider));
-			MemCacheConfig[] configs = ConfigurationSettings.GetConfig("memcache") as MemCacheConfig[];
+			MemCacheConfig[] configs = ConfigurationManager.GetSection("memcache") as MemCacheConfig[];
 			if (configs != null)
 			{
 				ArrayList myWeights = new ArrayList();
 				ArrayList myServers = new ArrayList();
 				foreach (MemCacheConfig config in configs)
 				{
-					myServers.Add(string.Format("{0}:{1}", config.Host, config.Port.ToString()));
+					myServers.Add(string.Format("{0}:{1}", config.Host, config.Port));
 					if (_log.IsDebugEnabled)
 					{
 						_log.DebugFormat("adding config for memcached on host {0}", config.Host);
@@ -94,7 +98,7 @@ namespace NHibernate.Caches.MemCache
 					sb.Append(pair.Value);
 					sb.Append(";");
 				}
-				_log.Debug("building cache with region: " + regionName + ", properties: " + sb.ToString());
+				_log.Debug("building cache with region: " + regionName + ", properties: " + sb);
 			}
 			return new MemCacheClient(regionName, properties);
 		}
@@ -106,101 +110,127 @@ namespace NHibernate.Caches.MemCache
 
 		public void Start(IDictionary<string, string> properties)
 		{
-			SockIOPool pool = SockIOPool.GetInstance("nhibernate");
-			if (_servers != null && _servers.Length > 0)
+			// Needs to lock staticly because the pool and the internal maintenance thread
+			// are both static, and I want them syncs between starts and stops.
+			lock (syncObject)
 			{
-				pool.SetServers(_servers);
-			}
-			if (_weights != null && _weights.Length > 0 && _weights.Length == _servers.Length)
-			{
-				pool.SetWeights(_weights);
-			}
-			if (properties.ContainsKey("failover"))
-			{
-				pool.Failover = Convert.ToBoolean(properties["failover"]);
-				if (_log.IsDebugEnabled)
+				SockIOPool pool = SockIOPool.GetInstance(MemCacheClient.PoolName);
+				if (pool.Initialized)
+					return;
+
+				bool debugEnabled = _log.IsDebugEnabled;
+
+				if (_servers != null && _servers.Length > 0)
 				{
-					_log.DebugFormat("failover set to {0}", pool.Failover);
+					pool.SetServers(_servers);
 				}
-			}
-			if (properties.ContainsKey("initial_connections"))
-			{
-				pool.InitConnections = Convert.ToInt32(properties["initial_connections"]);
-				if (_log.IsDebugEnabled)
+				if (_weights != null && _weights.Length > 0 && _servers != null && _weights.Length == _servers.Length)
 				{
-					_log.DebugFormat("initial_connections set to {0}", pool.InitConnections);
+					pool.SetWeights(_weights);
 				}
-			}
-			if (properties.ContainsKey("maintenance_sleep"))
-			{
-				pool.MaintenanceSleep = Convert.ToInt64(properties["maintenance_sleep"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("failover"))
 				{
-					_log.DebugFormat("maintenance_sleep set to {0}", pool.MaintenanceSleep);
+					pool.Failover = Convert.ToBoolean(properties["failover"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("failover set to {0}", pool.Failover);
+					}
 				}
-			}
-			if (properties.ContainsKey("max_busy"))
-			{
-				pool.MaxBusy = Convert.ToInt64(properties["max_busy"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("initial_connections"))
 				{
-					_log.DebugFormat("max_busy set to {0}", pool.MaxBusy);
+					pool.InitConnections = Convert.ToInt32(properties["initial_connections"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("initial_connections set to {0}", pool.InitConnections);
+					}
 				}
-			}
-			if (properties.ContainsKey("max_connections"))
-			{
-				pool.MaxConnections = Convert.ToInt32(properties["max_connections"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("maintenance_sleep"))
 				{
-					_log.DebugFormat("max_connections set to {0}", pool.MaxConnections);
+					pool.MaintenanceSleep = Convert.ToInt64(properties["maintenance_sleep"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("maintenance_sleep set to {0}", pool.MaintenanceSleep);
+					}
 				}
-			}
-			if (properties.ContainsKey("max_idle"))
-			{
-				pool.MaxIdle = Convert.ToInt64(properties["max_idle"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("max_busy"))
 				{
-					_log.DebugFormat("max_idle set to {0}", pool.MaxIdle);
+					pool.MaxBusy = Convert.ToInt64(properties["max_busy"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("max_busy set to {0}", pool.MaxBusy);
+					}
 				}
-			}
-			if (properties.ContainsKey("min_connections"))
-			{
-				pool.MinConnections = Convert.ToInt32(properties["min_connections"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("max_connections"))
 				{
-					_log.DebugFormat("min_connections set to {0}", pool.MinConnections);
+					pool.MaxConnections = Convert.ToInt32(properties["max_connections"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("max_connections set to {0}", pool.MaxConnections);
+					}
 				}
-			}
-			if (properties.ContainsKey("nagle"))
-			{
-				pool.Nagle = Convert.ToBoolean(properties["nagle"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("max_idle"))
 				{
-					_log.DebugFormat("nagle set to {0}", pool.Nagle);
+					pool.MaxIdle = Convert.ToInt64(properties["max_idle"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("max_idle set to {0}", pool.MaxIdle);
+					}
 				}
-			}
-			if (properties.ContainsKey("socket_timeout"))
-			{
-				pool.SocketTimeout = Convert.ToInt32(properties["socket_timeout"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("min_connections"))
 				{
-					_log.DebugFormat("socket_timeout set to {0}", pool.SocketTimeout);
+					pool.MinConnections = Convert.ToInt32(properties["min_connections"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("min_connections set to {0}", pool.MinConnections);
+					}
 				}
-			}
-			if (properties.ContainsKey("socket_connect_timeout"))
-			{
-				pool.SocketConnectTimeout = Convert.ToInt32(properties["socket_connect_timeout"]);
-				if (_log.IsDebugEnabled)
+				if (properties.ContainsKey("nagle"))
 				{
-					_log.DebugFormat("socket_connect_timeout set to {0}", pool.SocketConnectTimeout);
+					pool.Nagle = Convert.ToBoolean(properties["nagle"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("nagle set to {0}", pool.Nagle);
+					}
 				}
+				if (properties.ContainsKey("socket_timeout"))
+				{
+					pool.SocketTimeout = Convert.ToInt32(properties["socket_timeout"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("socket_timeout set to {0}", pool.SocketTimeout);
+					}
+				}
+				if (properties.ContainsKey("socket_connect_timeout"))
+				{
+					pool.SocketConnectTimeout = Convert.ToInt32(properties["socket_connect_timeout"]);
+					if (debugEnabled)
+					{
+						_log.DebugFormat("socket_connect_timeout set to {0}", pool.SocketConnectTimeout);
+					}
+				}
+
+				pool.Initialize();
 			}
-			pool.Initialize();
 		}
 
 		public void Stop()
 		{
-			SockIOPool.GetInstance().Shutdown();
+			// Needs to lock staticly because the pool and the internal maintenance thread
+			// are both static, and I want them syncs between starts and stops.
+			lock (syncObject)
+			{
+				SockIOPool pool = SockIOPool.GetInstance(MemCacheClient.PoolName);
+				if (pool.Initialized)
+					pool.Shutdown();
+
+				// The maintenance thread must be set to null in the hard way
+				// Due to a bug in the memcached client, the thread is not set to null which causes the
+				// pool to fail if it needs to be restarted. Hopefully this method is not called too many times
+				// (only when the SessionFactory is closed)
+				FieldInfo _maintenanceThread;
+				_maintenanceThread = typeof (SockIOPool).GetField("_maintenanceThread", BindingFlags.NonPublic | BindingFlags.Instance);
+				_maintenanceThread.SetValue(pool, null);
+			}
 		}
 	}
 }

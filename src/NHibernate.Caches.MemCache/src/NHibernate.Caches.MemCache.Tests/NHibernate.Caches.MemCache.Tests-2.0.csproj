@@ -54,11 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="LogSpy.cs" />
     <Compile Include="MemCacheFixture.cs" />
     <Compile Include="MemCacheProviderFixture.cs" />
     <Compile Include="MemCacheSectionHandlerFixture.cs" />
     <Compile Include="NH1086\Fixture.cs" />
     <Compile Include="NH1086\Model.cs" />
+    <Compile Include="NH1277\Fixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -40,13 +40,14 @@ namespace NHibernate.Caches.MemCache
 {
 	public class MemCacheClient : ICache
 	{
-		private HashAlgorithm hasher = HashAlgorithm.Create();
-		private MD5 md5 = MD5.Create();
+		internal const string PoolName = "nhibernate";
+		private readonly HashAlgorithm hasher = HashAlgorithm.Create();
+		private readonly MD5 md5 = MD5.Create();
 		private static readonly ILog _log;
-		private string _region;
-		private string _regionPrefix = "";
-		private int _expiry;
-		private MemcachedClient _client;
+		private readonly string _region;
+		private readonly string _regionPrefix = "";
+		private readonly int _expiry;
+		private readonly MemcachedClient _client;
 
 		static MemCacheClient()
 		{
@@ -67,7 +68,7 @@ namespace NHibernate.Caches.MemCache
 		{
 			_region = regionName;
 			_client = new MemcachedClient();
-			_client.PoolName = "nhibernate";
+			_client.PoolName = PoolName;
 			_expiry = 300;
 
 			if (properties != null)
@@ -100,7 +101,7 @@ namespace NHibernate.Caches.MemCache
 
 				if (properties.ContainsKey("regionPrefix"))
 				{
-					_regionPrefix = properties["regionPrefix"].ToString();
+					_regionPrefix = properties["regionPrefix"];
 
 					if (_log.IsDebugEnabled)
 					{
@@ -146,7 +147,7 @@ namespace NHibernate.Caches.MemCache
 		/// <param name="fullKeyString">The full key return by call FullKeyAsString</param>
 		/// <param name="hashAlgorithm">The hash algorithm used to hash the key</param>
 		/// <returns>The hashed key as a string</returns>
-		private string ComputeHash(string fullKeyString, HashAlgorithm hashAlgorithm)
+		private static string ComputeHash(string fullKeyString, HashAlgorithm hashAlgorithm)
 		{
 			byte[] bytes = Encoding.ASCII.GetBytes(fullKeyString);
 			byte[] computedHash = hashAlgorithm.ComputeHash(bytes);
