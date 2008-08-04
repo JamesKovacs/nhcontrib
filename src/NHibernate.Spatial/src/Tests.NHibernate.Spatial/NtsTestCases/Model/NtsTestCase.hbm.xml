@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" default-lazy="false">
+
+	<class name="Tests.NHibernate.Spatial.NtsTestCases.Model.NtsTestCase, Tests.NHibernate.Spatial" table="nts_testcase">
+		<id name="Id" type="Int64" column="oid" >
+			<generator class="assigned" />
+		</id>
+		<property name="Description"	column="description" />
+		<property name="GeometryA"		column="geometry_a"		type="NHibernate.Spatial.Type.GeometryType,NHibernate.Spatial" />
+		<property name="GeometryB"		column="geometry_b"		type="NHibernate.Spatial.Type.GeometryType,NHibernate.Spatial" />
+		<property name="Operation"		column="operation" />
+		<property name="RelatePattern"	column="relate_pattern" />
+		<property name="GeometryResult"	column="geometry_result" type="NHibernate.Spatial.Type.GeometryType,NHibernate.Spatial" />
+		<property name="BooleanResult"	column="boolean_result" />
+	</class>
+
+</hibernate-mapping>
