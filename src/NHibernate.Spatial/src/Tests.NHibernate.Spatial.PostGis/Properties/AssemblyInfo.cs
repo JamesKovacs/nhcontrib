@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tests.NHibernate.Spatial.PostGis-2.0-nh2a1.vs2008.csproj")]
+[assembly: AssemblyTitle("Tests.NHibernate.Spatial.PostGis.vs2008.csproj")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Tests.NHibernate.Spatial.PostGis-2.0-nh2a1.vs2008.csproj")]
+[assembly: AssemblyProduct("Tests.NHibernate.Spatial.PostGis.vs2008.csproj")]
 [assembly: AssemblyCopyright("Copyright ©  2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
