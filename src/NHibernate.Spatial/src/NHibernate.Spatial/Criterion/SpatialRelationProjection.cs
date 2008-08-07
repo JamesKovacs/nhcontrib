@@ -16,46 +16,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Type;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 
 	/// </summary>
 	[Serializable]
-	public class SpatialRelateProjection : SpatialProjection
+	public class SpatialRelationProjection : SpatialProjection
 	{
+		private SpatialRelation relation;
 		private string anotherPropertyName;
-		private string pattern;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SpatialRelateProjection"/> class.
+		/// Initializes a new instance of the <see cref="SpatialRelationProjection"/> class.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
+		/// <param name="relation">The relation.</param>
 		/// <param name="anotherPropertyName">Name of another property.</param>
-		public SpatialRelateProjection(string propertyName, string anotherPropertyName)
+		public SpatialRelationProjection(string propertyName, SpatialRelation relation, string anotherPropertyName)
 			: base(propertyName)
 		{
+			this.relation = relation;
 			this.anotherPropertyName = anotherPropertyName;
-			this.pattern = null;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SpatialRelateProjection"/> class.
-		/// </summary>
-		/// <param name="propertyName">Name of the property.</param>
-		/// <param name="anotherPropertyName">Name of another property.</param>
-		/// <param name="pattern">The pattern.</param>
-		public SpatialRelateProjection(string propertyName, string anotherPropertyName, string pattern)
-			: base(propertyName)
-		{
-			this.anotherPropertyName = anotherPropertyName;
-			this.pattern = pattern;
 		}
 
 		/// <summary>
@@ -66,14 +55,7 @@ namespace NHibernate.Spatial.Expression
 		/// <returns></returns>
 		public override IType[] GetTypes(ICriteria criteria, ICriteriaQuery criteriaQuery)
 		{
-			if (this.pattern == null)
-			{
-				return new IType[] { NHibernateUtil.String };
-			}
-			else
-			{
-				return new IType[] { NHibernateUtil.Boolean };
-			}
+			return new IType[] { NHibernateUtil.Boolean };
 		}
 
 		/// <summary>
@@ -83,29 +65,12 @@ namespace NHibernate.Spatial.Expression
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
 		/// <returns></returns>
-		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery)
+		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string column1 = criteriaQuery.GetColumn(criteria, this.propertyName);
 			string column2 = criteriaQuery.GetColumn(criteria, this.anotherPropertyName);
-
-			SqlString sqlString;
-			if (this.pattern == null)
-			{
-				sqlString = spatialDialect.GetSpatialRelateString(column1, column2, null, false, false);
-			}
-			else
-			{
-				string column3 = criteriaQuery.GetColumn(criteria, this.pattern);
-				if (column3 == null)
-				{
-					sqlString = spatialDialect.GetSpatialRelateString(column1, column2, this.pattern, true, false);
-				}
-				else
-				{
-					sqlString = spatialDialect.GetSpatialRelateString(column1, column2, column3, false, false);
-				}
-			}
+			SqlString sqlString = spatialDialect.GetSpatialRelationString(column1, this.relation, column2, false);
 			return new SqlStringBuilder()
 				.Add(sqlString)
 				.Add(" as y")

@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate;
-using NHibernate.Expression;
-using NHibernate.Spatial.Expression;
+using NHibernate.Criterion;
+using NHibernate.Spatial.Criterion;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
 
@@ -31,6 +31,7 @@ namespace Tests.NHibernate.Spatial
 			session.Save(new Simple("a null", null));
 			session.Save(new Simple("a collection empty 1", Wkt.Read("GEOMETRYCOLLECTION EMPTY")));
 			session.Save(new Simple("a collection empty 2", GeometryCollection.Empty));
+			session.Flush();
 		}
 
 		protected override void OnTearDown()

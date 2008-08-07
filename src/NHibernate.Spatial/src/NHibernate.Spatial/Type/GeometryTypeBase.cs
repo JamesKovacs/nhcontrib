@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using GeoAPI.Geometries;
+using NHibernate.Engine;
 using NHibernate.SqlTypes;
 using NHibernate.Type;
 using NHibernate.UserTypes;
@@ -69,7 +70,7 @@ namespace NHibernate.Spatial.Type
 		/// <returns>a copy</returns>
 		public object DeepCopy(object value)
 		{
-			return this.ToGeometry(this.nullableType.DeepCopy(this.FromGeometry(value)));
+			return this.ToGeometry(this.nullableType.DeepCopy(this.FromGeometry(value), EntityMode.Map, null));
 		}
 
 		/// <summary>
@@ -210,7 +211,7 @@ namespace NHibernate.Spatial.Type
 		/// <returns></returns>
 		bool IUserType.Equals(object a, object b)
 		{
-			return this.nullableType.Equals(
+			return Util.EqualsHelper.Equals(
 				(a is IGeometry ? this.FromGeometry(a) : (T)a),
 				(b is IGeometry ? this.FromGeometry(b) : (T)b));
 		}

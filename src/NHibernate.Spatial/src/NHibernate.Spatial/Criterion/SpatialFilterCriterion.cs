@@ -17,34 +17,49 @@
 
 using System;
 using System.Collections;
-using NHibernate;
+using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate.Engine;
-using NHibernate.Expression;
+using NHibernate.Criterion;
+using NHibernate.Persister.Entity;
+using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
-using GeoAPI.Geometries;
-using NHibernate.Spatial.Dialect;
+using System.Collections.Generic;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 
 	/// </summary>
 	[Serializable]
-	public class SpatialValidationCriterion : AbstractCriterion
+	public class SpatialFilterCriterion : AbstractCriterion
 	{
 		private string propertyName;
-		private SpatialValidation validation;
+		private IGeometry envelope;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SpatialValidationCriterion"/> class.
+		/// Initializes a new instance of the <see cref="SpatialFilterCriterion"/> class.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
-		/// <param name="validation">The validation.</param>
-		public SpatialValidationCriterion(string propertyName, SpatialValidation validation)
+		/// <param name="envelope">The envelope.</param>
+		/// <param name="srid">The srid.</param>
+		public SpatialFilterCriterion(string propertyName, IEnvelope envelope, int srid)
 		{
 			this.propertyName = propertyName;
-			this.validation = validation;
+			this.envelope = GeometryFactory.Default.ToGeometry(envelope);
+			this.envelope.SRID = srid;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SpatialFilterCriterion"/> class.
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		/// <param name="envelope">The envelope.</param>
+		public SpatialFilterCriterion(string propertyName, IGeometry envelope)
+		{
+			this.propertyName = propertyName;
+			this.envelope = envelope;
 		}
 
 		/// <summary>
@@ -57,7 +72,7 @@ namespace NHibernate.Spatial.Expression
 		/// </returns>
 		public override TypedValue[] GetTypedValues(ICriteria criteria, ICriteriaQuery criteriaQuery)
 		{
-			return new TypedValue[] { };
+			return new TypedValue[] { criteriaQuery.GetTypedValue(criteria, this.propertyName, this.envelope ) };
 		}
 
 		/// <summary>
@@ -69,27 +84,36 @@ namespace NHibernate.Spatial.Expression
 		/// <returns>
 		/// A SqlString that contains a valid Sql fragment.
 		/// </returns>
-		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary enabledFilters)
+		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string[] columnsUsingProjection = criteriaQuery.GetColumnsUsingProjection(criteria, this.propertyName);
 			IType typeUsingProjection = criteriaQuery.GetTypeUsingProjection(criteria, this.propertyName);
-			if (typeUsingProjection.ReturnedClass != typeof(IGeometry))
-			{
-				throw new QueryException(string.Format("Type mismatch in {0}: {1} expected type {2}, actual type {3}", base.GetType(), this.propertyName, typeof(IGeometry), typeUsingProjection.ReturnedClass));
-			}
 			if (typeUsingProjection.IsCollectionType)
 			{
 				throw new QueryException(string.Format("cannot use collection property ({0}.{1}) directly in a criterion, use ICriteria.CreateCriteria instead", criteriaQuery.GetEntityName(criteria), this.propertyName));
 			}
-			SqlStringBuilder builder = new SqlStringBuilder(2 * columnsUsingProjection.Length);
+			string[] keyColumns = criteriaQuery.GetIdentifierColumns(criteria);
+
+
+			IType entityType = criteriaQuery.GetType(criteria, this.propertyName);
+			AbstractEntityPersister entityPersister = (AbstractEntityPersister)criteriaQuery.Factory.GetEntityPersister(entityType.ReturnedClass);
+
+			// Only one key column is assumed
+			string keyColumn = keyColumns[0];
+			string alias = criteriaQuery.GetSQLAlias(criteria, this.propertyName);
+			string tableName = entityPersister.TableName;
+			int aliasLength = alias.Length + 1;
+
+			SqlStringBuilder builder = new SqlStringBuilder(10 * columnsUsingProjection.Length);
 			for (int i = 0; i < columnsUsingProjection.Length; i++)
 			{
 				if (i > 0)
 				{
 					builder.Add(" AND ");
 				}
-				builder.Add(spatialDialect.GetSpatialValidationString(columnsUsingProjection[i], this.validation, true));
+				string geometryColumn = columnsUsingProjection[i].Remove(0, aliasLength);
+				builder.Add(spatialDialect.GetSpatialFilterString(alias, geometryColumn, keyColumn, tableName));
 			}
 			return builder.ToSqlString();
 		}
@@ -106,7 +130,8 @@ namespace NHibernate.Spatial.Expression
 		/// </remarks>
 		public override string ToString()
 		{
-			return this.validation.ToString() + "(" + this.propertyName + ")";
+			throw new Exception("The method or operation is not implemented.");
 		}
+
 	}
 }

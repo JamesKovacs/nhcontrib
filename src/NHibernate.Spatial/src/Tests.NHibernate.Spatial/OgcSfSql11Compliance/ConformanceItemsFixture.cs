@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using GeoAPI.Geometries;
 using NHibernate;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Spatial;
 using NHibernate.Spatial.Metadata;
 using NUnit.Framework;

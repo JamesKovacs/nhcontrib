@@ -17,13 +17,13 @@
 
 using System;
 using NHibernate;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Type;
 using NHibernate.SqlCommand;
 using NHibernate.Spatial.Dialect;
 using GeoAPI.Geometries;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// Factory class for NHibernate query projections

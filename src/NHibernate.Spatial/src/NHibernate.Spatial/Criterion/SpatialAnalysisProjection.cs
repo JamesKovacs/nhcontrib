@@ -16,34 +16,49 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Type;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 
 	/// </summary>
 	[Serializable]
-	public class SpatialRelationProjection : SpatialProjection
+	public class SpatialAnalysisProjection : SpatialProjection
 	{
-		private SpatialRelation relation;
+		private SpatialAnalysis analysis;
 		private string anotherPropertyName;
+		private object[] arguments;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SpatialRelationProjection"/> class.
+		/// Initializes a new instance of the <see cref="SpatialAnalysisProjection"/> class.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
-		/// <param name="relation">The relation.</param>
+		/// <param name="analysis">The analysis.</param>
 		/// <param name="anotherPropertyName">Name of another property.</param>
-		public SpatialRelationProjection(string propertyName, SpatialRelation relation, string anotherPropertyName)
+		public SpatialAnalysisProjection(string propertyName, SpatialAnalysis analysis, string anotherPropertyName)
 			: base(propertyName)
 		{
-			this.relation = relation;
+			this.analysis = analysis;
 			this.anotherPropertyName = anotherPropertyName;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SpatialAnalysisProjection"/> class.
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		/// <param name="analysis">The analysis.</param>
+		/// <param name="arguments">The arguments.</param>
+		public SpatialAnalysisProjection(string propertyName, SpatialAnalysis analysis, params object[] arguments)
+			: base(propertyName)
+		{
+			this.analysis = analysis;
+			this.arguments = arguments;
 		}
 
 		/// <summary>
@@ -54,7 +69,14 @@ namespace NHibernate.Spatial.Expression
 		/// <returns></returns>
 		public override IType[] GetTypes(ICriteria criteria, ICriteriaQuery criteriaQuery)
 		{
-			return new IType[] { NHibernateUtil.Boolean };
+			if (this.analysis == SpatialAnalysis.Distance)
+			{
+				return new IType[] { NHibernateUtil.Double };
+			}
+			else
+			{
+				return base.GetTypes(criteria, criteriaQuery);
+			}
 		}
 
 		/// <summary>
@@ -64,18 +86,38 @@ namespace NHibernate.Spatial.Expression
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
 		/// <returns></returns>
-		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery)
+		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string column1 = criteriaQuery.GetColumn(criteria, this.propertyName);
-			string column2 = criteriaQuery.GetColumn(criteria, this.anotherPropertyName);
-			SqlString sqlString = spatialDialect.GetSpatialRelationString(column1, this.relation, column2, false);
+			SqlString sqlString;
+			if (this.IsBinaryOperation())
+			{
+				string column2 = criteriaQuery.GetColumn(criteria, this.anotherPropertyName);
+				sqlString = spatialDialect.GetSpatialAnalysisString(column1, this.analysis, column2);
+			}
+			else
+			{
+				sqlString = spatialDialect.GetSpatialAnalysisString(column1, this.analysis, this.arguments);
+			}
 			return new SqlStringBuilder()
 				.Add(sqlString)
 				.Add(" as y")
 				.Add(position.ToString())
 				.Add("_")
 				.ToSqlString();
+		}
+
+		/// <summary>
+		/// Determines whether is binary operation.
+		/// </summary>
+		/// <returns>
+		/// 	<c>true</c> if is binary operation; otherwise, <c>false</c>.
+		/// </returns>
+		private bool IsBinaryOperation()
+		{
+			return (this.analysis != SpatialAnalysis.Buffer &&
+					this.analysis != SpatialAnalysis.ConvexHull);
 		}
 
 	}

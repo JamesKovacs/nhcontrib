@@ -1,6 +1,6 @@
 ﻿using NHibernate.Cfg;
 using NHibernate.Driver;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Spatial.Dialect;
 using NUnit.Framework;
 

@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using NHibernate.Cfg;
 using NHibernate.Driver;
 using NHibernate.Spatial.Dialect;
@@ -12,7 +12,7 @@ namespace Tests.NHibernate.Spatial
 	{
 		public static void Configure(Configuration configuration)
 		{
-			IDictionary properties = new Hashtable();
+			IDictionary<string, string> properties = new Dictionary<string, string>();
 			properties[Environment.Dialect] = typeof(MsSqlSpatialDialect).AssemblyQualifiedName;
 			properties[Environment.ConnectionProvider] = typeof(DebugConnectionProvider).AssemblyQualifiedName;
 			properties[Environment.ConnectionDriver] = typeof(SqlClientDriver).AssemblyQualifiedName;

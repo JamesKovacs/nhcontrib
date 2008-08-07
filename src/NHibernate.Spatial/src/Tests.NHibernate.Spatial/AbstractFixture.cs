@@ -333,7 +333,7 @@ namespace Tests.NHibernate.Spatial
 			foreach (PersistentClass clazz in configuration.ClassMappings)
 			{
 				bool hasLob = false;
-				foreach (global::NHibernate.Mapping.Property prop in clazz.PropertyClosureCollection)
+				foreach (global::NHibernate.Mapping.Property prop in clazz.PropertyClosureIterator)
 				{
 					if (prop.Value.IsSimpleValue)
 					{

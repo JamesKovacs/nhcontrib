@@ -3,7 +3,7 @@ using System.Collections;
 using System.Data;
 using GeoAPI.Geometries;
 using NHibernate;
-using NHibernate.Spatial.Expression;
+using NHibernate.Spatial.Criterion;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.RandomGeometries.Model;
 

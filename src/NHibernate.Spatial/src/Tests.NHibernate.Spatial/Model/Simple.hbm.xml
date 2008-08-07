@@ -11,7 +11,7 @@
 		<property name="Geometry" column="the_geom">
 			<type name="NHibernate.Spatial.Type.GeometryType,NHibernate.Spatial">
 				<param name="srid">32719</param>
-				<param name="subtype">POLYGON</param>
+				<param name="subtype">GEOMETRY</param>
 			</type>
 		</property>
 	</class>

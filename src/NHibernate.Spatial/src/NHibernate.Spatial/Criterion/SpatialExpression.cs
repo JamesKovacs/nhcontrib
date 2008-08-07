@@ -16,11 +16,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 

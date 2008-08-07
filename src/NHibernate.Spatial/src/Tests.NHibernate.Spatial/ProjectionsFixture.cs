@@ -3,8 +3,8 @@ using System.Collections;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate;
-using NHibernate.Expression;
-using NHibernate.Spatial.Expression;
+using NHibernate.Criterion;
+using NHibernate.Spatial.Criterion;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
 

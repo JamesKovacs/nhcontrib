@@ -53,7 +53,7 @@ namespace NHibernate.Spatial
 		{
 #if !NH_HQL_FUNCTION_MAPPING
 			Dictionary<string, IType> pendingRegistration = new Dictionary<string, IType>();
-			foreach (DictionaryEntry entry in dialect.Functions)
+			foreach (KeyValuePair<string, ISQLFunction> entry in dialect.Functions)
 			{
 				string functionName = (string)entry.Key;
 				ISQLFunction function = (ISQLFunction)entry.Value;
@@ -68,7 +68,7 @@ namespace NHibernate.Spatial
 					object[] args = new object[argsCount];
 					string rendered = function.Render(args, null);
 					string dialectFunctionName = rendered.Substring(0, rendered.IndexOf("("));
-					if (!dialect.Functions.Contains(dialectFunctionName) &&
+					if (!dialect.Functions.ContainsKey(dialectFunctionName) &&
 						!string.IsNullOrEmpty(dialectFunctionName))
 					{
 						// We need to register it or we'll get an exception:

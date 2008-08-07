@@ -17,10 +17,10 @@
 
 using System;
 using NHibernate.SqlCommand;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.Spatial.Dialect;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 

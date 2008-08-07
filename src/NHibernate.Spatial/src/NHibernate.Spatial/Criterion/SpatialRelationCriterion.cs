@@ -16,17 +16,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Engine;
-using NHibernate.Expression;
+using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
 using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using System.Text;
 
-namespace NHibernate.Spatial.Expression
+namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>
 	/// 
@@ -80,7 +80,7 @@ namespace NHibernate.Spatial.Expression
 		/// <returns>
 		/// A SqlString that contains a valid Sql fragment.
 		/// </returns>
-		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary enabledFilters)
+		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string[] columns1 = GetColumnNames(criteria, criteriaQuery, this.propertyName);

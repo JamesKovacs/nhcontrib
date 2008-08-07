@@ -119,9 +119,9 @@ namespace NHibernate.Spatial.Mapping
 			foreach (PersistentClass persistentClass in this.configuration.ClassMappings)
 			{
 				Table table = persistentClass.Table;
-				foreach (Column column in table.ColumnCollection)
+				foreach (Column column in table.ColumnIterator)
 				{
-					if (column.Type.ReturnedClass == typeof(IGeometry))
+					if (column.Value.Type.ReturnedClass == typeof(IGeometry))
 					{
 						visitGeometryColumn(table, column);
 					}
@@ -134,9 +134,10 @@ namespace NHibernate.Spatial.Mapping
 		/// </summary>
 		/// <param name="dialect">The dialect.</param>
 		/// <param name="mapping">The mapping.</param>
+		/// <param name="defaultCatalog">The default catalog.</param>
 		/// <param name="defaultSchema">The default schema.</param>
 		/// <returns></returns>
-		public override string SqlCreateString(NHibernate.Dialect.Dialect dialect, IMapping mapping, string defaultSchema)
+		public override string SqlCreateString(NHibernate.Dialect.Dialect dialect, IMapping mapping, string defaultCatalog, string defaultSchema)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)dialect;
 			StringBuilder builder = new StringBuilder();
@@ -152,7 +153,7 @@ namespace NHibernate.Spatial.Mapping
 				// Maybe it will require to implement IComparer in IGeometryUserType, just to comply.
 				//
 				// It would be nicer if CustomType made UserType property public (today is protected).
-				IGeometryUserType geometryType = (IGeometryUserType)((CustomType)column.Type).Comparator;
+				IGeometryUserType geometryType = (IGeometryUserType)((CustomType)column.Value.Type).Comparator;
 
 				// The previous trick allows to get geometry type properties, such as SRID.
 				int srid = geometryType.SRID;
@@ -168,9 +169,10 @@ namespace NHibernate.Spatial.Mapping
 		/// Creates SQL to drop auxiliary database objects.
 		/// </summary>
 		/// <param name="dialect">The dialect.</param>
+		/// <param name="defaultCatalog">The default catalog.</param>
 		/// <param name="defaultSchema">The default schema.</param>
 		/// <returns></returns>
-		public override string SqlDropString(NHibernate.Dialect.Dialect dialect, string defaultSchema)
+		public override string SqlDropString(NHibernate.Dialect.Dialect dialect, string defaultCatalog, string defaultSchema)
 		{
 			ISpatialDialect spatialDialect = (ISpatialDialect)dialect;
 			StringBuilder builder = new StringBuilder();

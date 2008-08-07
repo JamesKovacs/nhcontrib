@@ -138,5 +138,6 @@ namespace NHibernate.Spatial.Dialect.Function
 		{
 			return name;
 		}
+
 	}
 }
