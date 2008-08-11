@@ -359,5 +359,16 @@ namespace NHibernate.Linq.Tests
 
             Assert.AreEqual(2, query.Count);
         }
+
+		[Test]
+		public void AndInsideOr()
+		{
+			var query = (from user in session.Linq<User>()
+						 where (user.RegisteredAt >= new DateTime(2000, 1, 1) && user.Name == "ayende")
+							   || (user.RegisteredAt < new DateTime(2000, 1, 1))
+						 select user).ToList();
+
+			Assert.AreEqual(2, query.Count);
+		}
 	}
 }

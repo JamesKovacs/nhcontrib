@@ -114,8 +114,15 @@ namespace NHibernate.Linq.Visitors
 
         private void VisitAndAlsoExpression(BinaryExpression expr)
         {
+			criterionStack.Push(new List<ICriterion>());
             Visit(expr.Left);
             Visit(expr.Right);
+			var ands = criterionStack.Pop();
+
+			var conjunction = new Conjunction();
+			foreach (var crit in ands)
+				conjunction.Add(crit);
+			CurrentCriterions.Add(conjunction);
         }
 
         private void VisitOrElseExpression(BinaryExpression expr)
