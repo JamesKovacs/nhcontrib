@@ -13,43 +13,46 @@ namespace NHibernate.Linq.Visitors
         //to this:
         //   timesheet.Entries.Any()
 
-        private Expression ProcessBinaryExpression(Expression exprToCompare, Expression exprToReturn, ExpressionType nodeType)
+        private Expression ProcessBinaryExpression(Expression exprToCompare, Expression exprToReturn, ExpressionType nodeType,Expression original)
         {
             BooleanConstantFinder visitor = new BooleanConstantFinder();
             visitor.Visit(exprToCompare);
 
-            if (visitor.Constant.HasValue)
-            {
-                bool value = (nodeType == ExpressionType.Equal) ? visitor.Constant.Value : !visitor.Constant.Value;
-
-                if (value)
-                {
-                    return exprToReturn;
-                }
-                else
-                {
-                    if (exprToReturn.NodeType == ExpressionType.Not)
-                        return ((UnaryExpression)exprToReturn).Operand;
-
-                    return Expression.Not(exprToReturn);
-                }
-            }
-
-            return null;
+			if (visitor.Constant.HasValue)
+			{
+				switch (nodeType)
+				{
+					case ExpressionType.Equal:
+						return visitor.Constant.Value ? exprToReturn : Expression.Not(exprToReturn);
+					case ExpressionType.NotEqual:
+						return visitor.Constant.Value ? Expression.Not(exprToReturn) : exprToReturn;
+					case ExpressionType.Or:
+					case ExpressionType.OrElse:
+						return visitor.Constant.Value ? Expression.Not(Expression.Not(Expression.Constant(true))) : exprToReturn;
+					case ExpressionType.And:
+					case ExpressionType.AndAlso:
+						return visitor.Constant.Value ? exprToReturn : Expression.Not(Expression.Constant(true));
+					default:
+						return original;
+				}
+			}
+			else
+				return original;
         }
 
-        protected override Expression VisitBinary(BinaryExpression expr)
-        {
-            Expression e = ProcessBinaryExpression(expr.Left, expr.Right, expr.NodeType);
-            if (e != null) return e;
+		protected override Expression VisitBinary(BinaryExpression expr)
+		{
+			Expression e = ProcessBinaryExpression(expr.Left, expr.Right, expr.NodeType,expr);
+			if (e != expr) 
+				return e;
+			e = ProcessBinaryExpression(expr.Right, expr.Left, expr.NodeType,expr);
+			if (e != expr)
+				return e;
+			return base.VisitBinary(expr);
 
-            e = ProcessBinaryExpression(expr.Right, expr.Left, expr.NodeType);
-            if (e != null) return e;
+		}
 
-            return base.VisitBinary(expr);
-        }
-
-        class BooleanConstantFinder : ExpressionVisitor
+    	class BooleanConstantFinder : ExpressionVisitor
         {
             private bool _isNestedBinaryExpression;
 

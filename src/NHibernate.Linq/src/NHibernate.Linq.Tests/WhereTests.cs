@@ -18,10 +18,26 @@ namespace NHibernate.Linq.Tests
 		[Test]
 		public void NoWhereClause()
 		{
-			var query = (
-			            	from user in nhib.Users
+			var query = (from user in nhib.Users
 			            	select user).ToList();
 			Assert.AreEqual(3, query.Count);
+		}
+
+		[Test]
+		public void OrWithTrueReducesTo1Eq1Clause()
+		{
+			var query = (from user in nhib.Users
+						 where user.Name=="ayende"||true
+						 select user).ToList();
+			Assert.AreEqual(3, query.Count);
+		}
+		[Test]
+		public void AndWithTrueReducesTo1Eq0Clause()
+		{
+			var query = (from user in nhib.Users
+						 where user.Name == "ayende" && false
+						 select user).ToList();
+			Assert.AreEqual(0, query.Count);
 		}
 
 		[Test]
@@ -359,16 +375,5 @@ namespace NHibernate.Linq.Tests
 
             Assert.AreEqual(2, query.Count);
         }
-
-		[Test]
-		public void AndInsideOr()
-		{
-			var query = (from user in session.Linq<User>()
-						 where (user.RegisteredAt >= new DateTime(2000, 1, 1) && user.Name == "ayende")
-							   || (user.RegisteredAt < new DateTime(2000, 1, 1))
-						 select user).ToList();
-
-			Assert.AreEqual(2, query.Count);
-		}
 	}
 }
