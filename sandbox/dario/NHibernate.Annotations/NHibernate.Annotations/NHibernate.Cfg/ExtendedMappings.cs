@@ -68,5 +68,16 @@ namespace NHibernate.Cfg
 			this.defaultNamedGenerators = defaultNamedGenerators;
 			this.anyMetaDefs = anyMetaDefs;
 		}
-	}
+
+
+        public IDictionary<string, PersistentClass> Classes
+        {
+            get { return null; }
+        }
+
+	    public void AddSecondPass(IndexOrUniqueKeySecondPass secondPass)
+        {
+            
+        }
+    }
 }

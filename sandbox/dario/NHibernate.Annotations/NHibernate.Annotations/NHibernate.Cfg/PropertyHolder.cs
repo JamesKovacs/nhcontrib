@@ -1,9 +1,8 @@
 ﻿using System.Persistence;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
-using Column=NHibernate.Mapping.Column;
 
-namespace NHibernate.Annotations.NHibernate.Cfg
+namespace NHibernate.Cfg
 {
 	public interface PropertyHolder
 	{
@@ -30,14 +29,14 @@ namespace NHibernate.Annotations.NHibernate.Cfg
 		/// </summary>
 		/// <param name="propertyName"></param>
 		/// <returns></returns>
-		Column[] getOverriddenColumn(string propertyName);
+		ColumnAttribute[] GetOverriddenColumn(string propertyName);
 
 		/// <summary>
 		/// return null if the column is not overridden, or an array of column if true
 		/// </summary>
 		/// <param name="propertyName"></param>
 		/// <returns></returns>
-		JoinColumn[] getOverriddenJoinColumn(string propertyName);
+		JoinColumn[] GetOverriddenJoinColumn(string propertyName);
 
 		void AddProperty(Property prop, Ejb3Column[] columns);
 

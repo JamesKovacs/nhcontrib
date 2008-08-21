@@ -1,7 +1,7 @@
 namespace System.Persistence
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class Column : Attribute, INameable
+    public class ColumnAttribute : Attribute, INameable
     {
         private string columnDefinition = string.Empty;
         private bool insertable = true;
@@ -14,11 +14,11 @@ namespace System.Persistence
         private bool unique;
         private bool updatable = true;
 
-        public Column()
+        public ColumnAttribute()
         {
         }
 
-        public Column(string name)
+        public ColumnAttribute(string name)
         {
             this.name = name;
         }

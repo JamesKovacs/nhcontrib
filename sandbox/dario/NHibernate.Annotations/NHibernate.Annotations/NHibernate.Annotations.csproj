@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{54B37A8C-DBFA-409A-82DA-401BE3DFDBBD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,13 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationException.cs" />
     <Compile Include="AnyMetaDef.cs" />
-    <Compile Include="Cfg\Annotations\EnityBinder.cs" />
+    <Compile Include="Cfg\Annotations\EntityBinder.cs" />
+    <Compile Include="Cfg\Nullability.cs" />
+    <Compile Include="FormulaAttribute.cs" />
     <Compile Include="NHibernate.Cfg\AnnotationBinder.cs" />
     <Compile Include="Cfg\AnnotationConfiguration.cs" />
     <Compile Include="Cfg\Annotations\PropertyBinder.cs" />
     <Compile Include="MetaValue.cs" />
     <Compile Include="NHibernate.Cfg\AnnotatedClassType.cs" />
+    <Compile Include="NHibernate.Cfg\AbstractPropertyHolder.cs" />
+    <Compile Include="NHibernate.Cfg\BinderHelper.cs" />
+    <Compile Include="NHibernate.Cfg\CreateKeySecondPass.cs" />
+    <Compile Include="NHibernate.Cfg\IndexOrUniqueKeySecondPass.cs" />
+    <Compile Include="NHibernate.Cfg\IPropertyData.cs" />
     <Compile Include="NHibernate.Cfg\PropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\Ejb3Column.cs" />
     <Compile Include="NHibernate.Cfg\ExtendedMappings.cs" />
