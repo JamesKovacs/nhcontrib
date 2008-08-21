@@ -36,6 +36,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InheritanceType.cs" />
+    <Compile Include="MappedSuperclassAttribute.cs" />
+    <Compile Include="InheritanceAttribute.cs" />
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="GeneratedValue.cs" />

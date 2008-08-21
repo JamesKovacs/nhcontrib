@@ -300,7 +300,7 @@ namespace NHibernate.Cfg
             }
         }
 
-        private bool IsSecondary
+        public bool IsSecondary
         {
             get
             {

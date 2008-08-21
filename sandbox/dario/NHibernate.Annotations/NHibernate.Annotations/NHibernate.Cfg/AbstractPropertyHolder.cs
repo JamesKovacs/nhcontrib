@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Persistence;
 using System.Reflection;
-using NHibernate.Annotations.NHibernate.Cfg;
 using NHibernate.Cfg;
 
 namespace NHibernate.Cfg
@@ -21,7 +20,7 @@ namespace NHibernate.Cfg
 			get { return path; }
 		}
 
-		protected void setCurrentProperty(PropertyInfo property)
+		protected void SetCurrentProperty(PropertyInfo property)
 		{
 			if (property == null)
 			{
@@ -43,17 +42,22 @@ namespace NHibernate.Cfg
 			}
 		}
 
-        protected virtual Dictionary<string, ColumnAttribute[]> BuildColumnOverride(PropertyInfo property, string path)
+        private void BuildHierarchyColumnOverride(System.Type element)
+        {
+            throw new System.NotImplementedException();
+        }
+
+	    private Dictionary<string, ColumnAttribute[]> BuildColumnOverride(PropertyInfo property, string path)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		protected virtual Dictionary<string, JoinColumn[]> BuildJoinColumnOverride(PropertyInfo property, string path)
+	    private Dictionary<string, JoinColumn[]> BuildJoinColumnOverride(PropertyInfo property, string path)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public virtual void setParentProperty(string parentProperty)
+		public virtual void SetParentProperty(string parentProperty)
 		{
 			throw new AssertionFailure("Setting the parent property to a non component");
 		}
