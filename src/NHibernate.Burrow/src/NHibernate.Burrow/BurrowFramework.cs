@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
 
 namespace NHibernate.Burrow
@@ -125,6 +126,8 @@ namespace NHibernate.Burrow
         public ISession GetSession(System.Type entityType)
         {
             AbstractConversation c = ((AbstractConversation) CurrentConversation);
+			if(c == null)
+				throw new ConversationUnavailableException();
             return c.GetSession(entityType);
         }
 
