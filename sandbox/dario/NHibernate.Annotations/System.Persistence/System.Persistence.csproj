@@ -40,7 +40,7 @@
     <Compile Include="MappedSuperclassAttribute.cs" />
     <Compile Include="InheritanceAttribute.cs" />
     <Compile Include="ColumnAttribute.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="EntityAttribute.cs" />
     <Compile Include="GeneratedValue.cs" />
     <Compile Include="GenerationType.cs" />
     <Compile Include="Id.cs" />

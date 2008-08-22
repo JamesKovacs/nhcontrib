@@ -46,5 +46,10 @@ namespace NHibernate.Annotations.Cfg.Annotations
         {
             get { return secondaryTables; }
         }
+
+        public void FinalSecondaryTableBinding(PropertyHolder holder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

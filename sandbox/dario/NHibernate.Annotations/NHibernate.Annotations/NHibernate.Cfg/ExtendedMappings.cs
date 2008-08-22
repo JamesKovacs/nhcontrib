@@ -1,73 +1,93 @@
 ﻿using System.Collections.Generic;
+using Iesi.Collections.Generic;
 using log4net;
 using NHibernate.Annotations;
-using NHibernate.Annotations.NHibernate.Cfg;
 using NHibernate.Annotations.NHibernate.Mapping;
-using NHibernate.Cfg;
 using NHibernate.Engine;
 using NHibernate.Mapping;
-using Iesi.Collections.Generic;
 
 namespace NHibernate.Cfg
 {
-	public class ExtendedMappings : Mappings
-	{
-		private readonly ILog log = LogManager.GetLogger(typeof(ExtendedMappings));
-		private readonly Dictionary<string, IdGenerator> namedGenerators;
-		private readonly Dictionary<string, Dictionary<string, Join>> joins;
-		private readonly Dictionary<string, AnnotatedClassType> classTypes;
-		//private readonly Dictionary<string, Properties> generatorTables;
-		private readonly Dictionary<Table, List<string[]>> tableUniqueConstraints;
-		private readonly Dictionary<string, string> MappedByResolver;
-		private readonly Dictionary<string, string> propertyRefResolver;
-		//private readonly ReflectionManager reflectionManager;
-		private readonly ISet<string> defaultNamedQueryNames;
-		private readonly ISet<string> defaultNamedNativeQueryNames;
-		private readonly ISet<string> defaultSqlResulSetMappingNames;
-		private readonly ISet<string> defaultNamedGenerators;
-		private readonly Dictionary<string, AnyMetaDefAttribute> anyMetaDefs;
+    public class ExtendedMappings : Mappings
+    {
+        private readonly ILog log = LogManager.GetLogger(typeof (ExtendedMappings));
+        private readonly IDictionary<string, IdGenerator> namedGenerators;
+        private readonly IDictionary<string, IDictionary<string, Join>> joins;
+        private readonly IDictionary<string, AnnotatedClassType> classTypes;
+        private readonly Dictionary<string, Annotations.Properties> generatorTables;
+        private readonly IDictionary<Table, List<string[]>> tableUniqueConstraints;
+        private readonly IDictionary<string, string> MappedByResolver;
+        private readonly IDictionary<string, string> propertyRefResolver;
+        private readonly ISet<string> defaultNamedQueryNames;
+        private readonly ISet<string> defaultNamedNativeQueryNames;
+        private readonly ISet<string> defaultSqlResulSetMappingNames;
+        private readonly ISet<string> defaultNamedGenerators;
+        private readonly IDictionary<string, AnyMetaDefAttribute> anyMetaDefs;
+        //private readonly ReflectionManager reflectionManager;
 
-		public ExtendedMappings(IDictionary<string, 
-			PersistentClass> classes, 
-			IDictionary<string, Mapping.Collection> collections, 
-			IDictionary<string, Table> tables, 
-			IDictionary<string, NamedQueryDefinition> queries, 
-			IDictionary<string, NamedSQLQueryDefinition> sqlqueries, 
-			IDictionary<string, ResultSetMappingDefinition> resultSetMappings, 
-			IDictionary<string, string> imports, IList<SecondPassCommand> secondPasses, 
-			IList<PropertyReference> propertyReferences, 
-			INamingStrategy namingStrategy, 
-			IDictionary<string, TypeDef> typeDefs, 
-			IDictionary<string, FilterDefinition> filterDefinitions, 
-			ISet<ExtendsQueueEntry> extendsQueue, 
-			IList<IAuxiliaryDatabaseObject> auxiliaryDatabaseObjects, 
-			IDictionary<string, TableDescription> tableNameBinding, 
-			IDictionary<Table, ColumnNames> columnNameBindingPerTable, 
-			string defaultAssembly, string defaultNamespace, 
-			Dialect.Dialect dialect, Dictionary<string, IdGenerator> namedGenerators, 
-			Dictionary<string, Dictionary<string, Join>> joins, 
-			Dictionary<string, AnnotatedClassType> classTypes, 
-			Dictionary<Table, List<string[]>> tableUniqueConstraints, 
-			Dictionary<string, string> mappedByResolver, 
-			Dictionary<string, string> propertyRefResolver, 
-			ISet<string> defaultNamedQueryNames, ISet<string> defaultNamedNativeQueryNames, 
-			ISet<string> defaultSqlResulSetMappingNames, 
-			ISet<string> defaultNamedGenerators, 
-			Dictionary<string, AnyMetaDefAttribute> anyMetaDefs) : 
-			base(classes, collections, tables, queries, sqlqueries, resultSetMappings, imports, secondPasses, propertyReferences, namingStrategy, typeDefs, filterDefinitions, extendsQueue, auxiliaryDatabaseObjects, tableNameBinding, columnNameBindingPerTable, defaultAssembly, defaultNamespace, dialect)
-		{
-			this.namedGenerators = namedGenerators;
-			this.joins = joins;
-			this.classTypes = classTypes;
-			this.tableUniqueConstraints = tableUniqueConstraints;
-			MappedByResolver = mappedByResolver;
-			this.propertyRefResolver = propertyRefResolver;
-			this.defaultNamedQueryNames = defaultNamedQueryNames;
-			this.defaultNamedNativeQueryNames = defaultNamedNativeQueryNames;
-			this.defaultSqlResulSetMappingNames = defaultSqlResulSetMappingNames;
-			this.defaultNamedGenerators = defaultNamedGenerators;
-			this.anyMetaDefs = anyMetaDefs;
-		}
+           public ExtendedMappings(IDictionary<string, PersistentClass> classes,
+                                IDictionary<string, Mapping.Collection> collections,
+                                IDictionary<string, Table> tables,
+                                IDictionary<string, NamedQueryDefinition> queries,
+                                IDictionary<string, NamedSQLQueryDefinition> sqlqueries,
+                                IDictionary<string, ResultSetMappingDefinition> resultSetMappings,
+                                ISet<string> defaultNamedQueryNames,
+                                ISet<string> defaultNamedNativeQueryNames,
+                                ISet<string> defaultSqlResulSetMappingNames,
+                                ISet<string> defaultNamedGenerators,
+                                IDictionary<string, string> imports, 
+                                IList<SecondPassCommand> secondPasses,
+                                IList<PropertyReference> propertyReferences,
+                                INamingStrategy namingStrategy,
+                                IDictionary<string, TypeDef> typeDefs,
+                                IDictionary<string, FilterDefinition> filterDefinitions,
+                                IDictionary<string, IdGenerator> namedGenerators,
+                                IDictionary<string, IDictionary<string, Join>> joins,
+                                IDictionary<string, AnnotatedClassType> classTypes,
+                                ISet<ExtendsQueueEntry> extendsQueue,
+                                IDictionary<string, TableDescription> tableNameBinding,
+                                IDictionary<Table, ColumnNames> columnNameBindingPerTable,
+                                IList<IAuxiliaryDatabaseObject> auxiliaryDatabaseObjects,
+                                IDictionary<string,Annotations.Properties> generatorTables,
+                                IDictionary<Table, List<string[]>> tableUniqueConstraints,
+                                IDictionary<string, string> mappedByResolver,
+                                IDictionary<string, string> propertyRefResolver,
+                                IDictionary<string, AnyMetaDefAttribute> anyMetaDefs,
+                                string defaultAssembly, 
+                                string defaultNamespace,
+                                Dialect.Dialect dialect) :
+                                    base(classes,
+                                         collections,
+                                         tables,
+                                         queries,
+                                         sqlqueries,
+                                         resultSetMappings,
+                                         imports,
+                                         secondPasses,
+                                         propertyReferences,
+                                         namingStrategy,
+                                         typeDefs,
+                                         filterDefinitions,
+                                         extendsQueue,
+                                         auxiliaryDatabaseObjects,
+                                         tableNameBinding,
+                                         columnNameBindingPerTable,
+                                         defaultAssembly,
+                                         defaultNamespace,
+                                         dialect)
+        {
+            this.namedGenerators = namedGenerators;
+            this.joins = joins;
+            this.classTypes = classTypes;
+            this.tableUniqueConstraints = tableUniqueConstraints;
+            MappedByResolver = mappedByResolver;
+            this.propertyRefResolver = propertyRefResolver;
+            this.defaultNamedQueryNames = defaultNamedQueryNames;
+            this.defaultNamedNativeQueryNames = defaultNamedNativeQueryNames;
+            this.defaultSqlResulSetMappingNames = defaultSqlResulSetMappingNames;
+            this.defaultNamedGenerators = defaultNamedGenerators;
+            this.anyMetaDefs = anyMetaDefs;
+        }
 
 
         public IDictionary<string, PersistentClass> Classes
@@ -75,9 +95,8 @@ namespace NHibernate.Cfg
             get { return null; }
         }
 
-	    public void AddSecondPass(IndexOrUniqueKeySecondPass secondPass)
+        public void AddSecondPass(IndexOrUniqueKeySecondPass secondPass)
         {
-            
         }
     }
 }

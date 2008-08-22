@@ -11,7 +11,7 @@
 		NONE,
 
 		/// <summary>
-		/// has [Entity] annotation
+		/// has [EntityAttribute] annotation
 		/// </summary>
 		ENTITY,
 

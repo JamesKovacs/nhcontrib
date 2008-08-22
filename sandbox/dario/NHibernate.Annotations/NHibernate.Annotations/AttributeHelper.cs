@@ -15,5 +15,10 @@ namespace NHibernate.Annotations
             
             return default(T);
         }
+
+        public static bool IsAttributePresent<T>(System.Type clazz) where T : Attribute
+        {
+            throw new NotImplementedException();
+        }
     }
 }

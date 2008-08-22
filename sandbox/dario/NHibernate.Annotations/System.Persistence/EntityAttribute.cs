@@ -1,7 +1,7 @@
 ﻿namespace System.Persistence
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class Entity : Attribute
+    public class EntityAttribute : Attribute
     {
 		//TODO: doc
 		public bool Mutable { get; set; }
@@ -14,7 +14,7 @@
 
 //@Target(TYPE)
 //@Retention(RUNTIME)
-//public @interface Entity {
+//public @interface EntityAttribute {
 //    /** Is this entity mutable (read only) or not */
 //    boolean mutable() default true;
 //    /** Needed column only in SQL on insert */

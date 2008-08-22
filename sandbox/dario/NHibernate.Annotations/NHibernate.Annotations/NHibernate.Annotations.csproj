@@ -69,6 +69,7 @@
     <Compile Include="NHibernate.Cfg\AnnotatedClassType.cs" />
     <Compile Include="NHibernate.Cfg\AbstractPropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\BinderHelper.cs" />
+    <Compile Include="NHibernate.Cfg\SecondaryTableSecondPass.cs" />
     <Compile Include="NHibernate.Cfg\InheritanceState.cs" />
     <Compile Include="NHibernate.Cfg\ClassPropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\RecoverableException.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="NHibernate.Cfg\Ejb3Column.cs" />
     <Compile Include="NHibernate.Cfg\ExtendedMappings.cs" />
     <Compile Include="NHibernate.Mapping\IdGenerator.cs" />
+    <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
