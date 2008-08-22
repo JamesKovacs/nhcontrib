@@ -150,7 +150,10 @@ namespace NHibernate.Linq.Visitors
             if (visitor.Projection != null)
             {
                 object result = rootCriteria.SetProjection(visitor.Projection).UniqueResult();
-                value = (T)LinqUtil.ChangeType(result, typeof(T));
+                if (result != null)
+                {
+                    value = (T) LinqUtil.ChangeType(result, typeof (T));
+                }
             }
 
             return value;

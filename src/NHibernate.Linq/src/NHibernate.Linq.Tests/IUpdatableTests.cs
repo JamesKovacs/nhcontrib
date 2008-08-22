@@ -168,16 +168,6 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Test]
-		public void TestReplaceResource()
-		{
-			var qry = this.nhib.Users.Where(u => u.Id == 1);
-			User result = (User)update.ReplaceResource(qry, typeof(User).FullName);
-
-			Assert.IsNull(result.Name, "Failed to clear all property values in ReplaceResource");
-			update.ClearChanges();
-		}
-
-		[Test]
 		public void TestSetReference()
 		{
 			var qry = this.nhib.Roles.Where(r => r.Name == "User");
