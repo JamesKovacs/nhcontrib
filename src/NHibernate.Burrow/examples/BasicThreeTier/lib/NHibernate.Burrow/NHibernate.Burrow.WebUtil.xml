@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NHibernate.Burrow.WebUtil</name>
+    </assembly>
+    <members>
+        <member name="T:NHibernate.Burrow.WebUtil.Attributes.StatefulField">
+            <summary>
+            Mark the field to span over multiple requests/responses for a control
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.IStatefulFieldInterceptor.OnLoad(System.Object)">
+            <summary>
+            called after loaded from States
+            </summary>
+            <param name="objectOriginallyLoaded">objectStoredInViewState</param>
+            <returns>the object set to the Overspan field</returns>
+            <remarks>
+             return objectOriginallyLoaded for simple application
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.IStatefulFieldInterceptor.OnSave(System.Object,System.Object)">
+            <summary>
+            called before saving into ViewState
+            </summary>
+            <param name="toSave"></param>
+            <returns>the object to save to the viewstate</returns>
+            <remarks>
+            return toSave for simple application
+            </remarks>
+            <param name="objectInStateContainer">object currently in the state container (could be ViewState or Session)</param>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldProcessor.GetFieldInfo``1">
+            <summary>
+            Get the FieldInfo - Attribute pairs that have the customer attribute of type <typeparamref name="AT"/> 
+            </summary>
+            <typeparam name="AT"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.Impl.StatefulFieldPageModule.LoadData(System.Object,System.EventArgs)">
+            <summary>
+            process has to happen after all controls are initiated otherwise will cause ASP.net control initiation problem - sub control even failed to register
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:NHibernate.Burrow.WebUtil.IWorkSpaceNameSniffer">
+            <summary>
+            a helper class that tells what's the workspace name of a <see cref="T:System.Web.IHttpHandler"/>
+            </summary>
+            <remarks>
+            implement this and set IBurrowConfig.WorkSpaceNameSniffer to the type name of your implementation to realize your own workspace management.
+            By default, system will use attribute placed on handler the get the current workspacename
+            </remarks>
+        </member>
+        <member name="T:NHibernate.Burrow.WebUtil.WebUtilHTTPModule">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.WebUtilHTTPModule.Init(System.Web.HttpApplication)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.WebUtilHTTPModule.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.WebUtilHTTPModule.OnError(System.Object,System.EventArgs)">
+            <summary>
+            Rollback the transactions when error occurs.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.WebUtilHTTPModule.BeginContext(System.Object,System.EventArgs)">
+            <summary>
+            Opens a session within a transaction at the beginning of the HTTP request.
+            This doesn't actually open a connection to the database until needed.
+            </summary>
+        </member>
+        <member name="M:NHibernate.Burrow.WebUtil.WebUtilHTTPModule.CloseContext(System.Object,System.EventArgs)">
+            <summary>
+            </summary>
+        </member>
+    </members>
+</doc>

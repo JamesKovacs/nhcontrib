@@ -1,1 +1,2 @@
 This folder contains examples copied from http://www.codeproject.com/KB/architecture/NHibernateBestPractices.aspx to demonstrate application of NHContrib.
+However it is not necessarily the template recommended by the Burrow team.

@@ -17,8 +17,11 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
         private const string devServerPort = "12345";
         private IE ie;
         private string rootUrl;
-        private Process cmdProcess;
+        private static Process cmdProcess;
+        private readonly static Disposal dis = new Disposal();
+
         private const string rootpath = "NHibernate.Burrow.TestWeb/";
+        
         protected  IE IE
         {
             get{ return ie;}
@@ -46,14 +49,15 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
                     //Environment.CurrentDirectory.Substring(0,Environment.CurrentDirectory.LastIndexOf('\\'));
                 string commandArgs = string.Format(" /path:\"{0}\" /port:{1} /vapth:\"/{2}\"", rootPhyPath, devServerPort, rootpath);
 
-                 cmdProcess = new Process();
+                cmdProcess = new Process();
                 cmdProcess.StartInfo.Arguments = commandArgs;
                 cmdProcess.StartInfo.CreateNoWindow = true;
                 cmdProcess.StartInfo.FileName = command;
                 cmdProcess.StartInfo.UseShellExecute = false;
                 cmdProcess.StartInfo.WorkingDirectory = command.Substring(0, command.LastIndexOf('\\'));
-                cmdProcess.Start();
-
+               if( !cmdProcess.Start())
+                   throw new Exception("Cannot start webserver");
+                
                 // .. and try one more time to see if the server is up
                 ie.GoTo(rootUrl);
             }
@@ -69,7 +73,6 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
             ie.Close();
         }
  
-
         protected  void GoTo(string path)
         {
             if (path.IndexOf(".aspx") < 0)
@@ -91,5 +94,13 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
             AssertText("Congratulations! Test passed.");
         }
 
+        private class Disposal
+        {
+            ~Disposal() //use a dusctruction method to kill the developer server at the end
+            {
+                if(TestBase.cmdProcess != null)
+                    TestBase.cmdProcess.Kill();
+            }
+        }     
     }
 }
