@@ -12,6 +12,11 @@
       <key column="TimesheetID" />
       <one-to-many class="NHibernate.Linq.Tests.Entities.TimesheetEntry" />
     </bag>
+
+    <bag name="Users" cascade="all-delete-orphan" access="field.camelcase" table="TimeSheetUsers">
+      <key column="TimesheetID" />
+      <many-to-many class="NHibernate.Linq.Tests.Entities.User" column="UserId" />
+    </bag>
   </class>
 
   <class name="TimesheetEntry" table="TimesheetEntries">

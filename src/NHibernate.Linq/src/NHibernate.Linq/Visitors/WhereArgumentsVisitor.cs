@@ -65,8 +65,19 @@ namespace NHibernate.Linq.Visitors
                 case "Contains":
                     if (expr.Object == null)
                     {
-                        //myArray.Contains(user.Name)
-                        CurrentCriterions.Add(GetCollectionContainsCriteria(expr.Arguments[0], expr.Arguments[1]));
+						if (expr.Arguments[0] is ConstantExpression)
+						{
+							CurrentCriterions.Add(GetCollectionContainsCriteria(expr.Arguments[0], expr.Arguments[1]));
+						}
+						else if (expr.Arguments[0] is CollectionAccessExpression)
+						{
+							CurrentCriterions.Add(GetCollectionContainsCriteria((CollectionAccessExpression)expr.Arguments[0], expr.Arguments[1]));
+						}
+						else
+						{
+							//myArray.Contains(user.Name)
+							CurrentCriterions.Add(GetCollectionContainsCriteria(expr.Arguments[0], expr.Arguments[1]));
+						}
                     }
                     else if (expr.Object is ConstantExpression)
                     {
@@ -76,7 +87,7 @@ namespace NHibernate.Linq.Visitors
                     else if (expr.Object is CollectionAccessExpression)
                     {
                         //timesheet.Entries.Contains(entry)
-                        CurrentCriterions.Add(GetCollectionContainsCriteria(expr));
+						CurrentCriterions.Add(GetCollectionContainsCriteria((CollectionAccessExpression)expr.Object, expr.Arguments[0]));
                     }
                     else
                     {
@@ -272,21 +283,20 @@ namespace NHibernate.Linq.Visitors
                                      matchMode);
 		}
 
-        private ICriterion GetCollectionContainsCriteria(MethodCallExpression expr)
+		private ICriterion GetCollectionContainsCriteria(CollectionAccessExpression arg, Expression containsExpression)
         {
-            EntityExpression rootEntity = EntityExpressionVisitor.FirstEntity(expr.Object);
+			EntityExpression rootEntity = EntityExpressionVisitor.FirstEntity(arg);
 
             DetachedCriteria query = DetachedCriteria.For(rootEntity.Type)
                 .SetProjection(Projections.Id());
 
-            var arg = (CollectionAccessExpression)expr.Object;
             var visitor = new MemberNameVisitor(query.Adapt(session), true);
-            visitor.Visit(arg);
+			visitor.Visit(arg);
 
             //TODO: this won't work for collections of values
-            var containedEntity = QueryUtil.GetExpressionValue(expr.Arguments[0]);
+            var containedEntity = QueryUtil.GetExpressionValue(containsExpression);
             var collectionIdPropertyName = visitor.MemberName + "." + arg.ElementExpression.MetaData.IdentifierPropertyName;
-            var idValue = arg.ElementExpression.MetaData.GetIdentifier(containedEntity, EntityMode.Poco);
+			var idValue = arg.ElementExpression.MetaData.GetIdentifier(containedEntity, EntityMode.Poco);
 
             query.Add(Restrictions.Eq(collectionIdPropertyName, idValue));
 

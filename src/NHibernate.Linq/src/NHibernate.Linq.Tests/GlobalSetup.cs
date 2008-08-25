@@ -7,31 +7,31 @@ using NHibernate.Cfg;
 using NHibernate.Linq.Tests.Entities;
 using NHibernate.Tool.hbm2ddl;
 
-
-
-public class GlobalSetup
+namespace NHibernate.Linq.Tests
 {
-	private static ISessionFactory factory;
-
-	[SetUp]
-	public void SetupNHibernate()
+	public class GlobalSetup
 	{
-		Configuration cfg = new Configuration().Configure();
-		new SchemaExport(cfg).Execute(false, true, false, true);
-		factory = cfg.BuildSessionFactory();
+		private static ISessionFactory factory;
 
-		CreateTestData();
-	}
+		[SetUp]
+		public void SetupNHibernate()
+		{
+			Configuration cfg = new Configuration().Configure();
+			new SchemaExport(cfg).Execute(false, true, false, true);
+			factory = cfg.BuildSessionFactory();
 
-	[TearDown]
-	public void TearDown()
-	{
-		
-	}
+			CreateTestData();
+		}
 
-	private static void CreateTestData()
-	{
-		var roles = new[]
+		[TearDown]
+		public void TearDown()
+		{
+
+		}
+
+		private static void CreateTestData()
+		{
+			var roles = new[]
             {
                 new Role()
                 {
@@ -49,7 +49,7 @@ public class GlobalSetup
                 }
             };
 
-		var users = new[]
+			var users = new[]
         	{
         		new User("ayende", DateTime.Today)
                 {
@@ -85,7 +85,7 @@ public class GlobalSetup
                 }
         	};
 
-		var timesheets = new[]
+			var timesheets = new[]
             {
                 new Timesheet
                 {
@@ -140,33 +140,38 @@ public class GlobalSetup
                 }
             };
 
-		using (ISession session = CreateSession())
-		{
-			session.Delete("from Role");
-			session.Delete("from User");
-			session.Delete("from Timesheet");
-			session.Flush();
+			((IList<User>)timesheets[0].Users).Add(users[0]);
+			((IList<User>)timesheets[1].Users).Add(users[0]);
+			((IList<User>)timesheets[0].Users).Add(users[1]);
 
-			foreach (Role role in roles)
-				session.Save(role);
+			using (ISession session = CreateSession())
+			{
+				session.Delete("from Role");
+				session.Delete("from User");
+				session.Delete("from Timesheet");
+				session.Flush();
 
-			foreach (User user in users)
-				session.Save(user);
+				foreach (Role role in roles)
+					session.Save(role);
 
-			foreach (Timesheet timesheet in timesheets)
-				session.Save(timesheet);
+				foreach (User user in users)
+					session.Save(user);
 
-			session.Flush();
+				foreach (Timesheet timesheet in timesheets)
+					session.Save(timesheet);
+
+				session.Flush();
+			}
 		}
-	}
 
-	public static ISession CreateSession()
-	{
-		return factory.OpenSession();
-	}
+		public static ISession CreateSession()
+		{
+			return factory.OpenSession();
+		}
 
-	public static ISession CreateSession(IDbConnection con)
-	{
-		return factory.OpenSession(con);
+		public static ISession CreateSession(IDbConnection con)
+		{
+			return factory.OpenSession(con);
+		}
 	}
 }

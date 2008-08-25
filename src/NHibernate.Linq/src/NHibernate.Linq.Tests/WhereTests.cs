@@ -375,5 +375,17 @@ namespace NHibernate.Linq.Tests
 
             Assert.AreEqual(2, query.Count);
         }
+
+		[Test]
+		public void TimesheetsWithEnumerableContains()
+		{
+			User user = session.Get<User>(1);
+
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where sheet.Users.Contains(user)
+						 select sheet).ToList();
+
+			Assert.AreEqual(2, query.Count);
+		}
 	}
 }
