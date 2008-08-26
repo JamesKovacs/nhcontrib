@@ -66,8 +66,7 @@ namespace NHibernate.Cfg
 							var it = ((Component) valueIdentifier).PropertyIterator.GetEnumerator();
 							while (it.MoveNext())
 							{
-								Property idProperty = (Property) it.Current;
-								if (localPath.StartsWith(idProperty.Name)) return true;
+								if (localPath.StartsWith(it.Current.Name)) return true;
 							}
 						}
 					}
@@ -99,7 +98,7 @@ namespace NHibernate.Cfg
 			}
 			else if (value is OneToOne)
 			{
-				((OneToOne) value).CreateForeignKey();
+				value.CreateForeignKey();
 			}
 			else
 			{
