@@ -60,6 +60,7 @@
     <Compile Include="AnyMetaDef.cs" />
     <Compile Include="AttributeHelper.cs" />
     <Compile Include="Cfg\Annotations\EntityBinder.cs" />
+    <Compile Include="Cfg\Annotations\TableBinder.cs" />
     <Compile Include="Cfg\Nullability.cs" />
     <Compile Include="FormulaAttribute.cs" />
     <Compile Include="NHibernate.Cfg\AnnotationBinder.cs" />
@@ -69,6 +70,8 @@
     <Compile Include="NHibernate.Cfg\AnnotatedClassType.cs" />
     <Compile Include="NHibernate.Cfg\AbstractPropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\BinderHelper.cs" />
+    <Compile Include="NHibernate.Cfg\Ejb3JoinColumn.cs" />
+    <Compile Include="NHibernate.Cfg\FkSecondPass.cs" />
     <Compile Include="NHibernate.Cfg\SecondaryTableSecondPass.cs" />
     <Compile Include="NHibernate.Cfg\InheritanceState.cs" />
     <Compile Include="NHibernate.Cfg\ClassPropertyHolder.cs" />
@@ -79,9 +82,12 @@
     <Compile Include="NHibernate.Cfg\PropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\Ejb3Column.cs" />
     <Compile Include="NHibernate.Cfg\ExtendedMappings.cs" />
+    <Compile Include="NHibernate.Cfg\ISecondPass.cs" />
+    <Compile Include="NHibernate.Cfg\ToOneFkSecondPass.cs" />
     <Compile Include="NHibernate.Mapping\IdGenerator.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\AtomicInteger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Persistence\System.Persistence.csproj">

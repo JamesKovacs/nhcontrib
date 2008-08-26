@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHibernate.Annotations.NHibernate.Cfg;
 using NHibernate.Mapping;
 
 namespace NHibernate.Cfg
 {
-	public class CreateKeySecondPass 
+	public class CreateKeySecondPass : ISecondPass
 	{
 		private RootClass rootClass;
 		private JoinedSubclass joinedSubClass;

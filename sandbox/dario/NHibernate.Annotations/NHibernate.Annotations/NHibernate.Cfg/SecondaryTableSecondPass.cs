@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using NHibernate.Annotations.Cfg.Annotations;
+using NHibernate.Annotations.NHibernate.Cfg;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
 
 namespace NHibernate.Cfg
 {
-    public class SecondaryTableSecondPass
+    public class SecondaryTableSecondPass : ISecondPass
     {
         private EntityBinder entityBinder;
         private PropertyHolder propertyHolder;
@@ -19,7 +20,7 @@ namespace NHibernate.Cfg
             this.annotatedClass = annotatedClass;
         }
 
-        public void doSecondPass(IDictionary<string, PersistentClass> persistentClasses)
+        public void DoSecondPass(IDictionary<string, PersistentClass> persistentClasses)
         {
             entityBinder.FinalSecondaryTableBinding(propertyHolder);
         }
