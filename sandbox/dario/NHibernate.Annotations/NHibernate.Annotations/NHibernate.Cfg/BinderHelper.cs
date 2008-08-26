@@ -14,5 +14,10 @@ namespace NHibernate.Annotations.NHibernate.Cfg
     	{
     		throw new System.NotImplementedException();
     	}
+
+    	public static bool IsDefault(string type)
+    	{
+    		throw new System.NotImplementedException();
+    	}
     }
 }

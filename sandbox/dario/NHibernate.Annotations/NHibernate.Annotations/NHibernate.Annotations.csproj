@@ -60,6 +60,7 @@
     <Compile Include="AnyMetaDef.cs" />
     <Compile Include="AttributeHelper.cs" />
     <Compile Include="Cfg\Annotations\EntityBinder.cs" />
+    <Compile Include="Cfg\Annotations\SimpleValueBinder.cs" />
     <Compile Include="Cfg\Annotations\TableBinder.cs" />
     <Compile Include="Cfg\Nullability.cs" />
     <Compile Include="FormulaAttribute.cs" />
@@ -85,8 +86,10 @@
     <Compile Include="NHibernate.Cfg\ISecondPass.cs" />
     <Compile Include="NHibernate.Cfg\ToOneFkSecondPass.cs" />
     <Compile Include="NHibernate.Mapping\IdGenerator.cs" />
+    <Compile Include="ParameterAttribute.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeAttribute.cs" />
     <Compile Include="Util\AtomicInteger.cs" />
   </ItemGroup>
   <ItemGroup>
