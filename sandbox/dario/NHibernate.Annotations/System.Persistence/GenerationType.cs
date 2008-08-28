@@ -2,6 +2,6 @@
 {
     public enum GenerationType
     {
-        Auto,Table,Identity,Sequence
+        Auto,Table,Identity,Sequence,HiLo
     }
 }
