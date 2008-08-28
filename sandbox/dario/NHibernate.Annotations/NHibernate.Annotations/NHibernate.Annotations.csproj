@@ -60,9 +60,19 @@
     <Compile Include="AnyMetaDef.cs" />
     <Compile Include="AttributeHelper.cs" />
     <Compile Include="Cfg\Annotations\EntityBinder.cs" />
+    <Compile Include="Cfg\Annotations\PersisterAttribute.cs" />
     <Compile Include="Cfg\Annotations\SimpleValueBinder.cs" />
     <Compile Include="Cfg\Annotations\TableBinder.cs" />
     <Compile Include="Cfg\Nullability.cs" />
+    <Compile Include="LoaderAttribute.cs" />
+    <Compile Include="ResultCheckStyle.cs" />
+    <Compile Include="SQLDeleteAllAttribute.cs" />
+    <Compile Include="SQLDeleteAttribute.cs" />
+    <Compile Include="SQLUpdateAttribute.cs" />
+    <Compile Include="ForceDiscriminatorAttribute.cs" />
+    <Compile Include="Extensions\AttributeExtensionMethods.cs" />
+    <Compile Include="Extensions\ExtensionAttribute.cs" />
+    <Compile Include="ImmutableAttribute.cs" />
     <Compile Include="OptimisticLockAttribute.cs" />
     <Compile Include="GeneratedAttribute.cs" />
     <Compile Include="GenerationTime.cs" />
@@ -94,6 +104,8 @@
     <Compile Include="ParameterAttribute.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlAttributeBase.cs" />
+    <Compile Include="SQLInsertAttribute.cs" />
     <Compile Include="TypeAttribute.cs" />
     <Compile Include="Util\AtomicInteger.cs" />
   </ItemGroup>

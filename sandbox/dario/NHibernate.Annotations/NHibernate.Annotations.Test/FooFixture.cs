@@ -14,7 +14,7 @@ namespace NHibernate.Annotations.Test
 
             using (ISessionFactory sf = cfg.BuildSessionFactory())
             {
-                
+				
             }
 
         }

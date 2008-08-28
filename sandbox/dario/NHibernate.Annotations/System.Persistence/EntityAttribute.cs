@@ -4,12 +4,13 @@
     public class EntityAttribute : Attribute
     {
 		//TODO: doc
-		public bool Mutable { get; set; }
-		public bool DynamicInsert { get; set; }
-		public bool SelectBeforeUpdate { get; set; }
+		public bool IsMutable { get; set; }
+		public bool IsDynamicInsert { get; set; }
+		public bool IsDynamicUpdate { get; set; }
+		public bool IsSelectBeforeUpdate { get; set; }
 		public PolymorphismType Polymorphism { get; set; }
 		public string Persister { get; set; }
-
+		public OptimisticLockType OptimisticLock { get; set; }
     }
 
 //@Target(TYPE)
