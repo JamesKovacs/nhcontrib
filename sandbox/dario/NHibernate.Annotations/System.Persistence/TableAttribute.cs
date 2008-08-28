@@ -1,7 +1,7 @@
 ﻿namespace System.Persistence
 {
     [AttributeUsage(AttributeTargets.Class)]
-    internal class Table : Attribute, INameable
+	internal class TableAttribute : Attribute, INameable
     {
         private string name;
 

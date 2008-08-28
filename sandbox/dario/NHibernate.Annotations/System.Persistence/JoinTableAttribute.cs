@@ -1,6 +1,6 @@
 ﻿namespace System.Persistence
 {
-	public class JoinColumn
+	public class JoinTableAttribute
 	{
 	}
 }

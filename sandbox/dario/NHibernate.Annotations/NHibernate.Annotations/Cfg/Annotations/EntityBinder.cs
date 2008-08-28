@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Persistence;
 using log4net;
@@ -37,7 +37,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
         private bool selectBeforeUpdate;
         private String where;
         
-        public Join AddJoin(JoinTable ann, ClassPropertyHolder propertyHolder, bool creation)
+        public Join AddJoin(JoinTableAttribute ann, ClassPropertyHolder propertyHolder, bool creation)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Persistence;
 using System.Reflection;
 using NHibernate.Cfg;
@@ -10,8 +10,8 @@ namespace NHibernate.Cfg
 		protected PropertyHolder parent;
 		private Dictionary<string, ColumnAttribute[]> holderColumnOverride;
         private Dictionary<string, ColumnAttribute[]> currentPropertyColumnOverride;
-		private Dictionary<string, JoinColumn[]> holderJoinColumnOverride;
-		private Dictionary<string, JoinColumn[]> currentPropertyJoinColumnOverride;
+		private Dictionary<string, JoinColumnAttribute[]> holderJoinColumnOverride;
+		private Dictionary<string, JoinColumnAttribute[]> currentPropertyJoinColumnOverride;
 		private string path;
 		private ExtendedMappings mappings;
         
@@ -52,7 +52,7 @@ namespace NHibernate.Cfg
 			throw new System.NotImplementedException();
 		}
 
-	    private Dictionary<string, JoinColumn[]> BuildJoinColumnOverride(PropertyInfo property, string path)
+	    private Dictionary<string, JoinColumnAttribute[]> BuildJoinColumnOverride(PropertyInfo property, string path)
 		{
 			throw new System.NotImplementedException();
 		}

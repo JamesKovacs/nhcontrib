@@ -1,4 +1,4 @@
-﻿using System.Persistence;
+using System.Persistence;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
 
@@ -36,10 +36,10 @@ namespace NHibernate.Cfg
 		/// </summary>
 		/// <param name="propertyName"></param>
 		/// <returns></returns>
-		JoinColumn[] GetOverriddenJoinColumn(string propertyName);
+		JoinColumnAttribute[] GetOverriddenJoinColumn(string propertyName);
 
 		void AddProperty(Property prop, Ejb3Column[] columns);
 
-		Join AddJoin(JoinTable joinTableAnn, bool noDelayInPkColumnCreation);
+		Join AddJoin(JoinTableAttribute joinTableAnn, bool noDelayInPkColumnCreation);
 	}
 }

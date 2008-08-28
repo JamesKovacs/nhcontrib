@@ -1,7 +1,7 @@
 ﻿namespace System.Persistence
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class GeneratedValue : Attribute
+	public class GeneratedValueAttribute : Attribute
     {
         private GenerationType strategy = GenerationType.Auto;
 

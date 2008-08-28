@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Persistence;
 using NHibernate.Annotations.Cfg.Annotations;
@@ -89,7 +89,7 @@ namespace NHibernate.Annotations.NHibernate.Cfg
             }
         }
 
-        public Join AddJoin(JoinTable joinTableAnn, bool noDelayInPkColumnCreation)
+        public Join AddJoin(JoinTableAttribute joinTableAnn, bool noDelayInPkColumnCreation)
         {
             Join join = entityBinder.AddJoin(joinTableAnn, this, noDelayInPkColumnCreation);
             joins = entityBinder.SecondaryTables;
