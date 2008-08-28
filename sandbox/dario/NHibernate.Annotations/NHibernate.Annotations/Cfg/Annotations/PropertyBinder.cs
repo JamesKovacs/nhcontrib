@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Persistence;
 using System.Reflection;
 using log4net;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
+using NHibernate.Util;
 
 namespace NHibernate.Annotations.Cfg.Annotations
 {
@@ -64,7 +66,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 		{
 			insertable = columns[0].IsInsertable;
 			updatable = columns[0].IsUpdatable;
-			//concsistency is checked later when we know the proeprty name
+			//consistency is checked later when we know the proeprty name
 			this.columns = columns;
 		}
 
@@ -130,7 +132,65 @@ namespace NHibernate.Annotations.Cfg.Annotations
 
 		private Property Make()
 		{
-			throw new NotImplementedException();
+			ValidateMake();
+			log.Debug("Building property " + name);
+			Property prop = new Property();
+			prop.Name = name;
+			prop.NodeName = name;
+			prop.Value = value;
+			prop.IsLazy = lazy;
+			prop.Cascade = cascade;
+			prop.PropertyAccessorName = propertyAccessorName;
+			GeneratedAttribute ann = property != null ? AttributeHelper.GetFirst<GeneratedAttribute>(property) : null;
+			GenerationTime? generated = ann != null ? ann.Value : null;
+
+			if (generated != null)
+			{
+				if (!GenerationTime.Never.Equals(generated))
+				{
+					if (AttributeHelper.IsAttributePresent<VersionAttribute>(property) && GenerationTime.Insert.Equals(generated))
+					{
+						throw new AnnotationException("[Generated(Insert)] on a [Version] property not allowed, use ALWAYS: " +
+						                              StringHelper.Qualify(holder.Path, name));
+					}
+					insertable = false;
+					if (GenerationTime.Always.Equals(generated))
+					{
+						updatable = false;
+					}
+					prop.Generation = GenerationTimeConverter.Convert(generated.Value);
+				}
+			}
+			//TODO: Natural Id port.
+			//NaturalIdAttribute naturalId = property != null ? AttributeHelper.GetFirst<NaturalIdAttribute>(property) : null;
+			//if (naturalId != null)
+			//{
+			//    if (!naturalId.IsMutable)
+			//    {
+			//        updatable = false;
+			//    }
+			//    prop.setNaturalIdentifier(true);
+			//}
+
+			prop.IsInsertable = insertable;
+			prop.IsUpdateable = updatable;
+			var lockAnn = property != null ? AttributeHelper.GetFirst<OptimisticLockAttribute>(property) : null;
+			if (lockAnn != null)
+			{
+				prop.IsOptimisticLocked = !lockAnn.IsExcluded;
+				//TODO this should go to the core as a mapping validation checking
+				if (lockAnn.IsExcluded &&
+				    (AttributeHelper.IsAttributePresent<VersionAttribute>(property) ||
+				     AttributeHelper.IsAttributePresent<IdAttribute>(property)
+				     || AttributeHelper.IsAttributePresent<EmbeddedIdAttribute>(property)))
+				{
+					throw new AnnotationException(
+						"[OptimisticLock].IsExclude==true incompatible with [Id], [EmbeddedId] and [Version]: " +
+						StringHelper.Qualify(holder.Path, name));
+				}
+			}
+			log.Info("Cascading " + name + " with " + cascade);
+			return prop;
 		}
 	}
 }

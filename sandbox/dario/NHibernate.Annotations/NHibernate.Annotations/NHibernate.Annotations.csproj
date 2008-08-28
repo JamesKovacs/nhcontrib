@@ -63,7 +63,12 @@
     <Compile Include="Cfg\Annotations\SimpleValueBinder.cs" />
     <Compile Include="Cfg\Annotations\TableBinder.cs" />
     <Compile Include="Cfg\Nullability.cs" />
+    <Compile Include="OptimisticLockAttribute.cs" />
+    <Compile Include="GeneratedAttribute.cs" />
+    <Compile Include="GenerationTime.cs" />
     <Compile Include="FormulaAttribute.cs" />
+    <Compile Include="GenerationTimeConverter.cs" />
+    <Compile Include="NaturalIdAttribute.cs" />
     <Compile Include="NHibernate.Cfg\AnnotationBinder.cs" />
     <Compile Include="Cfg\AnnotationConfiguration.cs" />
     <Compile Include="Cfg\Annotations\PropertyBinder.cs" />

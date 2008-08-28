@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmbeddedIdAttribute.cs" />
     <Compile Include="InheritanceType.cs" />
     <Compile Include="MappedSuperclassAttribute.cs" />
     <Compile Include="InheritanceAttribute.cs" />
@@ -43,8 +44,8 @@
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="GeneratedValue.cs" />
     <Compile Include="GenerationType.cs" />
-    <Compile Include="Id.cs" />
-    <Compile Include="IdClass.cs" />
+    <Compile Include="IdAttribute.cs" />
+    <Compile Include="IdClassAttribute.cs" />
     <Compile Include="INameable.cs" />
     <Compile Include="JoinColumn.cs" />
     <Compile Include="JoinTable.cs" />
