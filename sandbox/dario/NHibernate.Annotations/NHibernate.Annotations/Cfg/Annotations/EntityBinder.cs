@@ -122,14 +122,14 @@ namespace NHibernate.Annotations.Cfg.Annotations
 				}
 				else
 				{
-					EntityAttribute entityAnn = annotatedClass.GetAttribute<EntityAttribute>();
+					var entityAnn = annotatedClass.GetAttribute<EntityAttribute>();
 					if (entityAnn != null)
 					{
 						mutable = entityAnn.IsMutable;
 					}
 				}
 				rootClass.IsMutable = mutable;
-				rootClass.IsExplicitPolymorphism = IsExplicitPolymorphism(polymorphismType);
+				rootClass.IsExplicitPolymorphism = ExplicitPolymorphismConverter.Convert(polymorphismType);
 				if (StringHelper.IsNotEmpty(where)) rootClass.Where = where;
 
 				if (cacheConcurrentStrategy != null)
@@ -152,7 +152,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 					log.WarnFormat("[Immutable] used on a non root entity: ignored for {0}", annotatedClass.Name);
 				}
 			}
-			persistentClass.OptimisticLockMode = GetVersioning(optimisticLockType);
+			persistentClass.OptimisticLockMode = OptimisticLockModeConverter.Convert(optimisticLockType);
 			persistentClass.SelectBeforeUpdate = selectBeforeUpdate;
 
 			//set persister if needed
@@ -188,12 +188,87 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			var sqlDeleteAll = annotatedClass.GetAttribute<SQLDeleteAllAttribute>();
 			var loader = annotatedClass.GetAttribute<LoaderAttribute>();
 
-			//Continue the port here...
-		}
+			if (sqlInsert != null)
+			{
+				persistentClass.SetCustomSQLInsert(sqlInsert.Sql.Trim(), sqlInsert.Callable,
+				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlInsert.Check));
+			}
+			if (sqlUpdate != null)
+			{
+				persistentClass.SetCustomSQLUpdate(sqlUpdate.Sql.Trim(), sqlUpdate.Callable,
+				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlUpdate.Check));
+			}
+			if (sqlDelete != null)
+			{
+				persistentClass.SetCustomSQLDelete(sqlDelete.Sql, sqlDelete.Callable,
+				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDelete.Check));
+			}
+			if (sqlDeleteAll != null)
+			{
+				persistentClass.SetCustomSQLDelete(sqlDeleteAll.Sql, sqlDeleteAll.Callable,
+				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDeleteAll.Check));
+			}
+			if (loader != null)
+			{
+				persistentClass.LoaderName = loader.NamedQuery;
+			}
 
-		private Versioning.OptimisticLock GetVersioning(OptimisticLockType type)
-		{
-			throw new NotImplementedException();
+			//tuplizers
+			if (annotatedClass.IsAttributePresent<TuplizerAttribute>())
+			{
+				foreach (TuplizerAttribute tuplizer in annotatedClass.GetAttributes<TuplizerAttribute>())
+				{
+					var mode = EntityModeConverter.Convert(tuplizer.EntityMode);
+					persistentClass.AddTuplizer(mode, tuplizer.Implementation.Name);
+				}
+			}
+			if (annotatedClass.IsAttributePresent<TuplizerAttribute>())
+			{
+				var tuplizer = annotatedClass.GetAttribute<TuplizerAttribute>();
+				var mode = EntityModeConverter.Convert(tuplizer.EntityMode);
+				persistentClass.AddTuplizer(mode, tuplizer.Implementation.Name);
+			}
+
+			if (!inheritanceState.HasParents)
+			{
+				var iter = filters.GetEnumerator();
+				while (iter.MoveNext())
+				{
+					var filter = iter.Current;
+					String filterName = filter.Key;
+					String cond = filter.Value;
+					if (BinderHelper.IsDefault(cond))
+					{
+						FilterDefinition definition = mappings.GetFilterDefinition(filterName);
+						cond = definition == null ? null : definition.DefaultFilterCondition;
+						if (StringHelper.IsEmpty(cond))
+							throw new AnnotationException("no filter condition found for filter " + filterName + " in " + name);
+					}
+					persistentClass.AddFilter(filterName, cond);
+				}
+			}
+			else
+			{
+				if (filters.Count > 0)
+				{
+					log.WarnFormat("@Filter not allowed on subclasses (ignored): {0}", persistentClass.EntityName);
+				}
+			}
+			log.DebugFormat("Import with entity name {0}", name);
+
+			try
+			{
+				mappings.AddImport(persistentClass.EntityName, name);
+				String entityName = persistentClass.EntityName;
+				if (!entityName.Equals(name))
+				{
+					mappings.AddImport(entityName, entityName);
+				}
+			}
+			catch (MappingException me)
+			{
+				throw new AnnotationException("Use of the same entity name twice: " + name, me);
+			}
 		}
 
 		private bool IsExplicitPolymorphism(PolymorphismType type)
@@ -203,7 +278,33 @@ namespace NHibernate.Annotations.Cfg.Annotations
 
 		private void BindDiscriminatorValue()
 		{
-			throw new NotImplementedException();
+			if (StringHelper.IsEmpty(discriminatorValue))
+			{
+				IValue discriminator = persistentClass.Discriminator;
+				if (discriminator == null)
+				{
+					persistentClass.DiscriminatorValue = name;
+				}
+				else if ("character".Equals(discriminator.GetType().Name))
+				{
+					throw new AnnotationException("Using default @DiscriminatorValue for a discriminator of type CHAR is not safe");
+				}
+				else if ("integer".Equals(discriminator.GetType().Name))
+				{
+					//TODO: review if it's correct
+					//persistentClass.DiscriminatorValue = String.valueOf(name.GetHashCode());
+					persistentClass.DiscriminatorValue = name.GetHashCode().ToString();
+				}
+				else
+				{
+					persistentClass.DiscriminatorValue = name; //Spec compliant
+				}
+			}
+			else
+			{
+				//persistentClass.getDiscriminator()
+				persistentClass.DiscriminatorValue = discriminatorValue;
+			}
 		}
 
 		public Join AddJoin(JoinTableAttribute ann, ClassPropertyHolder propertyHolder, bool creation)

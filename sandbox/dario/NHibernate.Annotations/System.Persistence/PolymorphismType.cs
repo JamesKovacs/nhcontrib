@@ -2,6 +2,7 @@
 {
 	public enum PolymorphismType
 	{
-		Implicit,Explicit
+		Implicit,
+		Explicit
 	}
 }

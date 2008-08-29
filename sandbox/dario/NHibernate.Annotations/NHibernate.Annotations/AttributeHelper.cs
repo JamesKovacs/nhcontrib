@@ -1,17 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace NHibernate.Annotations
 {
     public class AttributeHelper
     {
-        public static T GetFirst<T>(System.Type clazz) where T : Attribute
-        {
-            object[] attributes = clazz.GetCustomAttributes(typeof (T), false);
-        	return GetFirst<T>(attributes);
-        }
-
-		public static T GetFirst<T>(PropertyInfo property) where T : Attribute
+		public static T GetFirst<T>(ICustomAttributeProvider property) where T : Attribute
 		{
 			object[] attributes = property.GetCustomAttributes(typeof(T), false);
 			return GetFirst<T>(attributes);
@@ -27,12 +22,23 @@ namespace NHibernate.Annotations
 			return default(T);
 		}
 
-        public static bool IsAttributePresent<T>(System.Type clazz) where T : Attribute
-        {
-            throw new NotImplementedException();
-        }
+    	public static IList<T> GetAll<T>(ICustomAttributeProvider property) where T : Attribute
+		{
+			object[] attributes = property.GetCustomAttributes(typeof(T), false);
+			return GetAll<T>(attributes);
+		}
 
-		public static bool IsAttributePresent<T>(PropertyInfo clazz) where T : Attribute
+		private static IList<T> GetAll<T>(object[] attributes) where T : Attribute
+		{
+			var matches = new List<T>();
+			foreach (object attribute in attributes)
+			{
+				matches.Add((T)attribute);
+			}
+			return matches;
+		}
+
+        public static bool IsAttributePresent<T>(ICustomAttributeProvider clazz) where T : Attribute
 		{
 			throw new NotImplementedException();
 		}
