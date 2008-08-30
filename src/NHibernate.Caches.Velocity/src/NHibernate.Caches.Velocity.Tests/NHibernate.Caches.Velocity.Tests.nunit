@@ -1,0 +1,9 @@
+﻿<NUnitProject>
+	<Settings activeconfig="Debug"/>
+	<Config name="Debug" appbase="bin\Debug" configfile="NHibernate.Caches.Velocity.Tests.dll.config" binpathtype="Auto">
+		<assembly path="NHibernate.Caches.Velocity.Tests.dll"/>
+	</Config>
+	<Config name="Release" appbase="bin\Release" configfile="NHibernate.Caches.Velocity.Tests.dll.config" binpathtype="Auto">
+		<assembly path="NHibernate.Caches.Velocity.Tests.dll"/>
+	</Config>
+</NUnitProject>

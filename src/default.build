@@ -26,6 +26,7 @@
 		<call target="Caches.Prevalence" />
 		<call target="Caches.SysCache" />
 		<call target="Caches.SysCache2" />
+		<call target="Caches.Velocity" />
 		<call target="JetDriver" />
 		<call target="Mapping.Attributes" />
 		<call target="Search" />
@@ -61,6 +62,11 @@
 	<target name="Caches.SysCache2" depends="init"
 					description="Builds NHibernate.Caches.SysCache2">
 		<nant buildfile="${root.dir}\NHibernate.Caches.SysCache2\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.Velocity" depends="init"
+					description="Builds NHibernate.Caches.Velocity">
+		<nant buildfile="${root.dir}\NHibernate.Caches.Velocity\default.build" target="${targets}" />
 	</target>
 
 	<target name="JetDriver" depends="init"
