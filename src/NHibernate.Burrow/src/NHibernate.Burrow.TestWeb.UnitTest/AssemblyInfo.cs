@@ -18,8 +18,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCompanyAttribute("NHibernate.org")]
 [assembly: AssemblyProductAttribute("NHibernate.Burrow.TestWeb.UnitTest")]
 [assembly: AssemblyCopyrightAttribute("Licensed under LGPL.")]
-[assembly: AssemblyVersionAttribute("1.0.0.2002")]
-[assembly: AssemblyInformationalVersionAttribute("1.0.0.2002")]
-[assembly: AssemblyFileVersionAttribute("1.0.0.2002")]
+[assembly: AssemblyVersionAttribute("1.0.0.3001")]
+[assembly: AssemblyInformationalVersionAttribute("1.0.0.3001")]
+[assembly: AssemblyFileVersionAttribute("1.0.0.3001")]
 [assembly: AssemblyDelaySignAttribute(false)]
 
