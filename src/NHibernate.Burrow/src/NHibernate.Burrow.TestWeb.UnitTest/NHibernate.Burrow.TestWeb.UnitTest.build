@@ -51,7 +51,19 @@
 			</fileset>
 		</copy>
 	</target>
-	<target name="copy-referenced-assemblies" depends="copy-referenced-assemblies-to-unitTestBin copy-referenced-assemblies-to-website" />
+	<target name="cleanTestWebUnitTest"   description="Deletes current Test Web">
+		<delete dir="${testWebUnitTest.bin.dir}" failonerror="false" /> 
+	</target>
+	<target name="cleanTestWeb"   description="Deletes current UnitTest Web Bin Dlls"> 
+	 
+		<delete  failonerror="false">
+			<fileset>
+				<include name="${testWeb.bin.dir}/*.dll" />
+				<include name="${testWeb.bin.dir}/*.pdb" />
+			</fileset>
+		</delete>
+	</target>
+	<target name="copy-referenced-assemblies" depends="cleanTestWeb cleanTestWebUnitTest copy-referenced-assemblies-to-unitTestBin copy-referenced-assemblies-to-website" />
 	<target name="build" depends="init generate-assemblyinfo  copy-referenced-assemblies testWebUnitTest.compile-tests ">
 
     
