@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"   schema="dbo" default-lazy="false">
+  <class name="NHibernate.Burrow.Test.MultiDB.MockEntity2,NHibernate.Burrow.Test" table="MockEntity2">
+    <id name="Id" type="Int32" >
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+    <property name="Number" />
+    <bag name="StringList" table="tblStringList2" lazy="true" >
+      <key />
+      <element type="String" />
+    </bag>
+  </class>
+</hibernate-mapping>

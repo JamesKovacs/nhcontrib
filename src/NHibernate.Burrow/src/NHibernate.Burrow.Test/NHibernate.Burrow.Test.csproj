@@ -73,6 +73,9 @@
     <Compile Include="MockEntities\MockEntity.cs" />
     <Compile Include="MockEntities\MockEntityDAO.cs" />
     <Compile Include="Concurrency\SessionConcurency.cs" />
+    <Compile Include="MultiDB\MockEntity2.cs" />
+    <Compile Include="MultiDB\MockEntity2DAO.cs" />
+    <Compile Include="MultiDB\MultiDBFixture.cs" />
     <Compile Include="SpecialTests\CreateDB.cs" />
     <Compile Include="WorkSpace\MultipleWorkSpaceTest.cs" />
   </ItemGroup>
@@ -97,6 +100,15 @@
     <None Include="BurrowTest.cfg.xml.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MultiDB\FirstPU.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="MultiDB\MockEntity2.hbm.xml" />
+    <Content Include="MultiDB\SecondPU.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

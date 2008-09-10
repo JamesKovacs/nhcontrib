@@ -12,6 +12,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.Test", "N
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{32112377-D3FC-4A1C-8C90-BBDFF166ED3B} = {32112377-D3FC-4A1C-8C90-BBDFF166ED3B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Burrow.WebUtil", "NHibernate.Burrow.WebUtil\NHibernate.Burrow.WebUtil.csproj", "{3DBB9568-5688-4442-8ECA-BD216E807C8D}"
 	ProjectSection(WebsiteProperties) = preProject
