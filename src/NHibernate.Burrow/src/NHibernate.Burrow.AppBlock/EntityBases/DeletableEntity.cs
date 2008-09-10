@@ -11,11 +11,12 @@ namespace NHibernate.Burrow.AppBlock.EntityBases
 
         public bool Delete()
         {
-            deleted = true;
             if (deleted)
             {
                 return false;
             }
+			deleted = true;
+          
             PreDelete();
             new GenericDAO<object>(GetType()).Delete(this);
             return true;
