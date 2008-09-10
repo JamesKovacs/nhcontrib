@@ -23,7 +23,7 @@ namespace NHibernate.Burrow.Test.MultiDB
             bf.BurrowEnvironment.Configuration.PersistenceUnitCfgs.Add(item);
             bf.BurrowEnvironment.Configuration.PersistenceUnitCfgs.Add(item2);
             bf.BurrowEnvironment.Start();
-           new  SchemaUtil().CreateSchemas();
+           new  SchemaUtil().CreateSchemas(false, true);
         }
 
         [TestFixtureTearDown]
