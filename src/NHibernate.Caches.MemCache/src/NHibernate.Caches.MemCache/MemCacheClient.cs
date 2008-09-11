@@ -41,8 +41,36 @@ namespace NHibernate.Caches.MemCache
 	public class MemCacheClient : ICache
 	{
 		internal const string PoolName = "nhibernate";
-		private readonly HashAlgorithm hasher = HashAlgorithm.Create();
-		private readonly MD5 md5 = MD5.Create();
+		[ThreadStatic]
+		private static HashAlgorithm _hasher = null;
+		
+		private HashAlgorithm Hasher
+		{
+			get
+			{
+				if(_hasher == null)
+				{
+					_hasher = HashAlgorithm.Create();
+				}
+				return _hasher;
+			}
+		}
+		
+		[ThreadStatic]
+		private static MD5 _md5 = null;
+		
+		private MD5 Md5
+		{
+			get
+			{
+				if(_md5 == null)
+				{
+					_md5 = MD5.Create();
+				}
+				return _md5;
+			}
+		}
+		
 		private static readonly ILog _log;
 		private readonly string _region;
 		private readonly string _regionPrefix = "";
@@ -126,7 +154,7 @@ namespace NHibernate.Caches.MemCache
 		{
 			string fullKey = FullKeyAsString(key);
 			if (fullKey.Length >= 250) //max key size for memcache
-				return ComputeHash(fullKey, hasher);
+				return ComputeHash(fullKey, Hasher);
 			else
 				return fullKey.Replace(' ', '-');
 		}
@@ -164,7 +192,7 @@ namespace NHibernate.Caches.MemCache
 		{
 			string fullKey = FullKeyAsString(key);
 			if (fullKey.Length >= 250)
-				return ComputeHash(fullKey, md5);
+				return ComputeHash(fullKey, Md5);
 			else
 				return fullKey.Replace(' ', '-');
 		}
