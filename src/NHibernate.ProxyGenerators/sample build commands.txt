@@ -1,0 +1,11 @@
+## 
+##	This file contains sample commands to build NHibernate.ProxyGenerators using the build files.
+##	It should be run from the nhibernate directory that contains this file.
+##	
+##	If you are going to run the Test make sure to set the connection information.
+##
+##
+
+nant -t:net-2.0 test > output-debug-build.log
+
+nant -t:net-2.0 -D:project.config=release cleanall package > output-release-package.log
