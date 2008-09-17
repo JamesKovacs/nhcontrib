@@ -147,6 +147,8 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISessionFactory GetSessionFactory(System.Type entityType)
         {
+			if(PersistenceUnitRepo.Instance == null)
+				PersistenceUnitRepo.Initialize(BurrowEnvironment.Configuration);
             return PersistenceUnitRepo.Instance.GetPU(entityType).SessionFactory;
         } 
         

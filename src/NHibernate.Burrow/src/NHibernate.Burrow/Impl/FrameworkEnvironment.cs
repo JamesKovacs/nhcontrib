@@ -60,6 +60,7 @@ namespace NHibernate.Burrow.Impl
             }
             ConversationPool.Instance.Clear();
             currentWorkSpaceHolder = null;
+        	PersistenceUnitRepo.ResetInstance();
         }
 
         public bool IsRunning
@@ -80,6 +81,7 @@ namespace NHibernate.Burrow.Impl
             }
 
             currentWorkSpaceHolder = new LocalSafe<WorkSpace>();
+			PersistenceUnitRepo.Initialize(Configuration);
         }
 
         /// <summary>
