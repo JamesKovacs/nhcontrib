@@ -25,11 +25,16 @@
 
 	<fileset id="buildfiles.all" basedir="src">
  		<include name="NHibernate.ProxyGenerators/default.build" /> 		
+		<include name="NHibernate.ProxyGenerators.Test2/default.build" />
+		<include name="NHibernate.ProxyGenerators.Castle/default.build" />
 		<include name="NHibernate.ProxyGenerators.Test/default.build" />
+		<include name="NHibernate.ProxyGenerators.Castle.Test/default.build" />
 	</fileset>
 
 	<fileset id="buildfiles.tests" basedir="src">
+		<include name="NHibernate.ProxyGenerators.Test2/default.build" />
 		<include name="NHibernate.ProxyGenerators.Test/default.build" />
+		<include name="NHibernate.ProxyGenerators.Castle.Test/default.build" />
 	</fileset>
 
 	<target name="init" depends="common.init"
@@ -59,6 +64,7 @@
 		<copy todir="${bin.dir}" >
 			<fileset basedir="${lib.dir}">
 				<include name="*.dll" /> 
+				<include name="*.exe" />
 				<include name="*.xml" />
 				<include name="*.license.txt" />
 			</fileset>

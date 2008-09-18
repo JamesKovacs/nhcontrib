@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="NHibernate.ProxyGenerators.Test2" namespace="NHibernate.ProxyGenerators.Test2">
+	<class name="User">
+		<id name="Id" column="Id">
+			<generator class="native" />
+		</id>
+	</class>
+</hibernate-mapping>
