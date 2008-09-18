@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ProxyGenerators.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ProxyGenerators.Test2", "NHibernate.ProxyGenerators.Test2\NHibernate.ProxyGenerators.Test2.csproj", "{C92151A5-EBAC-4294-AE2C-90C5EC7B25C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ProxyGenerators.Console", "NHibernate.ProxyGenerators.Console\NHibernate.ProxyGenerators.Console.csproj", "{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{C92151A5-EBAC-4294-AE2C-90C5EC7B25C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C92151A5-EBAC-4294-AE2C-90C5EC7B25C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C92151A5-EBAC-4294-AE2C-90C5EC7B25C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

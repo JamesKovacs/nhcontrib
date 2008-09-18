@@ -15,7 +15,7 @@ using IInterceptor = Castle.Core.Interceptor.IInterceptor;
 //[assembly: AssemblyVersion("{VERSION}")]
 //[assembly: AllowPartiallyTrustedCallers]
 
-public class StaticProxyFactory : IProxyFactory
+public class CastleStaticProxyFactory : IProxyFactory
 {
 	private static readonly ILog _log;
 	private static readonly IDictionary _proxies;
@@ -30,9 +30,9 @@ public class StaticProxyFactory : IProxyFactory
 	private string _proxyKey;
 	private Type _proxyType;
 
-	static StaticProxyFactory()
+	static CastleStaticProxyFactory()
 	{
-		_log = LogManager.GetLogger(typeof(StaticProxyFactory));
+		_log = LogManager.GetLogger(typeof(CastleStaticProxyFactory));
 		_proxies = new Hashtable();
 		//{PROXIES}
 	}
@@ -88,10 +88,10 @@ public class StaticProxyFactory : IProxyFactory
 	}
 }
 
-public class StaticProxyFactoryFactory : IProxyFactoryFactory
+public class CastleStaticProxyFactoryFactory : IProxyFactoryFactory
 {
 	public IProxyFactory BuildProxyFactory()
 	{
-		return new StaticProxyFactory();
+		return new CastleStaticProxyFactory();
 	}
 }

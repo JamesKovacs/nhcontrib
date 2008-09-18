@@ -29,6 +29,7 @@
 		<include name="NHibernate.ProxyGenerators.Castle/default.build" />
 		<include name="NHibernate.ProxyGenerators.Test/default.build" />
 		<include name="NHibernate.ProxyGenerators.Castle.Test/default.build" />
+		<include name="NHibernate.ProxyGenerators.Console/default.build" />
 	</fileset>
 
 	<fileset id="buildfiles.tests" basedir="src">

@@ -1,9 +1,9 @@
-namespace NHibernate.ProxyGenerators
+namespace NHibernate.ProxyGenerators.Castle
 {
 	using Bytecode;
 	using Proxy;
 
-	public class GeneratorProxyFactoryFactory : IProxyFactoryFactory
+	public class CastleProxyFactoryFactory : IProxyFactoryFactory
 	{
 		private static IProxyFactory _proxyFactory;
 

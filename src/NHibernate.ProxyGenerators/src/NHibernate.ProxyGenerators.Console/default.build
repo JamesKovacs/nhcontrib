@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 
 <project 
-	name="NHibernate.ProxyGenerators.Castle" 
+	name="NHibernate.ProxyGenerators.Console" 
 	default="build" 
 	xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd"
 >
@@ -10,22 +10,20 @@
 	<include buildfile="${root.dir}/build-common/common-project.xml" />
 
 	<target name="init" depends="common.init">
-		<property name="assembly.description" value="ProxyGenerator implementation using Castle DynamicProxy2." />
+		<property name="assembly.description" value="Console runner for NHibernate.ProxyGenerators." />
 		<property name="assembly.allow-partially-trusted-callers" value="true" />
 	 
 		<assemblyfileset id="project.references" basedir="${bin.dir}">
-			<include name="Castle.Core.dll" />
-			<include name="Castle.DynamicProxy2.dll" />
-			<include name="Iesi.Collections.dll" />
-			<include name="ILMerge.exe" />
-			<include name="log4net.dll" />
 			<include name="NHibernate.dll" />
 			<include name="NHibernate.ProxyGenerators.dll" />
+			<include name="NHibernate.ProxyGenerators.Castle.dll" />
 			<include name="System.dll" />
 		</assemblyfileset>
 
-		<resourcefileset id="project.resources" dynamicprefix="true" prefix="NHibernate.ProxyGenerators.Castle" failonempty="true">	
-			<include name="CastleStaticProxyFactory.cs" />
+		<resourcefileset id="project.resources" prefix="NHibernate.ProxyGenerators" dynamicprefix="true">
+			<include name="*.xsd" />
+			<include name="**/*.xml" />
+			<exclude name="bin/**/*.xml" />
 		</resourcefileset>
 		
 		<fileset id="project.sources">
@@ -35,5 +33,5 @@
 
 	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
 
-	<target name="build" description="Build NHibernate.ProxyGenerators.Castle" depends="generate-assemblyinfo common.compile-dll" />
+	<target name="build" description="Build NHibernate.ProxyGenerators.Console" depends="generate-assemblyinfo common.compile-dll" />
 </project>

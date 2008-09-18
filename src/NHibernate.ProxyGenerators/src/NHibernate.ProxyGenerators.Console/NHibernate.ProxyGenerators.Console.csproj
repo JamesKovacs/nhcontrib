@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{81CA78E1-459F-472F-9078-2E915F97B0EC}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{7AE7ECB0-F0B4-4205-BAEA-9293E3730F0D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NHibernate.ProxyGenerators</RootNamespace>
-    <AssemblyName>NHibernate.ProxyGenerators</AssemblyName>
+    <RootNamespace>NHibernate.ProxyGenerators.Console</RootNamespace>
+    <AssemblyName>NHPG</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,20 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NHibernate, Version=2.0.0.4001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IProxyGenerator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyGeneratorException.cs" />
-    <Compile Include="CommandLineArguments.cs" />
-    <Compile Include="ProxyGeneratorOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NHibernate.ProxyGenerators.Castle\NHibernate.ProxyGenerators.Castle.csproj">
+      <Project>{11988E2B-0354-4047-820E-9E04AFE055D4}</Project>
+      <Name>NHibernate.ProxyGenerators.Castle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NHibernate.ProxyGenerators\NHibernate.ProxyGenerators.csproj">
+      <Project>{81CA78E1-459F-472F-9078-2E915F97B0EC}</Project>
+      <Name>NHibernate.ProxyGenerators</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
