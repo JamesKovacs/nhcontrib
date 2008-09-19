@@ -25,21 +25,21 @@ namespace NHibernate.ProxyGenerators.Castle.Test
 		[ExpectedException(typeof(ProxyGeneratorException))]
 		public void OutputAssemblyPath_Must_Be_Rooted()
 		{
-			_generator.Generate("OutputAssembly.dll");
+			_generator.Generate(new ProxyGeneratorOptions("OutputAssembly.dll"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
+		[ExpectedException(typeof(ProxyGeneratorException))]
 		public void InputAssemblies_Cannot_Be_Null()
 		{
-			_generator.Generate("C:\\Test.dll", null);
+			_generator.Generate(new ProxyGeneratorOptions("C:\\Test.dll", null));
 		}
 
 		[Test]
 		[ExpectedException(typeof(ProxyGeneratorException))]
 		public void At_Least_One_InputAssembly_Is_Required()
 		{
-			_generator.Generate("C:\\Test.dll", new Assembly[0]);
+			_generator.Generate(new ProxyGeneratorOptions("C:\\Test.dll", new Assembly[0]));
 		}
 
 		[Test]
@@ -51,7 +51,7 @@ namespace NHibernate.ProxyGenerators.Castle.Test
 			ProxyGeneratorException exc = null;
 			try
 			{
-				_generator.Generate("C:\\Test.dll", inputAssembly);	
+				_generator.Generate(new ProxyGeneratorOptions("C:\\Test.dll", inputAssembly));	
 			}
 			catch(Exception e)
 			{

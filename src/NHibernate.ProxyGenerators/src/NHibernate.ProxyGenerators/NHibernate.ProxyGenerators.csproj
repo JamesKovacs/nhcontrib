@@ -31,13 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NHibernate, Version=2.0.0.4001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IProxyGenerator.cs" />
@@ -45,6 +39,9 @@
     <Compile Include="ProxyGeneratorException.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="ProxyGeneratorOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.build" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

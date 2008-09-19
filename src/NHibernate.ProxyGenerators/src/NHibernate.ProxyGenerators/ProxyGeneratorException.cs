@@ -14,6 +14,11 @@
 		{
 		}
 
+		public ProxyGeneratorException(string messageFormat, params object[] args)
+			: base(string.Format(messageFormat, args))
+		{
+		}
+
 		protected ProxyGeneratorException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{

@@ -14,7 +14,6 @@
 		<property name="assembly.allow-partially-trusted-callers" value="true" />
 	 
 		<assemblyfileset id="project.references" basedir="${bin.dir}">
-			<include name="NHibernate.dll" />
 			<include name="System.dll" />
 		</assemblyfileset>
 

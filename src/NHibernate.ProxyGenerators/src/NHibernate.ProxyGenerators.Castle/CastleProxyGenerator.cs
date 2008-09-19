@@ -18,13 +18,21 @@ namespace NHibernate.ProxyGenerators.Castle
 	[Serializable]
 	public class CastleProxyGenerator : IProxyGenerator
 	{
-		public Assembly Generate( string outputAssemblyPath, params Assembly[] inputAssemblies )
+		public Assembly Generate( ProxyGeneratorOptions options )
 		{
-			if (string.IsNullOrEmpty(outputAssemblyPath)) throw new ProxyGeneratorException("outputAssemblyPath is Required");
-			if (!Path.IsPathRooted(outputAssemblyPath)) throw new ProxyGeneratorException("outputAssemblyPath must be rooted e.g. C:\\OutputAssembly.dll");
+			if (options == null) throw new ProxyGeneratorException("options is Required");
 
-			if (inputAssemblies == null) throw new ArgumentNullException("inputAssemblies");
-			if (inputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
+			string outputAssemblyPath = options.OutputAssemblyPath;
+			Assembly[] inputAssemblies = options.InputAssemblies;
+
+			if (string.IsNullOrEmpty(outputAssemblyPath)) throw new ProxyGeneratorException("options.OutputAssemblyPath is Required");
+
+			if (!Path.IsPathRooted(outputAssemblyPath))
+			{
+				outputAssemblyPath = Path.GetFullPath(outputAssemblyPath);
+			}
+
+			if (inputAssemblies == null || inputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
 
 			Configuration nhibernateConfiguration = CreateNHibernateConfiguration(inputAssemblies);
 			if (nhibernateConfiguration.ClassMappings.Count == 0) FailNoClassMappings(inputAssemblies);

@@ -28,7 +28,7 @@ namespace NHibernate.ProxyGenerators.Test
 			CrossAppDomainCaller.RunInOtherAppDomain(delegate
 			{
 				Type personType = typeof(Person);
-				Assembly proxyAssembly = _generator.Generate(_outputAssemblyPath, personType.Assembly);
+				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, personType.Assembly));
 
 				Assert.IsNotNull(proxyAssembly);
 
@@ -56,7 +56,7 @@ namespace NHibernate.ProxyGenerators.Test
 			{
 				Type personType = typeof(Person);
 				Type addressType = typeof(Address);
-				Assembly proxyAssembly = _generator.Generate(_outputAssemblyPath, personType.Assembly, addressType.Assembly);
+				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, personType.Assembly, addressType.Assembly));
 
 				Assert.IsNotNull(proxyAssembly);
 
@@ -94,7 +94,7 @@ namespace NHibernate.ProxyGenerators.Test
 
 				Assert.AreNotEqual(entityAssembly, mappingAssembly);
 
-				Assembly proxyAssembly = _generator.Generate(_outputAssemblyPath, mappingAssembly);
+				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, mappingAssembly));
 
 				Assert.IsNotNull(proxyAssembly);
 

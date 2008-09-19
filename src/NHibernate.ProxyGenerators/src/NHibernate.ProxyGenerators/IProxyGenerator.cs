@@ -4,7 +4,7 @@ namespace NHibernate.ProxyGenerators
 
 	public interface IProxyGenerator
 	{
-		Assembly Generate(string outputAssemblyPath, params Assembly[] inputAssemblies);
+		Assembly Generate(ProxyGeneratorOptions proxyGeneratorOptions);
 
 		ProxyGeneratorOptions GetOptions(); 
 	}

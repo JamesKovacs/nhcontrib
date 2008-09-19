@@ -38,14 +38,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NHibernate.ProxyGenerators.Castle\NHibernate.ProxyGenerators.Castle.csproj">
-      <Project>{11988E2B-0354-4047-820E-9E04AFE055D4}</Project>
-      <Name>NHibernate.ProxyGenerators.Castle</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NHibernate.ProxyGenerators\NHibernate.ProxyGenerators.csproj">
       <Project>{81CA78E1-459F-472F-9078-2E915F97B0EC}</Project>
       <Name>NHibernate.ProxyGenerators</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.build" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
