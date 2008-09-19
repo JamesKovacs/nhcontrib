@@ -82,6 +82,7 @@
 			catch (Exception exc)
 			{
 				error.WriteLine(exc.Message);
+				error.WriteLine(exc.StackTrace);
 				return Error.Unknown;				
 			}
 
@@ -138,6 +139,9 @@
 				case "castle":
 					assemblyQualifiedName = "NHibernate.ProxyGenerators.Castle.CastleProxyGenerator, NHibernate.ProxyGenerators.Castle";
 					break;
+				case "activerecord":
+					assemblyQualifiedName = "NHibernate.ProxyGenerators.ActiveRecord.ActiveRecordProxyGenerator, NHibernate.ProxyGenerators.ActiveRecord";
+					break;
 				default:
 					assemblyQualifiedName = generator;
 					break;
@@ -161,7 +165,7 @@
 			}
 			catch(Exception exc)
 			{
-				throw new ProxyGeneratorException("Error Creating _proxyGenerator of type '{0}'.\n\t{1}", assemblyQualifiedName, exc.Message);
+				throw new ProxyGeneratorException("Error Creating ProxyGenerator of type '{0}'.\n\t{1}", assemblyQualifiedName, exc.Message);
 			}
 		}
 

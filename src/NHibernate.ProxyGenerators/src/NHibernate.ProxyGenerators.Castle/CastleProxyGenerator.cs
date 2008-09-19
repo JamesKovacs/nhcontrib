@@ -34,7 +34,7 @@ namespace NHibernate.ProxyGenerators.Castle
 
 			if (inputAssemblies == null || inputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
 
-			Configuration nhibernateConfiguration = CreateNHibernateConfiguration(inputAssemblies);
+			Configuration nhibernateConfiguration = CreateNHibernateConfiguration(inputAssemblies, options );
 			if (nhibernateConfiguration.ClassMappings.Count == 0) FailNoClassMappings(inputAssemblies);
 
 			GenerateProxiesResult proxyResult = GenerateProxies(nhibernateConfiguration);
@@ -56,7 +56,7 @@ namespace NHibernate.ProxyGenerators.Castle
 			return MergeStaticProxyFactoryWithProxies(result.CompiledAssembly, proxyResult.Assembly, inputAssemblies, outputAssemblyPath);
 		}
 
-		public ProxyGeneratorOptions GetOptions()
+		public virtual ProxyGeneratorOptions GetOptions()
 		{
 			return new ProxyGeneratorOptions();
 		}
@@ -75,12 +75,11 @@ namespace NHibernate.ProxyGenerators.Castle
 			throw new ProxyGeneratorException(builder.ToString());
 		}
 
-		protected virtual Configuration CreateNHibernateConfiguration(Assembly[] inputAssemblies)
+		protected virtual Configuration CreateNHibernateConfiguration( Assembly[] inputAssemblies, ProxyGeneratorOptions options )
 		{
 			Configuration nhibernateConfiguration = new Configuration();
-			nhibernateConfiguration.Properties["cache.provider_class"] = typeof(HashtableCacheProvider).AssemblyQualifiedName;
-			nhibernateConfiguration.Properties["dialect"] = typeof(MsSql2000Dialect).AssemblyQualifiedName;
-			nhibernateConfiguration.Properties["proxyfactory.factory_class"] = typeof(CastleProxyFactoryFactory).AssemblyQualifiedName;
+
+			nhibernateConfiguration.AddProperties(GetDefaultNHibernateProperties());
 
 			foreach (Assembly inputAssembly in inputAssemblies)
 			{
@@ -88,6 +87,15 @@ namespace NHibernate.ProxyGenerators.Castle
 			}
 
 			return nhibernateConfiguration;
+		}
+
+		protected virtual IDictionary<string, string> GetDefaultNHibernateProperties()
+		{
+			Dictionary<string, string> properties = new Dictionary<string, string>();
+			properties["cache.provider_class"] = typeof(HashtableCacheProvider).AssemblyQualifiedName;
+			properties["dialect"] = typeof(MsSql2000Dialect).AssemblyQualifiedName;
+			properties["proxyfactory.factory_class"] = typeof(CastleProxyFactoryFactory).AssemblyQualifiedName;
+			return properties;
 		}
 
 		protected virtual GenerateProxiesResult GenerateProxies(Configuration nhibernateConfiguration)
@@ -139,7 +147,8 @@ namespace NHibernate.ProxyGenerators.Castle
 			}
 
 			string source;
-			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetType(), typeof(CastleStaticProxyFactory).Name + ".cs"))
+			Type castleProxyGeneratorType = typeof(CastleProxyGenerator);
+			using (Stream stream = castleProxyGeneratorType.Assembly.GetManifestResourceStream(castleProxyGeneratorType, typeof(CastleStaticProxyFactory).Name + ".cs"))
 			{
 				using (TextReader reader = new StreamReader(stream))
 				{

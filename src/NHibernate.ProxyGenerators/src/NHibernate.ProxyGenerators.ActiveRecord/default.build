@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 
 <project 
-	name="NHibernate.ProxyGenerators.Console.Test" 
+	name="NHibernate.ProxyGenerators.ActiveRecord" 
 	default="build" 
 	xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd"
 >
@@ -10,15 +10,15 @@
 	<include buildfile="${root.dir}/build-common/common-project.xml" />
 
 	<target name="init" depends="common.init">
-		<property name="assembly.description" value="The Unit Tests for NHibernate.ProxyGenerators.Console" />
-		<property name="assembly.is-cls-compliant" value="false" />
-		<property name="clover.instrument" value="false" />
+		<property name="assembly.description" value="ProxyGenerator implementation for ActiveRecord using Castle DynamicProxy2." />
+		<property name="assembly.allow-partially-trusted-callers" value="true" />
 	 
 		<assemblyfileset id="project.references" basedir="${bin.dir}">
+			<include name="Castle.ActiveRecord.dll" />
+			<include name="Castle.Core.dll" />
+			<include name="NHibernate.dll" />
 			<include name="NHibernate.ProxyGenerators.dll" />
-			<include name="NHibernate.ProxyGenerators.Console.dll" />
-			<include name="nunit.framework.dll" />
-			<include name="Rhino.Mocks.dll" />
+			<include name="NHibernate.ProxyGenerators.Castle.dll" />
 			<include name="System.dll" />
 		</assemblyfileset>
 
@@ -35,7 +35,5 @@
 
 	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
 
-	<target name="build" depends="init generate-assemblyinfo common.compile-tests" />
-	
-	<target name="test" depends="init build common.run-tests" />
+	<target name="build" description="Build NHibernate.ProxyGenerators.ActiveRecord" depends="generate-assemblyinfo common.compile-dll" />
 </project>

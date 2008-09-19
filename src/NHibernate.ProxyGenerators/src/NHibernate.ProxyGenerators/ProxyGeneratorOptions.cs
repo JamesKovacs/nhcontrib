@@ -1,7 +1,9 @@
 namespace NHibernate.ProxyGenerators
 {
+	using System;
 	using System.Reflection;
 
+	[Serializable]
 	public class ProxyGeneratorOptions
 	{
 		public ProxyGeneratorOptions()
