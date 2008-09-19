@@ -49,9 +49,18 @@ public class CastleStaticProxyFactory : IProxyFactory
 		_isClassProxy = _interfaces.Length == 1;
 
 		_proxyKey = entityName;
-		_log.Debug(_proxyKey);
 
-		_proxyType = _proxies[_proxyKey] as Type;
+		if( _proxies.Contains(_proxyKey) )
+		{
+			_proxyType = _proxies[_proxyKey] as Type;
+			_log.DebugFormat("Using proxy type '{0}' for persistent class '{1}'", _proxyType.Name, _persistentClass.FullName);
+		}
+		else
+		{
+			string message = string.Format("Not proxy type found for persistent class '{0}' using proxy key '{1}'", _persistentClass.FullName, _proxyKey);
+			_log.Error(message);
+			throw new HibernateException(message);
+		}
 	}
 
 	public INHibernateProxy GetProxy(object id, ISessionImplementor session)

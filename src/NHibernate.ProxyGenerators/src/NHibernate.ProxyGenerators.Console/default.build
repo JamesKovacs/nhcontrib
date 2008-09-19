@@ -29,7 +29,27 @@
 		</fileset>
 	</target>
 
+	<target name="compile-exe"
+		description="Compile sources into a EXE">
+
+		<csc
+			target="exe"
+			define="${current.build.defines}"
+			debug="${build.debug}"
+			output="${bin.dir}/NHPG.exe"
+			doc="${bin.dir}/${project::get-name()}.xml"
+		>
+			<nowarn>
+				<warning number="1591" />
+				<!-- No XML comment for publicly visible member -->
+			</nowarn>
+			<sources refid="project.sources" />
+			<references refid="project.references" />
+			<resources refid="project.resources" />
+		</csc>
+	</target>
+
 	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
 
-	<target name="build" description="Build NHibernate.ProxyGenerators.Console" depends="generate-assemblyinfo common.compile-dll" />
+	<target name="build" description="Build NHibernate.ProxyGenerators.Console" depends="generate-assemblyinfo compile-exe" />
 </project>
