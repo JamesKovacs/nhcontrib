@@ -8,32 +8,47 @@
 
 	public class Program
 	{
-		public static void Main(string[] args)
+		private IProxyGenerator _proxyGenerator;
+
+		public IProxyGenerator ProxyGenerator
+		{
+			get { return _proxyGenerator; }
+			set { _proxyGenerator = value; }
+		}
+
+		public int Execute( TextWriter error, params string[] args )
 		{
 			ProxyGeneratorOptions generatorOptions = new ProxyGeneratorOptions();
-			if (Parser.ParseArgumentsWithUsage(args, generatorOptions) == false)
+			if (Parser.ParseArguments(args, generatorOptions) == false)
 			{
-				Environment.Exit(Error.InvalidArguments);
-				return;
+				error.WriteLine(Parser.ArgumentsUsage(generatorOptions.GetType()));
+				return Error.InvalidArguments;
 			}
 
-			IProxyGenerator generator;
-			try
+			if (_proxyGenerator == null)
 			{
-				generator = CreateProxyGenerator(generatorOptions.Generator);
-			}
-			catch(Exception exc)
-			{
-				Console.Error.WriteLine(exc.Message);
-				Environment.Exit(Error.CreateProxyGenerator);
-				return;
+				try
+				{
+					_proxyGenerator = CreateProxyGenerator(generatorOptions.Generator);
+				}
+				catch (Exception exc)
+				{
+					error.WriteLine(exc.Message);
+					return Error.CreateProxyGenerator;
+				}
 			}
 
-			generatorOptions = generator.GetOptions();
-			if (Parser.ParseArgumentsWithUsage(args, generatorOptions) == false)
+			generatorOptions = _proxyGenerator.GetOptions();
+			if( generatorOptions == null )
 			{
-				Environment.Exit(Error.InvalidArguments);
-				return;
+				error.WriteLine("{0}.GetOptions() returned null.  Please use a different Generator.", _proxyGenerator.GetType().FullName);
+				return Error.InvalidGenerator;
+			}
+
+			if (Parser.ParseArguments(args, generatorOptions) == false)
+			{
+				error.WriteLine(Parser.ArgumentsUsage(generatorOptions.GetType()));
+				return Error.InvalidArguments;
 			}
 
 			IEnumerable<string> inputDirectories = GetInputDirectories(generatorOptions.InputAssemblyPaths);
@@ -49,46 +64,52 @@
 				return null;
 			};
 
-			generatorOptions.InputAssemblies = LoadInputAssemblies(generatorOptions.InputAssemblyPaths);
+			generatorOptions.InputAssemblies = LoadInputAssemblies(generatorOptions.InputAssemblyPaths, error);
 			if (generatorOptions.InputAssemblies == null)
 			{
-				Environment.Exit(Error.InputAssemblyFailedLoad);
-				return;
+				return Error.InputAssemblyFailedLoad;
 			}
 
-			if( !Path.IsPathRooted(generatorOptions.OutputAssemblyPath) )
+			if (!Path.IsPathRooted(generatorOptions.OutputAssemblyPath))
 			{
 				generatorOptions.OutputAssemblyPath = Path.GetFullPath(generatorOptions.OutputAssemblyPath);
 			}
 
 			try
 			{
-				generator.Generate(generatorOptions);
+				_proxyGenerator.Generate(generatorOptions);
 			}
-			catch(Exception exc)
+			catch (Exception exc)
 			{
-				Console.Error.WriteLine(exc.Message);
-				Environment.Exit(Error.Unknown);
-				return;
+				error.WriteLine(exc.Message);
+				return Error.Unknown;				
 			}
+
+			return Error.None;
 		}
 
-		public static Assembly[] LoadInputAssemblies( string[] inputAssemblyPaths )
+		public static void Main(string[] args)
+		{
+			Program program = new Program();
+			int exitCode = program.Execute(Console.Error, args);
+			Environment.Exit(exitCode);
+		}
+
+		public static Assembly[] LoadInputAssemblies( string[] inputAssemblyPaths, TextWriter error )
 		{
 			List<Assembly> inputAssemblies = new List<Assembly>();
 			List<string> failedPaths = new List<string>();
 
 			foreach (string inputAssemblyPath in inputAssemblyPaths)
 			{
-				string inputAssemblyFullPath = Path.GetFullPath(inputAssemblyPath);
 				try
 				{
-					Assembly inputAssembly = Assembly.LoadFile(inputAssemblyFullPath);
+					Assembly inputAssembly = Assembly.LoadFrom(inputAssemblyPath);
 					inputAssemblies.Add(inputAssembly);
 				}
 				catch
 				{
-					failedPaths.Add(inputAssemblyFullPath);
+					failedPaths.Add(inputAssemblyPath);
 				}
 			}
 
@@ -101,7 +122,7 @@
 					builder.Append('\t');
 					builder.AppendLine(failedPath);
 				}
-				Console.Error.WriteLine(builder.ToString());
+				error.WriteLine(builder.ToString());
 				return null;
 			}
 
@@ -140,7 +161,7 @@
 			}
 			catch(Exception exc)
 			{
-				throw new ProxyGeneratorException("Error Creating ProxyGenerator of type '{0}'.\n\t{1}", assemblyQualifiedName, exc.Message);
+				throw new ProxyGeneratorException("Error Creating _proxyGenerator of type '{0}'.\n\t{1}", assemblyQualifiedName, exc.Message);
 			}
 		}
 
@@ -180,9 +201,11 @@
 
 	public static class Error
 	{
+		public const int None = 0;
 		public const int Unknown = 1;
 		public const int InvalidArguments = 2;
 		public const int InputAssemblyFailedLoad = 3;
 		public const int CreateProxyGenerator = 4;
+		public const int InvalidGenerator = 5;
 	}
 }
