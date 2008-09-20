@@ -76,7 +76,6 @@
     <Compile Include="MultiDB\MockEntity2.cs" />
     <Compile Include="MultiDB\MockEntity2DAO.cs" />
     <Compile Include="MultiDB\MultiDBFixture.cs" />
-    <Compile Include="SpecialTests\CreateDB.cs" />
     <Compile Include="WorkSpace\MultipleWorkSpaceTest.cs" />
   </ItemGroup>
   <ItemGroup>
