@@ -13,7 +13,7 @@ namespace Example.Test
 	public class PrematureOptimizationTester
 	{
 		[Test]
-		public void Static_Proxies_Outperform_Standard_Proxies()
+		public void Static_Proxies_Out_Perform_Standard_Proxies()
 		{
 			Stopwatch sw = new Stopwatch();
 			const int instances = 100;
@@ -78,7 +78,7 @@ namespace Example.Test
 			
 			if (useStaticProxies)
 			{
-				cfg.Properties["proxyfactory.factory_class"] = typeof(CastleStaticProxyFactoryFactory).AssemblyQualifiedName;
+				cfg.Properties["proxyfactory.factory_class"] = "CastleStaticProxyFactoryFactory, Example.Domain.Proxies";
 			}
 
 			cfg.AddAssembly(typeof(Person).Assembly);
