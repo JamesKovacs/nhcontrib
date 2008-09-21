@@ -37,6 +37,7 @@
 			define="${current.build.defines}"
 			debug="${build.debug}"
 			output="${bin.dir}/NHPG.exe"
+			optimize="${build.optimize}"
 			doc="${bin.dir}/${project::get-name()}.xml"
 		>
 			<nowarn>

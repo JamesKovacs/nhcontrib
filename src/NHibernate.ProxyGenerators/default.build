@@ -112,7 +112,6 @@
 	</target>
 	 
  
-
 	<target name="sources">
 		<property name="source.tmpdir" value="${build.dir}/tmp-src"  />
 		<copy todir="${source.tmpdir}">
@@ -133,7 +132,6 @@
 				<include name="releasenotes.txt" />
 				<include name="readme.html" />
  
-
 				<!-- exclude ReSharper stuff -->
 				<exclude name="**/_ReSharper*/**" />
 				<exclude name="**/*.resharperoptions" />
@@ -164,6 +162,14 @@
     
 	<target name="binaries" depends="init build">	
 		<copy file="lgpl.txt" tofile="${bin.dir}/NHibernate.ProxyGenerators.license.txt"  />
+		<delete>
+			<fileset basedir="${bin.dir}">
+				<include name="*.xml" />
+				<include name="nunit.framework.*" />
+				<include name="Rhino.Mocks.*" />
+				<include name="*.Test*" />
+			</fileset>
+		</delete>
 	</target>
 	
 	<target name="binaries-zip" depends="init binaries copy-release-notes">

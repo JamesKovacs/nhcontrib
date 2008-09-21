@@ -60,6 +60,7 @@
 			define="${current.build.defines}"
 			debug="${build.debug}"
 			output="${bin.dir}/${project::get-name()}.dll"
+			optimize="${build.optimize}"
 		>
 			<sources refid="project.sources" />
 			<references refid="project.references" />

@@ -261,9 +261,21 @@ namespace NHibernate.ProxyGenerators.Castle
 				File.Delete(castleOptions.IntermediateProxyAssemblyPath);
 			}
 
+			string intermediateProxyAssemblyPdbPath = Path.ChangeExtension(castleOptions.IntermediateProxyAssemblyPath, "pdb");
+			if (File.Exists(intermediateProxyAssemblyPdbPath))
+			{
+				File.Delete(intermediateProxyAssemblyPdbPath);
+			}
+
 			if (File.Exists(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath))
 			{
 				File.Delete(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath);
+			}
+
+			string intermediateCastleStaticProxyFactoryAssemblyPdbPath = Path.ChangeExtension(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath, "pdb");
+			if (File.Exists(intermediateCastleStaticProxyFactoryAssemblyPdbPath))
+			{
+				File.Delete(intermediateCastleStaticProxyFactoryAssemblyPdbPath);
 			}
 		}
 	}
