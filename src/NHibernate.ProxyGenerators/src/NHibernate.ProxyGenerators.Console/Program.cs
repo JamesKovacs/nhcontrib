@@ -60,25 +60,6 @@
 				return Error.InvalidArguments;
 			}
 
-			IEnumerable<string> inputDirectories = GetInputDirectories(generatorOptions.InputAssemblyPaths);
-			AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs e)
-			{
-				foreach (string inputDirectory in inputDirectories)
-				{
-					Assembly inputAssembly = SearchInputDirectoryForAssembly(inputDirectory, e.Name);
-
-					if (inputAssembly != null) return inputAssembly;
-				}
-
-				return null;
-			};
-
-			generatorOptions.InputAssemblies = LoadInputAssemblies(generatorOptions.InputAssemblyPaths, error);
-			if (generatorOptions.InputAssemblies == null)
-			{
-				return Error.InputAssemblyFailedLoad;
-			}
-
 			try
 			{
 				_proxyGenerator.Generate(generatorOptions);
@@ -100,39 +81,7 @@
 			Environment.Exit(exitCode);
 		}
 
-		public static Assembly[] LoadInputAssemblies( string[] inputAssemblyPaths, TextWriter error )
-		{
-			List<Assembly> inputAssemblies = new List<Assembly>();
-			List<string> failedPaths = new List<string>();
-
-			foreach (string inputAssemblyPath in inputAssemblyPaths)
-			{
-				try
-				{
-					Assembly inputAssembly = Assembly.LoadFrom(inputAssemblyPath);
-					inputAssemblies.Add(inputAssembly);
-				}
-				catch
-				{
-					failedPaths.Add(inputAssemblyPath);
-				}
-			}
-
-			if (failedPaths.Count > 0)
-			{
-				StringBuilder builder = new StringBuilder();
-				builder.AppendLine("Failed loading one or more InputAssemblies:");
-				foreach (string failedPath in failedPaths)
-				{
-					builder.Append('\t');
-					builder.AppendLine(failedPath);
-				}
-				error.WriteLine(builder.ToString());
-				return null;
-			}
-
-			return inputAssemblies.ToArray();
-		}
+		
 
 		public static IProxyGenerator CreateProxyGenerator(string generator)
 		{
@@ -173,38 +122,7 @@
 			}
 		}
 
-		public static Assembly SearchInputDirectoryForAssembly(string inputDirectory, string assemblyFileName)
-		{
-			string asmFileName = assemblyFileName.Split(',')[0];
-			string exeFileName = Path.Combine(inputDirectory, asmFileName + ".exe");
-			if (File.Exists(exeFileName))
-			{
-				return Assembly.LoadFile(exeFileName);
-			}
-			string dllFileName = Path.Combine(inputDirectory, asmFileName + ".dll");
-			if (File.Exists(dllFileName))
-			{
-				return Assembly.LoadFile(dllFileName);
-			}
-			return null;
-		}
-
-		public static IEnumerable<string> GetInputDirectories(string[] inputFilePaths)
-		{
-			List<string> inputDirectories = new List<string>(inputFilePaths.Length);
-
-			foreach(string inputFilePath in inputFilePaths)
-			{
-				string inputFileFullPath = Path.GetFullPath(inputFilePath);
-				string inputDirectory = Path.GetDirectoryName(inputFileFullPath);
-				if (!inputDirectories.Contains(inputDirectory))
-				{
-					inputDirectories.Add(inputDirectory);
-				}
-			}
-
-			return inputDirectories;
-		}
+		
 	}
 
 	public static class Error

@@ -71,7 +71,7 @@
   </Target>
   -->
   <Target Name="AfterBuild" Inputs="$(OutputPath)Example.Domain.dll" Outputs="$(OutputPath)Example.Domain.Proxies.dll">
-    <Exec Command="..\..\tools\NHPG.exe /o:$(OutputPath)Example.Domain.Proxies.dll $(OutputPath)Example.Domain.dll" />
+    <Exec WorkingDirectory="$(OutputPath)" Command="..\..\..\lib\NHPG.exe /o:Example.Domain.Proxies.dll Example.Domain.dll" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>

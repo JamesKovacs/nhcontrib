@@ -46,17 +46,6 @@ namespace NHibernate.ProxyGenerators.Console.Test
 		}
 
 		[Test]
-		public void Invalid_InputAssembly_Returns_Error()
-		{
-			_mocks.ReplayAll();
-
-			int exitCode = _program.Execute(_error, "/o:Output.dll", "Input.dll");
-
-			Assert.AreEqual(Error.InputAssemblyFailedLoad, exitCode );
-			Assert.AreNotEqual(-1, GetErrors().IndexOf("Input.dll"));
-		}
-
-		[Test]
 		public void Valid_Options_Generates_Proxies()
 		{
 			SetupResult.For(_generator.Generate(null))

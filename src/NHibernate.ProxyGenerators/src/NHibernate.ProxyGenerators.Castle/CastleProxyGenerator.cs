@@ -52,7 +52,7 @@ namespace NHibernate.ProxyGenerators.Castle
 				castleOptions.OutputAssemblyPath = Path.GetFullPath(castleOptions.OutputAssemblyPath);
 			}
 
-			if (castleOptions.InputAssemblies == null || castleOptions.InputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
+			if (castleOptions.InputAssemblyPaths == null || castleOptions.InputAssemblyPaths.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
 
 			if (string.IsNullOrEmpty(castleOptions.IntermediateProxyAssemblyPath))
 			{
@@ -70,8 +70,13 @@ namespace NHibernate.ProxyGenerators.Castle
 		private static void Generate(object[] args)
 		{
 			CastleProxyGenerator proxyGenerator = (CastleProxyGenerator)args[0];
-			CastleProxyGeneratorOptions options = (CastleProxyGeneratorOptions)args[1];
-			proxyGenerator.Generate(options);
+			CastleProxyGeneratorOptions generatorOptions = (CastleProxyGeneratorOptions)args[1];
+
+			using (AssemblyResolver resolver = new AssemblyResolver(generatorOptions.InputAssemblyPaths))
+			{
+				generatorOptions.InputAssemblies = resolver.LoadFrom(generatorOptions.InputAssemblyPaths);
+				proxyGenerator.Generate(generatorOptions);
+			}
 		}
 
 		protected virtual void Generate( CastleProxyGeneratorOptions options )

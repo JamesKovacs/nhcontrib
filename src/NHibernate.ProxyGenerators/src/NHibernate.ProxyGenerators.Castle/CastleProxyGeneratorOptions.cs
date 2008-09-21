@@ -15,8 +15,8 @@ namespace NHibernate.ProxyGenerators.Castle
 		{
 		}
 
-		public CastleProxyGeneratorOptions(string outputAssemblyPath, params Assembly[] inputAssemblies)
-			: base(outputAssemblyPath, inputAssemblies)
+		public CastleProxyGeneratorOptions(string outputAssemblyPath, params string[] inputAssemblyPaths)
+			: base(outputAssemblyPath, inputAssemblyPaths)
 		{
 		}
 
@@ -25,5 +25,12 @@ namespace NHibernate.ProxyGenerators.Castle
 
 		[Argument(ArgumentType.AtMostOnce, HelpText = "Path to the intermediate file used to generate the Castle Proxy Factory", DefaultValue = "CastleStaticProxyFactory.dll", ShortName = "if")]
 		public string IntermediateCastleStaticProxyFactoryAssemblyPath;
+
+		private Assembly[] _inputAssemblies;
+		public Assembly[] InputAssemblies
+		{
+			get { return _inputAssemblies; }
+			set { _inputAssemblies = value; }
+		}
 	}
 }

@@ -14,9 +14,9 @@ namespace NHibernate.ProxyGenerators.Castle.Test
 			return new CastleProxyGenerator();
 		}
 
-		protected override ProxyGeneratorOptions CreateOptions(string outputAssemblyPath, params Assembly[] inputAssembiles)
+		protected override ProxyGeneratorOptions CreateOptions(string outputAssemblyPath, params string[] inputAssembilyPaths)
 		{
-			return new CastleProxyGeneratorOptions(outputAssemblyPath, inputAssembiles);
+			return new CastleProxyGeneratorOptions(outputAssemblyPath, inputAssembilyPaths);
 		}
 
 		[Test]
@@ -44,19 +44,18 @@ namespace NHibernate.ProxyGenerators.Castle.Test
 		[ExpectedException(typeof(ProxyGeneratorException))]
 		public void At_Least_One_InputAssembly_Is_Required()
 		{
-			_generator.Generate(CreateOptions("C:\\Test.dll", new Assembly[0]));
+			_generator.Generate(CreateOptions("C:\\Test.dll", new string[0]));
 		}
 
 		[Test]
 		public void At_Least_One_ClassMapping_Is_Required()
 		{
-			Assembly inputAssembly = typeof(string).Assembly;
-			string inputAssemblyLocation = inputAssembly.Location;
+			string inputAssemblyLocation = typeof(string).Assembly.Location;
 
 			ProxyGeneratorException exc = null;
 			try
 			{
-				_generator.Generate(CreateOptions("C:\\Test.dll", inputAssembly));	
+				_generator.Generate(CreateOptions("C:\\Test.dll", inputAssemblyLocation));	
 			}
 			catch(Exception e)
 			{

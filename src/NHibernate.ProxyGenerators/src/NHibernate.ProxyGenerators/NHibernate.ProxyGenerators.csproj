@@ -34,6 +34,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="CrossAppDomainCaller.cs" />
     <Compile Include="IProxyGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,10 +15,10 @@ namespace NHibernate.ProxyGenerators
 		{
 		}
 
-		public ProxyGeneratorOptions(string outputAssemblyPath, params Assembly[] inputAssemblies)
+		public ProxyGeneratorOptions(string outputAssemblyPath, params string[] inputAssemblyPaths)
 		{
 			OutputAssemblyPath = outputAssemblyPath;
-			InputAssemblies = inputAssemblies;
+			InputAssemblyPaths = inputAssemblyPaths;
 		}
 
 		[Argument(ArgumentType.AtMostOnce, HelpText="The Proxy Generator to use.  One of [castle|activerecord] or Assembly Qualified Name", DefaultValue="castle", ShortName="g")]
@@ -29,12 +29,5 @@ namespace NHibernate.ProxyGenerators
 
 		[DefaultArgument(ArgumentType.MultipleUnique, HelpText = "Path to assembly(ies) containing NHibernate Class Mappings")]
 		public string[] InputAssemblyPaths;
-
-		private Assembly[] _inputAssemblies;
-		public Assembly[] InputAssemblies
-		{
-			get { return _inputAssemblies; }
-			set { _inputAssemblies = value; }
-		}
 	}
 }
