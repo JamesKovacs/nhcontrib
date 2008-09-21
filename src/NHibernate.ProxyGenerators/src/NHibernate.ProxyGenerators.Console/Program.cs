@@ -19,7 +19,11 @@
 		public int Execute( TextWriter error, params string[] args )
 		{
 			ProxyGeneratorOptions generatorOptions = new ProxyGeneratorOptions();
-			if (Parser.ParseArguments(args, generatorOptions) == false)
+			if (Parser.ParseHelp(args))
+			{
+				Parser.ParseArguments(args, generatorOptions);
+			}
+			else if (Parser.ParseArguments(args, generatorOptions) == false)
 			{
 				error.WriteLine(Parser.ArgumentsUsage(generatorOptions.GetType()));
 				return Error.InvalidArguments;
@@ -45,6 +49,11 @@
 				return Error.InvalidGenerator;
 			}
 
+			if (Parser.ParseHelp(args))
+			{
+				error.WriteLine(Parser.ArgumentsUsage(generatorOptions.GetType()));
+				return Error.None;
+			}
 			if (Parser.ParseArguments(args, generatorOptions) == false)
 			{
 				error.WriteLine(Parser.ArgumentsUsage(generatorOptions.GetType()));
@@ -68,11 +77,6 @@
 			if (generatorOptions.InputAssemblies == null)
 			{
 				return Error.InputAssemblyFailedLoad;
-			}
-
-			if (!Path.IsPathRooted(generatorOptions.OutputAssemblyPath))
-			{
-				generatorOptions.OutputAssemblyPath = Path.GetFullPath(generatorOptions.OutputAssemblyPath);
 			}
 
 			try

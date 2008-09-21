@@ -61,6 +61,7 @@
     <Compile Include="CastleProxyFactory.cs" />
     <Compile Include="CastleProxyFactoryFactory.cs" />
     <Compile Include="CastleProxyGenerator.cs" />
+    <Compile Include="CastleProxyGeneratorOptions.cs" />
     <Compile Include="CastleStaticProxyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CastleStaticProxyFactory.cs">

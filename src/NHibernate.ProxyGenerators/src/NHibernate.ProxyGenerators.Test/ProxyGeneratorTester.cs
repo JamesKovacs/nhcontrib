@@ -22,13 +22,15 @@ namespace NHibernate.ProxyGenerators.Test
 
 		protected abstract IProxyGenerator CreateGenerator();
 
+		protected abstract ProxyGeneratorOptions CreateOptions(string outputAssemblyPath, params Assembly[] inputAssembiles);
+
 		[Test]
 		public void Generates_Proxies_From_Single_Assembly()
 		{
 			CrossAppDomainCaller.RunInOtherAppDomain(delegate
 			{
 				Type personType = typeof(Person);
-				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, personType.Assembly));
+				Assembly proxyAssembly = _generator.Generate(CreateOptions(_outputAssemblyPath, personType.Assembly));
 
 				Assert.IsNotNull(proxyAssembly);
 
@@ -56,7 +58,7 @@ namespace NHibernate.ProxyGenerators.Test
 			{
 				Type personType = typeof(Person);
 				Type addressType = typeof(Address);
-				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, personType.Assembly, addressType.Assembly));
+				Assembly proxyAssembly = _generator.Generate(CreateOptions(_outputAssemblyPath, personType.Assembly, addressType.Assembly));
 
 				Assert.IsNotNull(proxyAssembly);
 
@@ -94,7 +96,7 @@ namespace NHibernate.ProxyGenerators.Test
 
 				Assert.AreNotEqual(entityAssembly, mappingAssembly);
 
-				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, mappingAssembly));
+				Assembly proxyAssembly = _generator.Generate(CreateOptions(_outputAssemblyPath, mappingAssembly));
 
 				Assert.IsNotNull(proxyAssembly);
 

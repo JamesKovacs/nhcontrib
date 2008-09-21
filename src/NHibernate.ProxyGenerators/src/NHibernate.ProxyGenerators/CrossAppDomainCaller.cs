@@ -14,7 +14,7 @@
 
 // MODIFICATIONS HAVE BEEN MADE TO THIS FILE
 
-namespace NHibernate.ProxyGenerators.Test
+namespace NHibernate.ProxyGenerators
 {
 	using System;
 

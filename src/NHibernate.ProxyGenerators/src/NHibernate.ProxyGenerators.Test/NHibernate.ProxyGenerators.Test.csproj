@@ -42,7 +42,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrossAppDomainCaller.cs" />
     <Compile Include="ProxyGeneratorTester.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,6 +2,7 @@ namespace NHibernate.ProxyGenerators.ActiveRecord.Test
 {
 	using System;
 	using System.Reflection;
+	using Castle;
 	using global::Castle.ActiveRecord;
 	using Proxy;
 	using ProxyGenerators.Test;
@@ -16,13 +17,18 @@ namespace NHibernate.ProxyGenerators.ActiveRecord.Test
 			return new ActiveRecordProxyGenerator();
 		}
 
+		protected override ProxyGeneratorOptions CreateOptions(string outputAssemblyPath, params Assembly[] inputAssembiles)
+		{
+			return new CastleProxyGeneratorOptions(outputAssemblyPath, inputAssembiles);
+		}
+
 		[Test]
 		public void Generates_Proxies_For_ActiveRecords()
 		{
 			CrossAppDomainCaller.RunInOtherAppDomain(delegate
 			{
 				Type arUserType = typeof(ARUser);
-				Assembly proxyAssembly = _generator.Generate(new ProxyGeneratorOptions(_outputAssemblyPath, arUserType.Assembly));
+				Assembly proxyAssembly = _generator.Generate(CreateOptions(_outputAssemblyPath, arUserType.Assembly));
 
 				Assert.IsNotNull(proxyAssembly);
 

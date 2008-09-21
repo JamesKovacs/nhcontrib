@@ -16,7 +16,7 @@
 	 
 		<assemblyfileset id="project.references" basedir="${bin.dir}">
 			<include name="NHibernate.ProxyGenerators.dll" />
-			<include name="NHibernate.ProxyGenerators.Console.dll" />
+			<include name="NHPG.exe" />
 			<include name="nunit.framework.dll" />
 			<include name="Rhino.Mocks.dll" />
 			<include name="System.dll" />

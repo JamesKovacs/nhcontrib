@@ -18,30 +18,76 @@ namespace NHibernate.ProxyGenerators.Castle
 	[Serializable]
 	public class CastleProxyGenerator : IProxyGenerator
 	{
-		public Assembly Generate( ProxyGeneratorOptions options )
+		public Assembly Generate(ProxyGeneratorOptions options)
 		{
-			if (options == null) throw new ProxyGeneratorException("options is Required");
+			CastleProxyGeneratorOptions castleOptions = ValidateOptions(options);
 
-			string outputAssemblyPath = options.OutputAssemblyPath;
-			Assembly[] inputAssemblies = options.InputAssemblies;
-
-			if (string.IsNullOrEmpty(outputAssemblyPath)) throw new ProxyGeneratorException("options.OutputAssemblyPath is Required");
-
-			if (!Path.IsPathRooted(outputAssemblyPath))
+			try
 			{
-				outputAssemblyPath = Path.GetFullPath(outputAssemblyPath);
+				CrossAppDomainCaller.RunInOtherAppDomain(Generate, this, castleOptions);	
+			}
+			finally
+			{
+				CleanUpIntermediateFiles(castleOptions);	
+			}
+			
+			return Assembly.LoadFrom(options.OutputAssemblyPath);
+		}
+
+		public virtual ProxyGeneratorOptions GetOptions()
+		{
+			return new CastleProxyGeneratorOptions();
+		}
+
+		public CastleProxyGeneratorOptions ValidateOptions(ProxyGeneratorOptions options)
+		{
+			CastleProxyGeneratorOptions castleOptions = options as CastleProxyGeneratorOptions;
+
+			if (castleOptions == null) throw new ProxyGeneratorException("options must be of type {0}", typeof(CastleProxyGeneratorOptions).Name);
+
+			if (string.IsNullOrEmpty(castleOptions.OutputAssemblyPath)) throw new ProxyGeneratorException("options.OutputAssemblyPath is Required");
+
+			if (!Path.IsPathRooted(castleOptions.OutputAssemblyPath))
+			{
+				castleOptions.OutputAssemblyPath = Path.GetFullPath(castleOptions.OutputAssemblyPath);
 			}
 
-			if (inputAssemblies == null || inputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
+			if (castleOptions.InputAssemblies == null || castleOptions.InputAssemblies.Length == 0) throw new ProxyGeneratorException("At least one input assembly is required");
+
+			if (string.IsNullOrEmpty(castleOptions.IntermediateProxyAssemblyPath))
+			{
+				castleOptions.IntermediateProxyAssemblyPath = ModuleScope.DEFAULT_FILE_NAME;
+			}
+
+			if (string.IsNullOrEmpty(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath))
+			{
+				castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath = typeof(CastleStaticProxyFactory).Name + ".dll";
+			}
+
+			return castleOptions;
+		}
+
+		private static void Generate(object[] args)
+		{
+			CastleProxyGenerator proxyGenerator = (CastleProxyGenerator)args[0];
+			CastleProxyGeneratorOptions options = (CastleProxyGeneratorOptions)args[1];
+			proxyGenerator.Generate(options);
+		}
+
+		protected virtual void Generate( CastleProxyGeneratorOptions options )
+		{
+			string outputAssemblyPath = options.OutputAssemblyPath;
+
+			Assembly[] inputAssemblies = options.InputAssemblies;
 
 			Configuration nhibernateConfiguration = CreateNHibernateConfiguration(inputAssemblies, options );
 			if (nhibernateConfiguration.ClassMappings.Count == 0) FailNoClassMappings(inputAssemblies);
 
-			GenerateProxiesResult proxyResult = GenerateProxies(nhibernateConfiguration);
+			GenerateProxiesResult proxyResult = GenerateProxies(nhibernateConfiguration, options.IntermediateProxyAssemblyPath);
 
 			string staticProxyFactorySourceCode = GenerateStaticProxyFactorySourceCode(proxyResult.Proxies, inputAssemblies[0].GetName().Version);
 
-			CompilerResults result = CompileStaticProxyFactory(nhibernateConfiguration, proxyResult.Assembly, staticProxyFactorySourceCode);
+			CompilerResults result = CompileStaticProxyFactory(nhibernateConfiguration, proxyResult.Assembly, staticProxyFactorySourceCode, options.IntermediateCastleStaticProxyFactoryAssemblyPath);
 
 			if (result.Errors.HasErrors)
 			{
@@ -53,12 +99,7 @@ namespace NHibernate.ProxyGenerators.Castle
 				throw new ProxyGeneratorException(errors.ToString());
 			}
 
-			return MergeStaticProxyFactoryWithProxies(result.CompiledAssembly, proxyResult.Assembly, inputAssemblies, outputAssemblyPath);
-		}
-
-		public virtual ProxyGeneratorOptions GetOptions()
-		{
-			return new ProxyGeneratorOptions();
+			MergeStaticProxyFactoryWithProxies(result.CompiledAssembly, proxyResult.Assembly, inputAssemblies, outputAssemblyPath);
 		}
 
 		protected virtual void FailNoClassMappings( Assembly[] inputAssemblies )
@@ -98,9 +139,9 @@ namespace NHibernate.ProxyGenerators.Castle
 			return properties;
 		}
 
-		protected virtual GenerateProxiesResult GenerateProxies(Configuration nhibernateConfiguration)
+		protected virtual GenerateProxiesResult GenerateProxies(Configuration nhibernateConfiguration, string modulePath)
 		{
-			ModuleScope moduleScope = new ModuleScope(true);
+			ModuleScope moduleScope = new ModuleScope(true, ModuleScope.DEFAULT_ASSEMBLY_NAME, modulePath, ModuleScope.DEFAULT_ASSEMBLY_NAME, modulePath );
 			IDictionary proxies = new Hashtable();
 
 			try
@@ -119,7 +160,7 @@ namespace NHibernate.ProxyGenerators.Castle
 			moduleScope = null;
 
 			AssemblyName proxyAssemblyName = new AssemblyName(ModuleScope.DEFAULT_ASSEMBLY_NAME);
-			proxyAssemblyName.CodeBase = ModuleScope.DEFAULT_FILE_NAME;
+			proxyAssemblyName.CodeBase = modulePath;
 
 			Assembly proxyAssembly = Assembly.Load(proxyAssemblyName);
 
@@ -162,10 +203,10 @@ namespace NHibernate.ProxyGenerators.Castle
 			return source;
 		}
 
-		protected virtual CompilerResults CompileStaticProxyFactory(Configuration nhibernateConfiguration, Assembly proxyAssembly, string sourceCode)
+		protected virtual CompilerResults CompileStaticProxyFactory(Configuration nhibernateConfiguration, Assembly proxyAssembly, string sourceCode, string outputAssembly)
 		{
 			CompilerParameters parameters = new CompilerParameters();
-			parameters.OutputAssembly = typeof(CastleStaticProxyFactory).Name + ".dll";
+			parameters.OutputAssembly = outputAssembly;
 			parameters.WarningLevel = 4;
 			parameters.TreatWarningsAsErrors = true;
 			parameters.CompilerOptions = "/debug:pdbonly /optimize+";
@@ -193,7 +234,7 @@ namespace NHibernate.ProxyGenerators.Castle
 			return compiler.CompileAssemblyFromSource(parameters, sourceCode);
 		}
 
-		protected virtual Assembly MergeStaticProxyFactoryWithProxies(Assembly staticProxyAssembly, Assembly proxyAssembly, Assembly[] referenceAssemblies, string outputPath)
+		protected virtual void MergeStaticProxyFactoryWithProxies(Assembly staticProxyAssembly, Assembly proxyAssembly, Assembly[] referenceAssemblies, string outputPath)
 		{
 			ILMerge merger = new ILMerge();
 
@@ -211,8 +252,19 @@ namespace NHibernate.ProxyGenerators.Castle
 			merger.SetInputAssemblies(new string[] { staticProxyAssembly.Location, proxyAssembly.Location });
 			merger.OutputFile = outputPath;
 			merger.Merge();
+		}
 
-			return Assembly.LoadFile(outputPath);
+		protected virtual void CleanUpIntermediateFiles(CastleProxyGeneratorOptions castleOptions)
+		{
+			if (File.Exists(castleOptions.IntermediateProxyAssemblyPath))
+			{
+				File.Delete(castleOptions.IntermediateProxyAssemblyPath);
+			}
+
+			if (File.Exists(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath))
+			{
+				File.Delete(castleOptions.IntermediateCastleStaticProxyFactoryAssemblyPath);
+			}
 		}
 	}
 }
