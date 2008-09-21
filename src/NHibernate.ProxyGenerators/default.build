@@ -52,20 +52,6 @@
 	</target>
 
 	<target name="copy-referenced-assemblies">
-		<!-- Copy NHibernate libraries -->
-		<!-- 
-			The builds of log4net and nunit work just fine for all versions of .NET.
-			When they do get framework specific extensions then we
-			can just move them to the framework specific section
-		-->
-		<copy todir="${lib.dir}">
-			<fileset basedir="${NHibernate.lib}">
-				<include name="*.dll" />
-				<include name="*.xml" />
-				<include name="*.license.txt" />
-			</fileset>
-		</copy>
-		
 		<!-- Copy framework-neutral libraries -->
 		<copy todir="${bin.dir}" >
 			<fileset basedir="${lib.dir}">
