@@ -16,22 +16,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.IO;
 using GeoAPI.Geometries;
 using Microsoft.SqlServer.Types;
+using NHibernate.Type;
 
 namespace NHibernate.Spatial.Type
 {
     /// <summary>
     /// 
     /// </summary>
-    public class MsSql2008GeometryType : GeometryTypeBase<byte[]>
+    public class MsSql2008GeometryType : GeometryTypeBase<SqlGeometry>
     {
-        /// <summary>
+		private static readonly NullableType sqlGeometryType = new SqlGeometryType();
+		
+		/// <summary>
         /// Initializes a new instance of the <see cref="MsSql2008GeometryType"/> class.
         /// </summary>
         public MsSql2008GeometryType()
-            : base(NHibernateUtil.BinaryBlob)
+			: base(sqlGeometryType)
         {
         }
 
@@ -53,7 +55,7 @@ namespace NHibernate.Spatial.Type
         /// </summary>
         /// <param name="value">The GeoAPI geometry value.</param>
         /// <returns></returns>
-        protected override byte[] FromGeometry(object value)
+        protected override SqlGeometry FromGeometry(object value)
         {
             IGeometry geometry = value as IGeometry;
             if (geometry == null)
@@ -68,22 +70,7 @@ namespace NHibernate.Spatial.Type
                 {
                     MsSql2008GeometryWriter writer = new MsSql2008GeometryWriter();
                     SqlGeometry sqlGeometry = writer.Write(geometry);
-
-                    if (sqlGeometry == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            using (BinaryWriter bw = new BinaryWriter(ms))
-                            {
-                                sqlGeometry.Write(bw);
-                            }
-                            return ms.ToArray();
-                        }
-                    }
+					return sqlGeometry;
                 }
                 catch (FormatException ex)
                 {
@@ -108,16 +95,16 @@ namespace NHibernate.Spatial.Type
         /// <returns></returns>
         protected override IGeometry ToGeometry(object value)
         {
-            byte[] bytes = value as byte[];
+			SqlGeometry sqlGeometry = value as SqlGeometry;
 
-            if (bytes == null || bytes.Length == 0)
+            if (sqlGeometry == null || sqlGeometry.IsNull)
             {
                 return null;
             }
             else
             {
                 MsSql2008GeometryReader reader = new MsSql2008GeometryReader();
-                IGeometry geometry = reader.Read(bytes);
+                IGeometry geometry = reader.Read(sqlGeometry);
                 this.SetDefaultSRID(geometry);
                 return geometry;
             }

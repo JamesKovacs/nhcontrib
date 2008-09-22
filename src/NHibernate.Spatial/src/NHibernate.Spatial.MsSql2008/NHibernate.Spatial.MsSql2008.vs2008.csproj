@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EAC092D9-6D47-4A30-803C-7A8583F99DFE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -57,6 +57,7 @@
     <Compile Include="Type\MsSql2008GeometryType.cs" />
     <Compile Include="Type\MsSql2008GeometryWriter.cs" />
     <Compile Include="Type\NtsGeometrySink.cs" />
+    <Compile Include="Type\SqlGeometryType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Spatial\NHibernate.Spatial.vs2008.csproj">
