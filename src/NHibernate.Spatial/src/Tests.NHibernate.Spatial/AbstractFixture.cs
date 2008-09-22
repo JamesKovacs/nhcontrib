@@ -15,6 +15,7 @@ using NHibernate.Tool.hbm2ddl;
 using NHibernate.Type;
 using NUnit.Framework;
 using Settings = Tests.NHibernate.Spatial.Properties.Settings;
+using NHibernate.Engine;
 
 namespace Tests.NHibernate.Spatial
 {
@@ -272,8 +273,8 @@ namespace Tests.NHibernate.Spatial
 		private void BuildSessionFactory()
 		{
 			sessions = configuration.BuildSessionFactory();
-			spatialDialect = (ISpatialDialect)sessions.Dialect;
-			connectionProvider = sessions.ConnectionProvider as DebugConnectionProvider;
+			spatialDialect = (ISpatialDialect)(sessions as ISessionFactoryImplementor).Dialect;
+			connectionProvider = (sessions as ISessionFactoryImplementor).ConnectionProvider as DebugConnectionProvider;
 		}
 
 		private void Cleanup()
@@ -346,7 +347,7 @@ namespace Tests.NHibernate.Spatial
 				}
 				if (!hasLob && !clazz.IsInherited)
 				{
-					configuration.SetCacheConcurrencyStrategy(clazz.MappedClass, CacheConcurrencyStrategy);
+					configuration.SetCacheConcurrencyStrategy(clazz.MappedClass.Name, CacheConcurrencyStrategy);
 				}
 			}
 

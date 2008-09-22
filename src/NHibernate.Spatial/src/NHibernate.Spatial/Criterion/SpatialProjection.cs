@@ -88,6 +88,17 @@ namespace NHibernate.Spatial.Criterion
 			return null;
 		}
 
+
+		public override bool IsGrouped
+		{
+			//TODO:
+			get { return false; }
+		}
+
+		public override SqlString ToGroupSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 }

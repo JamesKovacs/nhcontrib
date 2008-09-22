@@ -96,8 +96,8 @@ namespace NHibernate.Spatial.Criterion
 			string[] keyColumns = criteriaQuery.GetIdentifierColumns(criteria);
 
 
-			IType entityType = criteriaQuery.GetType(criteria, this.propertyName);
-			AbstractEntityPersister entityPersister = (AbstractEntityPersister)criteriaQuery.Factory.GetEntityPersister(entityType.ReturnedClass);
+			string entityType = criteriaQuery.GetEntityName(criteria, this.propertyName);
+			AbstractEntityPersister entityPersister = (AbstractEntityPersister)criteriaQuery.Factory.GetEntityPersister(entityType);
 
 			// Only one key column is assumed
 			string keyColumn = keyColumns[0];

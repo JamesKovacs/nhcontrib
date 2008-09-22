@@ -67,16 +67,16 @@ namespace NHibernate.Spatial
 					}
 					object[] args = new object[argsCount];
 					string rendered = function.Render(args, null);
-					string dialectFunctionName = rendered.Substring(0, rendered.IndexOf("("));
-					if (!dialect.Functions.ContainsKey(dialectFunctionName) &&
-						!string.IsNullOrEmpty(dialectFunctionName))
-					{
-						// We need to register it or we'll get an exception:
-						// "undefined alias or unknown mapping"
-						pendingRegistration.Add(dialectFunctionName, function.ReturnType(null, null));
+						string dialectFunctionName = rendered.Substring(0, rendered.IndexOf("("));
+						if (!dialect.Functions.ContainsKey(dialectFunctionName) &&
+							!string.IsNullOrEmpty(dialectFunctionName))
+						{
+							// We need to register it or we'll get an exception:
+							// "undefined alias or unknown mapping"
+							pendingRegistration.Add(dialectFunctionName, function.ReturnType(null, null));
+						}
+						queryString = queryString.Replace(functionName, dialectFunctionName);
 					}
-					queryString = queryString.Replace(functionName, dialectFunctionName);
-				}
 				else if (function is ConstantValueFunction)
 				{
 					string rendered = function.Render(null, null);
@@ -110,7 +110,7 @@ namespace NHibernate.Spatial
 #endif
 		public static string PrepareQuery(ISession session, string queryString)
 		{
-			return PrepareQuery(session.SessionFactory.Dialect, queryString);
+			return PrepareQuery((session.SessionFactory as NHibernate.Engine.ISessionFactoryImplementor).Dialect, queryString);
 		}
 
 		/// <summary>
