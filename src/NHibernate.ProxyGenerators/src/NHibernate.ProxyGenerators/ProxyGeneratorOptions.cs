@@ -19,6 +19,7 @@ namespace NHibernate.ProxyGenerators
 		{
 			OutputAssemblyPath = outputAssemblyPath;
 			InputAssemblyPaths = inputAssemblyPaths;
+			Dialect = "NHibernate.Dialect.MsSql2005Dialect";
 		}
 
 		[Argument(ArgumentType.AtMostOnce, HelpText="The Proxy Generator to use.  One of [castle|activerecord] or Assembly Qualified Name", DefaultValue="castle", ShortName="g")]
@@ -29,5 +30,8 @@ namespace NHibernate.ProxyGenerators
 
 		[DefaultArgument(ArgumentType.MultipleUnique, HelpText = "Path to assembly(ies) containing NHibernate Class Mappings")]
 		public string[] InputAssemblyPaths;
+
+		[Argument(ArgumentType.AtMostOnce, HelpText = "The dialect to use. Only needed when you use dialect specific mapping options (like sequences in Oracle).", DefaultValue = "NHibernate.Dialect.MsSql2005Dialect", ShortName = "d")]
+		public string Dialect;
 	}
 }

@@ -12,7 +12,7 @@ namespace NHibernate.ProxyGenerators.ActiveRecord
 		protected override Configuration CreateNHibernateConfiguration( Assembly[] inputAssemblies, ProxyGeneratorOptions options )
 		{
 			ActiveRecordConfigurationSource activeRecordConfiguration = new ActiveRecordConfigurationSource();
-			activeRecordConfiguration.Add(typeof(ActiveRecordBase), GetDefaultNHibernateProperties());
+			activeRecordConfiguration.Add(typeof(ActiveRecordBase), GetDefaultNHibernateProperties(options));
 
 			ActiveRecordStarter.Initialize(inputAssemblies, activeRecordConfiguration);
 

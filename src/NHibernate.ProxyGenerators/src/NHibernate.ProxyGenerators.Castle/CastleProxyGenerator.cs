@@ -125,7 +125,7 @@ namespace NHibernate.ProxyGenerators.Castle
 		{
 			Configuration nhibernateConfiguration = new Configuration();
 
-			nhibernateConfiguration.AddProperties(GetDefaultNHibernateProperties());
+			nhibernateConfiguration.AddProperties(GetDefaultNHibernateProperties(options));
 
 			foreach (Assembly inputAssembly in inputAssemblies)
 			{
@@ -135,11 +135,11 @@ namespace NHibernate.ProxyGenerators.Castle
 			return nhibernateConfiguration;
 		}
 
-		protected virtual IDictionary<string, string> GetDefaultNHibernateProperties()
+		protected virtual IDictionary<string, string> GetDefaultNHibernateProperties(ProxyGeneratorOptions options)
 		{
 			Dictionary<string, string> properties = new Dictionary<string, string>();
 			properties["cache.provider_class"] = typeof(HashtableCacheProvider).AssemblyQualifiedName;
-			properties["dialect"] = typeof(MsSql2000Dialect).AssemblyQualifiedName;
+			properties["dialect"] = options.Dialect;
 			properties["proxyfactory.factory_class"] = typeof(CastleProxyFactoryFactory).AssemblyQualifiedName;
 			return properties;
 		}
