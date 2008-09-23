@@ -31,16 +31,26 @@
 		</resourcefileset>
 	</target>
 	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
+  
 	<target name="build" depends="init generate-assemblyinfo common.compile-tests">
 
         <copy file="${config.FileName}.Template"
 			  tofile="${bin.dir}/${config.FileName}"
 			  if="${not file::exists('${config.FileName}')}"
 		/>		
-		<copy file="${config.FileName}"
-			  tofile="${bin.dir}/${config.FileName}"
-			  if="${file::exists('${config.FileName}')}"
-		/>   
-	</target>
+	
+    <copy file="${config.FileName}"
+      tofile="${bin.dir}/${config.FileName}"
+      if="${file::exists('${config.FileName}')}"
+		/>
+    <copy file="MultiDB/FirstPU.cfg.xml"
+			  tofile="${bin.dir}/MultiDB/FirstPU.cfg.xml"
+			  if="${file::exists('MultiDB/FirstPU.cfg.xml')}"
+		/>
+    <copy file="MultiDB/SecondPU.cfg.xml"
+    tofile="${bin.dir}/MultiDB/SecondPU.cfg.xml"
+    if="${file::exists('MultiDB/SecondPU.cfg.xml')}"
+		/>
+  </target>
 	<target name="test" depends="init build common.run-tests" />
 </project>
