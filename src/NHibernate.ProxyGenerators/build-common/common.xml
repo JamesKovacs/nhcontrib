@@ -30,7 +30,23 @@
 		effectively SP0).
 	-->
 
-	<property name="project.version" value="1.0.0.Alpha564" overwrite="false" />
+	<property name="svn.revision" value="1" overwrite="false" />
+	<if test="${property::exists('svn.revision')}">
+		<!-- try to update the revision -->
+		<exec
+			program="svn"
+			commandline='info "${project::get-base-directory()}" --xml'
+			output="_revision.xml"
+			failonerror="false"/>
+		<xmlpeek
+			file="_revision.xml"
+			xpath="/info/entry/@revision"
+			property="svn.revision"
+			failonerror="false"/>
+		<delete file="_revision.xml" failonerror="false" />
+	</if>
+	
+	<property name="project.version" value="1.0.0.Alpha${svn.revision}" overwrite="false" />
 
 	<!-- Compute short project version (major.minor) using a regex -->
 	<regex input="${project.version}" pattern="^(?'shortversion'\d+\.\d+)" />
