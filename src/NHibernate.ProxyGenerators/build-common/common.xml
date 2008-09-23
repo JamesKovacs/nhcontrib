@@ -30,7 +30,7 @@
 		effectively SP0).
 	-->
 
-	<property name="project.version" value="0.0.1.Alpha1" overwrite="false" />
+	<property name="project.version" value="1.0.0.Alpha564" overwrite="false" />
 
 	<!-- Compute short project version (major.minor) using a regex -->
 	<regex input="${project.version}" pattern="^(?'shortversion'\d+\.\d+)" />
@@ -103,7 +103,7 @@
 	</target>
 	
 	<target name="set-release-project-configuration" description="Perform a 'release' build">
-		<property name="build.debug" value="PdbOnly" />
+		<property name="build.debug" value="None" />
 		<property name="build.optimize" value="true" />
 		<property name="build.name" value="NHibernate.ProxyGenerators-${project.version}" />
 	</target>
