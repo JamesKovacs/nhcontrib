@@ -18,7 +18,7 @@ namespace NHibernate.Burrow.Impl
 
 		private PersistenceUnitRepo()
 		{
-
+                
 		}
 
 
@@ -37,7 +37,11 @@ namespace NHibernate.Burrow.Impl
 		/// </summary>
 		public static PersistenceUnitRepo Instance
 		{
-			get { return instance; }
+			get
+			{
+                Burrow.Impl.FrameworkEnvironment.Instance.ToString(); //ensure Environment
+			    return instance;
+			}
 		}
 
 		/// <summary>
