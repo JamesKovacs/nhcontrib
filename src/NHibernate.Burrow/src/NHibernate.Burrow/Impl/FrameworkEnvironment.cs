@@ -113,6 +113,30 @@ namespace NHibernate.Burrow.Impl
         }
  
 
+		/// <summary>
+		/// Get the NHibernate Configuration of a Persistence Unit
+		/// </summary>
+		/// <param name="persistenceUnitName">the name of the <see cref="PersistenceUnit"/></param>
+		/// <returns></returns>
+		/// <remarks>
+		/// Please understand that the if you need to rebuild the sessionfactories after you changed the
+		/// retrieved NHibernate Configure, please call <see cref="RebuildSessionFactories"/> 
+		/// If you restart the Burrow Environment by calling <see cref="ShutDown"/> 
+		/// and <see cref="Start"/>, your change will get lost.  
+		/// </remarks>
+		public NHibernate.Cfg.Configuration GetNHConfig(string persistenceUnitName) {
+			return PersistenceUnitRepo.Instance.GetPU(persistenceUnitName).NHConfiguration;
+		}
+
+		/// <summary>
+		/// Force all SessionFactory get rebuild
+		/// </summary>
+		public void RebuildSessionFactories() {
+			foreach (PersistenceUnit unit in PersistenceUnitRepo.Instance.PersistenceUnits) {
+				unit.ReBuildSessionfactory();
+			}
+		}
+
         private void CheckCurrentWorkSpace()
         {
             if (CurrentWorkSpace != null)

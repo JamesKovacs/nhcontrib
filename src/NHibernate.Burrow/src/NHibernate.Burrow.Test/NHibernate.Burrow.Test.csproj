@@ -68,6 +68,7 @@
     <Compile Include="ConverstationTests\ConversationManagementFixture.cs" />
     <Compile Include="ConverstationTests\WrapUrlFixture.cs" />
     <Compile Include="DataContainerTests\GuidDataContainerFixture.cs" />
+    <Compile Include="FrameworkEnvironment\FuctionFixture.cs" />
     <Compile Include="FrameworkEnvironment\ShutDownFixture.cs" />
     <Compile Include="ManualTransaction\ManualTransactionFexture.cs" />
     <Compile Include="MockEntities\MockEntity.cs" />

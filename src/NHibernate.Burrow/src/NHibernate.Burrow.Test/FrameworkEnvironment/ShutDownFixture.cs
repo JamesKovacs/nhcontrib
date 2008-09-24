@@ -13,7 +13,7 @@ namespace NHibernate.Burrow.Test.FrameworkEnvironment
         {
             if (!f.BurrowEnvironment.IsRunning)
             {
-                f.BurrowEnvironment.Start();
+                f.BurrowEnvironment.Start(); //to ensure other tests can run 
             }
         }
 
