@@ -29,7 +29,7 @@ namespace NHibernate.Spatial.Dialect
 		/// <summary>
 		/// Function prefix for HQL queries.
 		/// </summary>
-		public const string HqlPrefix = "NHS."; // Simply the acronym of "NHibernate.Spatial"
+		public const string HqlPrefix = "NHSP."; // Simply the acronym of "NHibernate.Spatial"
 
 		/// <summary>
 		/// Fuction prefix for dialects implementing ISO/IEC SQL/MM Spatial.

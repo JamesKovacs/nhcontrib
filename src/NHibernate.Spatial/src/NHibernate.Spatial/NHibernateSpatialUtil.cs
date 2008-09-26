@@ -34,7 +34,7 @@ namespace NHibernate.Spatial
 	{
 		/// <summary>
 		/// If you need to use HQL functions compatible among different dialects
-		/// (those starting with "NHS.") and you're using NHibernate 1.2.0, then
+		/// (those starting with "NHSP.") and you're using NHibernate 1.2.0, then
 		/// you must call this function before calling CreateQuery.
 		/// PrepareQuery provides a very limited workaround for the lack of
 		/// HQL function mapping in NHibernate 1.2.0, so use it carefully.
@@ -93,7 +93,7 @@ namespace NHibernate.Spatial
 
 		/// <summary>
 		/// If you need to use HQL functions compatible among different dialects
-		/// (those starting with "NHS.") and you're using NHibernate 1.2.0, then
+		/// (those starting with "NHSP.") and you're using NHibernate 1.2.0, then
 		/// you must call this function before calling CreateQuery.
 		/// PrepareQuery provides a very limited workaround for the lack of
 		/// HQL function mapping in NHibernate 1.2.0, so use it carefully.

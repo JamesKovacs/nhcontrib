@@ -427,7 +427,7 @@ UNIT[""Meter"", 1.0]]";
 		public void ConformanceItemT06Hql()
 		{
 			string query =
-@"select NHS.Dimension(t.Shore)
+@"select NHSP.Dimension(t.Shore)
 from Lake t
 where t.Name = 'Blue Lake'
 ";
@@ -470,7 +470,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT07Hql()
 		{
 			string query =
-@"select NHS.GeometryType(t.Centerlines)
+@"select NHSP.GeometryType(t.Centerlines)
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
@@ -545,7 +545,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT09Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.PolyFromWKB(NHS.AsBinary(t.Boundary), 0))
+@"select NHSP.AsText(NHSP.PolyFromWKB(NHSP.AsBinary(t.Boundary), 0))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -578,7 +578,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT10Hql()
 		{
 			string query =
-@"select NHS.SRID(t.Boundary)
+@"select NHSP.SRID(t.Boundary)
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -624,7 +624,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT11Hql()
 		{
 			string query =
-@"select NHS.IsEmpty(t.Centerline)
+@"select NHSP.IsEmpty(t.Centerline)
 from RoadSegment t
 where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 ";
@@ -669,7 +669,7 @@ where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 		public void ConformanceItemT12Hql()
 		{
 			string query =
-@"select NHS.IsSimple(t.Shore)
+@"select NHSP.IsSimple(t.Shore)
 from Lake t
 where t.Name = 'Blue Lake'
 ";
@@ -712,7 +712,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT13Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Boundary(t.Boundary))
+@"select NHSP.AsText(NHSP.Boundary(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -745,7 +745,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT14Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Envelope(t.Boundary))
+@"select NHSP.AsText(NHSP.Envelope(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -787,7 +787,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT15Hql()
 		{
 			string query =
-@"select NHS.X(t.Position)
+@"select NHSP.X(t.Position)
 from Bridge t
 where t.Name = 'Cam Bridge'
 ";
@@ -821,7 +821,7 @@ where t.Name = 'Cam Bridge'
 		public void ConformanceItemT16Hql()
 		{
 			string query =
-@"select NHS.Y(t.Position)
+@"select NHSP.Y(t.Position)
 from Bridge t
 where t.Name = 'Cam Bridge'
 ";
@@ -855,7 +855,7 @@ where t.Name = 'Cam Bridge'
 		public void ConformanceItemT17Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.StartPoint(t.Centerline))
+@"select NHSP.AsText(NHSP.StartPoint(t.Centerline))
 from RoadSegment t
 where t.Fid = 102
 ";
@@ -888,7 +888,7 @@ where t.Fid = 102
 		public void ConformanceItemT18Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.EndPoint(t.Centerline))
+@"select NHSP.AsText(NHSP.EndPoint(t.Centerline))
 from RoadSegment t
 where t.Fid = 102
 ";
@@ -925,7 +925,7 @@ where t.Fid = 102
 		public void ConformanceItemT19Hql()
 		{
 			string query =
-@"select NHS.IsClosed(NHS.Boundary(t.Boundary))
+@"select NHSP.IsClosed(NHSP.Boundary(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -959,7 +959,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT20Hql()
 		{
 			string query =
-@"select NHS.IsRing(NHS.Boundary(t.Boundary))
+@"select NHSP.IsRing(NHSP.Boundary(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -989,7 +989,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT21Hql()
 		{
 			string query =
-@"select NHS.Length(t.Centerline)
+@"select NHSP.Length(t.Centerline)
 from RoadSegment t
 where t.Fid = 106
 ";
@@ -1023,7 +1023,7 @@ where t.Fid = 106
 		public void ConformanceItemT22Hql()
 		{
 			string query =
-@"select NHS.NumPoints(t.Centerline)
+@"select NHSP.NumPoints(t.Centerline)
 from RoadSegment t
 where t.Fid = 102
 ";
@@ -1053,7 +1053,7 @@ where t.Fid = 102
 		public void ConformanceItemT23Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.PointN(t.Centerline, 1))
+@"select NHSP.AsText(NHSP.PointN(t.Centerline, 1))
 from RoadSegment t
 where t.Fid = 102
 ";
@@ -1090,7 +1090,7 @@ where t.Fid = 102
 		public void ConformanceItemT24Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Centroid(t.Boundary))
+@"select NHSP.AsText(NHSP.Centroid(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -1139,7 +1139,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT25Hql()
 		{
 			string query =
-@"select NHS.Contains(t.Boundary, NHS.PointOnSurface(t.Boundary))
+@"select NHSP.Contains(t.Boundary, NHSP.PointOnSurface(t.Boundary))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -1170,7 +1170,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT26Hql()
 		{
 			string query =
-@"select NHS.Area(t.Boundary)
+@"select NHSP.Area(t.Boundary)
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -1204,7 +1204,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT27Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.ExteriorRing(t.Shore))
+@"select NHSP.AsText(NHSP.ExteriorRing(t.Shore))
 from Lake t
 where t.Name = 'Blue Lake'
 ";
@@ -1237,7 +1237,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT28Hql()
 		{
 			string query =
-@"select NHS.NumInteriorRing(t.Shore)
+@"select NHSP.NumInteriorRing(t.Shore)
 from Lake t
 where t.Name = 'Blue Lake'
 ";
@@ -1280,7 +1280,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT29Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.InteriorRingN(t.Shore, 1))
+@"select NHSP.AsText(NHSP.InteriorRingN(t.Shore, 1))
 from Lake t
 where t.Name = 'Blue Lake'
 ";
@@ -1317,7 +1317,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT30Hql()
 		{
 			string query =
-@"select NHS.NumGeometries(t.Centerlines)
+@"select NHSP.NumGeometries(t.Centerlines)
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
@@ -1361,7 +1361,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT31Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.GeometryN(t.Centerlines, 2))
+@"select NHSP.AsText(NHSP.GeometryN(t.Centerlines, 2))
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
@@ -1402,7 +1402,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT32Hql()
 		{
 			string query =
-@"select NHS.IsClosed(t.Centerlines)
+@"select NHSP.IsClosed(t.Centerlines)
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
@@ -1433,7 +1433,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT33Hql()
 		{
 			string query =
-@"select NHS.Length(t.Centerlines)
+@"select NHSP.Length(t.Centerlines)
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
@@ -1467,7 +1467,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT34Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Centroid(t.Shores))
+@"select NHSP.AsText(NHSP.Centroid(t.Shores))
 from Pond t
 where t.Fid = 120
 ";
@@ -1516,7 +1516,7 @@ where t.Fid = 120
 		public void ConformanceItemT35Hql()
 		{
 			string query =
-@"select NHS.Contains(t.Shores, NHS.PointOnSurface(t.Shores))
+@"select NHSP.Contains(t.Shores, NHSP.PointOnSurface(t.Shores))
 from Pond t
 where t.Fid = 120
 ";
@@ -1546,7 +1546,7 @@ where t.Fid = 120
 		public void ConformanceItemT36Hql()
 		{
 			string query =
-@"select NHS.Area(t.Shores)
+@"select NHSP.Area(t.Shores)
 from Pond t
 where t.Fid = 120
 ";
@@ -1589,7 +1589,7 @@ where t.Fid = 120
 		public void ConformanceItemT37Hql()
 		{
 			string query =
-@"select NHS.Equals(t.Boundary, NHS.PolyFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',101))
+@"select NHSP.Equals(t.Boundary, NHSP.PolyFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',101))
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
@@ -1624,7 +1624,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT38Hql()
 		{
 			string query =
-@"select NHS.Disjoint(dr.Centerlines, np.Boundary)
+@"select NHSP.Disjoint(dr.Centerlines, np.Boundary)
 from DividedRoute dr, NamedPlace np
 where dr.Name = 'Route 75' and np.Name = 'Ashton'
 ";
@@ -1659,7 +1659,7 @@ where dr.Name = 'Route 75' and np.Name = 'Ashton'
 		public void ConformanceItemT39Hql()
 		{
 			string query =
-@"select NHS.Touches(s.Centerline, l.Shore)
+@"select NHSP.Touches(s.Centerline, l.Shore)
 from Stream s, Lake l
 where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 ";
@@ -1700,7 +1700,7 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 		public void ConformanceItemT40Hql()
 		{
 			string query =
-@"select NHS.Within(b.Footprint, np.Boundary)
+@"select NHSP.Within(b.Footprint, np.Boundary)
 from NamedPlace np, Building b
 where np.Name = 'Ashton' and b.Address = '215 Main Street'
 ";
@@ -1735,7 +1735,7 @@ where np.Name = 'Ashton' and b.Address = '215 Main Street'
 		public void ConformanceItemT41Hql()
 		{
 			string query =
-@"select NHS.Overlaps(f.Boundary, np.Boundary)
+@"select NHSP.Overlaps(f.Boundary, np.Boundary)
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
@@ -1770,7 +1770,7 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 		public void ConformanceItemT42Hql()
 		{
 			string query =
-@"select NHS.Crosses(rs.Centerline, dr.Centerlines)
+@"select NHSP.Crosses(rs.Centerline, dr.Centerlines)
 from RoadSegment rs, DividedRoute dr
 where rs.Fid = 102 and dr.Name = 'Route 75'
 ";
@@ -1805,7 +1805,7 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 		public void ConformanceItemT43Hql()
 		{
 			string query =
-@"select NHS.Intersects(rs.Centerline, dr.Centerlines)
+@"select NHSP.Intersects(rs.Centerline, dr.Centerlines)
 from RoadSegment rs, DividedRoute dr
 where rs.Fid = 102 and dr.Name = 'Route 75'
 ";
@@ -1840,7 +1840,7 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 		public void ConformanceItemT44Hql()
 		{
 			string query =
-@"select NHS.Contains(f.Boundary, np.Boundary)
+@"select NHSP.Contains(f.Boundary, np.Boundary)
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
@@ -1875,7 +1875,7 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 		public void ConformanceItemT45Hql()
 		{
 			string query =
-@"select NHS.Relate(f.Boundary, np.Boundary, 'TTTTTTTTT')
+@"select NHSP.Relate(f.Boundary, np.Boundary, 'TTTTTTTTT')
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
@@ -1909,7 +1909,7 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 		public void ConformanceItemT46Hql()
 		{
 			string query =
-@"select NHS.Distance(b.Position, np.Boundary)
+@"select NHSP.Distance(b.Position, np.Boundary)
 from Bridge b, NamedPlace np
 where b.Name = 'Cam Bridge' and np.Name = 'Ashton'
 ";
@@ -1945,7 +1945,7 @@ where b.Name = 'Cam Bridge' and np.Name = 'Ashton'
 		public void ConformanceItemT47Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Intersection(s.Centerline, l.Shore))
+@"select NHSP.AsText(NHSP.Intersection(s.Centerline, l.Shore))
 from Stream s, Lake l
 where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 ";
@@ -1980,7 +1980,7 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 		public void ConformanceItemT48Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Difference(np.Boundary, f.Boundary))
+@"select NHSP.AsText(NHSP.Difference(np.Boundary, f.Boundary))
 from NamedPlace np, Forest f
 where np.Name = 'Ashton' and f.Name = 'Green Forest'
 ";
@@ -2019,7 +2019,7 @@ where np.Name = 'Ashton' and f.Name = 'Green Forest'
 		public void ConformanceItemT49Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.Union(l.Shore, np.Boundary))
+@"select NHSP.AsText(NHSP.Union(l.Shore, np.Boundary))
 from Lake l, NamedPlace np
 where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 ";
@@ -2080,7 +2080,7 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 		public void ConformanceItemT50Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.SymDifference(l.Shore, np.Boundary))
+@"select NHSP.AsText(NHSP.SymDifference(l.Shore, np.Boundary))
 from Lake l, NamedPlace np
 where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 ";
@@ -2126,7 +2126,7 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 			string query =
 @"select count(*)
 from Building bl, Bridge br
-where NHS.Contains(NHS.Buffer(br.Position, 15.0), bl.Footprint) = NHS.TRUE
+where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = NHSP.TRUE
 ";
 			query = NHibernateSpatialUtil.PrepareQuery(session, query);
 
@@ -2155,7 +2155,7 @@ where NHS.Contains(NHS.Buffer(br.Position, 15.0), bl.Footprint) = NHS.TRUE
 		public void ConformanceItemT52Hql()
 		{
 			string query =
-@"select NHS.AsText(NHS.ConvexHull(l.Shore))
+@"select NHSP.AsText(NHSP.ConvexHull(l.Shore))
 from Lake l
 where l.Name = 'Blue Lake'
 ";

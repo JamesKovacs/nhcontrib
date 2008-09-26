@@ -26,7 +26,7 @@ namespace Tests.NHibernate.Spatial.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost\\SQL2008_RC0;Initial Catalog=nhs_test;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost\\SQL2008_RC0;Initial Catalog=nhsp_test;Integrated Security=True")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));

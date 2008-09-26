@@ -3,7 +3,7 @@
 
 	<class name="NHibernate.Spatial.Metadata.GeometryColumn, NHibernate.Spatial"
 		schema="dbo"
-		table="NHS_GEOMETRY_COLUMNS"
+		table="NHSP_GEOMETRY_COLUMNS"
 		lazy="false"
 		mutable="false"
 		>

@@ -26,7 +26,7 @@ namespace Tests.NHibernate.Spatial.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost;Port=5432;Database=nhs_test;User Id=nhs_test;Password=nhs_test;E" +
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost;Port=5432;Database=nhsp_test;User Id=nhsp_test;Password=nhsp_test;E" +
             "ncoding=UNICODE;")]
         public string ConnectionString {
             get {

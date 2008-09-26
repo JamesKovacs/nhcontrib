@@ -35,7 +35,7 @@ namespace NHibernate.Spatial.Dialect
 	{
 		private static readonly IType geometryType = new CustomType(typeof(MsSql2008GeometryType), null);
 		private const string DialectPrefix = "ST";
-		private const string GeometryColumnsViewName = "NHS_GEOMETRY_COLUMNS";
+		private const string GeometryColumnsViewName = "NHSP_GEOMETRY_COLUMNS";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MsSql2008SpatialDialect"/> class.
@@ -561,7 +561,7 @@ namespace NHibernate.Spatial.Dialect
 				builder.AppendFormat("EXECUTE('ALTER TABLE {0}{1} WITH CHECK ADD  CONSTRAINT {2} CHECK ({3}.{4} = {5})')"
 					, quotedSchema
 					, this.QuoteForTableName(table)
-					, this.Quote("CK_NHS_" +  table + "_" + column + "_SRID")
+					, this.Quote("CK_NHSP_" +  table + "_" + column + "_SRID")
 					, this.QuoteForColumnName(column)
 					, this.Quote("STSrid")
 					, srid
@@ -575,7 +575,7 @@ namespace NHibernate.Spatial.Dialect
 				builder.AppendFormat("ALTER TABLE {0}{1} WITH CHECK ADD  CONSTRAINT {2} CHECK ({3}.{4}() = '{5}')"
 					, quotedSchema
 					, this.QuoteForTableName(table)
-					, this.Quote("CK_NHS_" + table + "_" + column + "_TYPE")
+					, this.Quote("CK_NHSP_" + table + "_" + column + "_TYPE")
 					, this.QuoteForColumnName(column)
 					, this.Quote("STGeometryType")
 					, subtype

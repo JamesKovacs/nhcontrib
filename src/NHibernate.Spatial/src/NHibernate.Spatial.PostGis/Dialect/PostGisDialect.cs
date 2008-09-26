@@ -34,7 +34,7 @@ namespace NHibernate.Spatial.Dialect
 	{
 		private static readonly IType geometryType = new CustomType(typeof(PostGisGeometryType), null);
 
-		private const string IntersectionAggregateName = "NHS_IntersectionAggregate";
+		private const string IntersectionAggregateName = "NHSP_IntersectionAggregate";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostGisDialect"/> class.

@@ -130,7 +130,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlAsTextLineString()  
 		{
 			IList results = session
-				.CreateQuery("select NHS.AsText(l.Geometry) from LineStringEntity as l")
+				.CreateQuery("select NHSP.AsText(l.Geometry) from LineStringEntity as l")
 				.SetMaxResults(10)
 				.List();
 			foreach (string item in results)
@@ -144,7 +144,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 	    public void HqlDimensionLineString()
 		{
 			IList results1 = session
-				.CreateQuery("select NHS.Dimension(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.Dimension(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.SetMaxResults(10)
 				.List();
 
@@ -154,7 +154,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 
 			IList results2 = session
-				.CreateQuery("select NHS.Dimension(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
+				.CreateQuery("select NHSP.Dimension(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
 				.SetMaxResults(10)
 				.List();
 
@@ -168,7 +168,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlOverlapsLineString()
 		{
 			IList results = session
-				.CreateQuery("select NHS.Overlaps(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.Overlaps(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.List();
 
@@ -192,7 +192,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlRelateLineString()
 		{
 			long count = session
-				.CreateQuery("select count(*) from LineStringEntity l where NHS.Relate(l.Geometry, ?, 'TT*******') = NHS.TRUE and l.Geometry is not null")
+				.CreateQuery("select count(*) from LineStringEntity l where NHSP.Relate(l.Geometry, ?, 'TT*******') = NHSP.TRUE and l.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.UniqueResult<long>();
 
@@ -203,7 +203,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlIntersectsLineString()
 		{
 			IList results = session
-				.CreateQuery("select NHS.Intersects(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.Intersects(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.List();
 
@@ -214,7 +214,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 
 			long altIntersects = session
-				.CreateQuery("select count(*) from LineStringEntity as l where NHS.Intersects(l.Geometry, ?) = NHS.TRUE")
+				.CreateQuery("select count(*) from LineStringEntity as l where NHSP.Intersects(l.Geometry, ?) = NHSP.TRUE")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.UniqueResult<long>();
 
@@ -230,7 +230,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			Assert.AreEqual(intersects, count);
 
 			results = session
-				.CreateQuery("from LineStringEntity as l where NHS.Intersects(?,l.Geometry) = NHS.TRUE")
+				.CreateQuery("from LineStringEntity as l where NHSP.Intersects(?,l.Geometry) = NHSP.TRUE")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.List();
 
@@ -242,7 +242,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlSRID()
 		{
 			IList results = session
-				.CreateQuery("select NHS.SRID(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.SRID(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.List();
 
 			foreach (object item in results)
@@ -256,7 +256,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlGeometryType()
 		{
 			IList results = session
-				.CreateQuery("select NHS.GeometryType(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.GeometryType(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.List();
 
 			foreach (object item in results)
@@ -266,7 +266,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 
 			results = session
-				.CreateQuery("select NHS.GeometryType(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
+				.CreateQuery("select NHSP.GeometryType(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
 				.List();
 
 			foreach (object item in results)
@@ -286,7 +286,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		private void HqlEnvelope(string entityName)
 		{
 			IList results = session
-				.CreateQuery("select NHS.Envelope(e.Geometry), e.Geometry from "
+				.CreateQuery("select NHSP.Envelope(e.Geometry), e.Geometry from "
 					+ entityName + " as e where e.Geometry is not null")
 				.SetMaxResults(10)
 				.List();
@@ -302,7 +302,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlIsEmpty()
 		{
 			IList results = session
-				.CreateQuery("select l.Id, NHS.IsEmpty(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select l.Id, NHSP.IsEmpty(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.List();
 
 			ISQLQuery query = this.SqlIsEmptyLineString(session);
@@ -321,7 +321,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlIsSimple()
 		{
 			IList results = session
-				.CreateQuery("select l.Id, NHS.IsSimple(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select l.Id, NHSP.IsSimple(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.List();
 
 			ISQLQuery query = this.SqlIsSimpleLineString(session);
@@ -340,7 +340,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlBoundary()
 		{
 			IList results = session
-				.CreateQuery("select p.Geometry, NHS.Boundary(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
+				.CreateQuery("select p.Geometry, NHSP.Boundary(p.Geometry) from PolygonEntity as p where p.Geometry is not null")
 				.List();
 			foreach (object[] item in results)
 			{
@@ -354,7 +354,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlAsBoundary()
 		{
 			IList results = session
-				.CreateQuery("select l.Id, NHS.AsBinary(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select l.Id, NHSP.AsBinary(l.Geometry) from LineStringEntity as l where l.Geometry is not null")
 				.List();
 
 			ISQLQuery query = this.SqlAsBinaryLineString(session);
@@ -373,7 +373,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlDistance()
 		{
 			IList results = session
-				.CreateQuery("select NHS.Distance(l.Geometry, ?), l.Geometry from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery("select NHSP.Distance(l.Geometry, ?), l.Geometry from LineStringEntity as l where l.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.SetMaxResults(100)
 				.List();
@@ -391,7 +391,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			const double distance = 10.0;
 
 			IList results = session
-				.CreateQuery("select p.Geometry, NHS.Buffer(p.Geometry, ?) from PolygonEntity as p where p.Geometry is not null")
+				.CreateQuery("select p.Geometry, NHSP.Buffer(p.Geometry, ?) from PolygonEntity as p where p.Geometry is not null")
 				.SetDouble(0, distance)
 				.SetMaxResults(100)
 				.List();
@@ -416,7 +416,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlConvexHull()
 		{
 			IList results = session
-				.CreateQuery("select m.Geometry, NHS.ConvexHull(m.Geometry) from MultiLineStringEntity as m where m.Geometry is not null")
+				.CreateQuery("select m.Geometry, NHSP.ConvexHull(m.Geometry) from MultiLineStringEntity as m where m.Geometry is not null")
 				.SetMaxResults(100)
 				.List();
 
@@ -442,7 +442,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlDifference()
 		{
 			IList results = session
-				.CreateQuery("select e.Geometry, NHS.Difference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
+				.CreateQuery("select e.Geometry, NHSP.Difference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.SetMaxResults(100)
 				.List();
@@ -476,7 +476,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlIntersection()
 		{
 			IList results = session
-				.CreateQuery("select e.Geometry, NHS.Intersection(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
+				.CreateQuery("select e.Geometry, NHSP.Intersection(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.SetMaxResults(100)
 				.List();
@@ -510,7 +510,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlSymDifference()
 		{
 			IList results = session
-				.CreateQuery("select e.Geometry, NHS.SymDifference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
+				.CreateQuery("select e.Geometry, NHSP.SymDifference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.SetMaxResults(100)
 				.List();
@@ -544,7 +544,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlUnion()
 		{
 			IList results = session
-				.CreateQuery("select e.Geometry, NHS.Union(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
+				.CreateQuery("select e.Geometry, NHSP.Union(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
 				.SetParameter(0, this.filter, spatialDialect.GeometryType)
 				.SetMaxResults(100)
 				.List();
