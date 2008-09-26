@@ -222,6 +222,17 @@ namespace NHibernate.ProxyGenerators.Castle
 			references.Add(Assembly.Load("log4net"));
 			references.Add(Assembly.Load("Castle.Core"));
 			references.Add(proxyAssembly);
+
+			AssemblyName[] proxyReferencedAssemblyNames = proxyAssembly.GetReferencedAssemblies();
+			foreach( AssemblyName proxyReferencedAssemblyName in proxyReferencedAssemblyNames )
+			{
+				Assembly proxyReferencedAssembly = Assembly.Load(proxyReferencedAssemblyName);
+				if( !references.Contains(proxyReferencedAssembly) )
+				{
+					references.Add(proxyReferencedAssembly);
+				}
+			}
+
 			foreach (PersistentClass cls in nhibernateConfiguration.ClassMappings)
 			{
 				if (!references.Contains(cls.MappedClass.Assembly))

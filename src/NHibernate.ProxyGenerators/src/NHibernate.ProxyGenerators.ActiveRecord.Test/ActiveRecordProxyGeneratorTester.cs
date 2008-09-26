@@ -49,7 +49,7 @@ namespace NHibernate.ProxyGenerators.ActiveRecord.Test
 	}
 
 	[ActiveRecord]
-	public class ARUser
+	public class ARUser : ActiveRecordBase<ARUser>
 	{
 		private int _id; 
 
