@@ -1193,7 +1193,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT28Hql()
 		{
 			string query =
-@"select NHSP.NumInteriorRing(t.Shore)
+@"select NHSP.NumInteriorRings(t.Shore)
 from Lake t
 where t.Name = 'Blue Lake'
 ";

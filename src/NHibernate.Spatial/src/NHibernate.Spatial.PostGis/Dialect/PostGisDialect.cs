@@ -148,7 +148,7 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunction("SRID", NHibernateUtil.Int32);
 			RegisterSpatialFunction("Dimension", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumGeometries", NHibernateUtil.Int32);
-			RegisterSpatialFunction("NumInteriorRing", NHibernateUtil.Int32);
+			RegisterSpatialFunction("NumInteriorRings", "NumInteriorRing", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumPoints", NHibernateUtil.Int32);
 
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);

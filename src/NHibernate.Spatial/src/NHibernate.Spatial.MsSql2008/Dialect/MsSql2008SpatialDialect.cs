@@ -129,7 +129,7 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunctionProperty("SRID", "STSrid", NHibernateUtil.Int32);
 			RegisterSpatialFunction("Dimension", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumGeometries", NHibernateUtil.Int32);
-			RegisterSpatialFunction("NumInteriorRing", NHibernateUtil.Int32);
+			RegisterSpatialFunction("NumInteriorRings", "NumInteriorRing", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumPoints", NHibernateUtil.Int32);
 
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);
@@ -536,21 +536,21 @@ namespace NHibernate.Spatial.Dialect
 			StringBuilder builder = new StringBuilder();
 
 			string quotedSchema = this.QuoteSchema(schema);
+			string quoteForTableName = this.QuoteForTableName(table);
+			string quoteForColumnName = this.QuoteForColumnName(column);
 
 			builder.AppendFormat("ALTER TABLE {0}{1} DROP COLUMN {2}"
 				, quotedSchema
-				, this.QuoteForTableName(table)
-				, this.QuoteForColumnName(column)
+				, quoteForTableName
+				, quoteForColumnName
 				);
 
 			builder.Append(this.MultipleQueriesSeparator);
 
 			builder.AppendFormat("ALTER TABLE {0}{1} ADD {2} GEOMETRY"
 				, quotedSchema
-				, this.QuoteForTableName(table)
-				, this.QuoteForColumnName(column)
-				, srid
-				, subtype
+				, quoteForTableName
+				, quoteForColumnName
 				);
 
 			builder.Append(this.MultipleQueriesSeparator);
@@ -560,9 +560,9 @@ namespace NHibernate.Spatial.Dialect
 				// EXECUTE is needed to avoid the error "The multi-part identifier could not be bound."
 				builder.AppendFormat("EXECUTE('ALTER TABLE {0}{1} WITH CHECK ADD  CONSTRAINT {2} CHECK ({3}.{4} = {5})')"
 					, quotedSchema
-					, this.QuoteForTableName(table)
+					, quoteForTableName
 					, this.Quote("CK_NHSP_" +  table + "_" + column + "_SRID")
-					, this.QuoteForColumnName(column)
+					, quoteForColumnName
 					, this.Quote("STSrid")
 					, srid
 					);
@@ -574,9 +574,9 @@ namespace NHibernate.Spatial.Dialect
 			{
 				builder.AppendFormat("ALTER TABLE {0}{1} WITH CHECK ADD  CONSTRAINT {2} CHECK ({3}.{4}() = '{5}')"
 					, quotedSchema
-					, this.QuoteForTableName(table)
+					, quoteForTableName
 					, this.Quote("CK_NHSP_" + table + "_" + column + "_TYPE")
-					, this.QuoteForColumnName(column)
+					, quoteForColumnName
 					, this.Quote("STGeometryType")
 					, subtype
 					);
