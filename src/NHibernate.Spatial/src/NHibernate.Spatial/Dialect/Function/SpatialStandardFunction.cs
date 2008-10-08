@@ -15,8 +15,6 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Text;
 using System.Collections;
 using NHibernate.Type;
 using NHibernate.Engine;
@@ -78,7 +76,6 @@ namespace NHibernate.Spatial.Dialect.Function
 			get { return true; }
 		}
 
-#if NH_HQL_FUNCTION_MAPPING
 		/// <summary>
 		/// Render the function call as SQL.
 		/// </summary>
@@ -101,30 +98,6 @@ namespace NHibernate.Spatial.Dialect.Function
 			builder.Add(")");
 			return builder.ToSqlString();
 		}
-#else
-		/// <summary>
-		/// Render the function call as SQL.
-		/// </summary>
-		/// <param name="args">List of arguments</param>
-		/// <param name="factory"></param>
-		/// <returns>SQL fragment for the function.</returns>
-		public virtual string Render(IList args, ISessionFactoryImplementor factory)
-		{
-		    StringBuilder builder = new StringBuilder();
-		    builder.Append(name);
-		    builder.Append('(');
-		    for (int i = 0; i < args.Count; i++)
-		    {
-		        builder.Append(args[i]);
-		        if (i < (args.Count - 1))
-		        {
-		            builder.Append(", ");
-		        }
-		    }
-		    builder.Append(')');
-		    return builder.ToString();
-		}
-#endif
 
 		#endregion
 

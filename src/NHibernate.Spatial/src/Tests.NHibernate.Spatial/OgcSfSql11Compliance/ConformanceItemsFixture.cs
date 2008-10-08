@@ -431,8 +431,6 @@ UNIT[""Meter"", 1.0]]";
 from Lake t
 where t.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
 
@@ -474,8 +472,6 @@ where t.Name = 'Blue Lake'
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -516,8 +512,6 @@ where t.Name = 'Route 75'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			IGeometry result = session.CreateQuery(query)
 				.UniqueResult<IGeometry>();
 			IGeometry expected = Wkt.Read("POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )");
@@ -549,8 +543,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -582,8 +574,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
 
@@ -628,8 +618,6 @@ where t.Name = 'Goose Island'
 from RoadSegment t
 where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -673,8 +661,6 @@ where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 from Lake t
 where t.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -716,8 +702,6 @@ where t.Name = 'Blue Lake'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -749,8 +733,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -791,8 +773,6 @@ where t.Name = 'Goose Island'
 from Bridge t
 where t.Name = 'Cam Bridge'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -825,8 +805,6 @@ where t.Name = 'Cam Bridge'
 from Bridge t
 where t.Name = 'Cam Bridge'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -859,8 +837,6 @@ where t.Name = 'Cam Bridge'
 from RoadSegment t
 where t.Fid = 102
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -892,8 +868,6 @@ where t.Fid = 102
 from RoadSegment t
 where t.Fid = 102
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -929,8 +903,6 @@ where t.Fid = 102
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -963,8 +935,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -993,8 +963,6 @@ where t.Name = 'Goose Island'
 from RoadSegment t
 where t.Fid = 106
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -1027,8 +995,6 @@ where t.Fid = 106
 from RoadSegment t
 where t.Fid = 102
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
 
@@ -1057,8 +1023,6 @@ where t.Fid = 102
 from RoadSegment t
 where t.Fid = 102
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1094,8 +1058,6 @@ where t.Fid = 102
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1143,8 +1105,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1174,8 +1134,6 @@ where t.Name = 'Goose Island'
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -1208,8 +1166,6 @@ where t.Name = 'Goose Island'
 from Lake t
 where t.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1241,8 +1197,6 @@ where t.Name = 'Blue Lake'
 from Lake t
 where t.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
 
@@ -1284,8 +1238,6 @@ where t.Name = 'Blue Lake'
 from Lake t
 where t.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1321,8 +1273,6 @@ where t.Name = 'Blue Lake'
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
 
@@ -1365,8 +1315,6 @@ where t.Name = 'Route 75'
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1406,8 +1354,6 @@ where t.Name = 'Route 75'
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1437,8 +1383,6 @@ where t.Name = 'Route 75'
 from DividedRoute t
 where t.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -1471,8 +1415,6 @@ where t.Name = 'Route 75'
 from Pond t
 where t.Fid = 120
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1520,8 +1462,6 @@ where t.Fid = 120
 from Pond t
 where t.Fid = 120
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1550,8 +1490,6 @@ where t.Fid = 120
 from Pond t
 where t.Fid = 120
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -1593,8 +1531,6 @@ where t.Fid = 120
 from NamedPlace t
 where t.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1628,8 +1564,6 @@ where t.Name = 'Goose Island'
 from DividedRoute dr, NamedPlace np
 where dr.Name = 'Route 75' and np.Name = 'Ashton'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1663,8 +1597,6 @@ where dr.Name = 'Route 75' and np.Name = 'Ashton'
 from Stream s, Lake l
 where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1704,8 +1636,6 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 from NamedPlace np, Building b
 where np.Name = 'Ashton' and b.Address = '215 Main Street'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1739,8 +1669,6 @@ where np.Name = 'Ashton' and b.Address = '215 Main Street'
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1774,8 +1702,6 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 from RoadSegment rs, DividedRoute dr
 where rs.Fid = 102 and dr.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1809,8 +1735,6 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 from RoadSegment rs, DividedRoute dr
 where rs.Fid = 102 and dr.Name = 'Route 75'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1844,8 +1768,6 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1879,8 +1801,6 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 from Forest f, NamedPlace np
 where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
 
@@ -1913,8 +1833,6 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 from Bridge b, NamedPlace np
 where b.Name = 'Cam Bridge' and np.Name = 'Ashton'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
 
@@ -1949,8 +1867,6 @@ where b.Name = 'Cam Bridge' and np.Name = 'Ashton'
 from Stream s, Lake l
 where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -1984,8 +1900,6 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 from NamedPlace np, Forest f
 where np.Name = 'Ashton' and f.Name = 'Green Forest'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -2023,8 +1937,6 @@ where np.Name = 'Ashton' and f.Name = 'Green Forest'
 from Lake l, NamedPlace np
 where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -2084,8 +1996,6 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 from Lake l, NamedPlace np
 where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 
@@ -2128,8 +2038,6 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 from Building bl, Bridge br
 where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = NHSP.TRUE
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			long result = session.CreateQuery(query)
 				.UniqueResult<long>();
 
@@ -2159,8 +2067,6 @@ where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = NHSP.TRUE
 from Lake l
 where l.Name = 'Blue Lake'
 ";
-			query = NHibernateSpatialUtil.PrepareQuery(session, query);
-
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
 

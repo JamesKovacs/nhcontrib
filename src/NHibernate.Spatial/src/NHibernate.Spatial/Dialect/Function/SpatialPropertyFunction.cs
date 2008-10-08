@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections;
-using System.Text;
 using NHibernate.Engine;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
@@ -44,7 +43,6 @@ namespace NHibernate.Spatial.Dialect.Function
         {
         }
 
-#if NH_HQL_FUNCTION_MAPPING
         /// <summary>
         /// Render the function call as SQL.
         /// </summary>
@@ -59,22 +57,6 @@ namespace NHibernate.Spatial.Dialect.Function
             builder.Add(name);
             return builder.ToSqlString();
         }
-#else
-        /// <summary>
-        /// Render the function call as SQL.
-        /// </summary>
-        /// <param name="args">List of arguments</param>
-        /// <param name="factory"></param>
-        /// <returns>SQL fragment for the function.</returns>
-        public override string Render(IList args, ISessionFactoryImplementor factory)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(args[0]);
-            builder.Append(".");
-            builder.Append(name);
-            return builder.ToString();
-        }
-#endif
 
     }
 }

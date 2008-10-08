@@ -15,12 +15,9 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Text;
 using System.Collections;
 using NHibernate.Type;
 using NHibernate.Engine;
-using NHibernate.Dialect.Function;
 using NHibernate.SqlCommand;
 
 namespace NHibernate.Spatial.Dialect.Function
@@ -76,7 +73,6 @@ namespace NHibernate.Spatial.Dialect.Function
 
 		#region ISQLFunction Members
 
-#if NH_HQL_FUNCTION_MAPPING
 		/// <summary>
 		/// Render the function call as SQL.
 		/// </summary>
@@ -88,19 +84,6 @@ namespace NHibernate.Spatial.Dialect.Function
 			this.ValidateArgsCount(args);
 			return base.Render(args, factory);
 		}
-#else
-		/// <summary>
-		/// Render the function call as SQL.
-		/// </summary>
-		/// <param name="args">List of arguments</param>
-		/// <param name="factory"></param>
-		/// <returns>SQL fragment for the function.</returns>
-		public override string Render(IList args, ISessionFactoryImplementor factory)
-		{
-		    this.ValidateArgsCount(args);
-		    return base.Render(args, factory);
-		}
-#endif
 
 		/// <summary>
 		/// Validates the arguments count.

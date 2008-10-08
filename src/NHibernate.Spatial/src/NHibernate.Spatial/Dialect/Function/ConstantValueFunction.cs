@@ -15,7 +15,6 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections;
 using NHibernate.Type;
 using NHibernate.Engine;
@@ -68,7 +67,6 @@ namespace NHibernate.Spatial.Dialect.Function
 		}
 
 
-#if NH_HQL_FUNCTION_MAPPING
 		/// <summary>
 		/// Render the function call as SQL.
 		/// </summary>
@@ -79,18 +77,6 @@ namespace NHibernate.Spatial.Dialect.Function
 		{
 			return new SqlString(this.value);
 		}
-#else
-		/// <summary>
-		/// Render the function call as SQL.
-		/// </summary>
-		/// <param name="args">List of arguments</param>
-		/// <param name="factory"></param>
-		/// <returns>SQL fragment for the fuction.</returns>
-		public string Render(IList args, ISessionFactoryImplementor factory)
-		{
-		    return this.value;
-		}
-#endif
 
 		public IType ReturnType(IType columnType, IMapping mapping)
 		{

@@ -15,10 +15,8 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections;
 using NHibernate.Engine;
-using NHibernate.Dialect.Function;
 using NHibernate.SqlCommand;
 
 namespace NHibernate.Spatial.Dialect.Function
@@ -44,7 +42,6 @@ namespace NHibernate.Spatial.Dialect.Function
 			this.allowedArgsCount = 1;
 		}
 
-#if NH_HQL_FUNCTION_MAPPING
 		/// <summary>
 		/// Render the function call as SQL.
 		/// </summary>
@@ -56,19 +53,6 @@ namespace NHibernate.Spatial.Dialect.Function
 			base.ValidateArgsCount(args);
 			return this.spatialDialect.GetSpatialValidationString(args[0], this.validation, false);
 		}
-#else
-		/// <summary>
-		/// Render the function call as SQL.
-		/// </summary>
-		/// <param name="args">List of arguments</param>
-		/// <param name="factory"></param>
-		/// <returns>SQL fragment for the function.</returns>
-		public override string Render(IList args, ISessionFactoryImplementor factory)
-		{
-		    base.ValidateArgsCount(args);
-		    return this.spatialDialect.GetSpatialValidationString((string)args[0], this.validation, false).ToString();
-		}
-#endif
 
 	}
 }
