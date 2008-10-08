@@ -161,6 +161,10 @@ namespace NHibernate.Burrow.Impl
                 session.FlushMode = fm;
         }
 
+		public FlushMode GetFlushMode()
+		{
+			return this.flushMode;
+		}
 
         #endregion
 

@@ -40,6 +40,8 @@ namespace NHibernate.Burrow
         internal abstract void OnConversationEnds(IEnumerable<SessionManager> sms);
         internal abstract void OnSessionUsed(SessionManager sm);
 
+		internal abstract void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms);
+		 
         private abstract class ManagedTransaction : TransactionStrategy
         {
             internal override void OnConversationEnds(IEnumerable<SessionManager> sms)
@@ -70,6 +72,12 @@ namespace NHibernate.Burrow
                     sm.CommitAndDisconnect();
                 }
             }
+
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			{
+
+			}
+        	
         }
 
         private class BusinessTransactionStrategy : TransactionWithWorkSpaceStrategy
@@ -81,6 +89,19 @@ namespace NHibernate.Burrow
                     sm.SetFlushMode(FlushMode.Never);
                 }
             }
+
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			{
+				foreach (SessionManager sm in sms)
+				{
+					FlushMode fm = sm.GetFlushMode();
+					if (fm != FlushMode.Never)
+						throw new Exceptions.IllegalFlushModeException(
+							fm + " is illegal in business transaction. " +
+							"When doing Business transaction, you should not change FlushMode.");
+					sm.SetFlushMode(FlushMode.Auto);
+				}
+			}
         }
 
         private class LongDBTransactionStrategy : ManagedTransaction
@@ -95,13 +116,18 @@ namespace NHibernate.Burrow
 
             internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms)
             {}
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			{
+
+			}
         }
 
         private class ManualTransactionStrategy : TransactionStrategy
         {
             internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms)
             {}
-
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			{}
             internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms)
             {
                 foreach (SessionManager sm in sms)
@@ -123,8 +149,6 @@ namespace NHibernate.Burrow
             }
         }
 
-     
-
-        
+    	
     }
 }

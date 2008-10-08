@@ -48,17 +48,6 @@ namespace NHibernate.Burrow.Test.Concurrency
             }
         }
 
-        /// <summary>
-        /// it is set explicit as it's quite time consuming
-        /// </summary>
-        [Test, Explicit]
-        public void ExhostingTest()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                MultiTreadTest();
-            }
-        }
 
         [Test]
         public void MultiTreadTest()

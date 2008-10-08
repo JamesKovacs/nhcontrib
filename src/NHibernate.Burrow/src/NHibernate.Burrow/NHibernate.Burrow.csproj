@@ -110,6 +110,7 @@
     <Compile Include="Exceptions\ChangeConfigWhenRunningException.cs" />
     <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
     <Compile Include="Exceptions\FrameworkAlreadyShutDownException.cs" />
+    <Compile Include="Exceptions\IllegalFlushModeException.cs" />
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
     <Compile Include="Exceptions\IncorrectTransactionStatusException.cs" />
     <Compile Include="IInterceptorFactory.cs" />
