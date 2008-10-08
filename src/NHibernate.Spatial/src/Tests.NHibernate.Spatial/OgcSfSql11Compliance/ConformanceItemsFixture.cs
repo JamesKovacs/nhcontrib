@@ -1629,7 +1629,7 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 		///   so the correct argument order should be Within(footprint, boundary).
 		/// </remarks>
 		[Test]
-		public void ConformanceItemT40Hql()
+		public virtual void ConformanceItemT40Hql()
 		{
 			string query =
 @"select NHSP.Within(b.Footprint, np.Boundary)
@@ -2031,7 +2031,7 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 		/// </code>
 		/// </summary>
 		[Test]
-		public void ConformanceItemT51Hql()
+		public virtual void ConformanceItemT51Hql()
 		{
 			string query =
 @"select count(*)

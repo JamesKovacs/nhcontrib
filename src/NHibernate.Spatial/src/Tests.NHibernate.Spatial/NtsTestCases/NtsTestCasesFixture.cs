@@ -487,7 +487,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		}
 
 		[Test]
-		public void Within()
+		public virtual void Within()
 		{
 			TestBooleanBinaryOperation("Within", SpatialProjections.Within, SpatialExpression.Within);
 		}
@@ -524,11 +524,8 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		}
 
 		[Test]
-		public void IsValid()
+		public virtual void IsValid()
 		{
-			// TODO: PostGIS is raising the exception:
-			// "ERROR: XX000: GEOS isvalid() threw an error!"
-
 			TestBooleanUnaryOperation("IsValid", SpatialProjections.IsValid, SpatialExpression.IsValid);
 		}
 
