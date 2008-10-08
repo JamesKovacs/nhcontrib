@@ -64,7 +64,7 @@ namespace NHibernate.Spatial.Type
 		{
 			byte[] bytes = value as byte[];
 
-			if (bytes == null)
+			if (bytes == null || bytes.Length == 0)
 			{
 				return null;
 			}

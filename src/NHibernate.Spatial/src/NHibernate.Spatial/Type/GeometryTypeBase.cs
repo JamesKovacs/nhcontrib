@@ -17,8 +17,8 @@
 
 using System;
 using System.Collections;
+using System.Data;
 using GeoAPI.Geometries;
-using NHibernate.Engine;
 using NHibernate.SqlTypes;
 using NHibernate.Type;
 using NHibernate.UserTypes;
@@ -128,7 +128,7 @@ namespace NHibernate.Spatial.Type
 		/// <param name="owner">the containing entity</param>
 		/// <returns></returns>
 		/// <exception cref="T:NHibernate.HibernateException">HibernateException</exception>
-		public object NullSafeGet(System.Data.IDataReader rs, string[] names, object owner)
+		public object NullSafeGet(IDataReader rs, string[] names, object owner)
 		{
 			try
 			{
@@ -150,7 +150,7 @@ namespace NHibernate.Spatial.Type
 		/// <param name="value">the object to write</param>
 		/// <param name="index">command parameter index</param>
 		/// <exception cref="T:NHibernate.HibernateException">HibernateException</exception>
-		public void NullSafeSet(System.Data.IDbCommand cmd, object value, int index)
+		public void NullSafeSet(IDbCommand cmd, object value, int index)
 		{
 			this.nullableType.NullSafeSet(cmd, this.FromGeometry(value), index);
 		}
@@ -295,6 +295,5 @@ namespace NHibernate.Spatial.Type
 				geometry.SRID = this.SRID;
 			}
 		}
-
 	}
 }

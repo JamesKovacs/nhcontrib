@@ -89,7 +89,7 @@ namespace NHibernate.Spatial.Type
 				{
 					// Bounding boxes are not serialized as hexadecimal string (?) 
 					const string BoxToken = "BOX(";
-					if (bytes.StartsWith("BOX("))
+					if (bytes.StartsWith(BoxToken))
 					{
 						// TODO: Optimize?
 						bytes = bytes.Substring(BoxToken.Length, bytes.Length - BoxToken.Length - 1);
@@ -129,7 +129,7 @@ namespace NHibernate.Spatial.Type
 
 		private static string ToString(byte[] bytes)
 		{
-			StringBuilder builder = new StringBuilder(bytes.Length);
+			StringBuilder builder = new StringBuilder(bytes.Length * 2);
 			for (int i = 0; i < bytes.Length; i++)
 			{
 				builder.AppendFormat("{0:X2}", bytes[i]);

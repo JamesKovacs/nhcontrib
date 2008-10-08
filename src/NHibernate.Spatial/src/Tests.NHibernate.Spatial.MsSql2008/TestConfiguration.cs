@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using NHibernate.Cfg;
 using NHibernate.Driver;
 using NHibernate.Spatial.Dialect;
-using NUnit.Framework;
 using Environment = NHibernate.Cfg.Environment;
 using Settings = Tests.NHibernate.Spatial.Properties.Settings;
 
