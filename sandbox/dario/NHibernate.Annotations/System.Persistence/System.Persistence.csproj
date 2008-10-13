@@ -36,6 +36,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ForeignKey.cs" />
+    <Compile Include="PrimaryKeyJoinColumnAttribute.cs" />
     <Compile Include="EmbeddedIdAttribute.cs" />
     <Compile Include="InheritanceType.cs" />
     <Compile Include="MappedSuperclassAttribute.cs" />

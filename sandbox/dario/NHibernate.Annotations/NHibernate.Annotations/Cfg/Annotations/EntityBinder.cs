@@ -39,11 +39,8 @@ namespace NHibernate.Annotations.Cfg.Annotations
 		private IDictionary<String, Join> secondaryTables = new Dictionary<String, Join>();
 		private bool selectBeforeUpdate;
 		private String where;
+		private Dialect.Dialect dialect;
 
-		public bool IsAnnotatedProperty
-		{
-			get { return isPropertyAnnotated; }
-		}
 
 		/// <summary>
 		/// Use as a fake one for Collection of elements
@@ -63,6 +60,16 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			this.persistentClass = persistentClass;
 			this.annotatedClass = annotatedClass;
 			BindHibernateAnnotation(hibAnn);
+		}
+
+		public bool IsAnnotatedProperty
+		{
+			get { return isPropertyAnnotated; }
+		}
+
+		public IDictionary<string, Join> SecondaryTables
+		{
+			get { return secondaryTables; }
 		}
 
 		private void BindHibernateAnnotation(EntityAttribute hibAnn)
@@ -307,17 +314,197 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			}
 		}
 
-		public Join AddJoin(JoinTableAttribute ann, ClassPropertyHolder propertyHolder, bool creation)
+		//public void setBatchSize(BatchSize sizeAnn)
+		//{
+		//    if (sizeAnn != null)
+		//    {
+		//        batchSize = sizeAnn.size();
+		//    }
+		//    else
+		//    {
+		//        batchSize = -1;
+		//    }
+		//}
+
+		//public void setProxy(Proxy proxy)
+		//{
+		//    if (proxy != null)
+		//    {
+		//        lazy = proxy.lazy();
+		//        if (!lazy)
+		//        {
+		//            proxyClass = null;
+		//        }
+		//        else
+		//        {
+		//            if (AnnotationBinder.isDefault(
+		//                    mappings.getReflectionManager().toXClass(proxy.proxyClass()), mappings
+		//            ))
+		//            {
+		//                proxyClass = annotatedClass;
+		//            }
+		//            else
+		//            {
+		//                proxyClass = mappings.getReflectionManager().toXClass(proxy.proxyClass());
+		//            }
+		//        }
+		//    }
+		//    else
+		//    {
+		//        lazy = true; //needed to allow association lazy loading.
+		//        proxyClass = annotatedClass;
+		//    }
+		//}
+
+		//public void setWhere(Where whereAnn)
+		//{
+		//    if (whereAnn != null)
+		//    {
+		//        where = whereAnn.clause();
+		//    }
+		//}
+
+		private string GetClassTableName(string tableName)
+		{
+			if (StringHelper.IsEmpty(tableName))
+				return mappings.NamingStrategy.ClassToTableName(name);
+			else
+				return mappings.NamingStrategy.TableName(tableName);
+		}
+
+		public void BindTable(string schema, string catalog,
+		                      string tableName, IList<String[]> uniqueConstraints,
+		                      string constraints, Table denormalizedSuperclassTable)
+		{
+			String logicalName = StringHelper.IsNotEmpty(tableName) ? tableName : StringHelper.Unqualify(name);
+			Table table = TableBinder.FillTable(schema, catalog, GetClassTableName(tableName), logicalName,
+			                                    persistentClass.IsAbstract, uniqueConstraints, constraints,
+			                                    denormalizedSuperclassTable, mappings);
+			if (persistentClass is ITableOwner)
+			{
+				log.InfoFormat("Bind entity {0} on table {1}", persistentClass.EntityName, table.Name);
+				((ITableOwner) persistentClass).Table = table;
+			}
+			else
+			{
+				throw new AssertionFailure("Binding a table for a subclass");
+			}
+		}
+
+		public void FinalSecondaryTableBinding(PropertyHolder propertyHolder)
+		{
+			/*
+			 * Those operations has to be done after the id definition of the persistence class.
+			 * ie after the properties parsing
+			 */
+			var joins = secondaryTables.Values.GetEnumerator();
+			var joinColumns = secondaryTableJoins.Values.GetEnumerator();
+
+			while (joins.MoveNext())
+			{
+				joinColumns.MoveNext();
+				var uncastedColumn = joinColumns.Current; 
+				var join = joins.Current;
+				CreatePrimaryColumnsToSecondaryTable(uncastedColumn, propertyHolder, join);
+			}
+			mappings.AddJoins(persistentClass, secondaryTables);
+		}
+
+		private void CreatePrimaryColumnsToSecondaryTable(object uncastedColumn, PropertyHolder propertyHolder, Join join) {
+		Ejb3JoinColumn[] ejb3JoinColumns;
+		PrimaryKeyJoinColumnAttribute[] pkColumnsAnn = null;
+		JoinColumnAttribute[] joinColumnsAnn = null;
+		if ( uncastedColumn is PrimaryKeyJoinColumnAttribute[] ) {
+			pkColumnsAnn = (PrimaryKeyJoinColumnAttribute[]) uncastedColumn;
+		}
+		if ( uncastedColumn is JoinColumnAttribute[] ) {
+			joinColumnsAnn = (JoinColumnAttribute[]) uncastedColumn;
+		}
+		if ( pkColumnsAnn == null && joinColumnsAnn == null ) {
+			ejb3JoinColumns = new Ejb3JoinColumn[1];
+			ejb3JoinColumns[0] = Ejb3JoinColumn.BuildJoinColumn(
+					null,
+					null,
+					persistentClass.Identifier,
+					secondaryTables,
+					propertyHolder, mappings
+			);
+		}
+		else {
+			int nbrOfJoinColumns = pkColumnsAnn != null ?
+					pkColumnsAnn.Length :
+					joinColumnsAnn.Length;
+			if ( nbrOfJoinColumns == 0 ) {
+				ejb3JoinColumns = new Ejb3JoinColumn[1];
+				ejb3JoinColumns[0] = Ejb3JoinColumn.BuildJoinColumn(
+						null,
+						null,
+						persistentClass.Identifier,
+						secondaryTables,
+						propertyHolder, mappings
+				);
+			}
+			else {
+				ejb3JoinColumns = new Ejb3JoinColumn[nbrOfJoinColumns];
+				if ( pkColumnsAnn != null ) {
+					for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++) {
+						ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
+								pkColumnsAnn[colIndex],
+								null,
+								persistentClass.Identifier,
+								secondaryTables,
+								propertyHolder, mappings
+						);
+					}
+				}
+				else {
+					for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++) {
+						ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
+								null,
+								joinColumnsAnn[colIndex],
+								persistentClass.Identifier,
+								secondaryTables,
+								propertyHolder, mappings
+						);
+					}
+				}
+			}
+		}
+
+		foreach (Ejb3JoinColumn joinColumn in ejb3JoinColumns) {
+			joinColumn.ForceNotNull();
+		}
+			BindJoinToPersistentClass( join, ejb3JoinColumns );
+	}
+
+		private void BindJoinToPersistentClass(Join join, Ejb3JoinColumn[] ejb3JoinColumns)
+		{
+			SimpleValue key = new DependantValue(join.Table, persistentClass.Identifier);
+			join.Key=key;
+			SetFKNameIfDefined(join);
+			key.IsCascadeDeleteEnabled = false;
+			TableBinder.BindFk(persistentClass, null, ejb3JoinColumns, key, false, mappings);
+			join.CreatePrimaryKey(dialect);
+			join.CreateForeignKey();
+			persistentClass.AddJoin(join);
+		}
+
+		private void SetFKNameIfDefined(Join join)
+		{
+			TableAttribute matchingTable = FindMatchingComplimentTableAnnotation(join);
+			if (matchingTable != null && !BinderHelper.IsDefault(matchingTable.ForeignKey.Name))
+			{
+				((SimpleValue)join.Key).ForeignKeyName = matchingTable.ForeignKey.Name;
+			}
+		}
+
+		private TableAttribute FindMatchingComplimentTableAnnotation(Join join)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IDictionary<string, Join> SecondaryTables
-		{
-			get { return secondaryTables; }
-		}
 
-		public void FinalSecondaryTableBinding(PropertyHolder holder)
+		public Join AddJoin(JoinTableAttribute ann, ClassPropertyHolder propertyHolder, bool creation)
 		{
 			throw new NotImplementedException();
 		}

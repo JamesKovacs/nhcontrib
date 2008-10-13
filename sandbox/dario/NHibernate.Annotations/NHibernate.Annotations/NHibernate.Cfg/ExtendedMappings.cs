@@ -98,5 +98,13 @@ namespace NHibernate.Cfg
         public void AddSecondPass(IndexOrUniqueKeySecondPass secondPass)
         {
         }
+
+		public void AddJoins(PersistentClass persistentClass, IDictionary<string, Join> joins) 
+		{
+			if(this.joins.ContainsKey(persistentClass.EntityName))
+				log.WarnFormat("duplicate joins for class: {0}", persistentClass.EntityName);
+
+			this.joins.Add(persistentClass.EntityName, joins);
+		}
     }
 }
