@@ -17,6 +17,7 @@ namespace NHibernate.ProxyGenerators.ActiveRecord
 			ActiveRecordStarter.Initialize(inputAssemblies, activeRecordConfiguration);
 
 			Configuration nhibernateConfiguration = ActiveRecordMediator.GetSessionFactoryHolder().GetConfiguration(typeof(ActiveRecordBase));
+			nhibernateConfiguration.SetProperties(GetDefaultNHibernateProperties(options));
 
 			foreach(Assembly inputAssembly in inputAssemblies)
 			{

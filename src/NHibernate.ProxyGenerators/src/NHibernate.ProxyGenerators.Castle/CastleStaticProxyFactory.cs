@@ -8,7 +8,7 @@ using NHibernate;
 using NHibernate.Bytecode;
 using NHibernate.Engine;
 using NHibernate.Proxy;
-using NHibernate.Proxy.Poco.Castle;
+using NHibernate.ProxyGenerators.CastleDynamicProxy;
 using NHibernate.Type;
 using IInterceptor = Castle.Core.Interceptor.IInterceptor;
 
@@ -57,7 +57,7 @@ public class CastleStaticProxyFactory : IProxyFactory
 		}
 		else
 		{
-			string message = string.Format("Not proxy type found for persistent class '{0}' using proxy key '{1}'", _persistentClass.FullName, _proxyKey);
+			string message = string.Format("No proxy type found for persistent class '{0}' using proxy key '{1}'", _persistentClass.FullName, _proxyKey);
 			_log.Error(message);
 			throw new HibernateException(message);
 		}
@@ -69,7 +69,7 @@ public class CastleStaticProxyFactory : IProxyFactory
 		try
 		{
 			object generatedProxy;
-			CastleLazyInitializer initializer = new CastleLazyInitializer(_entityName, _persistentClass, id, _getIdentifierMethod, _setIdentifierMethod, _componentIdType, session);
+			LazyInitializer initializer = new LazyInitializer(_entityName, _persistentClass, id, _getIdentifierMethod, _setIdentifierMethod, _componentIdType, session);
 			IInterceptor[] interceptors = new IInterceptor[] { initializer };
 
 			object[] args;
@@ -102,5 +102,10 @@ public class CastleStaticProxyFactoryFactory : IProxyFactoryFactory
 	public IProxyFactory BuildProxyFactory()
 	{
 		return new CastleStaticProxyFactory();
+	}
+
+	public IProxyValidator ProxyValidator
+	{
+		get { return new DynProxyTypeValidator(); }
 	}
 }

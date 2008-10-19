@@ -21,6 +21,7 @@
 			<include name="log4net.dll" />
 			<include name="NHibernate.dll" />
 			<include name="NHibernate.ProxyGenerators.dll" />
+			<include name="NHibernate.ProxyGenerators.CastleDynamicProxy.dll" />
 			<include name="System.dll" />
 		</assemblyfileset>
 

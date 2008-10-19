@@ -125,7 +125,8 @@ namespace NHibernate.ProxyGenerators.Castle
 		{
 			Configuration nhibernateConfiguration = new Configuration();
 
-			nhibernateConfiguration.AddProperties(GetDefaultNHibernateProperties(options));
+			//nhibernateConfiguration.AddProperties(GetDefaultNHibernateProperties(options));
+			nhibernateConfiguration.SetProperties(GetDefaultNHibernateProperties(options));
 
 			foreach (Assembly inputAssembly in inputAssemblies)
 			{
@@ -221,6 +222,7 @@ namespace NHibernate.ProxyGenerators.Castle
 			references.Add(Assembly.Load("Iesi.Collections"));
 			references.Add(Assembly.Load("log4net"));
 			references.Add(Assembly.Load("Castle.Core"));
+			references.Add(Assembly.Load("NHibernate.ProxyGenerators.CastleDynamicProxy"));
 			references.Add(proxyAssembly);
 
 			AssemblyName[] proxyReferencedAssemblyNames = proxyAssembly.GetReferencedAssemblies();

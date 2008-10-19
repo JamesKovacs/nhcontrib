@@ -17,5 +17,10 @@ namespace NHibernate.ProxyGenerators.Castle
 		{
 			return ProxyFactory;
 		}
+
+		public IProxyValidator ProxyValidator
+		{
+			get { return new DynProxyTypeValidator(); }
+		}
 	}
 }

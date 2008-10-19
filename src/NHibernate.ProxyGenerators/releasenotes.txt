@@ -1,6 +1,14 @@
 A utility for pre-generating lazy-loading proxies for NHibernate. Documentation and examples are available at NHForge.org 
 Any feedback or issue can be sent to NHibernate user group (http://groups.google.com/group/nhusers) and will be greatly anticipated. 
 
+Build ??????????????
+========================
+** Bug Fix
+	* 
+	
+** Improvement
+	* Upgraded to NH Trunk (2.1 Alpha 1, rev 3865)
+	
 Build 1.0.0.Beta 622
 ========================
 ** Bug Fix
