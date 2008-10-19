@@ -34,6 +34,8 @@ namespace NHibernate.Linq.Util
 		{
 			if (transformer != null)
 				criteria.SetResultTransformer(transformer);
+			else
+				criteria.SetResultTransformer(new RootEntityResultTransformer());
 		}
 
 		public static void Add(this ICriteria criteria, IEnumerable<ICriterion> criterion)
