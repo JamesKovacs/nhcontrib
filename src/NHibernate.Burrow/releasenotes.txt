@@ -2,6 +2,25 @@ NHibernate.Burrow is a light weight middleware developed to support .Net applica
 Any feedback or issue can be sent to NHibernate user group(http://groups.google.com/group/nhusers) and will be greatly anticipated. 
 
 
+Build 1.0.0.CR 2
+========================
+Bug
+
+    * [NHB-3] - DeletableEntityBase doesn't delete
+    * [NHB-4] - BurrowEnvironment.Shutdown should reset all SessionFactories
+    * [NHB-5] - PersistantUnitRepo cannot be called before Envrionment starts
+    * [NHB-6] - Test script does not copy artifacts needed for MultiDB Test
+    * [NHB-9] - Flush mode should be reset after Business transaction is finished
+
+New Feature
+
+    * [NHB-8] - Get the NHibernate.Cfg.Configuration for each PersistentUnit
+
+Patch
+
+    * [NHB-2] - Unhandled MappingException in PersistentUnitRepo:GetPU(Type t)
+    * [NHB-7] - Mark Assemblies with Allow Partially Trusted Callers by Default
+
 
 
 Build 1.0.0.CR 1
