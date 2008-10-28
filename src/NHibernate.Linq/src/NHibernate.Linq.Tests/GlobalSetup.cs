@@ -144,11 +144,25 @@ namespace NHibernate.Linq.Tests
 			((IList<User>)timesheets[1].Users).Add(users[0]);
 			((IList<User>)timesheets[0].Users).Add(users[1]);
 
+			var animals = new Animal[]
+			{
+				new Animal() { SerialNumber = "123", BodyWeight = 100 },
+				new Lizard() { SerialNumber = "789", BodyWeight = 40, BodyTemperature = 14 },
+				new Lizard() { SerialNumber = "1234", BodyWeight = 30, BodyTemperature = 18 },
+				new Mammal() { SerialNumber = "5678", BodyWeight = 156, BirthDate = new DateTime(1980, 07, 11) },
+				new Mammal() { SerialNumber = "9101", BodyWeight = 205, BirthDate = new DateTime(1980, 12, 13) },
+				new Mammal() { SerialNumber = "1121", BodyWeight = 115, Pregnant = true }
+			};
+
+			animals[3].Father = animals[4];
+			animals[3].Mother = animals[5];
+
 			using (ISession session = CreateSession())
 			{
 				session.Delete("from Role");
 				session.Delete("from User");
 				session.Delete("from Timesheet");
+				session.Delete("from Animal");
 				session.Flush();
 
 				foreach (Role role in roles)
@@ -159,6 +173,9 @@ namespace NHibernate.Linq.Tests
 
 				foreach (Timesheet timesheet in timesheets)
 					session.Save(timesheet);
+
+				foreach (Animal animal in animals)
+					session.Save(animal);
 
 				session.Flush();
 			}

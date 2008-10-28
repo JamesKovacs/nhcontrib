@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B09778CE-44FD-4BE2-AB1E-9AFDFACB8279}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -64,11 +64,13 @@
     <Compile Include="BinaryBooleanExpressionTests.cs" />
     <Compile Include="CategoryAttribute.cs" />
     <Compile Include="CollectionAssert.cs" />
+    <Compile Include="Entities\Animal.cs" />
     <Compile Include="Entities\AnotherEntity.cs" />
     <Compile Include="Entities\Timesheet.cs" />
     <Compile Include="Entities\UserDto.cs" />
     <Compile Include="EnumTests.cs" />
     <Compile Include="IExpandProviderTests.cs" />
+    <Compile Include="InheritanceTests.cs" />
     <Compile Include="IUpdatableTests.cs" />
     <Compile Include="MethodCallTests.cs" />
     <Compile Include="PropertyMethodMappingTests.cs" />
@@ -84,9 +86,6 @@
     <Compile Include="Entities\UserComponent.cs" />
     <Compile Include="FunctionTests.cs" />
     <Compile Include="GlobalSetup.cs" />
-    <Compile Include="LinqQuerySamples.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MyEnumerableExtensions.cs" />
     <Compile Include="Name.cs" />
     <Compile Include="ObjectDumper.cs" />
@@ -106,6 +105,7 @@
     <EmbeddedResource Include="Entities\Role.hbm.xml" />
     <EmbeddedResource Include="Entities\TimeSheet.hbm.xml" />
     <EmbeddedResource Include="Entities\AnotherEntity.hbm.xml" />
+    <EmbeddedResource Include="Entities\Animal.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

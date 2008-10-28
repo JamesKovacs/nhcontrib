@@ -8,6 +8,7 @@ namespace NHibernate.Linq.Expressions
     {
         private readonly string _alias;
         private readonly IQueryable _query;
+		private readonly System.Type _elementType;
 
         public string Alias
         {
@@ -19,12 +20,21 @@ namespace NHibernate.Linq.Expressions
             get { return _query; }
         }
 
-        public QuerySourceExpression(string alias, IQueryable query)
-            : base(NHibernateExpressionType.QuerySource, query.GetType())
-        {
-            _alias = alias;
-            _query = query;
-        }
+		public System.Type ElementType
+		{
+			get { return _elementType ?? Query.ElementType; }
+		}
+
+		public QuerySourceExpression(string alias, IQueryable query)
+			: this(alias, query, null) { }
+
+		public QuerySourceExpression(string alias, IQueryable query, System.Type elementType)
+			: base(NHibernateExpressionType.QuerySource, query.GetType())
+		{
+			_alias = alias;
+			_query = query;
+			_elementType = elementType;
+		}
 
         public override string ToString()
         {

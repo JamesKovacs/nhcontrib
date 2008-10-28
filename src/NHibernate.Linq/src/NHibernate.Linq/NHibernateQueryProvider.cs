@@ -29,6 +29,7 @@ namespace NHibernate.Linq
 			expression = Evaluator.PartialEval(expression);
 			expression = new BinaryBooleanReducer().Visit(expression);
 			expression = AssociationVisitor.RewriteWithAssociations(_session.SessionFactory, expression);
+			expression = new InheritanceVisitor().Visit(expression);
 			expression = CollectionAliasVisitor.AssignCollectionAccessAliases(expression);
 			expression = new PropertyToMethodVisitor().Visit(expression);
 			expression = new BinaryExpressionOrderer().Visit(expression);

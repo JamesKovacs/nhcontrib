@@ -103,6 +103,14 @@ namespace NHibernate.Linq.Visitors
             return expr;
         }
 
+		protected override Expression VisitTypeIs(TypeBinaryExpression expr)
+		{
+			var visitor = new MemberNameVisitor(rootCriteria);
+			visitor.Visit(expr);
+			visitor.CurrentCriteria.Add(Property.ForName(visitor.MemberName + ".class").Eq(expr.TypeOperand));
+			return expr;
+		}
+
         protected override Expression VisitBinary(BinaryExpression expr)
         {
             switch (expr.NodeType)

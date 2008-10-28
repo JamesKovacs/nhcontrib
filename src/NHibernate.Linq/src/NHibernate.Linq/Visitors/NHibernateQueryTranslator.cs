@@ -52,7 +52,7 @@ namespace NHibernate.Linq.Visitors
         {
             if (rootCriteria == null)
             {
-                rootCriteria = session.CreateCriteria(expr.Query.ElementType, expr.Alias);
+                rootCriteria = session.CreateCriteria(expr.ElementType, expr.Alias);
 				options.Execute(rootCriteria);
             }
             return expr;
@@ -94,6 +94,9 @@ namespace NHibernate.Linq.Visitors
                 case "SelectMany":
                     HandleSelectManyCall(expr);
                     break;
+				case "OfType":
+					//ignore OfType calls -- handled by InheritanceVisitor
+					break;
                 //case "GroupJoin":
                 //    HandleGroupJoinCall(expr);
                 //    break;

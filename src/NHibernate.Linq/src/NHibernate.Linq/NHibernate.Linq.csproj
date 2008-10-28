@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2CF9A83A-BC40-4485-A763-BFF59B2EBDAD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -68,6 +68,7 @@
     <Compile Include="Expressions\EntityExpression.cs" />
     <Compile Include="Expressions\NHibernateExpressionType.cs" />
     <Compile Include="Expressions\PropertyAccessExpression.cs" />
+    <Compile Include="Visitors\InheritanceVisitor.cs" />
     <Compile Include="Visitors\MemberNameVisitor.cs" />
     <Compile Include="Visitors\ImmediateResultsVisitor.cs" />
     <Compile Include="Visitors\NHibernateExpressionVisitor.cs" />

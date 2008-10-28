@@ -70,21 +70,21 @@ namespace NHibernate.Linq.Visitors
             return criteria;
         }
 
-        protected override Expression VisitEntity(EntityExpression expr)
-        {
-            expr = (EntityExpression)base.VisitEntity(expr);
+		protected override Expression VisitEntity(EntityExpression expr)
+		{
+			expr = (EntityExpression)base.VisitEntity(expr);
 
-            if (expr.Type != _rootCriteria.GetRootType())
-            {
-                if (!String.IsNullOrEmpty(expr.AssociationPath))
-                    _currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);
+			if (expr.Expression != null || expr.Type != _rootCriteria.GetRootType())
+			{
+				if (!String.IsNullOrEmpty(expr.AssociationPath))
+					_currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);
 
-                ResetMemberName(expr.Alias + ".");
-            }
-        	_curretnAssociationPath = expr.AssociationPath;
-            _currentExpression = expr;
-            return expr;
-        }
+				ResetMemberName(expr.Alias + ".");
+			}
+			_curretnAssociationPath = expr.AssociationPath;
+			_currentExpression = expr;
+			return expr;
+		}
 
         protected override Expression VisitPropertyAccess(PropertyAccessExpression expr)
         {
