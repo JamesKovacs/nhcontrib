@@ -93,5 +93,21 @@ namespace NHibernate.Linq.Tests
 
             Assert.AreEqual(1, query.Count);
         }
+
+		[Test]
+		public void MammalsViaDynamicInvokedExpression()
+		{
+			//simulate dynamically created where clause
+            Expression<Func<Mammal, bool>> expr1 = mammal => mammal.Pregnant;
+            Expression<Func<Mammal, bool>> expr2 = mammal => false;
+
+            var invokedExpr = Expression.Invoke(expr2, expr1.Parameters.Cast<Expression>());
+            var dynamicWhereClause = Expression.Lambda<Func<Mammal, bool>>
+                  (Expression.AndAlso(expr1.Body, invokedExpr), expr1.Parameters);
+
+			var animals = session.Linq<Mammal>().Where(dynamicWhereClause).ToArray();
+
+			CollectionAssert.AreCountEqual(0, animals);
+		}
     }
 }

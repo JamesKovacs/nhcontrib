@@ -71,9 +71,11 @@ namespace NHibernate.Linq.Visitors
             private Expression Evaluate(Expression e)
             {
                 if (e.NodeType == ExpressionType.Constant)
-                {
-                    return e;
-                }
+					return e;
+
+				if (e.NodeType == ExpressionType.Lambda)
+					return e;
+
                 LambdaExpression lambda = Expression.Lambda(e);
                 Delegate fn = lambda.Compile();
                 return Expression.Constant(fn.DynamicInvoke(null), e.Type);
