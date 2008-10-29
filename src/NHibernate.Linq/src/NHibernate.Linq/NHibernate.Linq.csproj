@@ -55,6 +55,7 @@
     <Compile Include="INHibernateQueryable.cs" />
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Transform\TypeSafeConstructorMemberInitResultTransformer.cs" />
+    <Compile Include="Util\SessionFactoryUtil.cs" />
     <Compile Include="Visitors\BinaryBooleanReducer.cs" />
     <Compile Include="Visitors\BinaryCriterionType.cs" />
     <Compile Include="Visitors\BinaryCriterionVisitor.cs" />

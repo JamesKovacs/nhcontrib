@@ -18,31 +18,32 @@ namespace NHibernate.Linq.Visitors
     /// </summary>
     public class AssociationVisitor : ExpressionVisitor
     {
-        private readonly ISessionFactory _sessionFactory;
+		private readonly ISessionFactoryImplementor _sessionFactory;
+		private readonly IDictionary<string, IClassMetadata> _metaData;
+		private readonly IDictionary<System.Type, string> _proxyTypes;
 
-        public AssociationVisitor(ISessionFactory sessionFactory)
+        public AssociationVisitor(ISessionFactoryImplementor sessionFactory)
         {
             _sessionFactory = sessionFactory;
+			_metaData = _sessionFactory.GetAllClassMetadata();
+			_proxyTypes = _sessionFactory.GetProxyMetaData(_metaData);
         }
 
-        public static Expression RewriteWithAssociations(ISessionFactory sessionFactory, Expression expression)
-        {
-            AssociationVisitor visitor = new AssociationVisitor(sessionFactory);
-            return visitor.Visit(expression);
-        }
+		private IClassMetadata GetMetaData(System.Type type)
+		{
+			if (LinqUtil.IsAnonymousType(type))
+				return null;
 
-        private IClassMetadata GetMetaData(System.Type type)
-        {
-            if (!LinqUtil.IsAnonymousType(type))
-            {
-                try
-                {
-                    return _sessionFactory.GetClassMetadata(type);
-                }
-                catch (MappingException) { /* ignore non-persisted classes */ }
-            }
-            return null;
-        }
+			string entityName = _sessionFactory.TryGetGuessEntityName(type);
+
+			if (!String.IsNullOrEmpty(entityName) && _metaData.ContainsKey(entityName))
+				return _metaData[entityName];
+
+			if (_proxyTypes.ContainsKey(type))
+				return _metaData[_proxyTypes[type]];
+
+			return null;
+		}
 
         private EntityExpression GetParentExpression(MemberExpression expr, out string memberName, out IType nhibernateType)
         {

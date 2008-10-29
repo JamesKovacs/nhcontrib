@@ -4,8 +4,21 @@ using NHibernate.Type;
 
 namespace NHibernate.Linq.Tests.Entities
 {
-	public class User
-	{
+    public interface IUser
+    {
+        int Id { get; set; }
+        string Name { get; set; }
+        int InvalidLoginAttempts { get; set; }
+        DateTime RegisteredAt { get; set; }
+        DateTime? LastLoginDate { get; set; }
+        UserComponent Component { get; set; }
+        Role Role { get; set; }
+        EnumStoredAsString Enum1 { get; set; }
+        EnumStoredAsInt32 Enum2 { get; set; }
+    }
+    
+    public class User : IUser
+    {
         public virtual int Id { get; set; }
 
         public virtual string Name { get; set; }
@@ -32,6 +45,10 @@ namespace NHibernate.Linq.Tests.Entities
             RegisteredAt = registeredAt;
 		}
 	}
+
+
+    
+
 
     public enum EnumStoredAsString { Unspecified, Small, Medium, Large }
 

@@ -102,11 +102,14 @@ namespace NHibernate.Linq.Util
 				throw new InvalidOperationException("Could not get root type on criteria that is not attached to a session");
 
 			ISessionFactoryImplementor factory = criteria.Session.Factory;
-			IEntityPersister persister = factory.GetEntityPersister(criteria.EntityOrClassName);
-			if (persister == null)
+
+			//TODO: need to cache the entityName meta data
+			var entityNames = factory.GetEntityNameMetaData();
+
+			if (!entityNames.ContainsKey(criteria.EntityOrClassName))
 				throw new InvalidOperationException("Could not find entity named: " + criteria.EntityOrClassName);
 
-			return persister.GetMappedClass(EntityMode.Poco);
+			return entityNames[criteria.EntityOrClassName];
 		}
 
 		private static System.Type GetRootType(DetachedCriteria criteria, ISession session)

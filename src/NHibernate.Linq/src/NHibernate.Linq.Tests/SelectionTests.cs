@@ -138,6 +138,17 @@ namespace NHibernate.Linq.Tests
         }
 
         [Test]
+        public void CanSelectWithProxyInterface()
+        {
+			var query = (from user in session.Linq<IUser>()
+						 where user.Name == "ayende"
+						 select user).ToArray();
+
+            Assert.AreEqual(1, query.Length);
+            Assert.AreEqual("ayende", query.First().Name);
+        }
+
+        [Test]
         public void CanSelectBinaryExpressions()
         {
             var query = from user in session.Linq<User>()
