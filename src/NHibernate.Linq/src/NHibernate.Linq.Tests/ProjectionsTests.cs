@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
-using NHibernate.Linq.Tests.Entities;
 using System.Linq;
+using NHibernate.Linq.Tests.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {

@@ -40,13 +40,13 @@ namespace Northwind.Entities
 			public override bool Equals(object obj)
 			{
 				if (((obj == null)
-				     || (obj == DBNull.Value)))
+					 || (obj == DBNull.Value)))
 				{
 					return false;
 				}
-				var entity = ((OrderDetailKey) (obj));
+				var entity = ((OrderDetailKey)(obj));
 				return ((Order == entity.Order)
-				        && (Product == entity.Product));
+						&& (Product == entity.Product));
 			}
 		}
 

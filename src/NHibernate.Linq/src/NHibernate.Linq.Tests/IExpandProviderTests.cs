@@ -1,12 +1,9 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using System.Data.Services;
-using Northwind.Entities;
-using System.Collections;
+using System.Linq;
 using NHibernate.Linq.Tests.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {

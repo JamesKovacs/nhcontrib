@@ -15,8 +15,8 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (Territory))]
-	[SoapInclude(typeof (Territory))]
+	[XmlInclude(typeof(Territory))]
+	[SoapInclude(typeof(Territory))]
 	public class AbstractRegion
 	{
 		public virtual int RegionID { get; set; }

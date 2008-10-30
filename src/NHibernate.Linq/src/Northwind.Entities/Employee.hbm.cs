@@ -15,12 +15,12 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (Employee))]
-	[SoapInclude(typeof (Employee))]
-	[XmlInclude(typeof (EmployeeTerritory))]
-	[SoapInclude(typeof (EmployeeTerritory))]
-	[XmlInclude(typeof (Order))]
-	[SoapInclude(typeof (Order))]
+	[XmlInclude(typeof(Employee))]
+	[SoapInclude(typeof(Employee))]
+	[XmlInclude(typeof(EmployeeTerritory))]
+	[SoapInclude(typeof(EmployeeTerritory))]
+	[XmlInclude(typeof(Order))]
+	[SoapInclude(typeof(Order))]
 	public class AbstractEmployee
 	{
 		public virtual int EmployeeID { get; set; }

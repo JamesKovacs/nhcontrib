@@ -1,5 +1,4 @@
-﻿using System.Linq;
-
+﻿
 namespace NHibernate.Linq
 {
 	/// <summary>

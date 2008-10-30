@@ -10,8 +10,8 @@ namespace NHibernate.Linq.Tests
 		public void AscendingOrderByClause()
 		{
 			var query = from c in nwnd.Customers
-			            orderby c.CustomerID
-			            select c.CustomerID;
+						orderby c.CustomerID
+						select c.CustomerID;
 
 			var ids = query.ToList();
 
@@ -25,8 +25,8 @@ namespace NHibernate.Linq.Tests
 		public void DescendingOrderByClause()
 		{
 			var query = from c in nwnd.Customers
-			            orderby c.CustomerID descending
-			            select c.CustomerID;
+						orderby c.CustomerID descending
+						select c.CustomerID;
 
 			var ids = query.ToList();
 
@@ -48,7 +48,7 @@ namespace NHibernate.Linq.Tests
 
 			if (customers.Count > 1)
 			{
-				Assert.Less(customers[0].Orders.Count,customers[1].Orders.Count);
+				Assert.Less(customers[0].Orders.Count, customers[1].Orders.Count);
 			}
 		}
 
@@ -72,9 +72,9 @@ namespace NHibernate.Linq.Tests
 		public void ComplexAscendingOrderByClause()
 		{
 			var query = from c in nwnd.Customers
-			            where c.Country == "Belgium"
-			            orderby c.Country , c.City
-			            select c.City;
+						where c.Country == "Belgium"
+						orderby c.Country, c.City
+						select c.City;
 
 			var ids = query.ToList();
 
@@ -88,9 +88,9 @@ namespace NHibernate.Linq.Tests
 		public void ComplexDescendingOrderByClause()
 		{
 			var query = from c in nwnd.Customers
-			            where c.Country == "Belgium"
-			            orderby c.Country descending , c.City descending
-			            select c.City;
+						where c.Country == "Belgium"
+						orderby c.Country descending, c.City descending
+						select c.City;
 
 			var ids = query.ToList();
 
@@ -104,9 +104,9 @@ namespace NHibernate.Linq.Tests
 		public void ComplexAscendingDescendingOrderByClause()
 		{
 			var query = from c in nwnd.Customers
-			            where c.Country == "Belgium"
-			            orderby c.Country ascending , c.City descending
-			            select c.City;
+						where c.Country == "Belgium"
+						orderby c.Country ascending, c.City descending
+						select c.City;
 
 			var ids = query.ToList();
 

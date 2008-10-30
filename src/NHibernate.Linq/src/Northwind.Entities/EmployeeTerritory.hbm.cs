@@ -34,13 +34,13 @@ namespace Northwind.Entities
 			public override bool Equals(object obj)
 			{
 				if (((obj == null)
-				     || (obj == DBNull.Value)))
+					 || (obj == DBNull.Value)))
 				{
 					return false;
 				}
-				var entity = ((EmployeeTerritoryKey) (obj));
+				var entity = ((EmployeeTerritoryKey)(obj));
 				return ((Employee == entity.Employee)
-				        && (Territory == entity.Territory));
+						&& (Territory == entity.Territory));
 			}
 		}
 

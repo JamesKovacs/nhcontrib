@@ -15,8 +15,8 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (CustomerCustomerDemo))]
-	[SoapInclude(typeof (CustomerCustomerDemo))]
+	[XmlInclude(typeof(CustomerCustomerDemo))]
+	[SoapInclude(typeof(CustomerCustomerDemo))]
 	public class AbstractCustomerDemographic
 	{
 		public virtual string CustomerTypeID { get; set; }

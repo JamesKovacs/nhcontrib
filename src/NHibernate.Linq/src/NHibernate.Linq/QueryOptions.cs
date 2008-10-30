@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace NHibernate.Linq
 {
@@ -12,7 +11,7 @@ namespace NHibernate.Linq
 
 		public QueryOptions()
 		{
-            this.action = delegate { };
+			this.action = delegate { };
 		}
 
 		public QueryOptions SetCachable(bool cachable)
@@ -27,7 +26,7 @@ namespace NHibernate.Linq
 		}
 		public QueryOptions SetCacheRegion(string cacheRegion)
 		{
-			action += criteria=>criteria.SetCacheRegion(cacheRegion);
+			action += criteria => criteria.SetCacheRegion(cacheRegion);
 			return this;
 		}
 		public QueryOptions SetComment(string comment)
@@ -41,17 +40,17 @@ namespace NHibernate.Linq
 			return this;
 		}
 
-        internal void Execute(ICriteria criteria)
-        {
-            action(criteria);
-        }
+		internal void Execute(ICriteria criteria)
+		{
+			action(criteria);
+		}
 
-        public void AddExpansion(string path)
-        {
-          action += criteria =>
-            {
-              criteria.SetFetchMode(path, FetchMode.Eager);
-            };
-        }
+		public void AddExpansion(string path)
+		{
+			action += criteria =>
+			  {
+				  criteria.SetFetchMode(path, FetchMode.Eager);
+			  };
+		}
 	}
 }

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHibernate.Criterion;
-using NHibernate.Type;
-using NHibernate.Metadata;
-using NHibernate.SqlCommand;
-using NHibernate.Loader.Criteria;
 using NHibernate.Engine;
 using NHibernate.Impl;
-using NHibernate.Transform;
+using NHibernate.Loader.Criteria;
 using NHibernate.Persister.Entity;
+using NHibernate.Transform;
 
 namespace NHibernate.Linq.Util
 {

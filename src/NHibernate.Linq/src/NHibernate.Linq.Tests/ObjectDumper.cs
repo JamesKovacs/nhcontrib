@@ -50,7 +50,7 @@ public class ObjectDumper
 	private void WriteTab()
 	{
 		Write("  ");
-		while (pos%8 != 0) Write(" ");
+		while (pos % 8 != 0) Write(" ");
 	}
 
 	private void WriteObject(string prefix, object o)
@@ -64,7 +64,7 @@ public class ObjectDumper
 		}
 		else if (o is IEnumerable)
 		{
-			foreach (object element in (IEnumerable) o)
+			foreach (object element in (IEnumerable)o)
 			{
 				if (element is IEnumerable && !(element is string))
 				{
@@ -108,13 +108,13 @@ public class ObjectDumper
 					Write(m.Name);
 					Write("=");
 					Type t = f != null ? f.FieldType : p.PropertyType;
-					if (t.IsValueType || t == typeof (string))
+					if (t.IsValueType || t == typeof(string))
 					{
 						WriteValue(f != null ? f.GetValue(o) : p.GetValue(o, null));
 					}
 					else
 					{
-						if (typeof (IEnumerable).IsAssignableFrom(t))
+						if (typeof(IEnumerable).IsAssignableFrom(t))
 						{
 							Write("...");
 						}
@@ -135,7 +135,7 @@ public class ObjectDumper
 					if (f != null || p != null)
 					{
 						Type t = f != null ? f.FieldType : p.PropertyType;
-						if (!(t.IsValueType || t == typeof (string)))
+						if (!(t.IsValueType || t == typeof(string)))
 						{
 							object value = f != null ? f.GetValue(o) : p.GetValue(o, null);
 							if (value != null)
@@ -159,7 +159,7 @@ public class ObjectDumper
 		}
 		else if (o is DateTime)
 		{
-			Write(((DateTime) o).ToShortDateString());
+			Write(((DateTime)o).ToShortDateString());
 		}
 		else if (o is ValueType || o is string)
 		{

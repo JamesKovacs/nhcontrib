@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using System;
 
 namespace NHibernate.Linq.Tests.Entities
 {
 	public class TestContext : NHibernateContext
 	{
-		public TestContext(ISession session) : base(session)
+		public TestContext(ISession session)
+			: base(session)
 		{
 		}
 
@@ -14,14 +14,14 @@ namespace NHibernate.Linq.Tests.Entities
 			get { return Session.Linq<User>(); }
 		}
 
-    public IOrderedQueryable<Role> Roles
-    {
-      get { return Session.Linq<Role>(); }
-    }
+		public IOrderedQueryable<Role> Roles
+		{
+			get { return Session.Linq<Role>(); }
+		}
 
-    public IOrderedQueryable<Timesheet> Timesheets
-    {
-      get { return Session.Linq<Timesheet>(); }
-    }
-  }
+		public IOrderedQueryable<Timesheet> Timesheets
+		{
+			get { return Session.Linq<Timesheet>(); }
+		}
+	}
 }

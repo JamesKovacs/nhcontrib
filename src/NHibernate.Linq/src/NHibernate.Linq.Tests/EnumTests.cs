@@ -1,8 +1,6 @@
-﻿using System;
-using NUnit.Framework;
+﻿using System.Linq;
 using NHibernate.Linq.Tests.Entities;
-using System.Linq;
-using System.Linq.Expressions;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
@@ -13,7 +11,7 @@ namespace NHibernate.Linq.Tests
 		{
 			return GlobalSetup.CreateSession();
 		}
-		
+
 		[Test]
 		public void CanQueryOnEnumStoredAsInt32_High_1()
 		{
@@ -49,7 +47,7 @@ namespace NHibernate.Linq.Tests
 			CanQueryOnEnumStoredAsString(EnumStoredAsString.Small, 1);
 
 		}
-		
+
 		public void CanQueryOnEnumStoredAsString(EnumStoredAsString type, int expectedCount)
 		{
 			var query = (from user in session.Linq<User>()

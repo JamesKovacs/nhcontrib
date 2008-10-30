@@ -4,19 +4,17 @@ using System.Collections.Generic;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NHibernate.Transform;
-using NHibernate.Engine;
-using NHibernate.Impl;
 
 namespace NHibernate.Linq.Util
 {
-    public static class DetachedCriteriaExtensions
-    {
+	public static class DetachedCriteriaExtensions
+	{
 		public static ICriteria Adapt(this DetachedCriteria criteria, ISession session)
-        {
-            if (criteria == null) return null;
+		{
+			if (criteria == null) return null;
 			return new DetachedCriteriaAdapter(criteria, session);
-        }
-    }
+		}
+	}
 
 	public class DetachedCriteriaAdapter : ICriteria
 	{

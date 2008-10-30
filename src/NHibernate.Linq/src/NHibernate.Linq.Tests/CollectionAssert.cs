@@ -1,8 +1,8 @@
 namespace NHibernate.Linq.Tests
 {
 	using System.Collections;
-	using NUnit.Framework;
 	using System.Linq;
+	using NUnit.Framework;
 
 	public class CollectionAssert
 	{

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Data.Services;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Services;
+using System.Linq;
 using System.Reflection;
-using NHibernate.Linq.Util;
 using NHibernate.Metadata;
 
 namespace NHibernate.Linq

@@ -89,7 +89,7 @@ namespace NHibernate.Linq.Util
 		/// <returns>True if the type is a <see cref="T:System.Nullable`1"/> type, otherwise false.</returns>
 		public static bool IsNullableType(System.Type type)
 		{
-			return type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
+			return type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 		}
 
 		/// <summary>
@@ -122,7 +122,7 @@ namespace NHibernate.Linq.Util
 				switch (System.Type.GetTypeCode(type))
 				{
 					case TypeCode.Boolean:
-						return ((bool) value) ? "1" : "0";
+						return ((bool)value) ? "1" : "0";
 					case TypeCode.Byte:
 					case TypeCode.Decimal:
 					case TypeCode.Double:
@@ -143,11 +143,11 @@ namespace NHibernate.Linq.Util
 			return "null";
 		}
 
-        public static Expression StripQuotes(Expression e)
-        {
-            while (e.NodeType == ExpressionType.Quote)
-                e = ((UnaryExpression)e).Operand;
-            return e;
-        }
+		public static Expression StripQuotes(Expression e)
+		{
+			while (e.NodeType == ExpressionType.Quote)
+				e = ((UnaryExpression)e).Operand;
+			return e;
+		}
 	}
 }

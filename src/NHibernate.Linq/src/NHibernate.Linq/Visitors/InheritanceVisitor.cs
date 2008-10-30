@@ -1,14 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
-using NHibernate.Linq.Util;
-using NHibernate.Metadata;
-using NHibernate.SqlCommand;
-using NHibernate.Type;
+﻿using System.Linq.Expressions;
 using NHibernate.Linq.Expressions;
-using NHibernate.Engine;
 
 namespace NHibernate.Linq.Visitors
 {

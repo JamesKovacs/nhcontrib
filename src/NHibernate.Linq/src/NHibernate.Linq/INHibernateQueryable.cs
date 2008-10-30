@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 
 namespace NHibernate.Linq
@@ -10,6 +9,6 @@ namespace NHibernate.Linq
 
 	public interface INHibernateQueryable<T> : INHibernateQueryable, IOrderedQueryable<T>
 	{
-    IQueryable<T> Expand(string path);
-  }
+		IQueryable<T> Expand(string path);
+	}
 }

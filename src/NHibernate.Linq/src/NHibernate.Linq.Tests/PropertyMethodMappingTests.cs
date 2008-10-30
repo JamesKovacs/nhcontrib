@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+﻿using System.Linq;
 using NHibernate.Linq.Tests.Entities;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Linq.Dynamic;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {

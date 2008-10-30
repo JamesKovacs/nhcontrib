@@ -5,7 +5,8 @@ namespace NHibernate.Linq.Tests.Entities
 {
 	public class NorthwindContext : NHibernateContext
 	{
-		public NorthwindContext(ISession session) : base(session)
+		public NorthwindContext(ISession session)
+			: base(session)
 		{
 		}
 

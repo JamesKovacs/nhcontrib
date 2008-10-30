@@ -1,6 +1,6 @@
-using NUnit.Framework;
-using NHibernate.Linq.Tests.Entities;
 using System.Linq;
+using NHibernate.Linq.Tests.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
@@ -22,13 +22,13 @@ namespace NHibernate.Linq.Tests
 		public void HierarchicalQueries()
 		{
 			var children = from s in session.Linq<Role>()
-			            where s.ParentRole != null
-			            select s;
+						   where s.ParentRole != null
+						   select s;
 			Assert.AreEqual(0, children.Count());
 
 			var roots = from s in session.Linq<Role>()
-						   where s.ParentRole == null
-						   select s;
+						where s.ParentRole == null
+						select s;
 			Assert.AreEqual(2, roots.Count());
 		}
 	}

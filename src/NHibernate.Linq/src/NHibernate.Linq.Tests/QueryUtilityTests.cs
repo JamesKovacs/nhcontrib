@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Reflection;
-using NUnit.Framework;
 using NHibernate.Impl;
 using Northwind.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
@@ -16,7 +16,7 @@ namespace NHibernate.Linq.Tests
 		{
 			base.Setup();
 			query = (from c in session.Linq<Customer>()
-			         select c) as INHibernateQueryable<Customer>;
+					 select c) as INHibernateQueryable<Customer>;
 		}
 
 		[Test]
@@ -91,16 +91,16 @@ namespace NHibernate.Linq.Tests
 		[Test]
 		public void ActionIsInvokedForImmediateResult()
 		{
-			CriteriaImpl crit=null;
+			CriteriaImpl crit = null;
 			bool customActionWasCalled = false;
 			query.QueryOptions
 				.SetCachable(true)
 				.RegisterCustomAction(delegate(ICriteria criteria)
-				                      	{
-				                      		Assert.IsNotNull(criteria);
-				                      		crit = criteria as CriteriaImpl;
-				                      		customActionWasCalled = true;
-				                      	});
+										{
+											Assert.IsNotNull(criteria);
+											crit = criteria as CriteriaImpl;
+											customActionWasCalled = true;
+										});
 			query.FirstOrDefault();
 			Assert.IsTrue(crit.Cacheable);
 			Assert.IsTrue(customActionWasCalled);

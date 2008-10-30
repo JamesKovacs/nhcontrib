@@ -23,7 +23,7 @@ namespace NHibernate.Linq.Transform
 		public LinqGroupingResultTransformer(System.Type type, String propertyName)
 		{
 			System.Type[] args = type.GetGenericArguments();
-			groupingType = typeof (Grouping<,>).MakeGenericType(args[0], args[1]);
+			groupingType = typeof(Grouping<,>).MakeGenericType(args[0], args[1]);
 			groups = new Dictionary<Object, IGrouping>();
 			this.propertyName = propertyName;
 
@@ -69,7 +69,7 @@ namespace NHibernate.Linq.Transform
 			}
 			else
 			{
-				var group = (IGrouping) Activator.CreateInstance(groupingType, value);
+				var group = (IGrouping)Activator.CreateInstance(groupingType, value);
 				group.Add(tuple[1]);
 				groups[key] = group;
 				return group;
@@ -118,7 +118,7 @@ namespace NHibernate.Linq.Transform
 		/// <param name="item">The <see cref="T:System.Object"/> to add.</param>
 		public void Add(object item)
 		{
-			list.Add((TElement) item);
+			list.Add((TElement)item);
 		}
 
 		#endregion

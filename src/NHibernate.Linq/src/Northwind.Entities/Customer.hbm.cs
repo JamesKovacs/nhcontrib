@@ -15,10 +15,10 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (CustomerCustomerDemo))]
-	[SoapInclude(typeof (CustomerCustomerDemo))]
-	[XmlInclude(typeof (Order))]
-	[SoapInclude(typeof (Order))]
+	[XmlInclude(typeof(CustomerCustomerDemo))]
+	[SoapInclude(typeof(CustomerCustomerDemo))]
+	[XmlInclude(typeof(Order))]
+	[SoapInclude(typeof(Order))]
 	public class AbstractCustomer
 	{
 		public virtual string CustomerID { get; set; }

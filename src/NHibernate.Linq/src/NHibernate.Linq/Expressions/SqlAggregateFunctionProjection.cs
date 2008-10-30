@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHibernate.Criterion;
+using NHibernate.Linq.Util;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
-using NHibernate.Linq.Util;
 
 namespace NHibernate.Linq.Expressions
 {
@@ -25,7 +25,7 @@ namespace NHibernate.Linq.Expressions
 		}
 
 		public SqlAggregateFunctionProjection(string functionName, string propertyName, int propertyPosition, System.Type returnType,
-		                             object[] paramValues)
+									 object[] paramValues)
 			: base(functionName, propertyName)
 		{
 			ReturnType = returnType;
@@ -41,7 +41,7 @@ namespace NHibernate.Linq.Expressions
 		{
 			if (ReturnType != null)
 			{
-				return new[] {TypeFactory.HeuristicType(ReturnType.Name)};
+				return new[] { TypeFactory.HeuristicType(ReturnType.Name) };
 			}
 
 			return base.GetTypes(criteria, criteriaQuery);

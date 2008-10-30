@@ -15,8 +15,8 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (Product))]
-	[SoapInclude(typeof (Product))]
+	[XmlInclude(typeof(Product))]
+	[SoapInclude(typeof(Product))]
 	public class AbstractCategory
 	{
 		public virtual int CategoryID { get; set; }

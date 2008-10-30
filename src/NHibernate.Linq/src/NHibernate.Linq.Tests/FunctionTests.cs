@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
 using NHibernate.Linq.SqlClient;
-using System.Linq;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
@@ -22,8 +22,8 @@ namespace NHibernate.Linq.Tests
 		public void LeftFunction()
 		{
 			var query = from e in db.Employees
-			            where db.Methods.Substring(e.FirstName, 1, 2) == "An"
-			            select db.Methods.Left(e.FirstName, 3);
+						where db.Methods.Substring(e.FirstName, 1, 2) == "An"
+						select db.Methods.Left(e.FirstName, 3);
 
 			ObjectDumper.Write(query);
 		}
@@ -32,13 +32,13 @@ namespace NHibernate.Linq.Tests
 		public void ReplaceFunction()
 		{
 			var query = from e in db.Employees
-			            where e.FirstName.StartsWith("An")
-			            select new
-			                   	{
-			                   		Before = e.FirstName,
-			                   		AfterMethod = e.FirstName.Replace("An", "Zan"),
-			                   		AfterExtension = db.Methods.Replace(e.FirstName, "An", "Zan")
-			                   	};
+						where e.FirstName.StartsWith("An")
+						select new
+								{
+									Before = e.FirstName,
+									AfterMethod = e.FirstName.Replace("An", "Zan"),
+									AfterExtension = db.Methods.Replace(e.FirstName, "An", "Zan")
+								};
 
 			ObjectDumper.Write(query);
 		}
@@ -47,8 +47,8 @@ namespace NHibernate.Linq.Tests
 		public void CharIndexFunction()
 		{
 			var query = from e in db.Employees
-			            where db.Methods.CharIndex(e.FirstName, 'A') == 1
-			            select e.FirstName;
+						where db.Methods.CharIndex(e.FirstName, 'A') == 1
+						select e.FirstName;
 
 			ObjectDumper.Write(query);
 		}
@@ -57,8 +57,8 @@ namespace NHibernate.Linq.Tests
 		public void IndexOfFunctionExpression()
 		{
 			var query = from e in db.Employees
-			            where e.FirstName.IndexOf("An") == 1
-			            select e.FirstName;
+						where e.FirstName.IndexOf("An") == 1
+						select e.FirstName;
 
 			ObjectDumper.Write(query);
 		}
@@ -67,8 +67,8 @@ namespace NHibernate.Linq.Tests
 		public void IndexOfFunctionProjection()
 		{
 			var query = from e in db.Employees
-			            where e.FirstName.Contains("a")
-			            select e.FirstName.IndexOf('A', 3);
+						where e.FirstName.Contains("a")
+						select e.FirstName.IndexOf('A', 3);
 
 			ObjectDumper.Write(query);
 		}
@@ -77,8 +77,8 @@ namespace NHibernate.Linq.Tests
 		public void TwoFunctionExpression()
 		{
 			var query = from e in db.Employees
-			            where e.FirstName.IndexOf("A") == db.Methods.Month(e.BirthDate)
-			            select e.FirstName;
+						where e.FirstName.IndexOf("A") == db.Methods.Month(e.BirthDate)
+						select e.FirstName;
 
 			ObjectDumper.Write(query);
 		}

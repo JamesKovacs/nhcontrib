@@ -1,53 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-using NHibernate.Linq.Tests.Entities;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Linq.Dynamic;
+using NHibernate.Linq.Tests.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
-    [TestFixture]
-    public class SelectionTests : BaseTest
-    {
-        protected override ISession CreateSession()
-        {
-            return GlobalSetup.CreateSession();
-        }
+	[TestFixture]
+	public class SelectionTests : BaseTest
+	{
+		protected override ISession CreateSession()
+		{
+			return GlobalSetup.CreateSession();
+		}
 
-        [Test]
-        public void CanGetCountOnQueryWithAnonymousType()
-        {
-            var query = from user in session.Linq<User>()
-                        select new { user.Name, RoleName = user.Role.Name };
+		[Test]
+		public void CanGetCountOnQueryWithAnonymousType()
+		{
+			var query = from user in session.Linq<User>()
+						select new { user.Name, RoleName = user.Role.Name };
 
-            int totalCount = query.Count();
+			int totalCount = query.Count();
 
-            Assert.AreEqual(3, totalCount);
-        }
+			Assert.AreEqual(3, totalCount);
+		}
 
-        [Test]
-        public void CanGetFirstWithAnonymousType()
-        {
-            var query = from user in session.Linq<User>()
-                        select new { user.Name, RoleName = user.Role.Name };
+		[Test]
+		public void CanGetFirstWithAnonymousType()
+		{
+			var query = from user in session.Linq<User>()
+						select new { user.Name, RoleName = user.Role.Name };
 
-            var firstUser = query.First();
+			var firstUser = query.First();
 
-            Assert.IsNotNull(firstUser);
-        }
+			Assert.IsNotNull(firstUser);
+		}
 
-        [Test]
-        public void CanAggregateWithAnonymousType()
-        {
-            var query = from user in session.Linq<User>()
-                        select new { user.Name, RoleName = user.Role.Name };
+		[Test]
+		public void CanAggregateWithAnonymousType()
+		{
+			var query = from user in session.Linq<User>()
+						select new { user.Name, RoleName = user.Role.Name };
 
-            var userInfo = query.Aggregate((u1, u2) => u1);
+			var userInfo = query.Aggregate((u1, u2) => u1);
 
-            Assert.IsNotNull(userInfo);
-        }
+			Assert.IsNotNull(userInfo);
+		}
 
 		[Test]
 		public void CanSelectUsingMemberInitExpression()
@@ -126,119 +123,119 @@ namespace NHibernate.Linq.Tests
 			Assert.IsTrue(list.All(u => u.RoleName == "Admin" || u.RoleName == "User" || String.IsNullOrEmpty(u.RoleName)));
 		}
 
-        [Test]
-        public void CanSelectSingleProperty()
-        {
-            var query = from user in session.Linq<User>()
-                        where user.Name == "ayende"
-                        select user.RegisteredAt;
+		[Test]
+		public void CanSelectSingleProperty()
+		{
+			var query = from user in session.Linq<User>()
+						where user.Name == "ayende"
+						select user.RegisteredAt;
 
-            DateTime date = query.Single();
-            Assert.AreEqual(DateTime.Today, date);
-        }
+			DateTime date = query.Single();
+			Assert.AreEqual(DateTime.Today, date);
+		}
 
-        [Test]
-        public void CanSelectWithProxyInterface()
-        {
+		[Test]
+		public void CanSelectWithProxyInterface()
+		{
 			var query = (from user in session.Linq<IUser>()
 						 where user.Name == "ayende"
 						 select user).ToArray();
 
-            Assert.AreEqual(1, query.Length);
-            Assert.AreEqual("ayende", query.First().Name);
-        }
+			Assert.AreEqual(1, query.Length);
+			Assert.AreEqual("ayende", query.First().Name);
+		}
 
-        [Test]
-        public void CanSelectBinaryExpressions()
-        {
-            var query = from user in session.Linq<User>()
-                        select new
-                        {
-                            user.Name,
-                            IsSmall = (user.Enum1 == EnumStoredAsString.Small)
-                        };
+		[Test]
+		public void CanSelectBinaryExpressions()
+		{
+			var query = from user in session.Linq<User>()
+						select new
+						{
+							user.Name,
+							IsSmall = (user.Enum1 == EnumStoredAsString.Small)
+						};
 
-            var list = query.ToList();
+			var list = query.ToList();
 
-            foreach (var user in list)
-            {
-                if (user.Name == "rahien")
-                {
-                    Assert.IsTrue(user.IsSmall);
-                }
-                else
-                {
-                    Assert.IsFalse(user.IsSmall);
-                }
-            }
-        }
+			foreach (var user in list)
+			{
+				if (user.Name == "rahien")
+				{
+					Assert.IsTrue(user.IsSmall);
+				}
+				else
+				{
+					Assert.IsFalse(user.IsSmall);
+				}
+			}
+		}
 
-        [Test]
-        public void CanSelectWithMultipleBinaryExpressions()
-        {
-            var query = from user in session.Linq<User>()
-                        select new
-                        {
-                            user.Name,
-                            IsAyende = (user.Enum1 == EnumStoredAsString.Medium
-                                && user.Enum2 == EnumStoredAsInt32.High)
-                        };
+		[Test]
+		public void CanSelectWithMultipleBinaryExpressions()
+		{
+			var query = from user in session.Linq<User>()
+						select new
+						{
+							user.Name,
+							IsAyende = (user.Enum1 == EnumStoredAsString.Medium
+								&& user.Enum2 == EnumStoredAsInt32.High)
+						};
 
-            var list = query.ToList();
+			var list = query.ToList();
 
-            foreach (var user in list)
-            {
-                if (user.Name == "ayende")
-                {
-                    Assert.IsTrue(user.IsAyende);
-                }
-                else
-                {
-                    Assert.IsFalse(user.IsAyende);
-                }
-            }
-        }
+			foreach (var user in list)
+			{
+				if (user.Name == "ayende")
+				{
+					Assert.IsTrue(user.IsAyende);
+				}
+				else
+				{
+					Assert.IsFalse(user.IsAyende);
+				}
+			}
+		}
 
-        [Test]
-        public void CanSelectWithMultipleBinaryExpressionsWithOr()
-        {
-            var query = from user in session.Linq<User>()
-                        select new
-                        {
-                            user.Name,
-                            IsAyende = (user.Name == "ayende"
-                                || user.Name == "rahien")
-                        };
+		[Test]
+		public void CanSelectWithMultipleBinaryExpressionsWithOr()
+		{
+			var query = from user in session.Linq<User>()
+						select new
+						{
+							user.Name,
+							IsAyende = (user.Name == "ayende"
+								|| user.Name == "rahien")
+						};
 
-            var list = query.ToList();
+			var list = query.ToList();
 
-            foreach (var user in list)
-            {
-                if (user.Name == "ayende" || user.Name == "rahien")
-                {
-                    Assert.IsTrue(user.IsAyende);
-                }
-                else
-                {
-                    Assert.IsFalse(user.IsAyende);
-                }
-            }
-        }
+			foreach (var user in list)
+			{
+				if (user.Name == "ayende" || user.Name == "rahien")
+				{
+					Assert.IsTrue(user.IsAyende);
+				}
+				else
+				{
+					Assert.IsFalse(user.IsAyende);
+				}
+			}
+		}
 
-        [Test]
-        public void CanSelectWithAnySubQuery()
-        {
-            var query = from timesheet in session.Linq<Timesheet>()
-                        select new
-                        {
-                            timesheet.Id,
-                            HasEntries = timesheet.Entries.Any()
-                        };
+		[Test]
+		public void CanSelectWithAnySubQuery()
+		{
+			var query = from timesheet in session.Linq<Timesheet>()
+						select new
+						{
+							timesheet.Id,
+							HasEntries = timesheet.Entries.Any()
+						};
 
-            var list = query.ToList();
+			var list = query.ToList();
 
-            Assert.AreEqual(2, list.Count(t => t.HasEntries));
-            Assert.AreEqual(1, list.Count(t => !t.HasEntries));
-        }
-    }
+			Assert.AreEqual(2, list.Count(t => t.HasEntries));
+			Assert.AreEqual(1, list.Count(t => !t.HasEntries));
+		}
+	}
 }

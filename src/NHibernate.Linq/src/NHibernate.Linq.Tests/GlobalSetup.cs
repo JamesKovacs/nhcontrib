@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using NHibernate;
-using NUnit.Framework;
 using NHibernate.Cfg;
 using NHibernate.Linq.Tests.Entities;
 using NHibernate.Tool.hbm2ddl;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {

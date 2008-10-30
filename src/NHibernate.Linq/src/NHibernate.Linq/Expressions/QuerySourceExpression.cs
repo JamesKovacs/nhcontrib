@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace NHibernate.Linq.Expressions
 {
-    public class QuerySourceExpression : NHibernateExpression
-    {
-        private readonly string _alias;
-        private readonly IQueryable _query;
+	public class QuerySourceExpression : NHibernateExpression
+	{
+		private readonly string _alias;
+		private readonly IQueryable _query;
 		private readonly System.Type _elementType;
 
-        public string Alias
-        {
-            get { return _alias; }
-        }
+		public string Alias
+		{
+			get { return _alias; }
+		}
 
-        public IQueryable Query
-        {
-            get { return _query; }
-        }
+		public IQueryable Query
+		{
+			get { return _query; }
+		}
 
 		public System.Type ElementType
 		{
@@ -36,12 +35,12 @@ namespace NHibernate.Linq.Expressions
 			_elementType = elementType;
 		}
 
-        public override string ToString()
-        {
-            if (!String.IsNullOrEmpty(Alias))
-                return Alias;
+		public override string ToString()
+		{
+			if (!String.IsNullOrEmpty(Alias))
+				return Alias;
 
-            return base.ToString();
-        }
-    }
+			return base.ToString();
+		}
+	}
 }

@@ -1,8 +1,8 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using NUnit.Framework;
 using NHibernate.Linq.Tests.Entities;
+using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
@@ -20,7 +20,7 @@ namespace NHibernate.Linq.Tests
 
 		static BaseTest()
 		{
-			new	GlobalSetup().SetupNHibernate();
+			new GlobalSetup().SetupNHibernate();
 		}
 
 		[SetUp]

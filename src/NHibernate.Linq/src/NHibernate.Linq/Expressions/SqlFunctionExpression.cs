@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using NHibernate.Engine;
 using NHibernate.Criterion;
+using NHibernate.Engine;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
 
@@ -18,20 +18,20 @@ namespace NHibernate.Linq.Expressions
 		}
 
 		public SqlFunctionExpression(String functionName, System.Type returnType, Object[] paramValues,
-		                             System.Type[] paramTypes, ICriterion innerCriterion)
+									 System.Type[] paramTypes, ICriterion innerCriterion)
 			: this(functionName, returnType, paramValues, paramTypes, innerCriterion, 0, null)
 		{
 		}
 
 		public SqlFunctionExpression(String functionName, System.Type returnType, Object[] paramValues,
-		                             System.Type[] paramTypes, ICriterion innerCriterion, int propertyPosition)
+									 System.Type[] paramTypes, ICriterion innerCriterion, int propertyPosition)
 			: this(functionName, returnType, paramValues, paramTypes, innerCriterion, propertyPosition, null)
 		{
 		}
 
 		public SqlFunctionExpression(String functionName, System.Type returnType, Object[] paramValues,
-		                             System.Type[] paramTypes, ICriterion innerCriterion, int propertyPosition,
-		                             SqlFunctionExpression rightFunction)
+									 System.Type[] paramTypes, ICriterion innerCriterion, int propertyPosition,
+									 SqlFunctionExpression rightFunction)
 		{
 			FunctionName = functionName;
 			ReturnType = returnType;
@@ -57,7 +57,7 @@ namespace NHibernate.Linq.Expressions
 				if (String.IsNullOrEmpty(op))
 				{
 					op = InnerCriterion.GetType().GetProperty("Op", BindingFlags.NonPublic | BindingFlags.Instance)
-					     	.GetValue(InnerCriterion, null) as String;
+							.GetValue(InnerCriterion, null) as String;
 				}
 
 				return op;
@@ -79,7 +79,7 @@ namespace NHibernate.Linq.Expressions
 			if (ReturnType != null && InnerCriterion is SimpleExpression)
 			{
 				var simple = InnerCriterion as SimpleExpression;
-                values.Add(new TypedValue(TypeFactory.HeuristicType(ReturnType.Name), simple.Value, EntityMode.Poco));
+				values.Add(new TypedValue(TypeFactory.HeuristicType(ReturnType.Name), simple.Value, EntityMode.Poco));
 			}
 			if (RightFunction != null)
 			{
@@ -90,7 +90,7 @@ namespace NHibernate.Linq.Expressions
 		}
 
 		public virtual SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery,
-		                                     IDictionary<string, IFilter> enabledFilters)
+											 IDictionary<string, IFilter> enabledFilters)
 		{
 			var sql = new SqlStringBuilder();
 			string leftPropertyName = null;
@@ -98,11 +98,11 @@ namespace NHibernate.Linq.Expressions
 
 			if (InnerCriterion is SimpleExpression)
 			{
-				leftPropertyName = ((SimpleExpression) InnerCriterion).PropertyName;
+				leftPropertyName = ((SimpleExpression)InnerCriterion).PropertyName;
 			}
 			else if (InnerCriterion is PropertyExpression)
 			{
-				System.Type type = typeof (PropertyExpression);
+				System.Type type = typeof(PropertyExpression);
 				leftPropertyName =
 					type.GetField("_lhsPropertyName", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(InnerCriterion) as
 					String;
@@ -126,10 +126,10 @@ namespace NHibernate.Linq.Expressions
 			return sql.ToSqlString();
 		}
 
-        public IProjection[] GetProjections()
-        {
-            return null;
-        }
+		public IProjection[] GetProjections()
+		{
+			return null;
+		}
 
 		#endregion
 

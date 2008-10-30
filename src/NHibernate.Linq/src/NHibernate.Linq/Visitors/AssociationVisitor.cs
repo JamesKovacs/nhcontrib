@@ -1,33 +1,31 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+using NHibernate.Engine;
+using NHibernate.Linq.Expressions;
 using NHibernate.Linq.Util;
 using NHibernate.Metadata;
-using NHibernate.SqlCommand;
 using NHibernate.Type;
-using NHibernate.Linq.Expressions;
-using NHibernate.Engine;
 
 namespace NHibernate.Linq.Visitors
 {
-    /// <summary>
-    /// Preprocesses an expression tree replacing MemberAccessExpressions and ParameterExpressions with
-    /// NHibernate-specific PropertyAccessExpressions and EntityExpressions respectively.
-    /// </summary>
-    public class AssociationVisitor : ExpressionVisitor
-    {
+	/// <summary>
+	/// Preprocesses an expression tree replacing MemberAccessExpressions and ParameterExpressions with
+	/// NHibernate-specific PropertyAccessExpressions and EntityExpressions respectively.
+	/// </summary>
+	public class AssociationVisitor : ExpressionVisitor
+	{
 		private readonly ISessionFactoryImplementor _sessionFactory;
 		private readonly IDictionary<string, IClassMetadata> _metaData;
 		private readonly IDictionary<System.Type, string> _proxyTypes;
 
-        public AssociationVisitor(ISessionFactoryImplementor sessionFactory)
-        {
-            _sessionFactory = sessionFactory;
+		public AssociationVisitor(ISessionFactoryImplementor sessionFactory)
+		{
+			_sessionFactory = sessionFactory;
 			_metaData = _sessionFactory.GetAllClassMetadata();
 			_proxyTypes = _sessionFactory.GetProxyMetaData(_metaData);
-        }
+		}
 
 		private IClassMetadata GetMetaData(System.Type type)
 		{
@@ -45,8 +43,8 @@ namespace NHibernate.Linq.Visitors
 			return null;
 		}
 
-        private EntityExpression GetParentExpression(MemberExpression expr, out string memberName, out IType nhibernateType)
-        {
+		private EntityExpression GetParentExpression(MemberExpression expr, out string memberName, out IType nhibernateType)
+		{
 			memberName = null;
 			nhibernateType = null;
 
@@ -56,24 +54,24 @@ namespace NHibernate.Linq.Visitors
 				return null;
 			}
 
-            PropertyAccessExpression propExpr = expr.Expression as PropertyAccessExpression;
-            if (propExpr != null)
-            {
-                memberName = propExpr.Name + "." + expr.Member.Name;
-                nhibernateType = propExpr.Expression.MetaData.GetPropertyType(memberName);
-                return propExpr.Expression;
-            }
+			PropertyAccessExpression propExpr = expr.Expression as PropertyAccessExpression;
+			if (propExpr != null)
+			{
+				memberName = propExpr.Name + "." + expr.Member.Name;
+				nhibernateType = propExpr.Expression.MetaData.GetPropertyType(memberName);
+				return propExpr.Expression;
+			}
 
-            EntityExpression entityExpr = expr.Expression as EntityExpression;
-            if (entityExpr != null)
-            {
-                memberName = expr.Member.Name;
-                nhibernateType = entityExpr.MetaData.GetPropertyType(memberName);
-                return entityExpr;
-            }
+			EntityExpression entityExpr = expr.Expression as EntityExpression;
+			if (entityExpr != null)
+			{
+				memberName = expr.Member.Name;
+				nhibernateType = entityExpr.MetaData.GetPropertyType(memberName);
+				return entityExpr;
+			}
 
-            return null;
-        }
+			return null;
+		}
 
 		private string AssociationPathForEntity(MemberExpression expr)
 		{
@@ -88,61 +86,61 @@ namespace NHibernate.Linq.Visitors
 			return expr.Member.Name;
 		}
 
-        protected override Expression VisitMemberAccess(MemberExpression expr)
-        {
-            expr = (MemberExpression)base.VisitMemberAccess(expr);
+		protected override Expression VisitMemberAccess(MemberExpression expr)
+		{
+			expr = (MemberExpression)base.VisitMemberAccess(expr);
 
-            IClassMetadata metaData = GetMetaData(expr.Type);
+			IClassMetadata metaData = GetMetaData(expr.Type);
 			if (metaData != null)
 			{
 				string associationPath = AssociationPathForEntity(expr);
 				return new EntityExpression(associationPath, expr.Member.Name, expr.Type, metaData, expr.Expression);
 			}
 
-            string memberName;
-            IType nhibernateType;
-            EntityExpression parentExpression = GetParentExpression(expr, out memberName, out nhibernateType);
+			string memberName;
+			IType nhibernateType;
+			EntityExpression parentExpression = GetParentExpression(expr, out memberName, out nhibernateType);
 
-            if (parentExpression != null)
-            {
-                if (nhibernateType.IsCollectionType)
-                {
+			if (parentExpression != null)
+			{
+				if (nhibernateType.IsCollectionType)
+				{
 					CollectionType collectionType = (CollectionType)nhibernateType;
 					IType nhElementType = collectionType.GetElementType((ISessionFactoryImplementor)_sessionFactory);
 
 					System.Type elementType = nhElementType.ReturnedClass;
-                    IClassMetadata elementMetaData = GetMetaData(elementType);
+					IClassMetadata elementMetaData = GetMetaData(elementType);
 
-                    EntityExpression elementExpression = null;
-                    if (elementMetaData != null)
-                        elementExpression = new EntityExpression(null, memberName, elementType, elementMetaData, null);
+					EntityExpression elementExpression = null;
+					if (elementMetaData != null)
+						elementExpression = new EntityExpression(null, memberName, elementType, elementMetaData, null);
 
-                    return new CollectionAccessExpression(memberName, expr.Type, nhibernateType, parentExpression, elementExpression);
-                }
+					return new CollectionAccessExpression(memberName, expr.Type, nhibernateType, parentExpression, elementExpression);
+				}
 
-                return new PropertyAccessExpression(memberName, expr.Type, nhibernateType, parentExpression);
-            }
+				return new PropertyAccessExpression(memberName, expr.Type, nhibernateType, parentExpression);
+			}
 
-            return expr;
-        }
+			return expr;
+		}
 
-        protected override Expression VisitParameter(ParameterExpression expr)
-        {
-            IClassMetadata metaData = GetMetaData(expr.Type);
-            if (metaData != null)
-                return new EntityExpression(null, expr.Name, expr.Type, metaData, null);
+		protected override Expression VisitParameter(ParameterExpression expr)
+		{
+			IClassMetadata metaData = GetMetaData(expr.Type);
+			if (metaData != null)
+				return new EntityExpression(null, expr.Name, expr.Type, metaData, null);
 
-            return expr;
-        }
+			return expr;
+		}
 
-        protected override Expression VisitConstant(ConstantExpression expr)
-        {
-            IQueryable query = expr.Value as IQueryable;
-            if (query != null)
-            {
-                return new QuerySourceExpression("this", query);
-            }
-            return expr;
-        }
-    }
+		protected override Expression VisitConstant(ConstantExpression expr)
+		{
+			IQueryable query = expr.Value as IQueryable;
+			if (query != null)
+			{
+				return new QuerySourceExpression("this", query);
+			}
+			return expr;
+		}
+	}
 }

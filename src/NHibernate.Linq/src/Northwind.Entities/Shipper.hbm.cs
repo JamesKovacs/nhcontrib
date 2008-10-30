@@ -15,8 +15,8 @@ using System.Xml.Serialization;
 namespace Northwind.Entities
 {
 	[Serializable]
-	[XmlInclude(typeof (Order))]
-	[SoapInclude(typeof (Order))]
+	[XmlInclude(typeof(Order))]
+	[SoapInclude(typeof(Order))]
 	public class AbstractShipper
 	{
 		public virtual int ShipperID { get; set; }

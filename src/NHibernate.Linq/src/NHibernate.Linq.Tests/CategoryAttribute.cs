@@ -6,7 +6,7 @@ namespace NHibernate.Linq.Tests
 	{
 		public CategoryAttribute(string name)
 		{
-			
+
 		}
 	}
 }
