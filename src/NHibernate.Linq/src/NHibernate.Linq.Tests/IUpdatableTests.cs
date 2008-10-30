@@ -7,7 +7,6 @@ using NUnit.Framework;
 
 namespace NHibernate.Linq.Tests
 {
-#if USING_NET_35_SP1
 	using System.Data.Services;
 
 	[TestFixture]
@@ -227,5 +226,4 @@ namespace NHibernate.Linq.Tests
 		}
 
 	}
-#endif
 }

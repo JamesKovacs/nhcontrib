@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
-#if USING_NET_35_SP1
 using System.Data.Services;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using NHibernate.Linq.Util;
 using NHibernate.Metadata;
-#endif
 
 namespace NHibernate.Linq
 {
@@ -15,10 +13,7 @@ namespace NHibernate.Linq
 	/// Wraps an <see cref="T:NHibernate.ISession"/> object to provide base functionality
 	/// for custom, database-specific context classes.
 	/// </summary>
-	public abstract class NHibernateContext : IDisposable, ICloneable
-#if USING_NET_35_SP1
-, IUpdatable, IExpandProvider
-#endif
+	public abstract class NHibernateContext : IDisposable, ICloneable, IUpdatable, IExpandProvider
 	{
 		/// <summary>
 		/// Provides access to database provider specific methods.
@@ -107,7 +102,6 @@ namespace NHibernate.Linq
 		#endregion
 
 		#region IUpdatable Members
-#if USING_NET_35_SP1
 
 		List<object> _updateCache = null;
 		/// <summary>
@@ -404,11 +398,9 @@ namespace NHibernate.Linq
 			}
 		}
 
-#endif // USING_NET_35_SP1
 		#endregion
 
 		#region IExpandProvider Members
-#if USING_NET_35_SP1
 
 		IEnumerable IExpandProvider.ApplyExpansions(IQueryable queryable, ICollection<ExpandSegmentCollection> expandPaths)
 		{
@@ -436,7 +428,6 @@ namespace NHibernate.Linq
 			return nHibQuery as IEnumerable;
 		}
 
-#endif
 		#endregion
 	}
 }
