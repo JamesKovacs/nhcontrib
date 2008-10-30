@@ -29,6 +29,93 @@ namespace NHibernate.Linq.Tests
 
 		}
 
+		private static void CreatePatientData(ISession session)
+		{
+			State newYork = new State
+			{
+				Abbreviation = "NY",
+				FullName = "New York"
+			};
+			State florida = new State
+			{
+				Abbreviation = "FL",
+				FullName = "Florida"
+			};
+
+			Physician drDobbs = new Physician
+			{
+				Name = "Dr Dobbs"
+			};
+			Physician drWatson = new Physician
+			{
+				Name = "Dr Watson"
+			};
+
+			PatientRecord bobBarkerRecord = new PatientRecord
+			{
+				Name = new PatientName
+				{
+					FirstName = "Bob",
+					LastName = "Barker"
+				},
+				Address = new Address
+				{
+					AddressLine1 = "123 Main St",
+					City = "New York",
+					State = newYork,
+					ZipCode = "10001"
+				},
+				BirthDate = new DateTime(1930, 1, 1),
+				Gender = Gender.Male
+			};
+
+			PatientRecord johnDoeRecord1 = new PatientRecord
+			{
+				Name = new PatientName
+				{
+					FirstName = "John",
+					LastName = "Doe"
+				},
+				Address = new Address
+				{
+					AddressLine1 = "123 Main St",
+					City = "Tampa",
+					State = florida,
+					ZipCode = "33602"
+				},
+				BirthDate = new DateTime(1969, 1, 1),
+				Gender = Gender.Male
+			};
+
+			PatientRecord johnDoeRecord2 = new PatientRecord
+			{
+				Name = new PatientName
+				{
+					FirstName = "John",
+					LastName = "Doe"
+				},
+				Address = new Address
+				{
+					AddressLine1 = "123 Main St",
+					AddressLine2 = "Apt 2",
+					City = "Tampa",
+					State = florida,
+					ZipCode = "33602"
+				},
+				BirthDate = new DateTime(1969, 1, 1)
+			};
+
+			Patient bobBarker = new Patient(new[] { bobBarkerRecord }, false, drDobbs);
+			Patient johnDoe = new Patient(new[] { johnDoeRecord1, johnDoeRecord2 }, true, drWatson);
+
+			session.Save(newYork);
+			session.Save(florida);
+			session.Save(drDobbs);
+			session.Save(drWatson);
+			session.Save(bobBarker);
+			session.Save(johnDoe);
+		}
+
 		private static void CreateTestData()
 		{
 			var roles = new[]
@@ -163,6 +250,8 @@ namespace NHibernate.Linq.Tests
 				session.Delete("from User");
 				session.Delete("from Timesheet");
 				session.Delete("from Animal");
+				session.Delete("from Physician");
+				session.Delete("from Patient");
 				session.Flush();
 
 				foreach (Role role in roles)
@@ -176,6 +265,8 @@ namespace NHibernate.Linq.Tests
 
 				foreach (Animal animal in animals)
 					session.Save(animal);
+
+				CreatePatientData(session);
 
 				session.Flush();
 			}

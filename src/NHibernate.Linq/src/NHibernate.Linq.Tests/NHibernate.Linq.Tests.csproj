@@ -70,6 +70,7 @@
     <Compile Include="CollectionAssert.cs" />
     <Compile Include="Entities\Animal.cs" />
     <Compile Include="Entities\AnotherEntity.cs" />
+    <Compile Include="Entities\Patient.cs" />
     <Compile Include="Entities\Timesheet.cs" />
     <Compile Include="Entities\UserDto.cs" />
     <Compile Include="EnumTests.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="InheritanceTests.cs" />
     <Compile Include="IUpdatableTests.cs" />
     <Compile Include="MethodCallTests.cs" />
+    <Compile Include="PatientTests.cs" />
     <Compile Include="PropertyMethodMappingTests.cs" />
     <Compile Include="QueryUtilityTests.cs" />
     <Compile Include="RegresstionTests.cs" />
@@ -110,6 +112,7 @@
     <EmbeddedResource Include="Entities\TimeSheet.hbm.xml" />
     <EmbeddedResource Include="Entities\AnotherEntity.hbm.xml" />
     <EmbeddedResource Include="Entities\Animal.hbm.xml" />
+    <EmbeddedResource Include="Entities\Patient.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

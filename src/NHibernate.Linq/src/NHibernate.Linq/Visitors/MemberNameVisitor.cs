@@ -16,32 +16,33 @@ namespace NHibernate.Linq.Visitors
     /// </summary>
     public class MemberNameVisitor : NHibernateExpressionVisitor
     {
-        private readonly ICriteria _rootCriteria;
-        private readonly bool _createCriteriaForCollections;
-        private ICriteria _currentCriteria;
-        private Expression _currentExpression;
-        private StringBuilder _memberNameBuilder;
-    	private string _curretnAssociationPath;
+        private readonly ICriteria rootCriteria;
+        private readonly bool createCriteriaForCollections;
+        private ICriteria currentCriteria;
+        private Expression currentExpression;
+        private StringBuilder memberNameBuilder;
+    	private string currentAssociationPath;
+		private bool isQueringEntity;
 
         public string MemberName
         {
             get
             {
-                if (_memberNameBuilder.Length < 1)
-					return _curretnAssociationPath;
-                string memberName = _memberNameBuilder.ToString();
+				if (isQueringEntity)
+					return currentAssociationPath;
+                string memberName = memberNameBuilder.ToString();
                 return memberName.Substring(0, memberName.Length - 1); //remove the last "."
             }
         }
 
         public ICriteria CurrentCriteria
         {
-            get { return _currentCriteria; }
+            get { return currentCriteria; }
         }
 
         public Expression CurrentExpression
         {
-            get { return _currentExpression; }
+            get { return currentExpression; }
         }
 
         public MemberNameVisitor(ICriteria criteria)
@@ -49,23 +50,23 @@ namespace NHibernate.Linq.Visitors
 
         public MemberNameVisitor(ICriteria criteria, bool createCriteriaForCollections)
         {
-            _rootCriteria = _currentCriteria = criteria;
-            _createCriteriaForCollections = createCriteriaForCollections;
-            _memberNameBuilder = new StringBuilder();
+            this.rootCriteria = this.currentCriteria = criteria;
+            this.createCriteriaForCollections = createCriteriaForCollections;
+            this.memberNameBuilder = new StringBuilder();
         }
 
         private void ResetMemberName(string name)
         {
-            _memberNameBuilder = new StringBuilder();
-            _memberNameBuilder.Append(name);
+            memberNameBuilder = new StringBuilder();
+            memberNameBuilder.Append(name);
         }
 
         private ICriteria EnsureCriteria(string associationPath, string alias)
         {
             ICriteria criteria;
-            if ((criteria = _currentCriteria.GetCriteriaByAlias(alias)) == null)
+            if ((criteria = currentCriteria.GetCriteriaByAlias(alias)) == null)
             {
-                criteria = _currentCriteria.CreateCriteria(associationPath, alias, JoinType.LeftOuterJoin);
+                criteria = currentCriteria.CreateCriteria(associationPath, alias, JoinType.LeftOuterJoin);
             }
             return criteria;
         }
@@ -74,41 +75,47 @@ namespace NHibernate.Linq.Visitors
 		{
 			expr = (EntityExpression)base.VisitEntity(expr);
 
-			if (expr.Expression != null || expr.Type != _rootCriteria.GetRootType())
+			if (expr.Expression != null || expr.Type != rootCriteria.GetRootType())
 			{
 				if (!String.IsNullOrEmpty(expr.AssociationPath))
-					_currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);
+					currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);
 
 				ResetMemberName(expr.Alias + ".");
 			}
-			_curretnAssociationPath = expr.AssociationPath;
-			_currentExpression = expr;
+			currentAssociationPath = expr.AssociationPath;
+			currentExpression = expr;
+			isQueringEntity = true;
+
 			return expr;
 		}
 
         protected override Expression VisitPropertyAccess(PropertyAccessExpression expr)
         {
             expr = (PropertyAccessExpression)base.VisitPropertyAccess(expr);
-            _memberNameBuilder.Append(expr.Name + ".");
+            memberNameBuilder.Append(expr.Name + ".");
 
-            _currentExpression = expr;
+            currentExpression = expr;
+			isQueringEntity = false;
+
             return expr;
         }
 
         protected override Expression VisitCollectionAccess(CollectionAccessExpression expr)
         {
             expr = (CollectionAccessExpression)base.VisitCollectionAccess(expr);
-            _memberNameBuilder.Append(expr.Name + ".");
+            memberNameBuilder.Append(expr.Name + ".");
 
-            _currentExpression = expr;
+            currentExpression = expr;
 
-            if (_createCriteriaForCollections)
+            if (createCriteriaForCollections)
             {
                 if (expr.ElementExpression != null)
                 {
                     EnsureCriteria(expr.Name, expr.ElementExpression.Alias);
                 }
             }
+
+			isQueringEntity = false;
 
             return expr;
         }

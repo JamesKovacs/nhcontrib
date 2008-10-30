@@ -75,13 +75,29 @@ namespace NHibernate.Linq.Visitors
             return null;
         }
 
+		private string AssociationPathForEntity(MemberExpression expr)
+		{
+			PropertyAccessExpression propExpr = expr.Expression as PropertyAccessExpression;
+			if (propExpr != null)
+				return propExpr.Name + "." + expr.Member.Name;
+
+			EntityExpression entityExpr = expr.Expression as EntityExpression;
+			if (entityExpr != null && entityExpr.Expression != null)
+				return entityExpr.Alias + "." + expr.Member.Name;
+
+			return expr.Member.Name;
+		}
+
         protected override Expression VisitMemberAccess(MemberExpression expr)
         {
             expr = (MemberExpression)base.VisitMemberAccess(expr);
 
             IClassMetadata metaData = GetMetaData(expr.Type);
-            if (metaData != null)
-                return new EntityExpression(expr.Member.Name, expr.Member.Name, expr.Type, metaData, expr.Expression);
+			if (metaData != null)
+			{
+				string associationPath = AssociationPathForEntity(expr);
+				return new EntityExpression(associationPath, expr.Member.Name, expr.Type, metaData, expr.Expression);
+			}
 
             string memberName;
             IType nhibernateType;
