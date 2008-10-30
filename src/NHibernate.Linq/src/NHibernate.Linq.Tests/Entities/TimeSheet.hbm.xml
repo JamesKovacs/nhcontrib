@@ -26,5 +26,6 @@
 
     <property name="EntryDate" />
     <property name="NumberOfHours" />
+    <property name="Comments" />
   </class>
 </hibernate-mapping>

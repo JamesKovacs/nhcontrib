@@ -28,6 +28,8 @@ namespace NHibernate.Linq.Tests
 
 		}
 
+		#region Test Data
+
 		private static void CreatePatientData(ISession session)
 		{
 			State newYork = new State
@@ -187,7 +189,8 @@ namespace NHibernate.Linq.Tests
                         new TimesheetEntry
                         {
                             EntryDate = DateTime.Today,
-                            NumberOfHours = 6
+                            NumberOfHours = 6,
+							Comments = "testing 123"
                         },
                         new TimesheetEntry
                         {
@@ -210,7 +213,8 @@ namespace NHibernate.Linq.Tests
                         new TimesheetEntry
                         {
                             EntryDate = DateTime.Now.AddMinutes(10),
-                            NumberOfHours = 8
+                            NumberOfHours = 8,
+							Comments = "testing 456"
                         },
                         new TimesheetEntry
                         {
@@ -270,6 +274,8 @@ namespace NHibernate.Linq.Tests
 				session.Flush();
 			}
 		}
+
+		#endregion
 
 		public static ISession CreateSession()
 		{

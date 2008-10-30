@@ -28,5 +28,6 @@ namespace NHibernate.Linq.Tests.Entities
 		public virtual int Id { get; set; }
 		public virtual DateTime EntryDate { get; set; }
 		public virtual int NumberOfHours { get; set; }
+		public virtual string Comments { get; set; }
 	}
 }

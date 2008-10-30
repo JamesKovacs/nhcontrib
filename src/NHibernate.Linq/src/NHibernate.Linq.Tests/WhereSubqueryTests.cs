@@ -225,5 +225,15 @@ namespace NHibernate.Linq.Tests
 
 			Assert.AreEqual(1, query.Count);
 		}
+
+		[Test]
+		public void TimeSheetsWithStringContainsSubQuery()
+		{
+			var query = (from timesheet in session.Linq<Timesheet>()
+						 where timesheet.Entries.Any(e => e.Comments.Contains("testing"))
+						 select timesheet).ToList();
+
+			Assert.AreEqual(2, query.Count);
+		}
 	}
 }
