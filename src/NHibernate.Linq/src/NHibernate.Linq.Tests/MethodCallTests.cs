@@ -25,5 +25,13 @@ namespace NHibernate.Linq.Tests
 			bool result = session.Linq<User>().Any(u => u.Name == "user-does-not-exist");
 			Assert.IsFalse(result);
 		}
+
+		[Test]
+		public void CanExecuteCountWithOrderByArguments()
+		{
+			var query = session.Linq<User>().OrderBy(u => u.Name);
+			int count = query.Count();
+			Assert.AreEqual(3, count);
+		}
 	}
 }
