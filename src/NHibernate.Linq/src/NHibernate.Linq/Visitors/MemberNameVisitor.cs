@@ -71,11 +71,24 @@ namespace NHibernate.Linq.Visitors
             return criteria;
         }
 
+		private bool IsRootEntity(EntityExpression expr)
+		{
+			var nhExpression = expr.Expression as NHibernateExpression;
+
+			if (nhExpression != null)
+				return false;
+
+			if (expr.Type != rootCriteria.GetRootType())
+				return false;
+
+			return true;
+		}
+
 		protected override Expression VisitEntity(EntityExpression expr)
 		{
 			expr = (EntityExpression)base.VisitEntity(expr);
 
-			if (expr.Expression != null || expr.Type != rootCriteria.GetRootType())
+			if (!IsRootEntity(expr))
 			{
 				if (!String.IsNullOrEmpty(expr.AssociationPath))
 					currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);

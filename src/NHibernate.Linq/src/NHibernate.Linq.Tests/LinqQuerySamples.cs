@@ -12,8 +12,7 @@ namespace NHibernate.Linq.Tests
 		#region Where Tests
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample uses WHERE to filter for Customers in London.")]
+		[Test(Description = "This sample uses WHERE to filter for Customers in London.")]
 		public void DLinq1()
 		{
 			var q =
@@ -44,8 +43,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample uses WHERE to filter for Employees hired during or after 1994.")]
+		[Test(Description = "This sample uses WHERE to filter for Employees hired during or after 1994.")]
 		public void DLinq2()
 		{
 			var q =
@@ -56,9 +54,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description(
-			"This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.")]
+		[Test(Description = "This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.")]
 		public void DLinq3()
 		{
 			var q =
@@ -70,9 +66,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description(
-			"This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.")]
+		[Test(Description = "This sample uses WHERE to filter for Products that have stock below their reorder level and are not discontinued.")]
 		public void DLinq3b()
 		{
 			var q =
@@ -84,9 +78,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description(
-			"This sample uses WHERE to filter out Products that are either UnitPrice is greater than 10 or is discontinued.")]
+		[Test(Description = "This sample uses WHERE to filter out Products that are either UnitPrice is greater than 10 or is discontinued.")]
 		public void DLinq4()
 		{
 			var q =
@@ -95,22 +87,21 @@ namespace NHibernate.Linq.Tests
 				select p;
 
 			AssertByIds(q,
-			new[]{
-1 ,2 ,4 ,5 ,6 ,7 ,8 ,9 ,10,
-11,12,14,15,16,17,18,20,22,
-24,25,26,27,28,29,30,31,32,
-34,35,36,37,38,39,40,42,43,
-44,46,48,49,50,51,53,55,56,
-57,58,59,60,61,62,63,64,65,
-66,67,68,69,70,71,72,73,76,
-77,
-}, x => x.ProductID);
+				new[]{
+					1 ,2 ,4 ,5 ,6 ,7 ,8 ,9 ,10,
+					11,12,14,15,16,17,18,20,22,
+					24,25,26,27,28,29,30,31,32,
+					34,35,36,37,38,39,40,42,43,
+					44,46,48,49,50,51,53,55,56,
+					57,58,59,60,61,62,63,64,65,
+					66,67,68,69,70,71,72,73,76,
+					77,
+					}, x => x.ProductID);
 
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample calls WHERE twice to filter out Products that UnitPrice is greater than 10" +
+		[Test(Description = "This sample calls WHERE twice to filter out Products that UnitPrice is greater than 10" +
 					 " and is discontinued.")]
 		public void DLinq5()
 		{
@@ -122,8 +113,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample uses First to select the first Shipper in the table.")]
+		[Test(Description = "This sample uses First to select the first Shipper in the table.")]
 		public void DLinq6()
 		{
 			Shipper shipper = db.Shippers.First();
@@ -131,8 +121,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample uses First to select the single Customer with CustomerID 'BONAP'.")]
+		[Test(Description = "This sample uses First to select the single Customer with CustomerID 'BONAP'.")]
 		public void DLinq7()
 		{
 			Customer cust = db.Customers.First(c => c.CustomerID == "BONAP");
@@ -140,8 +129,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("WHERE")]
-		[Test]
-		[Description("This sample uses First to select an Order with freight greater than 10.00.")]
+		[Test(Description = "This sample uses First to select an Order with freight greater than 10.00.")]
 		public void DLinq8()
 		{
 			Order ord = db.Orders.First(o => o.Freight > 10.00M);
@@ -153,8 +141,7 @@ namespace NHibernate.Linq.Tests
 		#region Select/Distinct Tests
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT to return a sequence of just the Customers' contact names.")]
+		[Test(Description = "This sample uses SELECT to return a sequence of just the Customers' contact names.")]
 		public void DLinq9()
 		{
 			var q =
@@ -166,29 +153,25 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description(
-			"This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers."
-			)]
+		[Test(Description = "This sample uses SELECT and anonymous types to return a sequence of just the Customers' contact names and phone numbers.")]
 		public void DLinq10()
 		{
 			var q =
 				from c in db.Customers
 				select new { c.ContactName, c.Phone };
 			var items = q.ToList();
-			
+
 			Assert.AreEqual(91, items.Count);
-			
+
 			items.Each(x =>
-			           	{
-			           		Assert.IsNotNull(x.ContactName);
-			           		Assert.IsNotNull(x.Phone);
-			           	});
+						{
+							Assert.IsNotNull(x.ContactName);
+							Assert.IsNotNull(x.Phone);
+						});
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and anonymous types to return " +
+		[Test(Description = "This sample uses SELECT and anonymous types to return " +
 					 "a sequence of just the Employees' names and phone numbers, " +
 					 "with the FirstName and LastName fields combined into a single field, 'Name', " +
 					 "and the HomePhone field renamed to Phone in the resulting sequence.")]
@@ -208,8 +191,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and anonymous types to return " +
+		[Test(Description = "This sample uses SELECT and anonymous types to return " +
 					 "a sequence of all Products' IDs and a calculated value " +
 					 "called HalfPrice which is set to the Product's UnitPrice " +
 					 "divided by 2.")]
@@ -264,8 +246,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and a conditional statment to return a sequence of product " +
+		[Test(Description = "This sample uses SELECT and a conditional statment to return a sequence of product " +
 					 " name and product availability.")]
 		public void DLinq13()
 		{
@@ -277,8 +258,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and a known type to return a sequence of employees' names.")]
+		[Test(Description = "This sample uses SELECT and a known type to return a sequence of employees' names.")]
 		public void DLinq14()
 		{
 			var q =
@@ -289,8 +269,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and WHERE to return a sequence of " +
+		[Test(Description = "This sample uses SELECT and WHERE to return a sequence of " +
 					 "just the London Customers' contact names.")]
 		public void DLinq15()
 		{
@@ -303,8 +282,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses SELECT and anonymous types to return " +
+		[Test(Description = "This sample uses SELECT and anonymous types to return " +
 					 "a shaped subset of the data about Customers.")]
 		public void DLinq16()
 		{
@@ -321,8 +299,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses nested queries to return a sequence of " +
+		[Test(Description = "This sample uses nested queries to return a sequence of " +
 					 "all orders containing their OrderID, a subsequence of the " +
 					 "items in the order where there is a discount, and the money " +
 					 "saved if shipping is not included.")]
@@ -345,8 +322,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses nested queries to return a sequence of " +
+		[Test(Description = "This sample uses nested queries to return a sequence of " +
 					 "all orders containing their OrderID, a subsequence of the " +
 					 "items in the order where there is a discount, and the money " +
 					 "saved if shipping is not included.")]
@@ -369,8 +345,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses nested queries to return a sequence of " +
+		[Test(Description = "This sample uses nested queries to return a sequence of " +
 					 "all orders containing their OrderID, a subsequence of the " +
 					 "items in the order where there is a discount, and the money " +
 					 "saved if shipping is not included.")]
@@ -394,8 +369,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("SELECT/DISTINCT")]
-		[Test]
-		[Description("This sample uses Distinct to select a sequence of the unique cities " +
+		[Test(Description = "This sample uses Distinct to select a sequence of the unique cities " +
 					 "that have Customers.")]
 		public void DLinq18()
 		{
@@ -412,8 +386,7 @@ namespace NHibernate.Linq.Tests
 		#region Count/Sum/Min/Max/Avg Tests
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Count to find the number of Customers in the database.")]
+		[Test(Description = "This sample uses Count to find the number of Customers in the database.")]
 		public void DLinq19()
 		{
 			int q = db.Customers.Count();
@@ -421,8 +394,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Count to find the number of Products in the database " +
+		[Test(Description = "This sample uses Count to find the number of Products in the database " +
 					 "that are not discontinued.")]
 		public void DLinq20()
 		{
@@ -431,8 +403,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Sum to find the total freight over all Orders.")]
+		[Test(Description = "This sample uses Sum to find the total freight over all Orders.")]
 		public void DLinq21()
 		{
 			decimal? q = db.Orders.Select(o => o.Freight).Sum();
@@ -440,8 +411,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Sum to find the total number of units on order over all Products.")]
+		[Test(Description = "This sample uses Sum to find the total number of units on order over all Products.")]
 		public void DLinq22()
 		{
 			int? q = db.Products.Sum(p => p.UnitsOnOrder);
@@ -449,8 +419,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Min to find the lowest unit price of any Product.")]
+		[Test(Description = "This sample uses Min to find the lowest unit price of any Product.")]
 		public void DLinq23()
 		{
 			decimal? q = db.Products.Select(p => p.UnitPrice).Min();
@@ -458,8 +427,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Min to find the lowest freight of any Order.")]
+		[Test(Description = "This sample uses Min to find the lowest freight of any Order.")]
 		public void DLinq24()
 		{
 			decimal? q = db.Orders.Min(o => o.Freight);
@@ -467,8 +435,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Min to find the Products that have the lowest unit price " +
+		[Test(Description = "This sample uses Min to find the Products that have the lowest unit price " +
 					 "in each category.")]
 		[Ignore("TODO")]
 		public void DLinq25()
@@ -490,8 +457,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Max to find the latest hire date of any Employee.")]
+		[Test(Description = "This sample uses Max to find the latest hire date of any Employee.")]
 		public void DLinq26()
 		{
 			DateTime? q = db.Employees.Select(e => e.HireDate).Max();
@@ -499,8 +465,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Max to find the most units in stock of any Product.")]
+		[Test(Description = "This sample uses Max to find the most units in stock of any Product.")]
 		public void DLinq27()
 		{
 			short? q = db.Products.Max(p => p.UnitsInStock);
@@ -508,8 +473,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Max to find the Products that have the highest unit price " +
+		[Test(Description = "This sample uses Max to find the Products that have the highest unit price " +
 					 "in each category.")]
 		[Ignore("TODO")]
 		public void DLinq28()
@@ -531,8 +495,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Average to find the average freight of all Orders.")]
+		[Test(Description = "This sample uses Average to find the average freight of all Orders.")]
 		public void DLinq29()
 		{
 			decimal? q = db.Orders.Select(o => o.Freight).Average();
@@ -540,8 +503,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Average to find the average unit price of all Products.")]
+		[Test(Description = "This sample uses Average to find the average unit price of all Products.")]
 		public void DLinq30()
 		{
 			decimal? q = db.Products.Average(p => p.UnitPrice);
@@ -549,8 +511,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("COUNT/SUM/MIN/MAX/AVG")]
-		[Test]
-		[Description("This sample uses Average to find the Products that have unit price higher than " +
+		[Test(Description = "This sample uses Average to find the Products that have unit price higher than " +
 					 "the average unit price of the category for each category.")]
 		[Ignore("TODO")]
 		public void DLinq31()
@@ -576,8 +537,7 @@ namespace NHibernate.Linq.Tests
 		#region Join Tests
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample uses foreign key navigation in the " +
+		[Test(Description = "This sample uses foreign key navigation in the " +
 					 "from clause to select all orders for customers in London.")]
 		public void DLinqJoin1()
 		{
@@ -590,87 +550,81 @@ namespace NHibernate.Linq.Tests
 			ObjectDumper.Write(q);
 		}
 
-        [Category("JOIN")]
-        [Test]
-        [Description("This sample uses foreign key navigation in the " +
-                     "from clause to select all orders for customers in London.")]
-        public void DLinqJoin1a()
-        {
-            var q =
-                from c in db.Customers
-                from o in c.Orders.Cast<Order>()
-                where c.City == "London"
-                select new { o.OrderDate, o.ShipRegion };
+		[Category("JOIN")]
+		[Test(Description = "This sample uses foreign key navigation in the " +
+					 "from clause to select all orders for customers in London.")]
+		public void DLinqJoin1a()
+		{
+			var q =
+				from c in db.Customers
+				from o in c.Orders.Cast<Order>()
+				where c.City == "London"
+				select new { o.OrderDate, o.ShipRegion };
 
-            ObjectDumper.Write(q);
-        }
-
-        [Category("JOIN")]
-        [Test]
-        [Description("This sample uses foreign key navigation in the " +
-                     "from clause to select all orders for customers in London.")]
-        public void DLinqJoin1b()
-        {
-            var q =
-                from c in db.Customers
-                from o in c.Orders.Cast<Order>()
-                where c.City == "London"
-                select new { c.City, o.OrderDate, o.ShipRegion };
-
-            ObjectDumper.Write(q);
-        }
-
-        [Category("JOIN")]
-        [Test]
-        [Description("This sample uses foreign key navigation in the " +
-                     "from clause to select all orders for customers.")]
-        public void DLinqJoin1c()
-        {
-            var q =
-                from c in db.Customers
-                from o in c.Orders.Cast<Order>()
-                select o;
-
-            var list = q.ToList();
-
-            ObjectDumper.Write(q);
-        }
-
-        [Category("JOIN")]
-        [Test]
-        [Description("This sample uses foreign key navigation in the " +
-                     "from clause to select all orders for customers.")]
-        public void DLinqJoin1d()
-        {
-            var q =
-                from c in db.Customers
-                from o in c.Orders.Cast<Order>()
-                select o.OrderDate;
-
-            var list = q.ToList();
-
-            ObjectDumper.Write(q);
-        }
-
-        [Category("JOIN")]
-        [Test]
-        [Description("This sample uses foreign key navigation in the " +
-                     "from clause to select all orders for customers.")]
-        public void DLinqJoin1e()
-        {
-            var q =
-                from c in db.Customers
-                from o in c.Orders.Cast<Order>()
-                select c;
-
-            var list = q.ToList();
-
-            ObjectDumper.Write(q);
-        }
+			ObjectDumper.Write(q);
+		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample uses foreign key navigation in the " +
+		[Test(Description = "This sample uses foreign key navigation in the " +
+					 "from clause to select all orders for customers in London.")]
+		public void DLinqJoin1b()
+		{
+			var q =
+				from c in db.Customers
+				from o in c.Orders.Cast<Order>()
+				where c.City == "London"
+				select new { c.City, o.OrderDate, o.ShipRegion };
+
+			ObjectDumper.Write(q);
+		}
+
+		[Category("JOIN")]
+		[Test(Description = "This sample uses foreign key navigation in the " +
+					 "from clause to select all orders for customers.")]
+		public void DLinqJoin1c()
+		{
+			var q =
+				from c in db.Customers
+				from o in c.Orders.Cast<Order>()
+				select o;
+
+			var list = q.ToList();
+
+			ObjectDumper.Write(q);
+		}
+
+		[Category("JOIN")]
+		[Test(Description = "This sample uses foreign key navigation in the " +
+					 "from clause to select all orders for customers.")]
+		public void DLinqJoin1d()
+		{
+			var q =
+				from c in db.Customers
+				from o in c.Orders.Cast<Order>()
+				select o.OrderDate;
+
+			var list = q.ToList();
+
+			ObjectDumper.Write(q);
+		}
+
+		[Category("JOIN")]
+		[Test(Description = "This sample uses foreign key navigation in the " +
+					 "from clause to select all orders for customers.")]
+		public void DLinqJoin1e()
+		{
+			var q =
+				from c in db.Customers
+				from o in c.Orders.Cast<Order>()
+				select c;
+
+			var list = q.ToList();
+
+			ObjectDumper.Write(q);
+		}
+
+		[Category("JOIN")]
+		[Test(Description = "This sample uses foreign key navigation in the " +
 					 "where clause to filter for Products whose Supplier is in the USA " +
 					 "that are out of stock.")]
 		public void DLinqJoin2()
@@ -684,8 +638,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample uses foreign key navigation in the " +
+		[Test(Description = "This sample uses foreign key navigation in the " +
 					 "from clause to filter for employees in Seattle, " +
 					 "and also list their territories.")]
 		[Ignore("TODO")]
@@ -701,8 +654,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample uses foreign key navigation in the " +
+		[Test(Description = "This sample uses foreign key navigation in the " +
 					 "select clause to filter for pairs of employees where " +
 					 "one employee reports to the other and where " +
 					 "both employees are from the same City.")]
@@ -725,8 +677,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample explictly joins two tables and projects results from both tables.")]
+		[Test(Description = "This sample explictly joins two tables and projects results from both tables.")]
 		[Ignore("TODO")]
 		public void DLinqJoin5()
 		{
@@ -739,8 +690,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample explictly joins three tables and projects results from each of them.")]
+		[Test(Description = "This sample explictly joins three tables and projects results from each of them.")]
 		[Ignore("TODO")]
 		public void DLinqJoin6()
 		{
@@ -754,10 +704,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description(
-			"This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee."
-			)]
+		[Test(Description = "This sample shows how to get LEFT OUTER JOIN by using DefaultIfEmpty(). The DefaultIfEmpty() method returns null when there is no Order for the Employee.")]
 		[Ignore("TODO")]
 		public void DLinqJoin7()
 		{
@@ -771,8 +718,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample projects a 'let' expression resulting from a join.")]
+		[Test(Description = "This sample projects a 'let' expression resulting from a join.")]
 		[Ignore("TODO")]
 		public void DLinqJoin8()
 		{
@@ -787,8 +733,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample shows a join with a composite key.")]
+		[Test(Description = "This sample shows a join with a composite key.")]
 		[Ignore("TODO")]
 		public void DLinqJoin9()
 		{
@@ -805,8 +750,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("JOIN")]
-		[Test]
-		[Description("This sample shows how to construct a join where one side is nullable and the other isn't.")]
+		[Test(Description = "This sample shows how to construct a join where one side is nullable and the other isn't.")]
 		[Ignore("TODO")]
 		public void DLinqJoin10()
 		{
@@ -825,9 +769,7 @@ namespace NHibernate.Linq.Tests
 		#region Order By Tests
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses orderby to sort Employees " +
-					 "by hire date.")]
+		[Test(Description = "This sample uses orderby to sort Employees by hire date.")]
 		public void DLinq36()
 		{
 			var q =
@@ -839,8 +781,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses where and orderby to sort Orders " +
+		[Test(Description = "This sample uses where and orderby to sort Orders " +
 					 "shipped to London by freight.")]
 		public void DLinq37()
 		{
@@ -854,8 +795,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses orderby to sort Products " +
+		[Test(Description = "This sample uses orderby to sort Products " +
 					 "by unit price from highest to lowest.")]
 		public void DLinq38()
 		{
@@ -868,8 +808,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses a compound orderby to sort Customers " +
+		[Test(Description = "This sample uses a compound orderby to sort Customers " +
 					 "by city and then contact name.")]
 		public void DLinq39()
 		{
@@ -882,8 +821,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses orderby to sort Orders from EmployeeID 1 " +
+		[Test(Description = "This sample uses orderby to sort Orders from EmployeeID 1 " +
 					 "by ship-to country, and then by freight from highest to lowest.")]
 		public void DLinq40()
 		{
@@ -898,8 +836,7 @@ namespace NHibernate.Linq.Tests
 
 
 		[Category("ORDER BY")]
-		[Test]
-		[Description("This sample uses Orderby, Max and Group By to find the Products that have " +
+		[Test(Description = "This sample uses Orderby, Max and Group By to find the Products that have " +
 					 "the highest unit price in each category, and sorts the group by category id.")]
 		[Ignore("TODO")]
 		public void DLinq41()
@@ -926,8 +863,7 @@ namespace NHibernate.Linq.Tests
 		#region Group By Methods
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by to partition Products by " +
+		[Test(Description = "This sample uses group by to partition Products by " +
 					 "CategoryID.")]
 		[Ignore("TODO")]
 		public void DLinq42()
@@ -952,8 +888,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Max " +
+		[Test(Description = "This sample uses group by and Max " +
 					 "to find the maximum unit price for each CategoryID.")]
 		[Ignore("TODO")]
 		public void DLinq43()
@@ -972,8 +907,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Min " +
+		[Test(Description = "This sample uses group by and Min " +
 					 "to find the minimum unit price for each CategoryID.")]
 		public void DLinq44()
 		{
@@ -991,8 +925,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Average " +
+		[Test(Description = "This sample uses group by and Average " +
 					 "to find the average UnitPrice for each CategoryID.")]
 		public void DLinq45()
 		{
@@ -1010,8 +943,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Sum " +
+		[Test(Description = "This sample uses group by and Sum " +
 					 "to find the total UnitPrice for each CategoryID.")]
 		public void DLinq46()
 		{
@@ -1029,8 +961,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Count " +
+		[Test(Description = "This sample uses group by and Count " +
 					 "to find the number of Products in each CategoryID.")]
 		public void DLinq47()
 		{
@@ -1048,8 +979,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Count " +
+		[Test(Description = "This sample uses group by and Count " +
 					 "to find the number of Products in each CategoryID " +
 					 "that are discontinued.")]
 		public void DLinq48()
@@ -1068,8 +998,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses group by and Count " +
+		[Test(Description = "This sample uses group by and Count " +
 					 "to find the number of Products in each CategoryID " +
 					 "that are not discontinued.")]
 		public void DLinq48b()
@@ -1088,8 +1017,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses a where clause after a group by clause " +
+		[Test(Description = "This sample uses a where clause after a group by clause " +
 					 "to find all categories that have at least 10 products.")]
 		public void DLinq49()
 		{
@@ -1108,8 +1036,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses Group By to group products by CategoryID and SupplierID.")]
+		[Test(Description = "This sample uses Group By to group products by CategoryID and SupplierID.")]
 		[Ignore("TODO")]
 		public void DLinq50()
 		{
@@ -1123,8 +1050,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("GROUP BY/HAVING")]
-		[Test]
-		[Description("This sample uses Group By to return two sequences of products. " +
+		[Test(Description = "This sample uses Group By to return two sequences of products. " +
 					 "The first sequence contains products with unit price " +
 					 "greater than 10. The second sequence contains products " +
 					 "with unit price less than or equal to 10.")]
@@ -1144,8 +1070,7 @@ namespace NHibernate.Linq.Tests
 		#region Exists/In/Any/All Methods
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Customers that have no Orders.")]
+		[Test(Description = "This sample uses Any to return only Customers that have no Orders.")]
 		public void DLinq52()
 		{
 			var q =
@@ -1155,13 +1080,12 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Customer c in q)
-                Assert.IsTrue(!c.Orders.Cast<Order>().Any());
+			foreach (Customer c in q)
+				Assert.IsTrue(!c.Orders.Cast<Order>().Any());
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Customers that have Orders.")]
+		[Test(Description = "This sample uses Any to return only Customers that have Orders.")]
 		public void DLinq52b()
 		{
 			var q =
@@ -1171,13 +1095,12 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Customer c in q)
-                Assert.IsTrue(c.Orders.Cast<Order>().Any());
+			foreach (Customer c in q)
+				Assert.IsTrue(c.Orders.Cast<Order>().Any());
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Categories that have " +
+		[Test(Description = "This sample uses Any to return only Categories that have " +
 					 "at least one Discontinued product.")]
 		public void DLinq53()
 		{
@@ -1186,15 +1109,14 @@ namespace NHibernate.Linq.Tests
 				where c.Products.Cast<Product>().Any(p => p.Discontinued)
 				select c;
 
-            ObjectDumper.Write(q);
+			ObjectDumper.Write(q);
 
-            foreach (Category c in q)
-                Assert.IsTrue(c.Products.Cast<Product>().Any(p => p.Discontinued));
+			foreach (Category c in q)
+				Assert.IsTrue(c.Products.Cast<Product>().Any(p => p.Discontinued));
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Categories that have " +
+		[Test(Description = "This sample uses Any to return only Categories that have " +
 					 "zero Discontinued products.")]
 		public void DLinq53b()
 		{
@@ -1205,13 +1127,12 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Category c in q)
-                Assert.IsTrue(c.Products.Cast<Product>().Any(p => !p.Discontinued));
+			foreach (Category c in q)
+				Assert.IsTrue(c.Products.Cast<Product>().Any(p => !p.Discontinued));
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Categories that does not have " +
+		[Test(Description = "This sample uses Any to return only Categories that does not have " +
 					 "at least one Discontinued product.")]
 		public void DLinq53c()
 		{
@@ -1222,13 +1143,12 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Category c in q)
-                Assert.IsTrue(!c.Products.Cast<Product>().Any(p => p.Discontinued));
+			foreach (Category c in q)
+				Assert.IsTrue(!c.Products.Cast<Product>().Any(p => p.Discontinued));
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses Any to return only Categories that does not have " +
+		[Test(Description = "This sample uses Any to return only Categories that does not have " +
 					 "any Discontinued products.")]
 		public void DLinq53d()
 		{
@@ -1239,13 +1159,12 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Category c in q)
-                Assert.IsTrue(!c.Products.Cast<Product>().Any(p => !p.Discontinued));
+			foreach (Category c in q)
+				Assert.IsTrue(!c.Products.Cast<Product>().Any(p => !p.Discontinued));
 		}
 
 		[Category("EXISTS/IN/ANY/ALL")]
-		[Test]
-		[Description("This sample uses All to return Customers whom all of their orders " +
+		[Test(Description = "This sample uses All to return Customers whom all of their orders " +
 					 "have been shipped to their own city or whom have no orders.")]
 		[Ignore("TODO")]
 		public void DLinq54()
@@ -1257,8 +1176,8 @@ namespace NHibernate.Linq.Tests
 
 			ObjectDumper.Write(q);
 
-            foreach (Customer c in q)
-                Assert.IsTrue(c.Orders.Cast<Order>().All(o => o.ShipCity == c.City));
+			foreach (Customer c in q)
+				Assert.IsTrue(c.Orders.Cast<Order>().All(o => o.ShipCity == c.City));
 		}
 
 		#endregion Exists/In/Any/All Methods
@@ -1266,8 +1185,7 @@ namespace NHibernate.Linq.Tests
 		#region Union Methods
 
 		[Category("UNION ALL/UNION/INTERSECT")]
-		[Test]
-		[Description("This sample uses Concat to return a sequence of all Customer and Employee " +
+		[Test(Description = "This sample uses Concat to return a sequence of all Customer and Employee " +
 					 "phone/fax numbers.")]
 		[Ignore("TODO")]
 		public void DLinq55()
@@ -1287,8 +1205,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("UNION ALL/UNION/INTERSECT")]
-		[Test]
-		[Description("This sample uses Concat to return a sequence of all Customer and Employee " +
+		[Test(Description = "This sample uses Concat to return a sequence of all Customer and Employee " +
 					 "name and phone number mappings.")]
 		[Ignore("TODO")]
 		public void DLinq56()
@@ -1305,8 +1222,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("UNION ALL/UNION/INTERSECT")]
-		[Test]
-		[Description("This sample uses Union to return a sequence of all countries that either " +
+		[Test(Description = "This sample uses Union to return a sequence of all countries that either " +
 					 "Customers or Employees are in.")]
 		[Ignore("TODO")]
 		public void DLinq57()
@@ -1323,8 +1239,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("UNION ALL/UNION/INTERSECT")]
-		[Test]
-		[Description("This sample uses Intersect to return a sequence of all countries that both " +
+		[Test(Description = "This sample uses Intersect to return a sequence of all countries that both " +
 					 "Customers and Employees live in.")]
 		[Ignore("TODO")]
 		public void DLinq58()
@@ -1341,8 +1256,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("UNION ALL/UNION/INTERSECT")]
-		[Test]
-		[Description("This sample uses Except to return a sequence of all countries that " +
+		[Test(Description = "This sample uses Except to return a sequence of all countries that " +
 					 "Customers live in but no Employees live in.")]
 		[Ignore("TODO")]
 		public void DLinq59()
@@ -1363,8 +1277,7 @@ namespace NHibernate.Linq.Tests
 		#region Top/Bottom/Paging Methods
 
 		[Category("TOP/BOTTOM")]
-		[Test]
-		[Description("This sample uses Take to select the first 5 Employees hired.")]
+		[Test(Description = "This sample uses Take to select the first 5 Employees hired.")]
 		public void DLinq60()
 		{
 			var q = (
@@ -1377,8 +1290,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("TOP/BOTTOM")]
-		[Test]
-		[Description("This sample uses Skip to select all but the 10 most expensive Products.")]
+		[Test(Description = "This sample uses Skip to select all but the 10 most expensive Products.")]
 		public void DLinq61()
 		{
 			var q = (
@@ -1391,8 +1303,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("Paging")]
-		[Test]
-		[Description("This sample uses the Skip and Take operators to do paging by " +
+		[Test(Description = "This sample uses the Skip and Take operators to do paging by " +
 					 "skipping the first 50 records and then returning the next 10, thereby " +
 					 "providing the data for page 6 of the Products table.")]
 		public void DLinq62()
@@ -1408,8 +1319,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Category("Paging")]
-		[Test]
-		[Description("This sample uses a where clause and the Take operator to do paging by, " +
+		[Test(Description = "This sample uses a where clause and the Take operator to do paging by, " +
 					 "first filtering to get only the ProductIDs above 50 (the last ProductID " +
 					 "from page 5), then ordering by ProductID, and finally taking the first 10 results, " +
 					 "thereby providing the data for page 6 of the Products table.  " +
