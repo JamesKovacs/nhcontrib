@@ -157,6 +157,20 @@ namespace NHibernate.Linq.Visitors
 		{
 			NewExpression newExpr = base.VisitNew(expr);
 			_transformer = new TypeSafeConstructorMemberInitResultTransformer(expr);
+
+			var aggregators = expr.Arguments.Where(arg => arg is MethodCallExpression && SupportsMethod(((MethodCallExpression)arg).Method.Name));
+			if (aggregators.Any())
+			{
+				foreach (var exp in expr.Arguments.Except(aggregators))
+				{
+					string propertyName = MemberNameVisitor.GetMemberName(_rootCriteria, exp);
+					if (!String.IsNullOrEmpty(propertyName))
+					{
+						_projections.Add(NHProjections.GroupProperty(propertyName));
+					}
+				}
+			}
+
 			return newExpr;
 		}
 

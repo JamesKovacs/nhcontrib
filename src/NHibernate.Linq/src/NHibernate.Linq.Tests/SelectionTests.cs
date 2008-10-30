@@ -237,5 +237,21 @@ namespace NHibernate.Linq.Tests
 			Assert.AreEqual(2, list.Count(t => t.HasEntries));
 			Assert.AreEqual(1, list.Count(t => !t.HasEntries));
 		}
+
+		[Test]
+		public void CanSelectWithAggregateSubQuery()
+		{
+			var timesheets = (from timesheet in session.Linq<Timesheet>()
+							  select new
+							  {
+								  timesheet.Id,
+								  EntryCount = timesheet.Entries.Count
+							  }).ToArray();
+
+			Assert.AreEqual(3, timesheets.Length);
+			Assert.AreEqual(0, timesheets[0].EntryCount);
+			Assert.AreEqual(2, timesheets[1].EntryCount);
+			Assert.AreEqual(4, timesheets[2].EntryCount);
+		}
 	}
 }

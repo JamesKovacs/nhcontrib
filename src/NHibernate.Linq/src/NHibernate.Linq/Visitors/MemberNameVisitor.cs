@@ -26,7 +26,7 @@ namespace NHibernate.Linq.Visitors
 		{
 			get
 			{
-				if (isQueringEntity)
+				if (isQueringEntity || memberNameBuilder.Length < 1)
 					return currentAssociationPath;
 				string memberName = memberNameBuilder.ToString();
 				return memberName.Substring(0, memberName.Length - 1); //remove the last "."
