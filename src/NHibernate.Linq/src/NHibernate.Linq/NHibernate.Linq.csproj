@@ -64,6 +64,7 @@
     <Compile Include="CriteriaResultReader.cs" />
     <Compile Include="Visitors\BinaryExpressionOrderer.cs" />
     <Compile Include="Visitors\CollectionAliasVisitor.cs" />
+    <Compile Include="Visitors\RootVisitor.cs" />
     <Compile Include="Visitors\EntityExpressionVisitor.cs" />
     <Compile Include="Visitors\Evaluator.cs" />
     <Compile Include="Expressions\EntityExpression.cs" />

@@ -122,7 +122,7 @@ namespace NHibernate.Linq.Visitors
 			{
 				if (expr.ElementExpression != null)
 				{
-					EnsureCriteria(expr.Name, expr.ElementExpression.Alias);
+					currentCriteria = EnsureCriteria(expr.Name, expr.ElementExpression.Alias);
 				}
 			}
 
