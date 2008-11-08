@@ -2,6 +2,17 @@ NHibernate.Burrow is a light weight middleware developed to support .Net applica
 Any feedback or issue can be sent to NHibernate user group(http://groups.google.com/group/nhusers) and will be greatly anticipated. 
 
 
+Build 1.0.0.GA
+========================
+Breaking change:
+In configuration file the section <persistantUnits> is now renamed to <persistenceUnits> 
+
+Bug
+
+    * [NHB-10] - Assembly info should be excluded from proj and svn
+    * [NHB-11] - Naming incorrect persistantUnits should be persistenceUnits
+
+
 Build 1.0.0.CR 2
 ========================
 Bug
