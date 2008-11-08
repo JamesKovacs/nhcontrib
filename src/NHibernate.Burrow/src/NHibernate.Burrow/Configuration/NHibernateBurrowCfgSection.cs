@@ -26,20 +26,20 @@ namespace NHibernate.Burrow.Configuration
         /// Declare a collection element represented 
         /// in the configuration file by the sub-section
         /// <![CDATA[
-        /// <persistantUnits> <add .../> </persistantUnits> 
+        /// <persistenceUnits> <add .../> </persistenceUnits> 
         /// Note: the "IsDefaultCollection = false" 
         /// instructs the .NET Framework to build a nested 
-        /// section like <persistantUnits> ...</persistantUnits>.
+        /// section like <persistenceUnits> ...</persistenceUnits>.
         /// ]]>
         /// </remarks>
-        [ConfigurationProperty("persistantUnits", IsDefaultCollection = false)]
+        [ConfigurationProperty("persistenceUnits", IsDefaultCollection = false)]
         public PersistenceUnitElementCollection PersistenceUnits
         {
             get
             {
-                PersistenceUnitElementCollection persistantUnits =
-                    (PersistenceUnitElementCollection) base["persistantUnits"];
-                return persistantUnits;
+                PersistenceUnitElementCollection persistenceUnits =
+                    (PersistenceUnitElementCollection) base["persistenceUnits"];
+                return persistenceUnits;
             }
         }
 

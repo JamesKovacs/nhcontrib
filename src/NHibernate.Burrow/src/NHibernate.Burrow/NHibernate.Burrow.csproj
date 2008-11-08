@@ -103,9 +103,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Configuration\Util.cs" />
     <Compile Include="Exceptions\ChangeConfigWhenRunningException.cs" />
     <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
