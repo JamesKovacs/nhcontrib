@@ -1,6 +1,9 @@
 NHibernate.Burrow is a light weight middleware developed to support .Net applications using NHibernate (maybe also referred as NH in this article) as ORM framework by providing advanced and smart session/transaction management and other facilitates. Documentation and examples are available at NHForge.net. 
 Any feedback or issue can be sent to NHibernate user group(http://groups.google.com/group/nhusers) and will be greatly anticipated. 
 
+Build 1.0.1.GA
+========================
+Build against NHibernate 2.0.1 GA
 
 Build 1.0.0.GA
 ========================

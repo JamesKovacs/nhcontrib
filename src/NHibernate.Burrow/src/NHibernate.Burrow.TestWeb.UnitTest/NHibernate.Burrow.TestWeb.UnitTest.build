@@ -46,7 +46,7 @@
 		<copy todir="${testWebUnitTest.bin.dir}" >
 			<fileset basedir="${bin.dir}">
 				<include name="Interop.SHDocVw.dll" /> 
-				<include name="nunit.core.dll" /> 
+				<include name="nunit.*.dll" /> 
 				<include name="WatiN.Core.dll" /> 
 			</fileset>
 		</copy>
