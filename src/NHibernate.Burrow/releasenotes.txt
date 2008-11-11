@@ -5,6 +5,11 @@ Build 1.0.1.GA
 ========================
 Build against NHibernate 2.0.1 GA
 
+** Improvement
+    * Update to NHibernate 2.0.1 GA
+	* Update to NUnit 2.4.6
+
+	
 Build 1.0.0.GA
 ========================
 Breaking change:
