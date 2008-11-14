@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConversationStatesFixture.cs" />
+    <Compile Include="FrameFixture.cs" />
     <Compile Include="CustomerErrorHandlingFixture.cs" />
     <Compile Include="GridViewEventsFixture.cs" />
     <Compile Include="MasterPageFixture.cs" />

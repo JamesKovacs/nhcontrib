@@ -41,7 +41,9 @@ namespace NHibernate.Burrow.WebUtil.Impl
             {
 				up.ContentTemplateContainer.Controls.Add(holder);
 			}else {
-					page.Form.Controls.Add(holder);
+				if(page.Form == null)
+					return; //for a page without form, there is no way to track status, and thus no need for this holder to be placed.
+				page.Form.Controls.Add(holder);
 			}
 		}
   
