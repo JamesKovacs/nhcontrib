@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 namespace NHibernate.Burrow.Util
@@ -45,8 +46,14 @@ namespace NHibernate.Burrow.Util
             {
                 return null;
             }
-            PropertyInfo pi = o.GetType().GetProperty("Id");
-            if (pi != null)
+        	PropertyInfo pi = null;
+			try {
+        		 pi = o.GetType().GetProperty("Id");
+        	}
+        	catch ( AmbiguousMatchException e) {
+        		 
+        	}
+			if (pi != null)
             {
                 return pi.GetValue(o, null);
             }
