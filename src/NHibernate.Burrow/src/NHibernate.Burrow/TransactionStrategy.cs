@@ -35,24 +35,24 @@ namespace NHibernate.Burrow
         
 
 
-        internal abstract void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms);
-        internal abstract void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms);
-        internal abstract void OnConversationEnds(IEnumerable<SessionManager> sms);
-        internal abstract void OnSessionUsed(SessionManager sm);
+        internal abstract void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionAndTransactionManager> sms);
+        internal abstract void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionAndTransactionManager> sms);
+        internal abstract void OnConversationEnds(IEnumerable<SessionAndTransactionManager> sms);
+        internal abstract void OnSessionUsed(SessionAndTransactionManager sm);
 
-		internal abstract void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms);
+		internal abstract void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionAndTransactionManager> sms);
 		 
         private abstract class ManagedTransaction : TransactionStrategy
         {
-            internal override void OnConversationEnds(IEnumerable<SessionManager> sms)
+            internal sealed override void OnConversationEnds(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.CommitAndClose();
                 }
             }
 
-            internal override void OnSessionUsed(SessionManager sm)
+            internal sealed override void OnSessionUsed(SessionAndTransactionManager sm)
             {
                 if(!sm.Transaction.InTransaction)
                     sm.Transaction.Begin(sm.GetSession());
@@ -62,18 +62,18 @@ namespace NHibernate.Burrow
 
         private class TransactionWithWorkSpaceStrategy : ManagedTransaction
         {
-            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms)
+            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionAndTransactionManager> sms)
             { }
 
-            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms)
+            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.CommitAndDisconnect();
                 }
             }
 
-			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionAndTransactionManager> sms)
 			{
 
 			}
@@ -82,17 +82,17 @@ namespace NHibernate.Burrow
 
         private class BusinessTransactionStrategy : TransactionWithWorkSpaceStrategy
         {
-            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms)
+            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.SetFlushMode(FlushMode.Never);
                 }
             }
 
-			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionAndTransactionManager> sms)
 			{
-				foreach (SessionManager sm in sms)
+				foreach (SessionAndTransactionManager sm in sms)
 				{
 					FlushMode fm = sm.GetFlushMode();
 					if (fm != FlushMode.Never)
@@ -106,17 +106,17 @@ namespace NHibernate.Burrow
 
         private class LongDBTransactionStrategy : ManagedTransaction
         {
-            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms)
+            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.SetFlushMode(FlushMode.Auto);
                 }
             }
 
-            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms)
+            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionAndTransactionManager> sms)
             {}
-			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionAndTransactionManager> sms)
 			{
 
 			}
@@ -124,27 +124,27 @@ namespace NHibernate.Burrow
 
         private class ManualTransactionStrategy : TransactionStrategy
         {
-            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionManager> sms)
+            internal override void ChangeFlushModeOnConversationBeginsSpan(IEnumerable<SessionAndTransactionManager> sms)
             {}
-			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionManager> sms)
+			internal override void ChangeFlushModeOnConversationStopsSpan(IEnumerable<SessionAndTransactionManager> sms)
 			{}
-            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionManager> sms)
+            internal override void OnWorkSpaceClosedBeforeConversationEnds(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.Disconnect();
                 }
             }
 
-            internal override void OnConversationEnds(IEnumerable<SessionManager> sms)
+            internal override void OnConversationEnds(IEnumerable<SessionAndTransactionManager> sms)
             {
-                foreach (SessionManager sm in sms)
+                foreach (SessionAndTransactionManager sm in sms)
                 {
                     sm.CloseSession();
                 }
             }
 
-            internal override void OnSessionUsed(SessionManager sm)
+            internal override void OnSessionUsed(SessionAndTransactionManager sm)
             {
             }
         }

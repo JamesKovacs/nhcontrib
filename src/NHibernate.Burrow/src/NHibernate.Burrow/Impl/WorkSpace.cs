@@ -89,7 +89,7 @@ namespace NHibernate.Burrow.Impl
             {
                 AbstractConversation c =
                     new BurrowFramework().BurrowEnvironment.Configuration.ManualTransactionManagement ?
-                    (AbstractConversation) new ManualTransactionConversationImpl() : new ConversationWithManagedTransactionImpl();
+                    (AbstractConversation) new ConversationWithManualTransactionImpl() : new ConversationWithManagedTransactionImpl();
                 return new WorkSpace(c);
             }
         }

@@ -17,8 +17,8 @@ namespace NHibernate.Burrow.Impl
 		private readonly Guid id = Guid.NewGuid();
 		private readonly IDictionary<string, object> items = new Dictionary<string, object>();
 		private readonly GuidDataContainer safeItems = new GuidDataContainer();
-		protected readonly IDictionary<PersistenceUnit, SessionManager> sessManagers =
-			new Dictionary<PersistenceUnit, SessionManager>();
+		protected readonly IDictionary<PersistenceUnit, SessionAndTransactionManager> sessManagers =
+			new Dictionary<PersistenceUnit, SessionAndTransactionManager>();
 		private bool givenUp = false;
 		private DateTime lastVisit = DateTime.Now;
 		private SpanStrategy spanStrategy = SpanStrategy.DoNotSpan;
@@ -34,11 +34,7 @@ namespace NHibernate.Burrow.Impl
 		{
 			foreach (PersistenceUnit pu in PersistenceUnitRepo.Instance.PersistenceUnits)
 			{
-				sessManagers.Add(pu, new SessionManager(pu));
-			}
-			foreach (SessionManager sm in sessManagers.Values)
-			{
-				sm.OnConversationStarts();
+				sessManagers.Add(pu, new SessionAndTransactionManager(pu));
 			}
 		}
 
@@ -312,7 +308,7 @@ namespace NHibernate.Burrow.Impl
 		{
 			try
 			{
-				foreach (SessionManager sm in sessManagers.Values)
+				foreach (SessionAndTransactionManager sm in sessManagers.Values)
 				{
 					sm.OnConversationRollback();
 				}
@@ -329,7 +325,7 @@ namespace NHibernate.Burrow.Impl
 
 		internal void CloseNHibernateSessions()
 		{
-			foreach (SessionManager sm in sessManagers.Values)
+			foreach (SessionAndTransactionManager sm in sessManagers.Values)
 			{
 				sm.CloseSession();
 			}
@@ -338,17 +334,17 @@ namespace NHibernate.Burrow.Impl
 		/// <summary>
 		/// The singleton Instance 
 		/// </summary>
-		internal SessionManager GetSessionManager()
+		internal SessionAndTransactionManager GetSessionManager()
 		{
 			return sessManagers[PersistenceUnitRepo.Instance.GetOnlyPU()];
 		}
 
-		internal SessionManager GetSessionManager(System.Type t)
+		internal SessionAndTransactionManager GetSessionManager(System.Type t)
 		{
 			return sessManagers[PersistenceUnitRepo.Instance.GetPU(t)];
 		}
 
-		internal IEnumerable<SessionManager> SessionManagers
+		internal IEnumerable<SessionAndTransactionManager> SessionManagers
 		{
 			get { return sessManagers.Values; }
 		}
@@ -386,11 +382,11 @@ namespace NHibernate.Burrow.Impl
 
 		public ISession GetSession(System.Type entityType)
 		{
-			SessionManager sm = entityType == null ? GetSessionManager() : GetSessionManager(entityType);
+			SessionAndTransactionManager sm = entityType == null ? GetSessionManager() : GetSessionManager(entityType);
 			return GetSession(sm);
 		}
 
-		private ISession GetSession(SessionManager sm)
+		private ISession GetSession(SessionAndTransactionManager sm)
 		{
 			ISession sess = sm.GetSession();
 			TransactionStrategy.OnSessionUsed(sm);
@@ -402,7 +398,7 @@ namespace NHibernate.Burrow.Impl
 		/// </summary>
 		public void Reconnect()
 		{
-			foreach (SessionManager sm in sessManagers.Values)
+			foreach (SessionAndTransactionManager sm in sessManagers.Values)
 			{
 				GetSession(sm);
 			}

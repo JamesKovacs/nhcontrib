@@ -4,12 +4,12 @@ using System.Text;
 
 namespace NHibernate.Burrow.Impl
 {
-    internal class TransactionManagerImpl : ITransactionManager
+    internal class ManualTransactionManagerImpl : ITransactionManager
     {
         private IList<ITransaction> transactions;
         public event System.EventHandler RolledBack;
-        public ManualTransactionConversationImpl conversation;
-        public TransactionManagerImpl(ManualTransactionConversationImpl conversation)
+        public ConversationWithManualTransactionImpl conversation;
+        public ManualTransactionManagerImpl(ConversationWithManualTransactionImpl conversation)
         {
             this.conversation = conversation;
         }
@@ -22,7 +22,7 @@ namespace NHibernate.Burrow.Impl
         {
 
             transactions = new List<ITransaction>();
-            foreach (SessionManager sm in conversation.SessionManagers)
+            foreach (SessionAndTransactionManager sm in conversation.SessionManagers)
             {
                 transactions.Add(sm.Transaction);
                 sm.Transaction.Begin(sm.GetSession());

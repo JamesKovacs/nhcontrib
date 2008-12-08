@@ -100,7 +100,7 @@ namespace NHibernate.Burrow.Impl
                 //Catch the exception thrown from  to prevent the original exception from being swallowed.
                 try
                 {
-                    ILog log = LogManager.GetLogger(typeof (SessionManager));
+                    ILog log = LogManager.GetLogger(typeof (SessionAndTransactionManager));
                     if (log.IsErrorEnabled)
                     {
                         log.Error("NHibernate.Burrow Rollback failed", e);

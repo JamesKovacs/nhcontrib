@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace NHibernate.Burrow.Impl
 {
-    internal class ManualTransactionConversationImpl : AbstractConversation
+    internal class ConversationWithManualTransactionImpl : AbstractConversation
     {
         private readonly ITransactionManager transactionManager;
 
-        public ManualTransactionConversationImpl() : base()
+        public ConversationWithManualTransactionImpl() : base()
         {
             
-            transactionManager = new TransactionManagerImpl(this);
+            transactionManager = new ManualTransactionManagerImpl(this);
             transactionManager.RolledBack +=new System.EventHandler(TransactionRolledBack);
         }
 
@@ -29,7 +29,7 @@ namespace NHibernate.Burrow.Impl
             get { return TransactionStrategy.ManualTransaction; }
             set
             {
-                
+                //Manual transaction cannot change transaction strategy
             }
         }
 

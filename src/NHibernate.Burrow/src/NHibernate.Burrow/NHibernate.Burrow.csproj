@@ -116,9 +116,9 @@
     <Compile Include="IFrameworkEnvironment.cs" />
     <Compile Include="Impl\ITransaction.cs" />
     <Compile Include="Impl\LogFactory.cs" />
-    <Compile Include="Impl\ManualTransactionConversationImpl.cs" />
+    <Compile Include="Impl\ConversationWithManualTransactionImpl.cs" />
     <Compile Include="Impl\TransactionImpl.cs" />
-    <Compile Include="Impl\TransactionManagerImpl.cs" />
+    <Compile Include="Impl\ManualTransactionManagerImpl.cs" />
     <Compile Include="TransactionStrategy.cs" />
     <Compile Include="Impl\VoidTransaction.cs" />
     <Compile Include="IPersistenceUnitCfg.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="Exceptions\BurrowException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Impl\SessionManager.cs">
+    <Compile Include="Impl\SessionAndTransactionManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITransactionManager.cs" />
