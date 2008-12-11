@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Web.UI;
 
@@ -16,6 +17,7 @@ namespace NHibernate.Burrow.WebUtil.Impl
     	private const string Seperator = "_NHB_";
     	private const string Prefix = "NHibernate.Burrow.WebUtil.StatefulField";
 
+        const string stopSettingKey = "NHibernate.Burrow.WebUtil.StopUsingStatefulFields";
 		public IDictionary<string, StateBag> States
 		{
 			get { return states; }
@@ -30,10 +32,13 @@ namespace NHibernate.Burrow.WebUtil.Impl
         {
             this.page = page;
             gph = globalPlaceHolder;
-			
+
+            if ( ConfigurationManager.AppSettings[stopSettingKey] == "true" )
+                return;
+            if(!StatefulFieldsControlFilter.Instance.CanHaveStatefulFields(page))
+                return;
             page.PreLoad += new EventHandler(LoadData);
             page.PreRenderComplete += new EventHandler(page_PreRenderComplete);
-        	
         }
 
 
@@ -58,7 +63,6 @@ namespace NHibernate.Burrow.WebUtil.Impl
     	private void page_PreRenderComplete(object sender, EventArgs e)
         {
             LogFactory.Log.Debug("Retrieving values of StatefulFields");
-
             new StatefulFieldSaver(page, this).Process();
 			SaveStates();
         }

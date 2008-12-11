@@ -42,6 +42,8 @@ namespace NHibernate.Burrow.Impl {
 		}
 
 		internal PersistenceUnit GetPU(System.Type t) {
+            if(PersistenceUnits.Count == 0)
+                throw new PersistenceUnitsNotReadyException();
 			if (PersistenceUnits.Count == 1)
 				return PersistenceUnits[0];
 			foreach (PersistenceUnit pu in persistenceUnits) {

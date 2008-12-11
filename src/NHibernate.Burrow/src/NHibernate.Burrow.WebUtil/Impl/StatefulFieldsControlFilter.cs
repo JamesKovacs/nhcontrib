@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Iesi.Collections.Generic;
+using NHibernate.Burrow.WebUtil.Attributes;
 
 namespace NHibernate.Burrow.WebUtil.Impl {
 	using Type = System.Type;
@@ -57,10 +58,15 @@ namespace NHibernate.Burrow.WebUtil.Impl {
 		public bool CanHaveStatefulFields(Control control) {
 			if (control is LiteralControl) //quickly removed the LiteralControls
 				return false;
-			if (control is UserControl)
-				return true;
+			if (control is UserControl || control is Page)
+			{
+                if (control is IStatefulFieldsControl)
+                    if( ((IStatefulFieldsControl) control).IgnoreStatefulFields) 
+                        return false;
+			    return Attribute.GetCustomAttribute(control.GetType(), typeof (IgnoreStatefulFields)) == null;
+			}
 			Type t = control.GetType();
-			LogFactory.Log.Debug("inspecting " + t + control.GetType() + control.ID + "(" + control.UniqueID + ")");
+			LogFactory.Log.Debug("inspecting " + t +  control.ID + "(" + control.UniqueID + ")");
 			if (AllowedTypes.Contains(t))
 				return true;
 			if (FilteredTypes.Contains(t))
