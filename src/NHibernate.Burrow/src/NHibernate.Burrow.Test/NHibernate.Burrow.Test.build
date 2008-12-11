@@ -35,6 +35,10 @@
 	<target name="build" depends="init generate-assemblyinfo common.compile-tests">
 
         <copy file="${config.FileName}.Template"
+			  tofile="${config.FileName}"
+			  if="${not file::exists('${config.FileName}')}"
+		/>	
+		<copy file="${config.FileName}.Template"
 			  tofile="${bin.dir}/${config.FileName}"
 			  if="${not file::exists('${config.FileName}')}"
 		/>		
