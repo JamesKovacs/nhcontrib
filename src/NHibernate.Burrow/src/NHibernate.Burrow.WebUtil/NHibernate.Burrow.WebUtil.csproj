@@ -56,6 +56,7 @@
     <Compile Include="Controls\BurrowLink.cs" />
     <Compile Include="Exceptions\BurrowWebUtilException.cs" />
     <Compile Include="Exceptions\DuplicatedGlobalHolderException.cs" />
+    <Compile Include="Impl\StatefulFieldSaver.cs" />
     <Compile Include="IStatefulFieldsControl.cs" />
     <Compile Include="Impl\ConversationalDataVSFInterceptor.cs" />
     <Compile Include="Attributes\ConversationalField.cs" />
