@@ -9,10 +9,10 @@ namespace NHibernate.Cfg
     public class SecondaryTableSecondPass : ISecondPass
     {
         private EntityBinder entityBinder;
-        private PropertyHolder propertyHolder;
+        private IPropertyHolder propertyHolder;
         private System.Type annotatedClass;
 
-        public SecondaryTableSecondPass(EntityBinder entityBinder, PropertyHolder propertyHolder,
+        public SecondaryTableSecondPass(EntityBinder entityBinder, IPropertyHolder propertyHolder,
                                         System.Type annotatedClass)
         {
             this.entityBinder = entityBinder;

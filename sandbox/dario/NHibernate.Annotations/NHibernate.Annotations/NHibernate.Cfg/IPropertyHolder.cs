@@ -1,10 +1,9 @@
 using System.Persistence;
-using NHibernate.Cfg;
 using NHibernate.Mapping;
 
 namespace NHibernate.Cfg
 {
-	public interface PropertyHolder
+	public interface IPropertyHolder
 	{
 		string ClassName { get; }
 
@@ -16,11 +15,10 @@ namespace NHibernate.Cfg
 		string Path { get; }
 		string EntityName { get; }
 
+		IKeyValue Identifier { get; }
 		void AddProperty(Property prop);
 
-		IKeyValue Identifier{ get; }
-
-		PersistentClass getPersistentClass();
+		PersistentClass GetPersistentClass();
 
 		void SetParentProperty(string parentProperty);
 

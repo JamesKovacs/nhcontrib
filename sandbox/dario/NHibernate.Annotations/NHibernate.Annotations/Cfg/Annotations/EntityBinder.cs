@@ -27,7 +27,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 		private InheritanceState inheritanceState;
 		private bool isPropertyAnnotated = false;
 		private bool lazy;
-		private ILog log = LogManager.GetLogger(typeof (EntityBinder));
+		private ILog log = LogManager.GetLogger(typeof(EntityBinder));
 		private ExtendedMappings mappings;
 		private String name;
 		private OptimisticLockType optimisticLockType;
@@ -67,11 +67,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			get { return isPropertyAnnotated; }
 		}
 
-		public IDictionary<string, Join> SecondaryTables
-		{
-			get { return secondaryTables; }
-		}
-
+		
 		private void BindHibernateAnnotation(EntityAttribute hibAnn)
 		{
 			if (hibAnn != null)
@@ -120,7 +116,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 
 			if (persistentClass is RootClass)
 			{
-				RootClass rootClass = (RootClass) persistentClass;
+				RootClass rootClass = (RootClass)persistentClass;
 				bool mutable = true;
 				//priority on @Immutable, then @Entity.mutable()
 				if (annotatedClass.IsAttributePresent<ImmutableAttribute>())
@@ -198,22 +194,22 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			if (sqlInsert != null)
 			{
 				persistentClass.SetCustomSQLInsert(sqlInsert.Sql.Trim(), sqlInsert.Callable,
-				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlInsert.Check));
+												   ExecuteUpdateResultCheckStyleConverter.Convert(sqlInsert.Check));
 			}
 			if (sqlUpdate != null)
 			{
 				persistentClass.SetCustomSQLUpdate(sqlUpdate.Sql.Trim(), sqlUpdate.Callable,
-				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlUpdate.Check));
+												   ExecuteUpdateResultCheckStyleConverter.Convert(sqlUpdate.Check));
 			}
 			if (sqlDelete != null)
 			{
 				persistentClass.SetCustomSQLDelete(sqlDelete.Sql, sqlDelete.Callable,
-				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDelete.Check));
+												   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDelete.Check));
 			}
 			if (sqlDeleteAll != null)
 			{
 				persistentClass.SetCustomSQLDelete(sqlDeleteAll.Sql, sqlDeleteAll.Callable,
-				                                   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDeleteAll.Check));
+												   ExecuteUpdateResultCheckStyleConverter.Convert(sqlDeleteAll.Check));
 			}
 			if (loader != null)
 			{
@@ -373,17 +369,17 @@ namespace NHibernate.Annotations.Cfg.Annotations
 		}
 
 		public void BindTable(string schema, string catalog,
-		                      string tableName, IList<String[]> uniqueConstraints,
-		                      string constraints, Table denormalizedSuperclassTable)
+							  string tableName, IList<String[]> uniqueConstraints,
+							  string constraints, Table denormalizedSuperclassTable)
 		{
 			String logicalName = StringHelper.IsNotEmpty(tableName) ? tableName : StringHelper.Unqualify(name);
 			Table table = TableBinder.FillTable(schema, catalog, GetClassTableName(tableName), logicalName,
-			                                    persistentClass.IsAbstract, uniqueConstraints, constraints,
-			                                    denormalizedSuperclassTable, mappings);
+												persistentClass.IsAbstract, uniqueConstraints, constraints,
+												denormalizedSuperclassTable, mappings);
 			if (persistentClass is ITableOwner)
 			{
 				log.InfoFormat("Bind entity {0} on table {1}", persistentClass.EntityName, table.Name);
-				((ITableOwner) persistentClass).Table = table;
+				((ITableOwner)persistentClass).Table = table;
 			}
 			else
 			{
@@ -391,7 +387,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			}
 		}
 
-		public void FinalSecondaryTableBinding(PropertyHolder propertyHolder)
+		public void FinalSecondaryTableBinding(IPropertyHolder propertyHolder)
 		{
 			/*
 			 * Those operations has to be done after the id definition of the persistence class.
@@ -403,38 +399,28 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			while (joins.MoveNext())
 			{
 				joinColumns.MoveNext();
-				var uncastedColumn = joinColumns.Current; 
+				var uncastedColumn = joinColumns.Current;
 				var join = joins.Current;
 				CreatePrimaryColumnsToSecondaryTable(uncastedColumn, propertyHolder, join);
 			}
 			mappings.AddJoins(persistentClass, secondaryTables);
 		}
 
-		private void CreatePrimaryColumnsToSecondaryTable(object uncastedColumn, PropertyHolder propertyHolder, Join join) {
-		Ejb3JoinColumn[] ejb3JoinColumns;
-		PrimaryKeyJoinColumnAttribute[] pkColumnsAnn = null;
-		JoinColumnAttribute[] joinColumnsAnn = null;
-		if ( uncastedColumn is PrimaryKeyJoinColumnAttribute[] ) {
-			pkColumnsAnn = (PrimaryKeyJoinColumnAttribute[]) uncastedColumn;
-		}
-		if ( uncastedColumn is JoinColumnAttribute[] ) {
-			joinColumnsAnn = (JoinColumnAttribute[]) uncastedColumn;
-		}
-		if ( pkColumnsAnn == null && joinColumnsAnn == null ) {
-			ejb3JoinColumns = new Ejb3JoinColumn[1];
-			ejb3JoinColumns[0] = Ejb3JoinColumn.BuildJoinColumn(
-					null,
-					null,
-					persistentClass.Identifier,
-					secondaryTables,
-					propertyHolder, mappings
-			);
-		}
-		else {
-			int nbrOfJoinColumns = pkColumnsAnn != null ?
-					pkColumnsAnn.Length :
-					joinColumnsAnn.Length;
-			if ( nbrOfJoinColumns == 0 ) {
+		private void CreatePrimaryColumnsToSecondaryTable(object uncastedColumn, IPropertyHolder propertyHolder, Join join)
+		{
+			Ejb3JoinColumn[] ejb3JoinColumns;
+			PrimaryKeyJoinColumnAttribute[] pkColumnsAnn = null;
+			JoinColumnAttribute[] joinColumnsAnn = null;
+			if (uncastedColumn is PrimaryKeyJoinColumnAttribute[])
+			{
+				pkColumnsAnn = (PrimaryKeyJoinColumnAttribute[])uncastedColumn;
+			}
+			if (uncastedColumn is JoinColumnAttribute[])
+			{
+				joinColumnsAnn = (JoinColumnAttribute[])uncastedColumn;
+			}
+			if (pkColumnsAnn == null && joinColumnsAnn == null)
+			{
 				ejb3JoinColumns = new Ejb3JoinColumn[1];
 				ejb3JoinColumns[0] = Ejb3JoinColumn.BuildJoinColumn(
 						null,
@@ -444,43 +430,65 @@ namespace NHibernate.Annotations.Cfg.Annotations
 						propertyHolder, mappings
 				);
 			}
-			else {
-				ejb3JoinColumns = new Ejb3JoinColumn[nbrOfJoinColumns];
-				if ( pkColumnsAnn != null ) {
-					for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++) {
-						ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
-								pkColumnsAnn[colIndex],
-								null,
-								persistentClass.Identifier,
-								secondaryTables,
-								propertyHolder, mappings
-						);
-					}
+			else
+			{
+				int nbrOfJoinColumns = pkColumnsAnn != null ?
+						pkColumnsAnn.Length :
+						joinColumnsAnn.Length;
+				if (nbrOfJoinColumns == 0)
+				{
+					ejb3JoinColumns = new Ejb3JoinColumn[1];
+					ejb3JoinColumns[0] = Ejb3JoinColumn.BuildJoinColumn(
+							null,
+							null,
+							persistentClass.Identifier,
+							secondaryTables,
+							propertyHolder, mappings
+					);
 				}
-				else {
-					for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++) {
-						ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
-								null,
-								joinColumnsAnn[colIndex],
-								persistentClass.Identifier,
-								secondaryTables,
-								propertyHolder, mappings
-						);
+				else
+				{
+					ejb3JoinColumns = new Ejb3JoinColumn[nbrOfJoinColumns];
+					if (pkColumnsAnn != null)
+					{
+						for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++)
+						{
+							ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
+									pkColumnsAnn[colIndex],
+									null,
+									persistentClass.Identifier,
+									secondaryTables,
+									propertyHolder, mappings
+							);
+						}
+					}
+					else
+					{
+						for (int colIndex = 0; colIndex < nbrOfJoinColumns; colIndex++)
+						{
+							ejb3JoinColumns[colIndex] = Ejb3JoinColumn.BuildJoinColumn(
+									null,
+									joinColumnsAnn[colIndex],
+									persistentClass.Identifier,
+									secondaryTables,
+									propertyHolder, mappings
+							);
+						}
 					}
 				}
 			}
-		}
 
-		foreach (Ejb3JoinColumn joinColumn in ejb3JoinColumns) {
-			joinColumn.ForceNotNull();
+			foreach (Ejb3JoinColumn joinColumn in ejb3JoinColumns)
+			{
+				joinColumn.ForceNotNull();
+			}
+			BindJoinToPersistentClass(join, ejb3JoinColumns);
 		}
-			BindJoinToPersistentClass( join, ejb3JoinColumns );
-	}
 
 		private void BindJoinToPersistentClass(Join join, Ejb3JoinColumn[] ejb3JoinColumns)
 		{
 			SimpleValue key = new DependantValue(join.Table, persistentClass.Identifier);
-			join.Key=key;
+			join.Key = key;
 			SetFKNameIfDefined(join);
 			key.IsCascadeDeleteEnabled = false;
 			TableBinder.BindFk(persistentClass, null, ejb3JoinColumns, key, false, mappings);
@@ -500,13 +508,178 @@ namespace NHibernate.Annotations.Cfg.Annotations
 
 		private TableAttribute FindMatchingComplimentTableAnnotation(Join join)
 		{
-			throw new NotImplementedException();
+			String tableName = join.Table.GetQuotedName();
+			var table = annotatedClass.GetAttribute<TableAttribute>();
+			TableAttribute matchingTable = null;
+			if (table != null && tableName.Equals(table.AppliesTo))
+			{
+				matchingTable = table;
+			}
+			else
+			{
+				//TODO: Review the way to treat Multiples attributes
+				//Tables tables = annotatedClass.getAnnotation( Tables.class );
+				//if ( tables != null ) {
+				//    for (org.hibernate.annotations.Table current : tables.value()) {
+				//        if ( tableName.equals( current.appliesTo() ) ) {
+				//            matchingTable = current;
+				//            break;
+				//        }
+				//    }
+				//}
+			}
+			return matchingTable;
 		}
 
+		//public void FirstLevelSecondaryTablesBinding(SecondaryTable secTable, SecondaryTables secTables) 
+		//{
+		//    if (secTables != null) 
+		//    {
+		//        //loop through it
+		//        for (SecondaryTable tab : secTables.value()) 
+		//        {
+		//            addJoin( tab, null, null, false );
+		//        }
+		//    }
+		//    else 
+		//    {
+		//        if ( secTable != null ) addJoin( secTable, null, null, false );
+		//    }
+		//}
 
-		public Join AddJoin(JoinTableAttribute ann, ClassPropertyHolder propertyHolder, bool creation)
+		/// <summary>
+		/// Used for @*ToMany @JoinTable
+		/// </summary>
+		public Join AddJoin(JoinTableAttribute joinTable, IPropertyHolder holder, bool noDelayInPkColumnCreation)
 		{
-			throw new NotImplementedException();
+			return AddJoin(null, joinTable, holder, noDelayInPkColumnCreation);
 		}
+
+		/// <summary>
+		/// A non null propertyHolder means than we process the Pk creation without delay
+		/// </summary>
+		/// <param name="secondaryTable"></param>
+		/// <param name="joinTable"></param>
+		/// <param name="propertyHolder"></param>
+		/// <param name="noDelayInPkColumnCreation"></param>
+		/// <returns></returns>
+		private Join AddJoin(SecondaryTableAttribute secondaryTable,
+			JoinTableAttribute joinTable,
+			IPropertyHolder propertyHolder,
+			bool noDelayInPkColumnCreation)
+		{
+			Join join = new Join();
+			join.PersistentClass = persistentClass;
+			string schema;
+			string catalog;
+			string table;
+			string realTable;
+
+			System.Persistence.UniqueConstraintAttribute[] uniqueConstraintsAnn;
+			if (secondaryTable != null)
+			{
+				schema = secondaryTable.Schema;
+				catalog = secondaryTable.Catalog;
+				table = secondaryTable.Name;
+				realTable = mappings.NamingStrategy.TableName(table); //always an explicit table name
+				uniqueConstraintsAnn = secondaryTable.UniqueConstraints;
+			}
+			else if (joinTable != null)
+			{
+				schema = joinTable.Schema;
+				catalog = joinTable.Catalog;
+				table = joinTable.Name;
+				realTable = mappings.NamingStrategy.TableName(table); //always an explicit table name
+				uniqueConstraintsAnn = joinTable.UniqueConstraints;
+			}
+			else
+			{
+				throw new AssertionFailure("Both JoinTable and SecondaryTable are null");
+			}
+
+			var uniqueConstraints = new List<string[]>(uniqueConstraintsAnn == null ? 0 : uniqueConstraintsAnn.Length);
+			if (uniqueConstraintsAnn != null && uniqueConstraintsAnn.Length != 0)
+			{
+				foreach (UniqueConstraintAttribute uc in uniqueConstraintsAnn)
+				{
+					uniqueConstraints.Add(uc.ColumnNames);
+				}
+			}
+			Table tableMapping = TableBinder.FillTable(
+					schema,
+					catalog,
+					realTable,
+					table, false, uniqueConstraints, null, null, mappings);
+			//no check constraints available on joins
+			join.Table = tableMapping;
+
+			//somehow keep joins() for later.
+			//Has to do the work later because it needs persistentClass id!
+			object joinColumns = null;
+			//get the appropriate pk columns
+			if (secondaryTable != null)
+			{
+				joinColumns = secondaryTable.PkJoinColumns;
+			}
+			else if (joinTable != null)
+			{
+				joinColumns = joinTable.JoinColumns;
+			}
+			log.InfoFormat("Adding secondary table to entity {0} -> {1}", persistentClass.EntityName, join.Table.Name);
+
+			TableAttribute matchingTable = FindMatchingComplimentTableAnnotation(join);
+
+			if (matchingTable != null)
+			{
+				join.IsSequentialSelect = FetchMode.Join != matchingTable.Fetch;
+				join.IsInverse = matchingTable.IsInverse;
+				join.IsOptional = matchingTable.IsOptional;
+				if (!BinderHelper.IsDefault(matchingTable.SqlInsert.Sql))
+				{
+					join.SetCustomSQLInsert(matchingTable.SqlInsert.Sql.Trim(),
+							matchingTable.SqlInsert.Callable,
+							ExecuteUpdateResultCheckStyle.Parse(matchingTable.SqlInsert.Check.ToString().ToLower()));
+				}
+				if (!BinderHelper.IsDefault(matchingTable.SqlUpdate.Sql))
+				{
+					join.SetCustomSQLUpdate(matchingTable.SqlUpdate.Sql.Trim(),
+							matchingTable.SqlUpdate.Callable,
+							ExecuteUpdateResultCheckStyle.Parse(matchingTable.SqlUpdate.Check.ToString().ToLower())
+					);
+				}
+				if (!BinderHelper.IsDefault(matchingTable.SqlDelete.Sql))
+				{
+					join.SetCustomSQLDelete(matchingTable.SqlDelete.Sql.Trim(),
+							matchingTable.SqlDelete.Callable,
+							ExecuteUpdateResultCheckStyle.Parse(matchingTable.SqlDelete.Check.ToString().ToLower())
+					);
+				}
+			}
+			else
+			{
+				//default
+				join.IsSequentialSelect = false;
+				join.IsInverse = false;
+				join.IsOptional = false; //perhaps not quite per-spec, but a Good Thing anyway
+			}
+
+			if (noDelayInPkColumnCreation)
+			{
+				CreatePrimaryColumnsToSecondaryTable(joinColumns, propertyHolder, join);
+			}
+			else
+			{
+				secondaryTables.Add(table, join);
+				secondaryTableJoins.Add(table, joinColumns);
+			}
+			return join;
+		}
+
+		public IDictionary<string, Join> SecondaryTables
+		{
+			get { return secondaryTables; }
+		}
+
+
 	}
 }

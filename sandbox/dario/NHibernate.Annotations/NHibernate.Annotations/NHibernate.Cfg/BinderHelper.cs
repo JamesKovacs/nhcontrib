@@ -5,7 +5,7 @@ namespace NHibernate.Annotations.NHibernate.Cfg
 {
     public class BinderHelper
     {
-        public static string GetRelativePath(PropertyHolder propertyHolder, string propertyName)
+        public static string GetRelativePath(IPropertyHolder propertyHolder, string propertyName)
         {
             throw new System.NotImplementedException();
         }

@@ -20,7 +20,7 @@ namespace NHibernate.Cfg
         private bool updatable = true;
         private string secondaryTableName;
         protected IDictionary<string, Join> joins;
-        protected PropertyHolder propertyHolder;
+        protected IPropertyHolder propertyHolder;
         private ExtendedMappings mappings;
         private bool isImplicit;
         public static readonly int DEFAULT_COLUMN_LENGTH = 255;
@@ -256,7 +256,7 @@ namespace NHibernate.Cfg
             this.joins = joins;
         }
 
-        public PropertyHolder PropertyHolder
+        public IPropertyHolder PropertyHolder
         {
             get { return propertyHolder; }
             set { propertyHolder = value; }
@@ -345,7 +345,7 @@ namespace NHibernate.Cfg
 
         public static Ejb3Column[] BuildColumnFromAnnotation(
             ColumnAttribute[] anns,
-            FormulaAttribute formulaAnn, Nullability nullability, PropertyHolder propertyHolder,
+            FormulaAttribute formulaAnn, Nullability nullability, IPropertyHolder propertyHolder,
             IPropertyData inferredData,
             IDictionary<string, Join> secondaryTables,
             ExtendedMappings mappings)
@@ -375,7 +375,7 @@ namespace NHibernate.Cfg
         }
 
         private static Ejb3Column[] BuildColumnFromAnnotation(ColumnAttribute[] anns, Nullability nullability,
-                                                              PropertyHolder propertyHolder, IPropertyData inferredData,
+                                                              IPropertyHolder propertyHolder, IPropertyData inferredData,
                                                               IDictionary<string, Join> secondaryTables,
                                                               ExtendedMappings mappings)
         {
@@ -425,7 +425,7 @@ namespace NHibernate.Cfg
 
         private static Ejb3Column[] BuildImplicitColumn(IPropertyData inferredData,
                                                         IDictionary<string, Join> secondaryTables,
-                                                        PropertyHolder propertyHolder, Nullability nullability,
+                                                        IPropertyHolder propertyHolder, Nullability nullability,
                                                         ExtendedMappings mappings)
         {
             Ejb3Column[] columns;

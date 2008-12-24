@@ -16,7 +16,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 		private bool lazy;
 		private String propertyAccessorName;
 		private Ejb3Column[] columns;
-		private PropertyHolder holder;
+		private IPropertyHolder holder;
 		private ExtendedMappings mappings;
 		private IValue value;
 		private bool insertable = true;
@@ -70,7 +70,7 @@ namespace NHibernate.Annotations.Cfg.Annotations
 			this.columns = columns;
 		}
 
-		public void SetHolder(PropertyHolder holder)
+		public void SetHolder(IPropertyHolder holder)
 		{
 			this.holder = holder;
 		}

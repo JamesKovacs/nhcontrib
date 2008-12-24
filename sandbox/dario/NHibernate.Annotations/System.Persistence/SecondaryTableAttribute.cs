@@ -1,13 +1,12 @@
 ﻿namespace System.Persistence
 {
 	[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-	public class JoinTableAttribute : Attribute
+	public sealed class SecondaryTableAttribute : Attribute
 	{
-		public JoinColumnAttribute[] JoinColumns { get; set; }
 		public string Name { get; set; }
 		public string Catalog { get; set; }
 		public string Schema { get; set; }
-
+		public PrimaryKeyJoinColumnAttribute[] PkJoinColumns { get; set; }
 		public UniqueConstraintAttribute[] UniqueConstraints { get; set; }
 	}
 }

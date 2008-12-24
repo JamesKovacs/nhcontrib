@@ -10,13 +10,12 @@ namespace NHibernate.Annotations.Test
         public void Test01()
         {
             var cfg = new AnnotationConfiguration();
+        	cfg.Configure();
             cfg.AddAnnotatedType<Foo>();
 
             using (ISessionFactory sf = cfg.BuildSessionFactory())
             {
-				
             }
-
         }
     }
 

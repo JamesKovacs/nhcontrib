@@ -100,7 +100,7 @@
     <Compile Include="NHibernate.Cfg\CreateKeySecondPass.cs" />
     <Compile Include="NHibernate.Cfg\IndexOrUniqueKeySecondPass.cs" />
     <Compile Include="NHibernate.Cfg\IPropertyData.cs" />
-    <Compile Include="NHibernate.Cfg\PropertyHolder.cs" />
+    <Compile Include="NHibernate.Cfg\IPropertyHolder.cs" />
     <Compile Include="NHibernate.Cfg\Ejb3Column.cs" />
     <Compile Include="NHibernate.Cfg\ExtendedMappings.cs" />
     <Compile Include="NHibernate.Cfg\ISecondPass.cs" />
@@ -111,6 +111,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlAttributeBase.cs" />
     <Compile Include="SQLInsertAttribute.cs" />
+    <Compile Include="TableAttribute.cs" />
     <Compile Include="TuplizerAttribute.cs" />
     <Compile Include="TypeAttribute.cs" />
     <Compile Include="Util\AtomicInteger.cs" />

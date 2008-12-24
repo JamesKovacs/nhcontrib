@@ -12,7 +12,7 @@ namespace NHibernate.Annotations.NHibernate.Cfg
 									JoinColumnAttribute joinAnn, 
 									IKeyValue identifier,
 									IDictionary<string, Join> joins, 
-									PropertyHolder propertyHolder, 
+									IPropertyHolder propertyHolder, 
 									ExtendedMappings mappings)
 		{
 			throw new NotImplementedException();
