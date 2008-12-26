@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NHibernate.Linq.Expressions;
 using NHibernate.Linq.Util;
+using NHibernate.Persister.Entity;
 using Expression = System.Linq.Expressions.Expression;
 
 namespace NHibernate.Linq.Visitors
@@ -107,7 +108,25 @@ namespace NHibernate.Linq.Visitors
 		{
 			var visitor = new MemberNameVisitor(rootCriteria);
 			visitor.Visit(expr);
-			visitor.CurrentCriteria.Add(Property.ForName(visitor.MemberName + ".class").Eq(expr.TypeOperand));
+			string memberName = visitor.MemberName + ".class";
+
+			var metaData = session.SessionFactory.GetClassMetadata(expr.TypeOperand);
+			if (metaData.HasSubclasses)
+			{
+				//make sure to include any subtypes
+				var disjunction = new Disjunction();
+				foreach (string entityName in ((IEntityPersister)metaData).EntityMetamodel.SubclassEntityNames)
+				{
+					var metadata = session.SessionFactory.GetClassMetadata(entityName);
+					disjunction.Add(Property.ForName(memberName).Eq(metadata.GetMappedClass(EntityMode.Poco)));
+				}
+				visitor.CurrentCriteria.Add(disjunction);
+			}
+			else
+			{
+				visitor.CurrentCriteria.Add(Property.ForName(memberName).Eq(expr.TypeOperand));
+			}
+
 			return expr;
 		}
 

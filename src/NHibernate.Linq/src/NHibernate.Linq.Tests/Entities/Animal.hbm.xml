@@ -11,6 +11,11 @@
     <many-to-one name="Father" column="father_id"/>
     <property name="SerialNumber"/>
 
+    <bag name="Children" lazy="true">
+      <key column="ParentId" />
+      <one-to-many class="Animal" />
+    </bag>
+
     <joined-subclass name="Reptile">
       <key column="Animal"/>
       <property name="BodyTemperature"/>
@@ -24,6 +29,14 @@
       <key column="Animal"/>
       <property name="Pregnant"/>
       <property name="BirthDate" type="DateTime"/>
+
+      <joined-subclass name="Dog">
+        <key column="Mammal"/>
+      </joined-subclass>
+
+      <joined-subclass name="Cat">
+        <key column="Mammal"/>
+      </joined-subclass>
     </joined-subclass>
   </class>
 </hibernate-mapping>

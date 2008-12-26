@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NHibernate.Linq.Tests.Entities
 {
@@ -9,6 +10,7 @@ namespace NHibernate.Linq.Tests.Entities
 		public virtual double BodyWeight { get; set; }
 		public virtual Animal Mother { get; set; }
 		public virtual Animal Father { get; set; }
+		public virtual IList<Animal> Children { get; set; }
 		public virtual string SerialNumber { get; set; }
 	}
 
@@ -19,9 +21,13 @@ namespace NHibernate.Linq.Tests.Entities
 
 	public class Lizard : Reptile { }
 
-	public class Mammal : Animal
+	public abstract class Mammal : Animal
 	{
 		public virtual bool Pregnant { get; set; }
 		public virtual DateTime? BirthDate { get; set; }
 	}
+
+	public class Dog : Mammal { }
+
+	public class Cat : Mammal { }
 }

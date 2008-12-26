@@ -16,16 +16,19 @@ namespace NHibernate.Linq.Tests
 		{
 			return GlobalSetup.CreateSession();
 		}
+
 		public override void Setup()
 		{
 			base.Setup();
 			this.update = this.nwnd as IUpdatable;
 			AddUser();
 		}
+
 		public override void TearDown()
 		{
-			DeleteUser();
+			new GlobalSetup().SetupNHibernate();
 		}
+
 		private void AddUser()
 		{
 			User usr = (User)update.CreateResource("Users", typeof(User).FullName);
@@ -36,16 +39,6 @@ namespace NHibernate.Linq.Tests
 			usr.Enum1 = EnumStoredAsString.Large;
 			this.session.Save(usr);
 			this.session.Flush();
-		}
-		private void DeleteUser()
-		{
-			var usr = (from u in nhib.Users
-					   where u.Name == "bgates"
-					   select u).FirstOrDefault();
-			if (usr != null)
-				session.Delete(usr);
-
-			session.Flush();
 		}
 
 		[Test]

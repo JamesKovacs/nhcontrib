@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using NHibernate.Cfg;
@@ -17,9 +18,14 @@ namespace NHibernate.Linq.Tests
 		{
 			Configuration cfg = new Configuration().Configure();
 			new SchemaExport(cfg).Execute(false, true, false, true);
-			factory = cfg.BuildSessionFactory();
 
-			CreateTestData();
+			try
+			{
+				factory = cfg.BuildSessionFactory();
+
+				CreateTestData();
+			}
+			catch { }
 		}
 
 		[TearDown]
@@ -239,13 +245,16 @@ namespace NHibernate.Linq.Tests
 				new Animal() { SerialNumber = "123", BodyWeight = 100 },
 				new Lizard() { SerialNumber = "789", BodyWeight = 40, BodyTemperature = 14 },
 				new Lizard() { SerialNumber = "1234", BodyWeight = 30, BodyTemperature = 18 },
-				new Mammal() { SerialNumber = "5678", BodyWeight = 156, BirthDate = new DateTime(1980, 07, 11) },
-				new Mammal() { SerialNumber = "9101", BodyWeight = 205, BirthDate = new DateTime(1980, 12, 13) },
-				new Mammal() { SerialNumber = "1121", BodyWeight = 115, Pregnant = true }
+				new Dog() { SerialNumber = "5678", BodyWeight = 156, BirthDate = new DateTime(1980, 07, 11) },
+				new Dog() { SerialNumber = "9101", BodyWeight = 205, BirthDate = new DateTime(1980, 12, 13) },
+				new Cat() { SerialNumber = "1121", BodyWeight = 115, Pregnant = true }
 			};
 
-			animals[3].Father = animals[4];
-			animals[3].Mother = animals[5];
+			animals[0].Children = new[] { animals[3], animals[4] }.ToList();
+			animals[5].Father = animals[3];
+			animals[5].Mother = animals[4];
+
+			animals[1].Children = new[] { animals[5] }.ToList();
 
 			using (ISession session = CreateSession())
 			{

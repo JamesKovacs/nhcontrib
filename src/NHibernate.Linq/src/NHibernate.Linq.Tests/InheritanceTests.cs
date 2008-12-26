@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NHibernate.Linq.Tests.Entities;
 using NUnit.Framework;
 
@@ -27,7 +28,17 @@ namespace NHibernate.Linq.Tests
 							select animal).ToArray();
 
 			var child = children.Single();
-			Assert.AreEqual("5678", child.SerialNumber);
+			Assert.AreEqual("1121", child.SerialNumber);
+		}
+
+		[Test]
+		public void CanSelectChildrenOfType()
+		{
+			var animals = (from animal in session.Linq<Animal>()
+						   where animal.Children.OfType<Mammal>().Any(m => m.Pregnant)
+						   select animal).ToArray();
+
+			Assert.AreEqual("789", animals.Single().SerialNumber);
 		}
 	}
 }
