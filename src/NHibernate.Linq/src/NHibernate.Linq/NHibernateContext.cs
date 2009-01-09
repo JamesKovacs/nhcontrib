@@ -5,6 +5,8 @@ using System.Data.Services;
 using System.Linq;
 using System.Reflection;
 using NHibernate.Metadata;
+using NHibernate.Engine;
+using NHibernate.Linq.Util;
 
 namespace NHibernate.Linq
 {
@@ -127,7 +129,7 @@ namespace NHibernate.Linq
 		/// <param name="resourceToBeAdded">The resource to be added.</param>
 		void IUpdatable.AddReferenceToCollection(object targetResource, string propertyName, object resourceToBeAdded)
 		{
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType().FullName);
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType());
 			if (metadata == null)
 			{
 				throw new DataServiceException("Type not recognized as a valid type for this Context");
@@ -170,7 +172,8 @@ namespace NHibernate.Linq
 		object IUpdatable.CreateResource(string containerName, string fullTypeName)
 		{
 			// Get the metadata
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(fullTypeName);
+			var entityNames = ((ISessionFactoryImplementor)session.SessionFactory).GetEntityNameMetaData();
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(entityNames[fullTypeName]);
 			object newResource = metadata.Instantiate(null, EntityMode.Poco);
 
 			// We can't save it to the session as it may not be valid yet
@@ -237,7 +240,7 @@ namespace NHibernate.Linq
 		/// <returns></returns>
 		object IUpdatable.GetValue(object targetResource, string propertyName)
 		{
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType().FullName);
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType());
 			if (metadata == null)
 			{
 				throw new DataServiceException("Type not recognized as a valid type for this Context");
@@ -262,7 +265,7 @@ namespace NHibernate.Linq
 		/// <param name="resourceToBeRemoved">The resource to be removed.</param>
 		void IUpdatable.RemoveReferenceFromCollection(object targetResource, string propertyName, object resourceToBeRemoved)
 		{
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType().FullName);
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType());
 			if (metadata == null)
 			{
 				throw new DataServiceException("Type not recognized as a valid type for this Context");
@@ -299,7 +302,7 @@ namespace NHibernate.Linq
 			// Create a new resource of the same type
 			// but only make a local copy as we're only using it to set the default fields
 			// Get the metadata
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(resource.GetType().ToString());
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(resource.GetType());
 			object tempCopy = metadata.Instantiate(null, EntityMode.Poco);
 
 			// Copy the default non-keys
@@ -380,7 +383,7 @@ namespace NHibernate.Linq
 		/// <param name="propertyValue">The property value.</param>
 		void IUpdatable.SetValue(object targetResource, string propertyName, object propertyValue)
 		{
-			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType().FullName);
+			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(targetResource.GetType());
 			if (metadata == null)
 			{
 				throw new DataServiceException("Type not recognized as a valid type for this Context");

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,8 +18,8 @@ namespace NHibernate.Linq.Visitors
 	public class AssociationVisitor : ExpressionVisitor
 	{
 		private readonly ISessionFactoryImplementor _sessionFactory;
-		private readonly IDictionary<string, IClassMetadata> _metaData;
-		private readonly IDictionary<System.Type, string> _proxyTypes;
+		private readonly IDictionary _metaData; // key: System.Type, value: IClassMetaData
+		private readonly IDictionary<System.Type, System.Type> _proxyTypes;
 
 		public AssociationVisitor(ISessionFactoryImplementor sessionFactory)
 		{
@@ -32,13 +33,12 @@ namespace NHibernate.Linq.Visitors
 			if (LinqUtil.IsAnonymousType(type))
 				return null;
 
-			string entityName = _sessionFactory.TryGetGuessEntityName(type);
-
-			if (!String.IsNullOrEmpty(entityName) && _metaData.ContainsKey(entityName))
-				return _metaData[entityName];
+			var metaData = (IClassMetadata)_metaData[type];
+			if (metaData != null)
+				return metaData;
 
 			if (_proxyTypes.ContainsKey(type))
-				return _metaData[_proxyTypes[type]];
+				return (IClassMetadata)_metaData[_proxyTypes[type]];
 
 			return null;
 		}
