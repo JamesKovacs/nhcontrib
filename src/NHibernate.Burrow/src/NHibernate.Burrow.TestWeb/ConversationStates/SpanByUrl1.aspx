@@ -16,6 +16,8 @@
         <asp:Button ID="btnStart" runat="server" Text="Start" OnClick="btnStart_Click" />
         <uc1:SuccessInfo ID="SuccessInfo1" runat="server" Visible="false" />
         <uc2:FailedInfo ID="FailedInfo1" runat="server" Visible="false" />
+        <asp:Button ID="btnContinue" Visible="false" runat="server" Text="Test postback afterwards" OnClick="btnContinue_Click" />
+        
     </div>
     </form>
 </body>

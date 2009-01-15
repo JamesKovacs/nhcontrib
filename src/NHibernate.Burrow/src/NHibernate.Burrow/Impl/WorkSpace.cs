@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web;
-using System.Web.UI;
 using NHibernate.Burrow.Exceptions;
 
 namespace NHibernate.Burrow.Impl
@@ -135,8 +134,8 @@ namespace NHibernate.Burrow.Impl
                     foreach (string cid in cids)
                     {
                         if (!string.IsNullOrEmpty(cid))
-                        {
-                            return cid;
+						{
+							return cid;
                         }
                     }
                 }

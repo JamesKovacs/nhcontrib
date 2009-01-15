@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.Web;
 using System.Web.Handlers;
 using System.Web.UI;
@@ -68,7 +69,8 @@ namespace NHibernate.Burrow.WebUtil
             }
             IHttpHandler handler = ctx.Context.Handler;
             string currentWorkSpaceName = Sniffer().Sniff(handler);
-            bf.InitWorkSpace(true, ctx.Request.Params, currentWorkSpaceName);
+
+            bf.InitWorkSpace(true, GetParams(ctx.Request), currentWorkSpaceName);
             if (handler is Page)
             {
                 Page p = (Page) handler;
@@ -79,7 +81,24 @@ namespace NHibernate.Burrow.WebUtil
             }
         }
 
-        private IWorkSpaceNameSniffer Sniffer()
+		/// <summary>
+		/// Excludes the query string when in PostBack
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+    	private NameValueCollection GetParams(HttpRequest request) {
+			NameValueCollection nvc = new NameValueCollection(request.Form);
+    		nvc.Add(request.ServerVariables);
+			foreach (string key in request.Cookies.AllKeys) {
+    			nvc.Add(key,request.Cookies[key].Value);
+    		}
+			if(request.HttpMethod.ToUpper().Trim() != "POST" )
+				nvc.Add(request.QueryString);
+    		return nvc;
+
+		}
+
+    	private IWorkSpaceNameSniffer Sniffer()
         {
             IBurrowConfig cfg = bf.BurrowEnvironment.Configuration;
             if (string.IsNullOrEmpty(cfg.WorkSpaceNameSniffer))

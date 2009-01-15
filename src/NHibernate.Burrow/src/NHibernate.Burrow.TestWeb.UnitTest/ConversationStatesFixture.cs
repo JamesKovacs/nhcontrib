@@ -90,6 +90,7 @@ namespace NHibernate.Burrow.TestWeb.UnitTest
 			GoTo("ConversationStates/SpanByUrl1.aspx");
 			IE.Button("btnStart").Click();
 			IE.Button("btCon").Click();
+			IE.Button("btnContinue").Click();
 
 			AssertTestSuccessMessageShown();
 		}

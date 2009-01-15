@@ -35,7 +35,7 @@ public partial class ConversationalField_SpanByUrl1 : System.Web.UI.Page
 				bf.CurrentConversation.SpanWithPostBacks();
 			else  {
 				Checker.AssertEqual(message, "1");
-				SuccessInfo1.Visible = true;
+				btnContinue.Visible = true;
 				btnStart.Visible = false;
 				bf.CurrentConversation.FinishSpan();
 			}
@@ -47,5 +47,10 @@ public partial class ConversationalField_SpanByUrl1 : System.Web.UI.Page
 		message = "1";
 		string backUrl = new NHibernate.Burrow.Util.WebUtil().WrapUrlWithConversationInfo("SpanByUrl1.aspx");
 		Response.Redirect("SpanByUrl2.aspx?returnUrl=" + HttpUtility.UrlEncode( backUrl+"&returned=1") );
+	}
+
+	protected void btnContinue_Click(object sender, EventArgs e) {
+				SuccessInfo1.Visible = true;
+		btnContinue.Visible = false;
 	}
 }
