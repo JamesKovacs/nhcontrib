@@ -511,7 +511,14 @@ namespace NHibernate.Burrow.AppBlock.DAOBases
             return criteria.List<ReturnT>();
         }
 
-        #endregion
+		///<summary>
+		/// This will fire a NHibernate Session Flush
+		///</summary>
+		public virtual void Flush() {
+			Session.Flush();
+		}
+
+    	#endregion
 
         #endregion
     }
