@@ -10,6 +10,10 @@ namespace NHibernate.Burrow.WebUtil.Impl
 
         public string Sniff(IHttpHandler handler)
         {
+        	if (handler == null) 
+        	{
+        		return string.Empty;
+        	}
             WorkSpaceInfo wsi = (WorkSpaceInfo) Attribute.GetCustomAttribute(handler.GetType(), typeof (WorkSpaceInfo));
             if (wsi != null)
             {
