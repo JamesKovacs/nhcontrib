@@ -92,7 +92,7 @@ namespace NHibernate.Burrow.WebUtil
 			foreach (string key in request.Cookies.AllKeys) {
     			nvc.Add(key,request.Cookies[key].Value);
     		}
-			if(request.HttpMethod.ToUpper().Trim() != "POST" )
+			if(request.HttpMethod.ToUpper().Trim() == "GET" )
 				nvc.Add(request.QueryString);
     		return nvc;
 

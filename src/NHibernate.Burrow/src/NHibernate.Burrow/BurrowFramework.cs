@@ -107,7 +107,7 @@ namespace NHibernate.Burrow
         /// <returns></returns>
         public ISession GetSession()
         {
-            return GetSession(null);
+            return  GrabCurrentConversation().GetSession();
         }
 
         /// <summary>
@@ -125,12 +125,22 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISession GetSession(System.Type entityType)
         {
-            AbstractConversation c = ((AbstractConversation) CurrentConversation);
-			if(c == null)
-				throw new ConversationUnavailableException();
-            return c.GetSession(entityType);
+            return GrabCurrentConversation().GetSession(entityType);
         }
 
+      
+
+        /// <summary>
+        /// Gets a managed ISession
+        /// </summary>
+        /// <param name="persistenceUnitName"></param>
+        /// <returns></returns>
+        /// <remarks>an overload of <see cref="GetSession(Type)"/> that can be used when you have one entityType mapped in multiple persistenceUnits</remarks>
+        public ISession GetSession(string persistenceUnitName)
+        {
+            return GrabCurrentConversation().GetSession(persistenceUnitName);
+        }
+ 
       
 
         /// <summary>
@@ -147,10 +157,44 @@ namespace NHibernate.Burrow
         /// </remarks>
         public ISessionFactory GetSessionFactory(System.Type entityType)
         {
-			if(PersistenceUnitRepo.Instance == null)
-				PersistenceUnitRepo.Initialize(BurrowEnvironment.Configuration);
-            return PersistenceUnitRepo.Instance.GetPU(entityType).SessionFactory;
-        } 
+           return  PersistenceUnitRepo.GetPU(entityType).SessionFactory;
+        }
+        /// <summary>
+        /// Gets the ISessionFactory
+        /// </summary>
+        /// <remarks>an overload of <see cref="GetSessionFactory(Type)"/> that can be used when you have one entityType mapped in multiple persistenceUnits</remarks>
+        public ISessionFactory GetSessionFactory(string persistenceUnitName)
+        {
+            return PersistenceUnitRepo.GetPU(persistenceUnitName).SessionFactory;
+			
+        }
+
+
+        #region private methods
+
+        private AbstractConversation GrabCurrentConversation()
+        {
+            AbstractConversation c = ((AbstractConversation) CurrentConversation);
+            if(c == null)
+                throw new ConversationUnavailableException();
+            return c;
+        }
+
+
+        private PersistenceUnitRepo PersistenceUnitRepo
+        {
+            get
+            {
+                if (PersistenceUnitRepo.Instance == null)
+                    PersistenceUnitRepo.Initialize(BurrowEnvironment.Configuration);
+                return PersistenceUnitRepo.Instance;
+            }
+        }
+
+
+
+        #endregion
+
         
     }
 }

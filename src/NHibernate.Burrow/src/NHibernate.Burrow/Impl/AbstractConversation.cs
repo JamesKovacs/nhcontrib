@@ -344,6 +344,11 @@ namespace NHibernate.Burrow.Impl
 			return sessManagers[PersistenceUnitRepo.Instance.GetPU(t)];
 		}
 
+        internal SessionAndTransactionManager GetSessionManager(string persistenceUnitName)
+        {
+            return sessManagers[PersistenceUnitRepo.Instance.GetPU(persistenceUnitName)];
+        }
+
 		internal IEnumerable<SessionAndTransactionManager> SessionManagers
 		{
 			get { return sessManagers.Values; }
@@ -382,11 +387,26 @@ namespace NHibernate.Burrow.Impl
 
 		public ISession GetSession(System.Type entityType)
 		{
-			SessionAndTransactionManager sm = entityType == null ? GetSessionManager() : GetSessionManager(entityType);
-			return GetSession(sm);
+            return GetSession(GetSessionManager(entityType));
 		}
 
-		private ISession GetSession(SessionAndTransactionManager sm)
+        /// <summary>
+        /// Get Session one there is only one SessionFactory
+        /// </summary>
+        /// <returns></returns>
+        public ISession GetSession()
+        {
+            return GetSession(GetSessionManager());
+        }
+
+        public ISession GetSession(string persistenceUnitName)
+        {
+            return GetSession( GetSessionManager(persistenceUnitName));
+        }
+
+      
+
+	    private ISession GetSession(SessionAndTransactionManager sm)
 		{
 			ISession sess = sm.GetSession();
 			TransactionStrategy.OnSessionUsed(sm);
