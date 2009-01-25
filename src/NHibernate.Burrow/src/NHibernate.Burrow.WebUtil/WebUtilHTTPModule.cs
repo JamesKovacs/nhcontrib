@@ -19,12 +19,12 @@ namespace NHibernate.Burrow.WebUtil
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
-        public void Init(HttpApplication context)
+        /// <param name="ctx"></param>
+        public void Init(HttpApplication ctx)
         {
-            context.PreRequestHandlerExecute += new EventHandler(BeginContext);
-            context.EndRequest += new EventHandler(CloseContext);
-            context.Error += new EventHandler(OnError);
+            ctx.PreRequestHandlerExecute += new EventHandler(BeginContext);
+            ctx.EndRequest += new EventHandler(CloseContext);
+            ctx.Error += new EventHandler(OnError);
         }
 
         /// <summary>
@@ -41,6 +41,8 @@ namespace NHibernate.Burrow.WebUtil
         /// <param name="e"></param>
         private static void OnError(object sender, EventArgs e)
         {
+            if (SenderIsIrrelavant(sender))
+                return;
             if (!bf.WorkSpaceIsReady)
             {
                 return;
@@ -62,12 +64,13 @@ namespace NHibernate.Burrow.WebUtil
         /// </summary>
         private void BeginContext(object sender, EventArgs e)
         {
-            HttpApplication ctx = (HttpApplication) sender;
-            if (HandlerIsIrrelavant(ctx))
-            {
+        
+            if (SenderIsIrrelavant(sender))
                 return;
-            }
+            HttpApplication ctx = (HttpApplication) sender;
+
             IHttpHandler handler = ctx.Context.Handler;
+      
             string currentWorkSpaceName = Sniffer().Sniff(handler);
 
             bf.InitWorkSpace(true, GetParams(ctx.Request), currentWorkSpaceName);
@@ -79,6 +82,7 @@ namespace NHibernate.Burrow.WebUtil
                new StatefulFieldPageModule(p, gph);
                new ConversationStatePageModule(p, gph);
             }
+
         }
 
 		/// <summary>
@@ -125,15 +129,26 @@ namespace NHibernate.Burrow.WebUtil
             OnError(sender, e);
         }
 
-        private bool HandlerIsIrrelavant(HttpApplication ctx)
+         
+       
+        private static bool SenderIsIrrelavant(object sender)
         {
-            return ctx.Context.Handler is AssemblyResourceLoader || ctx.Context.Handler is DefaultHttpHandler;
+            HttpApplication ctx = sender as HttpApplication;
+           
+            return  ctx == null ||
+                    ctx.Context == null || 
+                    ctx.Context.Handler == null ||
+                    ctx.Context.Handler is AssemblyResourceLoader || 
+                    ctx.Context.Handler is DefaultHttpHandler;
+            
         }
 
         /// <summary>
         /// </summary>
         private void CloseContext(object sender, EventArgs e)
         {
+            if (SenderIsIrrelavant(sender))
+                return; 
             bf.CloseWorkSpace();
         }
     }
