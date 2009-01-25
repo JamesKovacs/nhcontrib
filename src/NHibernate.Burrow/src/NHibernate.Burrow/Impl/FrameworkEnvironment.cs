@@ -8,13 +8,21 @@ namespace NHibernate.Burrow.Impl
     internal class FrameworkEnvironment : IFrameworkEnvironment
     {
         private static readonly FrameworkEnvironment instance = new FrameworkEnvironment();
-        private NHibernateBurrowCfgSection cfg;
+        private IBurrowConfig cfg;
         private LocalSafe<WorkSpace> currentWorkSpaceHolder;
 
         private FrameworkEnvironment()
         {
-            cfg = NHibernateBurrowCfgSection.CreateInstance();
+            ReConfig(null);
+        }
+
+        public void ReConfig(IConfigurator configurator)
+        {
+            if(IsRunning)
+                ShutDown();
+            cfg = new ConfigurationFactory().Create(configurator);
             Start();
+            cfg.Configurator = null;
         }
 
         public static FrameworkEnvironment Instance

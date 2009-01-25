@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Impl;
+using NHibernate.Burrow.Util;
 using NHibernate.Cfg;
 
 namespace NHibernate.Burrow.Configuration
@@ -17,6 +18,7 @@ namespace NHibernate.Burrow.Configuration
         public const string SectionName = "NHibernate.Burrow";
 
         private readonly IDictionary<string, object> savedSettings = new Dictionary<string, object>();
+        private IConfigurator configurator;
         private IList<IPersistenceUnitCfg> pucs;
 
         /// <summary>
@@ -96,6 +98,16 @@ namespace NHibernate.Burrow.Configuration
             set { Set("workSpaceNameSniffer", value); }
         }
 
+        /// <summary>
+        /// for user to set a customer IConfigurator to config everything before environment initiates
+        /// </summary>
+        [ConfigurationProperty("customConfigurator", DefaultValue = "", IsRequired = false, IsKey = false)]
+        public string CustomConfigurator
+        {
+            get { return (string) Get("customConfigurator"); }
+            set { Set("customConfigurator", value); }
+        }
+
 
         ///<summary>
         /// whether the transaction is manually managed by client    
@@ -103,11 +115,9 @@ namespace NHibernate.Burrow.Configuration
         [ConfigurationProperty("manualTransactionManagement", DefaultValue = false, IsRequired = false, IsKey = false)]
         public bool ManualTransactionManagement
         {
-            get { return (bool)Get("manualTransactionManagement"); }
+            get { return (bool) Get("manualTransactionManagement"); }
             set { Set("manualTransactionManagement", value); }
         }
-
-
 
 
         /// <summary>
@@ -117,8 +127,20 @@ namespace NHibernate.Burrow.Configuration
         public string DBConnectionString(System.Type entityType)
         {
             return
-                (string)
                 PersistenceUnitRepo.Instance.GetPU(entityType).NHConfiguration.Properties[Environment.ConnectionString];
+        }
+
+        public IConfigurator Configurator
+        {
+            get
+            {
+                if (configurator != null)
+                    return configurator;
+                if (string.IsNullOrEmpty(CustomConfigurator))
+                    return null;
+                return InstanceLoader.Load<IConfigurator>(CustomConfigurator);
+            }
+            set { configurator = value; }
         }
 
         #endregion

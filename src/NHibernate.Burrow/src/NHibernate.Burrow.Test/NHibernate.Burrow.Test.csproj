@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AdvNHFunctionTests\ManualSessionFeature.cs" />
     <Compile Include="ConfigurationTests\ConfigReadWriteFixture.cs" />
+    <Compile Include="ConfigurationTests\ConfiguratorFixture.cs" />
     <Compile Include="ConverstationTests\ConversationalDataFixture.cs" />
     <Compile Include="ConverstationTests\ConversationManagementFixture.cs" />
     <Compile Include="ConverstationTests\LongBusinessTransactionFixture.cs" />

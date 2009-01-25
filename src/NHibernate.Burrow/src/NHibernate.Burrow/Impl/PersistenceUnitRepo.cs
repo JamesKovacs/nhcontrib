@@ -38,7 +38,7 @@ namespace NHibernate.Burrow.Impl {
 		public static void Initialize(IBurrowConfig configuration) {
 			instance = new PersistenceUnitRepo();
 			foreach (IPersistenceUnitCfg pus in configuration.PersistenceUnitCfgs)
-				instance.PersistenceUnits.Add(new PersistenceUnit(pus));
+				instance.PersistenceUnits.Add(new PersistenceUnit(pus, configuration.Configurator));
 		}
 
 		internal PersistenceUnit GetPU(System.Type t) {

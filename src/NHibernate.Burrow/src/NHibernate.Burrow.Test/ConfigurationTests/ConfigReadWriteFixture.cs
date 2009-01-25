@@ -31,7 +31,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
 		}
 
 		[Test]
-		public void BurrowConfigruationChangeTest()
+		public void ModifyBurrowConfigruationTest()
 		{
 			BurrowFramework f = new BurrowFramework();
 
@@ -61,7 +61,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
 
 
 		[Test]
-		public void NHConfigruationChangeTest()
+		public void ModifyNHConfigruationTest()
 		{
  
 			IFrameworkEnvironment fe = new BurrowFramework().BurrowEnvironment;
@@ -76,5 +76,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
 				typeof (NHibernate.Dialect.MsSql2005Dialect));
 			 
 		}
+
+     
 	}
 }

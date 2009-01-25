@@ -103,6 +103,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigurationFactory.cs" />
     <Compile Include="Configuration\Util.cs" />
     <Compile Include="Exceptions\ChangeConfigWhenRunningException.cs" />
     <Compile Include="Exceptions\ConversationAlreadyCancelledException.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Exceptions\IncorrectConversationSpanStatusException.cs" />
     <Compile Include="Exceptions\IncorrectTransactionStatusException.cs" />
     <Compile Include="Exceptions\PersistenceUnitsNotReadyException.cs" />
+    <Compile Include="IConfigurator.cs" />
     <Compile Include="IInterceptorFactory.cs" />
     <Compile Include="Impl\ConversationWithManagedTransactionImpl.cs" />
     <Compile Include="Impl\FrameworkEnvironment.cs" />

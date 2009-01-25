@@ -40,10 +40,23 @@ namespace NHibernate.Burrow
         [ConfigurationProperty("manualTransactionManagement", DefaultValue = false, IsRequired = false, IsKey = false)]
         bool ManualTransactionManagement { get; set; }
 
+
+        /// <summary>
+        /// Gets a configurator that config this instance before it's used
+        /// </summary>
+        IConfigurator Configurator { get; set; }
+
+        /// <summary>
+        /// for user to set a customer IConfigurator to config everything before environment initiates
+        /// </summary>
+        [ConfigurationProperty("customConfigurator", DefaultValue = "", IsRequired = false, IsKey = false)]
+        string CustomConfigurator { get; set; }
+
         /// <summary>
         /// Get the DBConnectionString for the DB where <paramref name="entityType"/> is persistent in
         /// </summary>
         /// <returns></returns>
         string DBConnectionString(System.Type entityType);
+ 
     }
 }

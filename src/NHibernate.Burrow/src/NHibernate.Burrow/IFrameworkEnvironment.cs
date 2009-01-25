@@ -43,5 +43,14 @@ namespace NHibernate.Burrow
     	/// Force all SessionFactory get rebuild
     	/// </summary>
     	void RebuildSessionFactories();
+
+        /// <summary>
+        /// use the configurator to ReConig the environment
+        /// </summary>
+        /// <param name="configurator"></param>
+        /// <remarks>
+        /// This will restart the environment and thus must be caused when workspace is closed
+        /// </remarks>
+        void ReConfig(IConfigurator configurator);
     }
 }

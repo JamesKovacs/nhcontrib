@@ -16,9 +16,11 @@ namespace NHibernate.Burrow.Impl {
 		private readonly Cfg.Configuration nHConfiguration;
 		private ISessionFactory sessionFactory;
 
-		internal PersistenceUnit(IPersistenceUnitCfg cfg) {
+		internal PersistenceUnit(IPersistenceUnitCfg cfg, IConfigurator configurator) {
 			configuration = cfg;
 			nHConfiguration = CreateNHConfiguration();
+            if(configurator != null)
+                configurator.Config(cfg, nHConfiguration);
 			if (cfg.AutoUpdateSchema) 
 			  new SchemaUtil().UpdateSchema(false, true, nHConfiguration);
 			ReBuildSessionfactory();
@@ -78,11 +80,11 @@ namespace NHibernate.Burrow.Impl {
 		///<returns></returns>
 		private Cfg.Configuration CreateNHConfiguration() {
 			Cfg.Configuration retVal = new Cfg.Configuration();
-			string configFile = configuration.NHConfigFile.Replace("~", AppDomain.CurrentDomain.BaseDirectory);
-			retVal.Configure(configFile);
-			//retVal.Properties = Configuration.ORMFrameworkSettingsDict;
-			//foreach (Assembly assembly in domainLayerAssemblies)
-			//    retVal.AddAssembly(assembly);
+            if(!string.IsNullOrEmpty(configuration.NHConfigFile))
+            {
+                string configFile = configuration.NHConfigFile.Replace("~", AppDomain.CurrentDomain.BaseDirectory);
+                retVal.Configure(configFile);
+            }
 			return retVal;
 		}
 
