@@ -194,7 +194,11 @@
 				<include name="releasenotes.txt" />
 				<include name="*.xsd" />
 				<include name="bin/**" />
+				<exclude name="**/MultiDB/**" />
+				<exclude name="**/*.Test.dll*" />
+				<exclude name="**/WatiN.Core.dll" />
 				<exclude name="**/*.hbm.xml" />
+				<exclude name="**/*.cfg.xml" />
 				<exclude name="**/*.commandlog" />
 				<exclude name="**/MyTest*" />
 			</fileset>
