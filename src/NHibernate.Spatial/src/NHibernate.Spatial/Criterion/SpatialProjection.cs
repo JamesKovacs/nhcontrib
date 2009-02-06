@@ -53,8 +53,7 @@ namespace NHibernate.Spatial.Criterion
 		/// <returns></returns>
 		public override IType[] GetTypes(ICriteria criteria, ICriteriaQuery criteriaQuery)
 		{
-			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
-			return new IType[] { spatialDialect.GeometryType };
+			return new IType[] { SpatialDialect.GeometryTypeOf(criteriaQuery.Factory) };
 		}
 
 		/// <summary>

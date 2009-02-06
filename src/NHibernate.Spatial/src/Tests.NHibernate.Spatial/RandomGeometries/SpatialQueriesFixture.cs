@@ -4,6 +4,7 @@ using System.Data;
 using GeoAPI.Geometries;
 using NHibernate;
 using NHibernate.Spatial.Criterion;
+using NHibernate.Spatial.Dialect;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.RandomGeometries.Model;
 
@@ -169,7 +170,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select NHSP.Overlaps(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.List();
 
 			long countOverlapping = 0;
@@ -193,7 +194,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			long count = session
 				.CreateQuery("select count(*) from LineStringEntity l where NHSP.Relate(l.Geometry, ?, 'TT*******') = NHSP.TRUE and l.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.UniqueResult<long>();
 
 			Assert.Greater((int)count, 0);
@@ -204,7 +205,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select NHSP.Intersects(?,l.Geometry) from LineStringEntity as l where l.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.List();
 
 			long intersects = 0;
@@ -215,7 +216,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 
 			long altIntersects = session
 				.CreateQuery("select count(*) from LineStringEntity as l where NHSP.Intersects(l.Geometry, ?) = NHSP.TRUE")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.UniqueResult<long>();
 
 			Assert.AreEqual(intersects, altIntersects);
@@ -231,7 +232,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 
 			results = session
 				.CreateQuery("from LineStringEntity as l where NHSP.Intersects(?,l.Geometry) = NHSP.TRUE")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.List();
 
 			Assert.AreEqual(count, results.Count);
@@ -374,7 +375,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select NHSP.Distance(l.Geometry, ?), l.Geometry from LineStringEntity as l where l.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 			foreach (object[] item in results)
@@ -443,7 +444,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select e.Geometry, NHSP.Difference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 
@@ -477,7 +478,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select e.Geometry, NHSP.Intersection(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 
@@ -511,7 +512,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select e.Geometry, NHSP.SymDifference(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 
@@ -545,7 +546,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			IList results = session
 				.CreateQuery("select e.Geometry, NHSP.Union(e.Geometry, ?) from PolygonEntity as e where e.Geometry is not null")
-				.SetParameter(0, this.filter, spatialDialect.GeometryType)
+				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 
@@ -574,7 +575,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			Assert.Greater(count, 0);
 		}
 
-		private bool IsApproximateCoincident(IGeometry g1, IGeometry g2, double tolerance)
+		private static bool IsApproximateCoincident(IGeometry g1, IGeometry g2, double tolerance)
 		{
 			IGeometry symdiff = null;
 			if (g1.Dimension < Dimensions.Surface && g2.Dimension < Dimensions.Surface)

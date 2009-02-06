@@ -16,8 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using NHibernate.Type;
 
 namespace NHibernate.Spatial.Dialect
 {
@@ -63,6 +62,30 @@ namespace NHibernate.Spatial.Dialect
 		/// </remarks>
 		[ThreadStatic]
 		public static ISpatialDialect LastInstantiated;
+
+		#region Utility methods
+
+		/// <summary>
+		/// Returns the geometry type associated to the session factory.
+		/// </summary>
+		/// <param name="sessionFactory"></param>
+		/// <returns></returns>
+		public static IType GeometryTypeOf(ISessionFactory sessionFactory)
+		{
+			return ((ISpatialDialect)sessionFactory.Dialect).GeometryType;
+		}
+
+		/// <summary>
+		/// Returns the geometry type associated to the session.
+		/// </summary>
+		/// <param name="session"></param>
+		/// <returns></returns>
+		public static IType GeometryTypeOf(ISession session)
+		{
+			return ((ISpatialDialect)session.SessionFactory.Dialect).GeometryType;
+		}
+
+		#endregion
 
 	}
 }
