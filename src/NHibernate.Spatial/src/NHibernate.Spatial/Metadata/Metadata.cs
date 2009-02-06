@@ -72,7 +72,7 @@ namespace NHibernate.Spatial.Metadata
         /// <param name="session">The session</param>
         public static bool SupportsSpatialMetadata(ISession session, MetadataClass metadataClass)
         {
-            ISpatialDialect spatialDialect = (ISpatialDialect)(session.SessionFactory as ISessionFactoryImplementor).Dialect;
+            ISpatialDialect spatialDialect = (ISpatialDialect)session.SessionFactory.Dialect;
             return spatialDialect.SupportsSpatialMetadata(metadataClass);
         }
 	}

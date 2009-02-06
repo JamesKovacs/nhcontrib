@@ -26,7 +26,7 @@ namespace Tests.NHibernate.Spatial
 		protected static readonly WKTReader Wkt = new WKTReader();
 		protected Configuration configuration;
 		protected ISessionFactory sessions;
-		protected ISpatialDialect spatialDialect;
+		private ISpatialDialect spatialDialect;
 		private ISession lastOpenedSession;
 		private DebugConnectionProvider connectionProvider;
 
@@ -273,7 +273,7 @@ namespace Tests.NHibernate.Spatial
 		private void BuildSessionFactory()
 		{
 			sessions = configuration.BuildSessionFactory();
-			spatialDialect = (ISpatialDialect)(sessions as ISessionFactoryImplementor).Dialect;
+			spatialDialect = (ISpatialDialect)this.sessions.Dialect;
 			connectionProvider = (sessions as ISessionFactoryImplementor).ConnectionProvider as DebugConnectionProvider;
 		}
 
