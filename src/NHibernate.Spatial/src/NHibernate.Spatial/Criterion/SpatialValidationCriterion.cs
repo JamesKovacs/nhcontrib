@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
@@ -33,8 +32,8 @@ namespace NHibernate.Spatial.Criterion
 	[Serializable]
 	public class SpatialValidationCriterion : AbstractCriterion
 	{
-		private string propertyName;
-		private SpatialValidation validation;
+		private readonly string propertyName;
+		private readonly SpatialValidation validation;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialValidationCriterion"/> class.
@@ -95,13 +94,13 @@ namespace NHibernate.Spatial.Criterion
 		}
 
 		/// <summary>
-		/// Gets a string representation of the <see cref="T:NHibernate.Expression.AbstractCriterion"/>.
+		/// Gets a string representation of the <see cref="T:NHibernate.Criterion.AbstractCriterion"/>.
 		/// </summary>
 		/// <returns>
-		/// A String that shows the contents of the <see cref="T:NHibernate.Expression.AbstractCriterion"/>.
+		/// A String that shows the contents of the <see cref="T:NHibernate.Criterion.AbstractCriterion"/>.
 		/// </returns>
 		/// <remarks>
-		/// This is not a well formed Sql fragment.  It is useful for logging what the <see cref="T:NHibernate.Expression.AbstractCriterion"/>
+		/// This is not a well formed Sql fragment.  It is useful for logging what the <see cref="T:NHibernate.Criterion.AbstractCriterion"/>
 		/// looks like.
 		/// </remarks>
 		public override string ToString()

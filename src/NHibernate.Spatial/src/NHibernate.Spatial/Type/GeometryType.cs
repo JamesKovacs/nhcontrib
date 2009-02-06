@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Data;
+using NHibernate.Type;
 using NHibernate.UserTypes;
 using NHibernate.Spatial.Dialect;
 
@@ -223,5 +224,6 @@ namespace NHibernate.Spatial.Type
 		}
 
 		#endregion
+
 	}
 }
