@@ -28,6 +28,7 @@ namespace NHibernate.Spatial.Type
 	/// <summary>
 	/// Maps a <see cref="Microsoft.SqlServer.Types.SqlGeometry" /> to a <see cref="geometry" /> column.
 	/// </summary>
+	[Serializable]
 	public class SqlGeometryType : ImmutableType
 	{
 		public SqlGeometryType()
