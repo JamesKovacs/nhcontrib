@@ -211,6 +211,16 @@ namespace NHibernate.Linq.Util
 			_detachedCriteria.ClearOrders();
 		}
 
+		public IEnumerable<T> Future<T>()
+		{
+			throw new NotSupportedException();
+		}
+
+		public IFutureValue<T> FutureValue<T>()
+		{
+			throw new NotSupportedException();
+		}
+
 		#endregion
 
 		#region ICloneable Members

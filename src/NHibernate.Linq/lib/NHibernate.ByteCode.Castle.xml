@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>NHibernate.ProxyGenerators.CastleDynamicProxy</name>
+        <name>NHibernate.ByteCode.Castle</name>
     </assembly>
     <members>
-        <member name="T:NHibernate.ProxyGenerators.CastleDynamicProxy.LazyInitializer">
+        <member name="T:NHibernate.ByteCode.Castle.LazyInitializer">
             <summary>
             A <see cref="T:NHibernate.Proxy.ILazyInitializer"/> for use with the Castle Dynamic Class Generator.
             </summary>
         </member>
-        <member name="M:NHibernate.ProxyGenerators.CastleDynamicProxy.LazyInitializer.#ctor(System.String,System.Type,System.Object,System.Reflection.MethodInfo,System.Reflection.MethodInfo,NHibernate.Type.IAbstractComponentType,NHibernate.Engine.ISessionImplementor)">
+        <member name="M:NHibernate.ByteCode.Castle.LazyInitializer.#ctor(System.String,System.Type,System.Object,System.Reflection.MethodInfo,System.Reflection.MethodInfo,NHibernate.Type.IAbstractComponentType,NHibernate.Engine.ISessionImplementor)">
             <summary>
-            Initializes a new <see cref="T:NHibernate.ProxyGenerators.CastleDynamicProxy.LazyInitializer"/> object.
+            Initializes a new <see cref="T:NHibernate.ByteCode.Castle.LazyInitializer"/> object.
             </summary>
             <param name="entityName"></param>
             <param name="persistentClass">The Class to Proxy.</param>
@@ -21,14 +21,14 @@
             <param name="componentIdType"></param>
             <param name="session">The ISession this Proxy is in.</param>
         </member>
-        <member name="M:NHibernate.ProxyGenerators.CastleDynamicProxy.LazyInitializer.Intercept(Castle.Core.Interceptor.IInvocation)">
+        <member name="M:NHibernate.ByteCode.Castle.LazyInitializer.Intercept(Castle.Core.Interceptor.IInvocation)">
             <summary>
             Invoke the actual Property/Method using the Proxy or instantiate the actual
             object and use it when the Proxy can't handle the method. 
             </summary>
             <param name="invocation">The <see cref="T:Castle.Core.Interceptor.IInvocation"/> from the generated Castle.DynamicProxy.</param>
         </member>
-        <member name="M:NHibernate.ProxyGenerators.CastleDynamicProxy.ProxyFactory.GetProxy(System.Object,NHibernate.Engine.ISessionImplementor)">
+        <member name="M:NHibernate.ByteCode.Castle.ProxyFactory.GetProxy(System.Object,NHibernate.Engine.ISessionImplementor)">
             <summary>
             Build a proxy using the Castle.DynamicProxy library.
             </summary>

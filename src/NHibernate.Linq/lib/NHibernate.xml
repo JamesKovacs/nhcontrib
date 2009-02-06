@@ -2784,10 +2784,10 @@
         <member name="T:NHibernate.Cfg.MappingSchema.HbmCustomSQL">
             <remarks/>
         </member>
-        <member name="F:NHibernate.Cfg.MappingSchema.HbmCustomSQL.collable">
+        <member name="F:NHibernate.Cfg.MappingSchema.HbmCustomSQL.callable">
             <remarks/>
         </member>
-        <member name="F:NHibernate.Cfg.MappingSchema.HbmCustomSQL.collableSpecified">
+        <member name="F:NHibernate.Cfg.MappingSchema.HbmCustomSQL.callableSpecified">
             <remarks/>
         </member>
         <member name="F:NHibernate.Cfg.MappingSchema.HbmCustomSQL.check">
@@ -3031,6 +3031,9 @@
             <remarks/>
         </member>
         <member name="F:NHibernate.Cfg.MappingSchema.HbmClass.lazySpecified">
+            <remarks/>
+        </member>
+        <member name="F:NHibernate.Cfg.MappingSchema.HbmClass.schemaaction">
             <remarks/>
         </member>
         <member name="F:NHibernate.Cfg.MappingSchema.HbmClass.table">
@@ -5631,7 +5634,6 @@
             <summary>
             Get the query language imports (entityName/className -> AssemblyQualifiedName)
             </summary>
-            <returns></returns>
         </member>
         <member name="P:NHibernate.Cfg.Configuration.NamedSQLQueries">
             <summary>
@@ -9451,6 +9453,14 @@
             <param name="obj">The obj.</param>
             <returns></returns>
         </member>
+        <member name="M:NHibernate.Criterion.Projections.Constant(System.Object,NHibernate.Type.IType)">
+            <summary>
+            Return a constant value
+            </summary>
+            <param name="obj">The obj.</param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
         <member name="M:NHibernate.Criterion.Projections.SqlFunction(System.String,NHibernate.Type.IType,NHibernate.Criterion.IProjection[])">
             <summary>
             Calls the named <see cref="T:NHibernate.Dialect.Function.ISQLFunction"/>
@@ -10893,11 +10903,6 @@
             Does this dialect support subselects?
             </summary>
         </member>
-        <member name="P:NHibernate.Dialect.Dialect.MultipleQueriesSeparator">
-            <summary>
-            How we separate the queries when we use multiply queries.
-            </summary>
-        </member>
         <member name="P:NHibernate.Dialect.Dialect.SupportsIdentityColumns">
             <summary>
             Does this dialect support identity column key generation?
@@ -11290,13 +11295,17 @@
         <member name="T:NHibernate.Dialect.InformixDialect">
             <summary>
             Summary description for InformixDialect.
+            This dialect is intended to work with IDS version 7.31 
+            However I can test only version 10.00 as I have only this version at work
             </summary>
             <remarks>
             The InformixDialect defaults the following configuration properties:
             <list type="table">
             	<listheader>
-            		<term>Property</term>
-            		<description>Default Value</description>
+            		<term>ConnectionDriver</term>
+            		<description>NHibernate.Driver.OdbcDriver</description>
+            		<term>PrepareSql</term>
+            		<description>true</description>
             	</listheader>
             	<item>
             		<term>connection.driver_class</term>
@@ -11308,8 +11317,141 @@
         <member name="M:NHibernate.Dialect.InformixDialect.#ctor">
             <summary></summary>
         </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.GetForUpdateString(System.String)">
+            <summary> 
+            Get the <tt>FOR UPDATE OF column_list</tt> fragment appropriate for this
+            dialect given the aliases of the columns to be write locked.
+             </summary>
+            <param name="aliases">The columns to be write locked. </param>
+            <returns> The appropriate <tt>FOR UPDATE OF column_list</tt> clause string. </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.PerformTemporaryTableDDLInIsolation">
+            <summary> 
+            Does the dialect require that temporary table DDL statements occur in
+            isolation from other statements?  This would be the case if the creation
+            would cause any current transaction to get committed implicitly.
+             </summary>
+            <returns> see the result matrix above. </returns>
+            <remarks>
+            JDBC defines a standard way to query for this information via the
+            {@link java.sql.DatabaseMetaData#dataDefinitionCausesTransactionCommit()}
+            method.  However, that does not distinguish between temporary table
+            DDL and other forms of DDL; MySQL, for example, reports DDL causing a
+            transaction commit via its driver, even though that is not the case for
+            temporary table DDL.
+            <p/>
+            Possible return values and their meanings:<ul>
+            <li>{@link Boolean#TRUE} - Unequivocally, perform the temporary table DDL in isolation.</li>
+            <li>{@link Boolean#FALSE} - Unequivocally, do <b>not</b> perform the temporary table DDL in isolation.</li>
+            <li><i>null</i> - defer to the JDBC driver response in regards to {@link java.sql.DatabaseMetaData#dataDefinitionCausesTransactionCommit()}</li>
+            </ul>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.GetIdentitySelectString(System.String,System.String,System.Data.DbType)">
+            <summary> 
+            Get the select command to use to retrieve the last generated IDENTITY
+            value for a particular table 
+            </summary>
+            <param name="tableName">The table into which the insert was done </param>
+            <param name="identityColumn">The PK column. </param>
+            <param name="type">The <see cref="T:System.Data.DbType"/> type code. </param>
+            <returns> The appropriate select command </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.GetIdentityColumnString(System.Data.DbType)">
+            <summary> 
+            The syntax used during DDL to define a column as being an IDENTITY of
+            a particular type. 
+            </summary>
+            <param name="type">The <see cref="T:System.Data.DbType"/> type code. </param>
+            <returns> The appropriate DDL fragment. </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.CreateOuterJoinFragment">
+            <summary> 
+            Create a <see cref="T:NHibernate.SqlCommand.JoinFragment"/> strategy responsible
+            for handling this dialect's variations in how joins are handled. 
+            </summary>
+            <returns> This dialect's <see cref="T:NHibernate.SqlCommand.JoinFragment"/> strategy. </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.ToBooleanValueString(System.Boolean)">
+            <summary> The SQL literal value to which this database maps boolean values. </summary>
+            <param name="value">The boolean value </param>
+            <returns> The appropriate SQL literal. </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect.GetLimitString(NHibernate.SqlCommand.SqlString,System.Int32,System.Int32)">
+            <summary> Apply s limit clause to the query. </summary>
+            <param name="querySqlString">The query to which to apply the limit. </param>
+            <param name="offset">Offset of the first row to be returned by the query (zero-based)</param>
+            <param name="limit">Maximum number of rows to be returned by the query</param>
+            <returns> the modified SQL </returns>
+            <remarks>
+            Typically dialects utilize <see cref="P:NHibernate.Dialect.InformixDialect.SupportsVariableLimit"/>
+            limit caluses when they support limits.  Thus, when building the
+            select command we do not actually need to know the limit or the offest
+            since we will just be using placeholders.
+            <p/>
+            Here we do still pass along whether or not an offset was specified
+            so that dialects not supporting offsets can generate proper exceptions.
+            In general, dialects will override one or the other of this method and
+            <see cref="M:NHibernate.Dialect.InformixDialect.GetLimitString(NHibernate.SqlCommand.SqlString,System.Int32,System.Int32)"/>.
+            </remarks>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.IdentityInsertString">
+            <summary>
+            The keyword used to insert a generated value into an identity column (or null).
+            Need if the dialect does not support inserts that specify no column values.
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.CreateTemporaryTableString">
+            <summary> Command used to create a temporary table. </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.CreateTemporaryTablePostfix">
+            <summary> 
+            Get any fragments needing to be postfixed to the command for
+            temporary table creation. 
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.IsCurrentTimestampSelectStringCallable">
+            <summary> 
+            Should the value returned by <see cref="P:NHibernate.Dialect.InformixDialect.CurrentTimestampSelectString"/>
+            be treated as callable.  Typically this indicates that JDBC escape
+            sytnax is being used...
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.CurrentTimestampSelectString">
+            <summary> 
+            Retrieve the command used to retrieve the current timestammp from the database. 
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.CurrentTimestampSQLFunctionName">
+            <summary> 
+            The name of the database-specific SQL function for retrieving the
+            current timestamp. 
+            </summary>
+        </member>
         <member name="P:NHibernate.Dialect.InformixDialect.AddColumnString">
             <summary></summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.ForUpdateOfColumns">
+            <summary> Is <tt>FOR UPDATE OF</tt> syntax supported? </summary>
+            <value> True if the database supports <tt>FOR UPDATE OF</tt> syntax; false otherwise. </value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsOuterJoinForUpdate">
+            <summary> 
+            Does this dialect support <tt>FOR UPDATE</tt> in conjunction with outer joined rows?
+            </summary>
+            <value> True if outer joined rows can be locked via <tt>FOR UPDATE</tt>. </value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsTemporaryTables">
+            <summary> Does this dialect support temporary tables? </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsCurrentTimestampSelection">
+            <summary> Does this dialect support a way to retrieve the database's current timestamp value? </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.HasDataTypeInIdentityColumn">
+            <summary>
+            Whether this dialect have an Identity clause added to the data type or a
+            completely seperate identity data type
+            </summary>
         </member>
         <member name="P:NHibernate.Dialect.InformixDialect.IdentitySelectString">
             <summary>
@@ -11322,10 +11464,181 @@
             The keyword used to specify an identity column, if native key generation is supported
             </summary>
         </member>
-        <member name="P:NHibernate.Dialect.InformixDialect.HasDataTypeInIdentityColumn">
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsSequences">
             <summary>
-            Whether this dialect have an Identity clause added to the data type or a
-            completely seperate identity data type
+            Does this dialect support sequences?
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsLimit">
+            <summary>
+            Does this Dialect have some kind of <c>LIMIT</c> syntax?
+            </summary>
+            <value>False, unless overridden.</value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsLimitOffset">
+            <summary>
+            Does this Dialect support an offset?
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsVariableLimit">
+            <summary>
+            Can parameters be used for a statement containing a LIMIT?
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.BindLimitParametersFirst">
+            <summary>
+            Does the <c>LIMIT</c> clause come at the start of the 
+            <c>SELECT</c> statement rather than at the end?
+            </summary>
+            <value>false, unless overridden</value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect.SupportsUnionAll">
+            <summary> 
+            Does this dialect support UNION ALL, which is generally a faster variant of UNION? 
+            True if UNION ALL is supported; false otherwise.
+            </summary>
+        </member>
+        <member name="T:NHibernate.Exceptions.TemplatedViolatedConstraintNameExtracter">
+            <summary> 
+            Knows how to extract a violated constraint name from an error message based on the
+            fact that the constraint name is templated within the message.
+            </summary>
+        </member>
+        <member name="M:NHibernate.Exceptions.TemplatedViolatedConstraintNameExtracter.ExtractUsingTemplate(System.String,System.String,System.String)">
+            <summary>
+            Extracts the constraint name based on a template (i.e., <i>templateStart</i><b>constraintName</b><i>templateEnd</i>).
+            </summary>
+            <param name="templateStart">The pattern denoting the start of the constraint name within the message.</param>
+            <param name="templateEnd">The pattern denoting the end of the constraint name within the message.</param>
+            <param name="message">The templated error message containing the constraint name.</param>
+            <returns>The found constraint name, or null.</returns>
+        </member>
+        <member name="M:NHibernate.Exceptions.TemplatedViolatedConstraintNameExtracter.ExtractConstraintName(System.Data.Common.DbException)">
+            <summary> 
+            Extract the name of the violated constraint from the given SQLException. 
+            </summary>
+            <param name="sqle">The exception that was the result of the constraint violation. </param>
+            <returns> The extracted constraint name. </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.IfxViolatedConstraintExtracter.ExtractConstraintName(System.Data.Common.DbException)">
+            <summary> 
+            Extract the name of the violated constraint from the given DbException.
+            </summary>
+            <param name="sqle">The exception that was the result of the constraint violation.</param> 
+            <returns>The extracted constraint name.</returns> 
+        </member>
+        <member name="T:NHibernate.Dialect.InformixDialect0940">
+            <summary>
+            Summary description for InformixDialect.
+            This dialect is intended to work with IDS version 9.40
+            </summary>
+            <remarks>
+            The InformixDialect defaults the following configuration properties:
+            <list type="table">
+            	<listheader>
+            		<term>ConnectionDriver</term>
+            		<description>NHibernate.Driver.OdbcDriver</description>
+            		<term>PrepareSql</term>
+            		<description>true</description>
+            	</listheader>
+            	<item>
+            		<term>connection.driver_class</term>
+            		<description><see cref="T:NHibernate.Driver.OdbcDriver"/></description>
+            	</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect0940.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect0940.GetSequenceNextValString(System.String)">
+            <summary> 
+            Generate the appropriate select statement to to retreive the next value
+            of a sequence.
+            </summary>
+            <param name="sequenceName">the name of the sequence </param>
+            <returns> String The "nextval" select string. </returns>
+            <remarks>This should be a "stand alone" select statement.</remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect0940.GetSelectSequenceNextValString(System.String)">
+            <summary> 
+            Generate the select expression fragment that will retrieve the next
+            value of a sequence as part of another (typically DML) statement.
+            </summary>
+            <param name="sequenceName">the name of the sequence </param>
+            <returns> The "nextval" fragment. </returns>
+            <remarks>
+            This differs from <see cref="M:NHibernate.Dialect.InformixDialect0940.GetSequenceNextValString(System.String)"/> in that this
+            should return an expression usable within another statement.
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect0940.CreateOuterJoinFragment">
+            <summary> 
+            Create a <see cref="T:NHibernate.SqlCommand.JoinFragment"/> strategy responsible
+            for handling this dialect's variations in how joins are handled. 
+            </summary>
+            <returns> This dialect's <see cref="T:NHibernate.SqlCommand.JoinFragment"/> strategy. </returns>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect0940.QuerySequencesString">
+            <summary> Get the select command used retrieve the names of all sequences.</summary>
+            <returns> The select command; or null if sequences are not supported. </returns>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect0940.SupportsSequences">
+            <summary>
+            Does this dialect support sequences?
+            </summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect0940.SupportsPooledSequences">
+            <summary> 
+            Does this dialect support "pooled" sequences.  Not aware of a better
+            name for this.  Essentially can we specify the initial and increment values? 
+            </summary>
+            <returns> True if such "pooled" sequences are supported; false otherwise. </returns>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect0940.SupportsLimit">
+            <summary>
+            Does this Dialect have some kind of <c>LIMIT</c> syntax?
+            </summary>
+            <value>False, unless overridden.</value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect0940.SupportsLimitOffset">
+            <summary>
+            Does this Dialect support an offset?
+            </summary>
+        </member>
+        <member name="T:NHibernate.Dialect.InformixDialect1000">
+            <summary>
+            Summary description for InformixDialect.
+            This dialect is intended to work with IDS version 10.00
+            </summary>
+            <remarks>
+            The InformixDialect defaults the following configuration properties:
+            <list type="table">
+            	<listheader>
+            		<term>ConnectionDriver</term>
+            		<description>NHibernate.Driver.OdbcDriver</description>
+            		<term>PrepareSql</term>
+            		<description>true</description>
+            	</listheader>
+            	<item>
+            		<term>connection.driver_class</term>
+            		<description><see cref="T:NHibernate.Driver.OdbcDriver"/></description>
+            	</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.InformixDialect1000.#ctor">
+            <summary></summary>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect1000.SupportsLimit">
+            <summary>
+            Does this Dialect have some kind of <c>LIMIT</c> syntax?
+            </summary>
+            <value>False, unless overridden.</value>
+        </member>
+        <member name="P:NHibernate.Dialect.InformixDialect1000.SupportsLimitOffset">
+            <summary>
+            Does this Dialect support an offset?
             </summary>
         </member>
         <member name="T:NHibernate.Dialect.IngresDialect">
@@ -11472,12 +11785,13 @@
             The <c>LIMIT</c> SQL will look like
             <code>
             
-            SELECT TOP last (columns) FROM (
-            SELECT ROW_NUMBER() OVER(ORDER BY __hibernate_sort_expr_1__ {sort direction 1} [, __hibernate_sort_expr_2__ {sort direction 2}, ...]) as row, (query.columns) FROM (
-            	{original select query part}, {sort field 1} as __hibernate_sort_expr_1__ [, {sort field 2} as __hibernate_sort_expr_2__, ...]
-            	{remainder of original query minus the order by clause}
-            ) query
-            ) page WHERE page.row &gt; offset
+            SELECT
+            	TOP last (columns)
+            FROM
+            	(SELECT (columns), ROW_NUMBER() OVER(ORDER BY {original order by, with un-aliased column names) as __hibernate_sort_row
+            	{original from}) as query
+            WHERE query.__hibernate_sort_row &gt; offset
+            ORDER BY query.__hibernate_sort_row
             
             </code>
             
@@ -11562,9 +11876,6 @@
             </list>
             </remarks>
         </member>
-        <member name="M:NHibernate.Dialect.MySQLDialect.#ctor">
-            <summary></summary>
-        </member>
         <member name="M:NHibernate.Dialect.MySQLDialect.GetLimitString(NHibernate.SqlCommand.SqlString,System.Boolean)">
             <summary>
             
@@ -11617,6 +11928,41 @@
         </member>
         <member name="P:NHibernate.Dialect.MySQLDialect.SupportsLimit">
             <summary></summary>
+        </member>
+        <member name="T:NHibernate.Dialect.Oracle10gDialect">
+            <summary> 
+            A dialect specifically for use with Oracle 10g.
+            </summary>
+            <remarks>
+            The main difference between this dialect and <see cref="T:NHibernate.Dialect.Oracle9iDialect"/>
+            is the use of "ANSI join syntax" here...
+            </remarks>
+        </member>
+        <member name="T:NHibernate.Dialect.Oracle8iDialect">
+            <summary>
+            A dialect for Oracle 8i. 
+            </summary>
+        </member>
+        <member name="M:NHibernate.Dialect.Oracle8iDialect.CreateOuterJoinFragment">
+            <summary> 
+            Support for the oracle proprietary join syntax... 
+            </summary>
+            <returns> The orqacle join fragment </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.Oracle8iDialect.CreateCaseFragment">
+            <summary> 
+            Map case support to the Oracle DECODE function.  Oracle did not
+            add support for CASE until 9i. 
+            </summary>
+            <returns> The oracle CASE -> DECODE fragment </returns>
+        </member>
+        <member name="M:NHibernate.Dialect.Oracle8iDialect.GetBasicSelectClauseNullString(NHibernate.SqlTypes.SqlType)">
+            <summary> 
+            Allows access to the basic <see cref="M:NHibernate.Dialect.Dialect.GetSelectClauseNullString(NHibernate.SqlTypes.SqlType)"/>
+            implementation... 
+            </summary>
+            <param name="sqlType">The <see cref="T:NHibernate.SqlTypes.SqlType"/> mapping type</param>
+            <returns> The appropriate select cluse fragment </returns>
         </member>
         <member name="T:NHibernate.Dialect.Oracle9Dialect">
             <summary>
@@ -11676,13 +12022,39 @@
             An SQL dialect for Oracle, compatible with Oracle 8.
             </summary>
         </member>
-        <member name="M:NHibernate.Dialect.OracleDialect.#ctor">
-            <summary></summary>
-        </member>
         <member name="M:NHibernate.Dialect.OracleDialect.CreateOuterJoinFragment">
             <summary></summary>
         </member>
         <member name="M:NHibernate.Dialect.OracleDialect.CreateCaseFragment">
+            <summary></summary>
+        </member>
+        <member name="T:NHibernate.Dialect.OracleLiteDialect">
+            <summary>
+            It's a immature version, it just work.
+            An SQL dialect for Oracle Lite
+            </summary>
+            <remarks>
+            The OracleLiteDialect defaults the following configuration properties:
+            <list type="table">
+            	<listheader>
+            		<term>Property</term>
+            		<description>Default Value</description>
+            	</listheader>
+            	<item>
+            		<term>use_outer_join</term>
+            		<description><see langword="true"/></description>
+            	</item>
+            	<item>
+            		<term>connection.driver_class</term>
+            		<description><see cref="T:NHibernate.Driver.OracleLiteDataClientDriver"/></description>
+            	</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Dialect.OracleLiteDialect.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:NHibernate.Dialect.OracleLiteDialect.GetCreateSequenceString(System.String)">
             <summary></summary>
         </member>
         <member name="T:NHibernate.Dialect.PostgreSQL81Dialect">
@@ -12186,6 +12558,11 @@
             several result sets back?
             </summary>
         </member>
+        <member name="P:NHibernate.Driver.IDriver.MultipleQueriesSeparator">
+            <summary>
+            How we separate the queries when we use multiply queries.
+            </summary>
+        </member>
         <member name="M:NHibernate.Driver.DriverBase.FormatNameForSql(System.String)">
             <summary>
             Change the parameterName into the correct format IDbCommand.CommandText
@@ -12365,6 +12742,19 @@
             </summary>
             <exception cref="T:NHibernate.HibernateException">
             Thrown when the <c>FirebirdSql.Data.Firebird</c> assembly can not be loaded.
+            </exception>
+        </member>
+        <member name="T:NHibernate.Driver.IfxDriver">
+            <summary>
+            A NHibernate Driver for using the Informix DataProvider
+            </summary>
+        </member>
+        <member name="M:NHibernate.Driver.IfxDriver.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NHibernate.Driver.IfxDriver"/> class.
+            </summary>
+            <exception cref="T:NHibernate.HibernateException">
+            Thrown when the <c>IBM.Data.Informix</c> assembly can not be loaded.
             </exception>
         </member>
         <member name="T:NHibernate.Driver.IngresDriver">
@@ -13108,6 +13498,25 @@
         </member>
         <member name="P:NHibernate.Driver.OracleDataClientDriver.NamedPrefix">
             <summary></summary>
+        </member>
+        <member name="T:NHibernate.Driver.OracleLiteDataClientDriver">
+            <summary>
+            A NHibernate Driver for using the Oracle.DataAccess.Lite DataProvider
+            </summary>
+        </member>
+        <member name="M:NHibernate.Driver.OracleLiteDataClientDriver.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:NHibernate.Driver.OracleLiteDataClientDriver"/>.
+            </summary>
+            <exception cref="T:NHibernate.HibernateException">
+            Thrown when the <c>Oracle.DataAccess.Lite_w32</c> assembly can not be loaded.
+            </exception>
+        </member>
+        <member name="M:NHibernate.Driver.OracleLiteDataClientDriver.InitializeParameter(System.Data.IDbDataParameter,System.String,NHibernate.SqlTypes.SqlType)">
+            <remarks>
+            This adds logic to ensure that a DbType.Boolean parameter is not created since
+            ODP.NET doesn't support it.
+            </remarks>
         </member>
         <member name="T:NHibernate.Driver.SqlClientDriver">
             <summary>
@@ -17160,6 +17569,17 @@
         <member name="T:NHibernate.Event.EvictEvent">
             <summary>  Defines an event class for the evicting of an entity. </summary>
         </member>
+        <member name="T:NHibernate.Event.IDestructible">
+            <summary> 
+            Contract for listeners which require notification of SessionFactory closing,
+            presumably to destroy internal state.
+            </summary>
+        </member>
+        <member name="M:NHibernate.Event.IDestructible.Cleanup">
+            <summary>
+            Notification of <see cref="T:NHibernate.ISessionFactory"/> shutdown.
+            </summary>
+        </member>
         <member name="T:NHibernate.ISession">
             <summary>
             The main runtime interface between a Java application and Hibernate. This is the central
@@ -19804,14 +20224,19 @@
             <returns> The generated identifier </returns>
         </member>
         <member name="M:NHibernate.Id.Insert.AbstractSelectingDelegate.BindParameters(NHibernate.Engine.ISessionImplementor,System.Data.IDbCommand,System.Object)">
-            <summary> Bind any required parameter values into the SQL command {@link #getSelectSQL}. </summary>
+            <summary> Bind any required parameter values into the SQL command <see cref="P:NHibernate.Id.Insert.AbstractSelectingDelegate.SelectSQL"/>. </summary>
             <param name="session">The session </param>
-            <param name="ps">The prepared {@link #getSelectSQL SQL} command </param>
+            <param name="ps">The prepared <see cref="P:NHibernate.Id.Insert.AbstractSelectingDelegate.SelectSQL"/> command </param>
             <param name="entity">The entity being saved. </param>
         </member>
         <member name="P:NHibernate.Id.Insert.AbstractSelectingDelegate.SelectSQL">
             <summary> Get the SQL statement to be used to retrieve generated key values. </summary>
             <returns> The SQL command string </returns>
+        </member>
+        <member name="P:NHibernate.Id.Insert.AbstractSelectingDelegate.ParametersTypes">
+            <summary>
+            Types of any required parameter values into the SQL command <see cref="P:NHibernate.Id.Insert.AbstractSelectingDelegate.SelectSQL"/>.
+            </summary>
         </member>
         <member name="T:NHibernate.Id.Insert.IdentifierGeneratingInsert">
             <summary> 
@@ -19866,6 +20291,11 @@
             Specialized IdentifierGeneratingInsert which appends the database
             specific clause which signifies to return generated IDENTITY values
             to the end of the insert statement. 
+            </summary>
+        </member>
+        <member name="T:NHibernate.Id.Insert.NoCommentsInsert">
+            <summary>
+            Disable comments on insert.
             </summary>
         </member>
         <member name="M:NHibernate.Id.AbstractPostInsertGenerator.Generate(NHibernate.Engine.ISessionImplementor,System.Object)">
@@ -20075,6 +20505,10 @@
             	<item>
             		<term>guid.comb</term>
             		<description><see cref="T:NHibernate.Id.GuidCombGenerator"/></description>
+            	</item>
+            	<item>
+            		<term>guid.native</term>
+            		<description><see cref="T:NHibernate.Id.NativeGuidGenerator"/></description>
             	</item>
             	<item>
             		<term>hilo</term>
@@ -20310,6 +20744,21 @@
             <summary>
             Get the identifier type
             </summary>
+        </member>
+        <member name="T:NHibernate.Id.NativeGuidGenerator">
+            <summary>
+            Generates Guid values using the server side Guid function.
+            </summary>
+        </member>
+        <member name="T:NHibernate.Id.SelectGenerator">
+            <summary> 
+            A generator that selects the just inserted row to determine the identifier
+            value assigned by the database. The correct row is located using a unique key.
+            </summary>
+            <remarks>One mapping parameter is required: key (unless a natural-id is defined in the mapping).</remarks>
+        </member>
+        <member name="T:NHibernate.Id.SelectGenerator.SelectGeneratorDelegate">
+            <summary> The delegate for the select generation strategy.</summary>
         </member>
         <member name="T:NHibernate.Id.SequenceGenerator">
             <summary>
@@ -21752,6 +22201,24 @@
             "shape" of the query result.
             </summary>
         </member>
+        <member name="M:NHibernate.IQuery.Future``1">
+            <summary>
+            Get a enumerable that when enumerated will execute
+            a batch of queries in a single database roundtrip
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.IQuery.FutureValue``1">
+            <summary>
+            Get an IFutureValue instance, whose value can be retrieved through
+            its Value property. The query is not executed until the Value property
+            is retrieved, which will execute other Future queries as well in a
+            single roundtrip
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
         <member name="P:NHibernate.IQuery.QueryString">
             <summary>
             The query string
@@ -22070,6 +22537,24 @@
             <exception cref="T:NHibernate.HibernateException">
             If there is more than one matching result
             </exception>
+        </member>
+        <member name="M:NHibernate.ICriteria.Future``1">
+            <summary>
+            Get a enumerable that when enumerated will execute
+            a batch of queries in a single database roundtrip
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:NHibernate.ICriteria.FutureValue``1">
+            <summary>
+            Get an IFutureValue instance, whose value can be retrieved through
+            its Value property. The query is not executed until the Value property
+            is retrieved, which will execute other Future queries as well in a
+            single roundtrip
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
         </member>
         <member name="M:NHibernate.ICriteria.List(System.Collections.IList)">
             <summary>
@@ -25052,6 +25537,31 @@
             Initializes a new instance of <see cref="T:NHibernate.Mapping.Table"/>.
             </summary>
         </member>
+        <member name="M:NHibernate.Mapping.Table.SqlCreateString(NHibernate.Dialect.Dialect,NHibernate.Engine.IMapping,System.String,System.String)">
+            <summary>
+            Generates the SQL string to create this Table in the database.
+            </summary>
+            <param name="dialect">The <see cref="N:NHibernate.Dialect"/> to use for SQL rules.</param>
+            <param name="p"></param>
+            <param name="defaultCatalog"></param>
+            <param name="defaultSchema"></param>
+            <returns>
+            A string that contains the SQL to create this Table, Primary Key Constraints
+            , and Unique Key Constraints.
+            </returns>
+        </member>
+        <member name="M:NHibernate.Mapping.Table.SqlDropString(NHibernate.Dialect.Dialect,System.String,System.String)">
+            <summary>
+            Generates the SQL string to drop this Table in the database.
+            </summary>
+            <param name="dialect">The <see cref="N:NHibernate.Dialect"/> to use for SQL rules.</param>
+            <param name="defaultCatalog"></param>
+            <param name="defaultSchema"></param>
+            <returns>
+            A string that contains the SQL to drop this Table and to cascade the drop to 
+            the constraints if the database supports it.
+            </returns>
+        </member>
         <member name="M:NHibernate.Mapping.Table.GetQualifiedName(NHibernate.Dialect.Dialect)">
             <summary>
             Gets the schema qualified name of the Table.
@@ -25059,12 +25569,13 @@
             <param name="dialect">The <see cref="N:NHibernate.Dialect"/> that knows how to Quote the Table name.</param>
             <returns>The name of the table qualified with the schema if one is specified.</returns>
         </member>
-        <member name="M:NHibernate.Mapping.Table.GetQualifiedName(NHibernate.Dialect.Dialect,System.String)">
+        <member name="M:NHibernate.Mapping.Table.GetQualifiedName(NHibernate.Dialect.Dialect,System.String,System.String)">
             <summary>
             Gets the schema qualified name of the Table using the specified qualifier
             </summary>
             <param name="dialect">The <see cref="N:NHibernate.Dialect"/> that knows how to Quote the Table name.</param>
-            <param name="defaultQualifier">The Qualifier to use when accessing the table.</param>
+            <param name="defaultCatalog">The catalog name.</param>
+            <param name="defaultSchema">The schema name.</param>
             <returns>A String representing the Qualified name.</returns>
             <remarks>If this were used with MSSQL it would return a dbo.table_name.</remarks>
         </member>
@@ -25114,36 +25625,11 @@
             </summary>
             <param name="column">The <see cref="T:NHibernate.Mapping.Column"/> to include in the Table.</param>
         </member>
-        <member name="M:NHibernate.Mapping.Table.SqlCreateString(NHibernate.Dialect.Dialect,NHibernate.Engine.IMapping,System.String,System.String)">
-            <summary>
-            Generates the SQL string to create this Table in the database.
-            </summary>
-            <param name="dialect">The <see cref="N:NHibernate.Dialect"/> to use for SQL rules.</param>
-            <param name="p"></param>
-            <param name="defaultCatalog"></param>
-            <param name="defaultSchema"></param>
-            <returns>
-            A string that contains the SQL to create this Table, Primary Key Constraints
-            , and Unique Key Constraints.
-            </returns>
-        </member>
-        <member name="M:NHibernate.Mapping.Table.SqlDropString(NHibernate.Dialect.Dialect,System.String,System.String)">
-            <summary>
-            Generates the SQL string to drop this Table in the database.
-            </summary>
-            <param name="dialect">The <see cref="N:NHibernate.Dialect"/> to use for SQL rules.</param>
-            <param name="defaultCatalog"></param>
-            <param name="defaultSchema"></param>
-            <returns>
-            A string that contains the SQL to drop this Table and to cascade the drop to 
-            the constraints if the database supports it.
-            </returns>
-        </member>
         <member name="M:NHibernate.Mapping.Table.GetIndex(System.String)">
             <summary>
             Gets the <see cref="T:NHibernate.Mapping.Index"/> identified by the name.
             </summary>
-            <param name="name">The name of the <see cref="T:NHibernate.Mapping.Index"/> to get.</param>
+            <param name="indexName">The name of the <see cref="T:NHibernate.Mapping.Index"/> to get.</param>
             <returns>
             The <see cref="T:NHibernate.Mapping.Index"/> identified by the name.  If the <see cref="T:NHibernate.Mapping.Index"/>
             identified by the name does not exist then it is created.
@@ -25153,7 +25639,7 @@
             <summary>
             Gets the <see cref="T:NHibernate.Mapping.UniqueKey"/> identified by the name.
             </summary>
-            <param name="name">The name of the <see cref="T:NHibernate.Mapping.UniqueKey"/> to get.</param>
+            <param name="keyName">The name of the <see cref="T:NHibernate.Mapping.UniqueKey"/> to get.</param>
             <returns>
             The <see cref="T:NHibernate.Mapping.UniqueKey"/> identified by the name.  If the <see cref="T:NHibernate.Mapping.UniqueKey"/>
             identified by the name does not exist then it is created.
@@ -25181,7 +25667,7 @@
             Generates a unique string for an <see cref="T:System.Collections.ICollection"/> of 
             <see cref="T:NHibernate.Mapping.Column"/> objects.
             </summary>
-            <param name="columns">An <see cref="T:System.Collections.ICollection"/> of <see cref="T:NHibernate.Mapping.Column"/> objects.</param>
+            <param name="uniqueColumns">An <see cref="T:System.Collections.ICollection"/> of <see cref="T:NHibernate.Mapping.Column"/> objects.</param>
             <returns>
             An unique string for the <see cref="T:NHibernate.Mapping.Column"/> objects.
             </returns>
@@ -25190,7 +25676,7 @@
             <summary>
             Sets the Identifier of the Table.
             </summary>
-            <param name="idValue">The <see cref="T:NHibernate.Mapping.SimpleValue"/> that represents the Identifier.</param>
+            <param name="identifierValue">The <see cref="T:NHibernate.Mapping.SimpleValue"/> that represents the Identifier.</param>
         </member>
         <member name="M:NHibernate.Mapping.Table.AddCheckConstraint(System.String)">
             <summary>
@@ -29091,6 +29577,14 @@
             			allows users of the Class to get the value of the Id but not set the value.
             		</description>
             	</item>
+                <item>
+            		<term>readonly</term>
+            		<description>
+            			The <c>name</c> attribute is the name of the Property.  NHibernate will use the 
+            			Property's get method to retrieve the value but will never set the value back in the domain.
+            			This is used for read-only calculated properties with only a get method.
+            		</description>
+            	</item>
             	<item>
             		<term>Assembly Qualified Name</term>
             		<description>
@@ -29181,6 +29675,46 @@
             <param name="property">The property for which to retrieve an accessor. </param>
             <param name="mode">The mode for the resulting entity. </param>
             <returns> An appropriate accessor. </returns>
+        </member>
+        <member name="T:NHibernate.Properties.ReadOnlyAccessor">
+            <summary>
+            Access the mapped property through a Property <c>get</c> to get the value 
+            and do nothing to set the value.
+            </summary>
+            <remarks>
+            This is useful to allow calculated properties in the domain that will never
+            be recovered from the DB but can be used for querying.
+            </remarks>
+        </member>
+        <member name="M:NHibernate.Properties.ReadOnlyAccessor.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:NHibernate.Properties.ReadOnlyAccessor"/>.
+            </summary>
+        </member>
+        <member name="M:NHibernate.Properties.ReadOnlyAccessor.GetGetter(System.Type,System.String)">
+            <summary>
+            Creates an <see cref="T:NHibernate.Properties.BasicPropertyAccessor.BasicGetter"/> to <c>get</c> the value from the Property.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to find the Property in.</param>
+            <param name="propertyName">The name of the mapped Property to get.</param>
+            <returns>
+            The <see cref="T:NHibernate.Properties.BasicPropertyAccessor.BasicGetter"/> to use to get the value of the Property from an
+            instance of the <see cref="T:System.Type"/>.</returns>
+            <exception cref="T:NHibernate.PropertyNotFoundException">
+            Thrown when a Property specified by the <c>propertyName</c> could not
+            be found in the <see cref="T:System.Type"/>.
+            </exception>
+        </member>
+        <member name="M:NHibernate.Properties.ReadOnlyAccessor.GetSetter(System.Type,System.String)">
+            <summary>
+            Create a <see cref="T:NHibernate.Properties.NoopAccessor.NoopSetter"/> to do nothing when trying to
+            se the value of the mapped Property
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to find the mapped Property in.</param>
+            <param name="propertyName">The name of the mapped Property to set.</param>
+            <returns>
+            An instance of <see cref="T:NHibernate.Properties.NoopAccessor.NoopSetter"/>.
+            </returns>
         </member>
         <member name="T:NHibernate.Properties.XmlAccessor">
             <summary> 
@@ -29402,7 +29936,7 @@
             itself or delegates calls to the method GetObjectData to the LazyInitializer.
             </remarks>
         </member>
-        <member name="M:NHibernate.Proxy.Poco.BasicLazyInitializer.Invoke(System.Reflection.MethodBase,System.Object[],System.Object)">
+        <member name="M:NHibernate.Proxy.Poco.BasicLazyInitializer.Invoke(System.Reflection.MethodInfo,System.Object[],System.Object)">
             <summary>
             Invokes the method if this is something that the LazyInitializer can handle
             without the underlying proxied object being instantiated.
@@ -29605,6 +30139,11 @@
         <member name="T:NHibernate.SqlCommand.ForUpdateFragment">
             <summary>
             Represents an SQL <c>for update of ... nowait</c> statement
+            </summary>
+        </member>
+        <member name="T:NHibernate.SqlCommand.InformixJoinFragment">
+            <summary>
+            An Informix-style (theta) Join
             </summary>
         </member>
         <member name="T:NHibernate.SqlCommand.InFragment">
@@ -31031,11 +31570,21 @@
             Execute the schema updates
             </summary>
         </member>
+        <member name="M:NHibernate.Tool.hbm2ddl.SchemaUpdate.Execute(System.Action{System.String},System.Boolean)">
+            <summary>
+            Execute the schema updates
+            </summary>
+            <param name="scriptAction">The action to write the each schema line.</param>
+            <param name="doUpdate">Commit the script to DB</param>
+        </member>
         <member name="P:NHibernate.Tool.hbm2ddl.SchemaUpdate.Exceptions">
             <summary>
              Returns a List of all Exceptions which occured during the export.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:NHibernate.Tool.hbm2ddl.SchemaValidator.Validate">
+            Perform the validations.
         </member>
         <member name="T:NHibernate.Tool.hbm2ddl.SuppliedConnectionHelper">
             <summary>
@@ -31819,7 +32368,7 @@
             this (i.e., the version) property, represents new (i.e., un-saved)
             instances of the owning entity.</param>
         </member>
-        <member name="T:NHibernate.Type.AbstractBynaryType">
+        <member name="T:NHibernate.Type.AbstractBinaryType">
             <summary> Logic to bind stream of byte into a VARBINARY </summary>
         </member>
         <member name="T:NHibernate.Type.MutableType">
@@ -32562,10 +33111,10 @@
             Get a comparator for the version numbers
             </summary>
         </member>
-        <member name="M:NHibernate.Type.AbstractBynaryType.ToExternalFormat(System.Byte[])">
+        <member name="M:NHibernate.Type.AbstractBinaryType.ToExternalFormat(System.Byte[])">
             <summary> Convert the byte[] into the expected object type</summary>
         </member>
-        <member name="M:NHibernate.Type.AbstractBynaryType.ToInternalFormat(System.Object)">
+        <member name="M:NHibernate.Type.AbstractBinaryType.ToInternalFormat(System.Object)">
             <summary> Convert the object into the internal byte[] representation</summary>
         </member>
         <member name="T:NHibernate.Type.AbstractCharType">
@@ -32669,6 +33218,11 @@
             call System.Type.Parse without verifying that it is a parsable value
             for the System.Type.
             </remarks>
+        </member>
+        <member name="T:NHibernate.Type.AbstractEnumType">
+            <summary>
+            Base class for enum types.
+            </summary>
         </member>
         <member name="T:NHibernate.Type.AnsiCharType">
             <summary>
@@ -33349,6 +33903,11 @@
         <member name="P:NHibernate.Type.CustomType.IsMutable">
             <summary></summary>
         </member>
+        <member name="T:NHibernate.Type.DateTime2Type">
+            <summary>
+            Maps a <see cref="T:System.DateTime"/> Property to a <see cref="F:System.Data.DbType.DateTime"/>
+            </summary>
+        </member>
         <member name="T:NHibernate.Type.DateTimeType">
             <summary>
             Maps a <see cref="T:System.DateTime"/> Property to a <see cref="F:System.Data.DbType.DateTime"/> column that 
@@ -33364,6 +33923,17 @@
             <summary></summary>
         </member>
         <member name="P:NHibernate.Type.DateTimeType.Name">
+            <summary></summary>
+        </member>
+        <member name="M:NHibernate.Type.DateTime2Type.#ctor">
+            <summary></summary>
+        </member>
+        <member name="T:NHibernate.Type.DateTimeOffsetType">
+            <summary>
+            Maps a <see cref="T:System.DateTimeOffset"/> Property to a <see cref="F:System.Data.DbType.DateTimeOffset"/>
+            </summary>
+        </member>
+        <member name="M:NHibernate.Type.DateTimeOffsetType.#ctor">
             <summary></summary>
         </member>
         <member name="T:NHibernate.Type.DateType">
@@ -33569,6 +34139,13 @@
             Is the foreign key the primary key of the table?
             </summary>
         </member>
+        <member name="M:NHibernate.Type.EnumCharType`1.GetValue(System.Object)">
+            <summary>
+            Converts the given enum instance into a basic type.
+            </summary>
+            <param name="instance"></param>
+            <returns></returns>
+        </member>
         <member name="T:NHibernate.Type.EnumStringType">
             <summary>
             Maps a <see cref="T:System.Enum"/> to a 
@@ -33702,18 +34279,6 @@
             <param name="session"></param>
             <param name="owner"></param>
             <returns></returns>
-        </member>
-        <member name="M:NHibernate.Type.EnumStringType.StringToObject(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="xml"></param>
-            <returns></returns>
-        </member>
-        <member name="P:NHibernate.Type.EnumStringType.ReturnedClass">
-            <summary>
-            
-            </summary>
         </member>
         <member name="P:NHibernate.Type.EnumStringType.Name">
             <summary>
@@ -34442,15 +35007,15 @@
         <member name="P:NHibernate.Type.TicksType.Name">
             <summary></summary>
         </member>
-        <member name="T:NHibernate.Type.TimeSpanType">
+        <member name="T:NHibernate.Type.TimeSpanInt64Type">
             <summary>
             Maps a <see cref="T:System.TimeSpan"/> Property to an <see cref="F:System.Data.DbType.Int64"/> column 
             </summary>
         </member>
-        <member name="M:NHibernate.Type.TimeSpanType.#ctor">
+        <member name="M:NHibernate.Type.TimeSpanInt64Type.#ctor">
             <summary></summary>
         </member>
-        <member name="M:NHibernate.Type.TimeSpanType.Set(System.Data.IDbCommand,System.Object,System.Int32)">
+        <member name="M:NHibernate.Type.TimeSpanInt64Type.Set(System.Data.IDbCommand,System.Object,System.Int32)">
             <summary>
             
             </summary>
@@ -34458,14 +35023,19 @@
             <param name="value"></param>
             <param name="index"></param>
         </member>
-        <member name="M:NHibernate.Type.TimeSpanType.Seed(NHibernate.Engine.ISessionImplementor)">
+        <member name="M:NHibernate.Type.TimeSpanInt64Type.Seed(NHibernate.Engine.ISessionImplementor)">
             <summary></summary>
         </member>
-        <member name="P:NHibernate.Type.TimeSpanType.Name">
+        <member name="P:NHibernate.Type.TimeSpanInt64Type.Name">
             <summary></summary>
         </member>
-        <member name="P:NHibernate.Type.TimeSpanType.ReturnedClass">
+        <member name="P:NHibernate.Type.TimeSpanInt64Type.ReturnedClass">
             <summary></summary>
+        </member>
+        <member name="T:NHibernate.Type.TimeSpanType">
+            <summary>
+            Maps a <see cref="T:System.TimeSpan"/> Property to an <see cref="F:System.Data.DbType.Time"/> column 
+            </summary>
         </member>
         <member name="T:NHibernate.Type.TimestampType">
             <summary>
@@ -34512,7 +35082,7 @@
             using this Type indicates that you don't care about the Date portion of the DateTime.
             </para>
             <para>
-            A more appropriate choice to store the duration/time is the <see cref="T:NHibernate.Type.TimeSpanType"/>.
+            A more appropriate choice to store the duration/time is the <see cref="T:NHibernate.Type.TimeSpanInt64Type"/>.
             The underlying <see cref="F:System.Data.DbType.Time"/> tends to be handled differently by different
             DataProviders.
             </para>
@@ -37327,6 +37897,16 @@
             NHibernate date type
             </summary>
         </member>
+        <member name="F:NHibernate.NHibernateUtil.DateTime2">
+            <summary>
+            NHibernate date type
+            </summary>
+        </member>
+        <member name="F:NHibernate.NHibernateUtil.DateTimeOffset">
+            <summary>
+            NHibernate date type
+            </summary>
+        </member>
         <member name="F:NHibernate.NHibernateUtil.Date">
             <summary>
             NHibernate date type
@@ -37408,6 +37988,11 @@
             </summary>
         </member>
         <member name="F:NHibernate.NHibernateUtil.TimeSpan">
+            <summary>
+            NHibernate Ticks type
+            </summary>
+        </member>
+        <member name="F:NHibernate.NHibernateUtil.TimeSpanInt64">
             <summary>
             NHibernate Ticks type
             </summary>
