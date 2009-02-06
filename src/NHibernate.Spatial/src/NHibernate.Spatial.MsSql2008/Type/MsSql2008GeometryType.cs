@@ -60,7 +60,7 @@ namespace NHibernate.Spatial.Type
             IGeometry geometry = value as IGeometry;
             if (geometry == null)
             {
-                return null;
+				return SqlGeometry.Null;
             }
             else
             {
