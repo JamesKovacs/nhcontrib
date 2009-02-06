@@ -26,6 +26,7 @@ namespace NHibernate.Linq.Tests
 			Assert.AreEqual(utility, utility.SetCacheMode(CacheMode.Put));
 			Assert.AreEqual(utility, utility.SetCachable(true));
 			Assert.AreEqual(utility, utility.SetCacheRegion("cacheRegion"));
+			Assert.AreEqual(utility, utility.SetComment("comment"));
 		}
 
 		[Test]
@@ -64,15 +65,14 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Test]
-		[Ignore("this test relies on NHibernate 2.1 not 2.01 GA")]
 		public void SetCommentActsOnInnerCriteria()
 		{
-			//CriteriaImpl criteria = null;
-			//query.QueryOptions
-			//    .RegisterCustomAction(x => criteria = x as CriteriaImpl)
-			//    .SetComment("something");
-			//query.ToList();
-			//Assert.AreEqual("something", criteria.Comment);
+			CriteriaImpl criteria = null;
+			query.QueryOptions
+				.RegisterCustomAction(x => criteria = x as CriteriaImpl)
+				.SetComment("something");
+			query.ToList();
+			Assert.AreEqual("something", criteria.Comment);
 		}
 
 		[Test]

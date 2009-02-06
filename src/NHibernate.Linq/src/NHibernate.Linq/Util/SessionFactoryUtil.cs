@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHibernate.Engine;
 using NHibernate.Metadata;
 
@@ -8,18 +6,17 @@ namespace NHibernate.Linq.Util
 {
 	public static class SessionFactoryUtil
 	{
-		public static IDictionary<System.Type, System.Type> GetProxyMetaData(this ISessionFactoryImplementor factory, IDictionary metaData)
+		public static IDictionary<System.Type, string> GetProxyMetaData(this ISessionFactoryImplementor factory, IDictionary<string, IClassMetadata> metaData)
 		{
-			var dict = new Dictionary<System.Type, System.Type>();
-			foreach (System.Type key in metaData.Keys)
+			var dict = new Dictionary<System.Type, string>();
+			foreach (var item in metaData)
 			{
-				var item = (IClassMetadata)metaData[key];
-				if (item.HasProxy)
+				if (item.Value.HasProxy)
 				{
-					var proxyType = factory.GetEntityPersister(key).GetConcreteProxyClass(EntityMode.Poco);
-					if (proxyType != item.GetMappedClass(EntityMode.Poco))
+					var proxyType = factory.GetEntityPersister(item.Key).GetConcreteProxyClass(EntityMode.Poco);
+					if (proxyType != item.Value.GetMappedClass(EntityMode.Poco))
 					{
-						dict.Add(proxyType, key);
+						dict.Add(proxyType, item.Key);
 					}
 				}
 			}
@@ -31,14 +28,14 @@ namespace NHibernate.Linq.Util
 			var metaData = factory.GetAllClassMetadata();
 
 			var dict = new Dictionary<string, System.Type>();
-			foreach (System.Type type in metaData.Keys)
+			foreach (var item in metaData)
 			{
-				var item = (IClassMetadata)metaData[type];
+				var type = item.Value.GetMappedClass(EntityMode.Poco);
 
-				dict.Add(item.EntityName, type);
-				if (item.HasProxy)
+				dict.Add(item.Key, type);
+				if (item.Value.HasProxy)
 				{
-					var proxyType = factory.GetEntityPersister(type).GetConcreteProxyClass(EntityMode.Poco);
+					var proxyType = factory.GetEntityPersister(item.Key).GetConcreteProxyClass(EntityMode.Poco);
 					if (proxyType != type)
 					{
 						dict.Add(proxyType.FullName, proxyType);

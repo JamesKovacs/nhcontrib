@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using NHibernate.Engine;
 using NHibernate.Criterion;
 using NHibernate.Linq.Expressions;
 using NHibernate.Linq.Util;
@@ -114,13 +113,12 @@ namespace NHibernate.Linq.Visitors
 			var metaData = session.SessionFactory.GetClassMetadata(expr.TypeOperand);
 			if (metaData.HasSubclasses)
 			{
-				var entityNames = ((ISessionFactoryImplementor)session.SessionFactory).GetEntityNameMetaData();
-
 				//make sure to include any subtypes
 				var disjunction = new Disjunction();
 				foreach (string entityName in ((IEntityPersister)metaData).EntityMetamodel.SubclassEntityNames)
 				{
-					disjunction.Add(Property.ForName(memberName).Eq(entityNames[entityName]));
+					var metadata = session.SessionFactory.GetClassMetadata(entityName);
+					disjunction.Add(Property.ForName(memberName).Eq(metadata.GetMappedClass(EntityMode.Poco)));
 				}
 				visitor.CurrentCriteria.Add(disjunction);
 			}

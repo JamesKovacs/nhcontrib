@@ -29,6 +29,11 @@ namespace NHibernate.Linq
 			action += criteria => criteria.SetCacheRegion(cacheRegion);
 			return this;
 		}
+		public QueryOptions SetComment(string comment)
+		{
+			action += criteria => criteria.SetComment(comment);
+			return this;
+		}
 		public QueryOptions RegisterCustomAction(Action<ICriteria> customAction)
 		{
 			action += customAction;

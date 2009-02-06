@@ -53,7 +53,7 @@ namespace NHibernate.Linq.Util
 			if (criteria is DetachedCriteriaAdapter)
 			{
 				DetachedCriteriaAdapter adapter = (DetachedCriteriaAdapter)criteria;
-				return adapter.DetachedCriteria.CriteriaClass.FullName;
+				return adapter.DetachedCriteria.EntityOrClassName;
 			}
 			throw new NotSupportedException("criteria must be of type CriteriaImpl or DetachedCriteriaAdapter.");
 		}
@@ -112,9 +112,9 @@ namespace NHibernate.Linq.Util
 		private static System.Type GetRootType(DetachedCriteria criteria, ISession session)
 		{
 			ISessionFactoryImplementor factory = (ISessionFactoryImplementor)session.SessionFactory;
-			IEntityPersister persister = factory.GetEntityPersister(criteria.CriteriaClass.FullName);
+			IEntityPersister persister = factory.GetEntityPersister(criteria.EntityOrClassName);
 			if (persister == null)
-				throw new InvalidOperationException("Could not find entity named: " + criteria.CriteriaClass.FullName);
+				throw new InvalidOperationException("Could not find entity named: " + criteria.EntityOrClassName);
 
 			return persister.GetMappedClass(EntityMode.Poco);
 		}

@@ -36,7 +36,7 @@ namespace NHibernate.Linq.Visitors
 			Type = BinaryCriterionType.Criteria;
 
 			//TODO: don't hardcode this alias 'sub'
-			Criteria = DetachedCriteria.For(rootCriteria.GetRootType(), "sub");
+			Criteria = DetachedCriteria.ForEntityName(rootCriteria.GetEntityOrClassName(), "sub");
 
 			EntityExpression rootEntity = EntityExpressionVisitor.RootEntity(expr);
 			if (rootEntity != null)

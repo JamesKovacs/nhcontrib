@@ -61,7 +61,7 @@ namespace NHibernate.Linq.Visitors
 				case "Max":
 				case "Min":
 				case "Sum":
-					rootCriteria.Orders.Clear();
+					rootCriteria.ClearOrders();
 					results = HandleAggregateCall(call);
 					break;
 				case "Any":
