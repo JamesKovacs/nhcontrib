@@ -1,5 +1,34 @@
-NHibernate.Burrow is a light weight middleware developed to support .Net applications using NHibernate (maybe also referred as NH in this article) as ORM framework by providing advanced and smart session/transaction management and other facilitates. Documentation and examples are available at NHForge.net. 
-Any feedback can be sent to NHibernate user group(http://groups.google.com/group/nhusers). Issues can be submitted to http://jira.nhibernate.org/. They will be greatly appreciated. Please go to http://sourceforge.net/project/showfiles.php?group_id=216446&package_id=272688 to download
+NHibernate.Burrow is a light weight middleware developed to support .Net applications using NHibernate (maybe also referred as NH in this article) as ORM framework by providing advanced and smart session/transaction management and other facilitates. 
+Documentation and examples are available at http://NHForge.net 
+Any feedback can be sent to NHibernate user group(http://groups.google.com/group/nhusers). Issues can be submitted to http://http://jira.nhforge.org/  They will be greatly appreciated. Please go to http://sourceforge.net/project/showfiles.php?group_id=216446&package_id=272688 to download
+
+
+
+Build 1.0.2.GA
+========================
+Bug
+
+    * [NHB-14] - Ambiguous match found exception when loading statefulfield
+    * [NHB-16] - NHibernate.Burrow causes controls on the page to DataBind too early in the page cycle
+    * [NHB-21] - QueryString should not be parsed for Conversation information during postback
+
+Improvement
+
+    * [NHB-15] - Clean up transaction and session mangement code
+    * [NHB-23] - Improve WEbUtilHttpModule to ignore unecessary Handlers
+
+New Feature
+
+    * [NHB-17] - Provide ways to stop stateful field processor from traverse control tree
+    * [NHB-19] - An interceptor for configuring NHConfiguration before Burrow creates SessionFactory
+
+Patch
+
+    * [NHB-20] - Get a session by persistence unit name instead by class type
+    * [NHB-22] - Burrow throws a null reference exception when added as a module in IIS7 and static content is served
+
+
+
 
 Build 1.0.1.GA
 ========================
