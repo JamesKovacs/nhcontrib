@@ -28,10 +28,10 @@ namespace Tests.NHibernate.Spatial
 		{
 			session = sessions.OpenSession();
 
-			session.Save(new County("aaaa", "AA", Wkt.Read("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))")));
-			session.Save(new County("bbbb", "BB", Wkt.Read("POLYGON((0 1, 1 1, 1 2, 0 2, 0 1))")));
-			session.Save(new County("cccc", "BB", Wkt.Read("POLYGON((1 1, 2 1, 2 2, 1 2, 1 1))")));
-			session.Save(new County("dddd", "AA", Wkt.Read("POLYGON((1 0, 2 0, 2 1, 1 1, 1 0))")));
+			session.Save(new County("aaaa", "AA", Wkt.Read("POLYGON((1 0, 2 0, 2 1, 1 1, 1 0))")));
+			session.Save(new County("bbbb", "BB", Wkt.Read("POLYGON((1 1, 2 1, 2 2, 1 2, 1 1))")));
+			session.Save(new County("cccc", "BB", Wkt.Read("POLYGON((2 1, 3 1, 3 2, 2 2, 2 1))")));
+			session.Save(new County("dddd", "AA", Wkt.Read("POLYGON((2 0, 3 0, 3 1, 2 1, 2 0))")));
 			session.Flush();
 		}
 
@@ -55,7 +55,7 @@ namespace Tests.NHibernate.Spatial
 
 			object[] result = (object[])results[0];
 
-			IGeometry expected = Wkt.Read("POLYGON((0 0, 0 1, 0 2, 1 2, 2 2, 2 1, 2 0, 1 0, 0 0))");
+			IGeometry expected = Wkt.Read("POLYGON((1 0, 1 1, 1 2, 2 2, 3 2, 3 1, 3 0, 2 0, 1 0))");
 			IGeometry aggregated = (IGeometry)result[1];
 
 			Assert.AreEqual(4, result[0]);
@@ -85,8 +85,8 @@ namespace Tests.NHibernate.Spatial
 			IGeometry aggregatedAA = (IGeometry)resultAA[2];
 			IGeometry aggregatedBB = (IGeometry)resultBB[2];
 
-			IGeometry expectedAA = Wkt.Read("POLYGON((0 0, 0 1, 2 1, 2 0, 0 0))");
-			IGeometry expectedBB = Wkt.Read("POLYGON((0 1, 0 2, 2 2, 2 1, 0 1))");
+			IGeometry expectedAA = Wkt.Read("POLYGON((1 0, 1 1, 3 1, 3 0, 1 0))");
+			IGeometry expectedBB = Wkt.Read("POLYGON((1 1, 1 2, 3 2, 3 1, 1 1))");
 
 			Assert.AreEqual(2, countAA);
 			Assert.AreEqual(2, countBB);
@@ -105,7 +105,7 @@ namespace Tests.NHibernate.Spatial
 			Assert.AreEqual(1, results.Count);
 
 			IGeometry aggregated = (IGeometry)results[0];
-			IEnvelope expected = new Envelope(0, 2, 0, 2);
+			IEnvelope expected = new Envelope(1, 3, 0, 2);
 
 			Assert.IsTrue(expected.Equals(aggregated.EnvelopeInternal));
 
@@ -136,7 +136,7 @@ namespace Tests.NHibernate.Spatial
 			Assert.AreEqual(1, results.Count);
 
 			IGeometry aggregated = (IGeometry)results[0];
-			IGeometry expected = new Point(1, 1);
+			IGeometry expected = new Point(2, 1);
 
 			Assert.IsTrue(expected.Equals(aggregated));
 		}

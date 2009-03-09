@@ -97,7 +97,7 @@ namespace NHibernate.Spatial.Type
 						string[] min = parts[0].Split(' ');
 						string[] max = parts[1].Split(' ');
 						string wkt = string.Format(
-							"POLYGON(({0} {1},{2} {1},{2} {3},{0} {2},{0} {1}))",
+							"POLYGON(({0} {1},{0} {3},{2} {3},{2} {1},{0} {1}))",
 							min[0], min[1], max[0], max[1]);
 						return new WKTReader().Read(wkt);
 					}
