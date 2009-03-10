@@ -51,12 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialect\MsSql2008GeographyDialect.cs" />
+    <Compile Include="Dialect\MsSql2008GeometryDialect.cs" />
     <Compile Include="Dialect\MsSql2008SpatialDialect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Type\MsSql2008GeographyReader.cs" />
+    <Compile Include="Type\MsSql2008GeographyType.cs" />
+    <Compile Include="Type\MsSql2008GeographyWriter.cs" />
     <Compile Include="Type\MsSql2008GeometryReader.cs" />
     <Compile Include="Type\MsSql2008GeometryType.cs" />
     <Compile Include="Type\MsSql2008GeometryWriter.cs" />
+    <Compile Include="Type\NtsGeographySink.cs" />
     <Compile Include="Type\NtsGeometrySink.cs" />
+    <Compile Include="Type\SqlGeographyType.cs" />
     <Compile Include="Type\SqlGeometryType.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +73,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Metadata\GeometryColumn.MsSql2008SpatialDialect.hbm.xml" />
+    <EmbeddedResource Include="Metadata\GeometryColumn.MsSql2008GeographyDialect.hbm.xml" />
+    <EmbeddedResource Include="Metadata\GeometryColumn.MsSql2008GeometryDialect.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

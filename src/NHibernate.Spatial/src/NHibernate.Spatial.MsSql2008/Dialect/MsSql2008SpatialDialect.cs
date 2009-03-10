@@ -31,16 +31,24 @@ namespace NHibernate.Spatial.Dialect
 	/// <summary>
 	/// 
 	/// </summary>
-	public class MsSql2008SpatialDialect : MsSql2005Dialect, ISpatialDialect
+	public abstract class MsSql2008SpatialDialect : MsSql2005Dialect, ISpatialDialect
 	{
-		private static readonly IType geometryType = new CustomType(typeof(MsSql2008GeometryType), null);
 		private const string DialectPrefix = "ST";
-		private const string GeometryColumnsViewName = "NHSP_GEOMETRY_COLUMNS";
+
+		/// <summary>
+		/// Gets the SQL Server spatial datatype name.
+		/// </summary>
+		protected abstract string SqlTypeName { get; }
+
+		/// <summary>
+		/// Gets the columns catalog view name.
+		/// </summary>
+		protected abstract string GeometryColumnsViewName { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MsSql2008SpatialDialect"/> class.
 		/// </summary>
-		public MsSql2008SpatialDialect()
+		protected MsSql2008SpatialDialect()
 		{
 			SpatialDialect.LastInstantiated = this;
 			RegisterBasicFunctions();
@@ -129,7 +137,7 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunctionProperty("SRID", "STSrid", NHibernateUtil.Int32);
 			RegisterSpatialFunction("Dimension", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumGeometries", NHibernateUtil.Int32);
-			RegisterSpatialFunction("NumInteriorRings", "NumInteriorRing", NHibernateUtil.Int32);
+			RegisterSpatialFunction("NumInteriorRings", "STNumInteriorRing", NHibernateUtil.Int32);
 			RegisterSpatialFunction("NumPoints", NHibernateUtil.Int32);
 
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);
@@ -172,7 +180,7 @@ namespace NHibernate.Spatial.Dialect
 			IType returnedType = this.GeometryType;
 			RegisterFunction(
 				SpatialDialect.HqlPrefix + standardName,
-				new SpatialStandardSafeFunction("geometry::" + dialectName, returnedType, allowedArgsCount)
+				new SpatialStandardSafeFunction(this.SqlTypeName + "::" + dialectName, returnedType, allowedArgsCount)
 			);
 		}
 
@@ -227,19 +235,13 @@ namespace NHibernate.Spatial.Dialect
 		/// Gets the type of the geometry.
 		/// </summary>
 		/// <value>The type of the geometry.</value>
-		public IType GeometryType
-		{
-			get { return geometryType; }
-		}
+		public abstract IType GeometryType { get; }
 
 		/// <summary>
 		/// Creates the geometry user type.
 		/// </summary>
 		/// <returns></returns>
-		public IGeometryUserType CreateGeometryUserType()
-		{
-			return new MsSql2008GeometryType();
-		}
+		public abstract IGeometryUserType CreateGeometryUserType();
 
 		/// <summary>
 		/// Gets the spatial transform string.
@@ -479,11 +481,12 @@ namespace NHibernate.Spatial.Dialect
                 AND cols.TABLE_NAME = type_checks.TABLE_NAME
                 AND cols.COLUMN_NAME = type_checks.COLUMN_NAME
 
-                WHERE DATA_TYPE IN ('geography', 'geometry')
+                WHERE DATA_TYPE IN ('{2}')
 
                 "
 				, this.QuoteSchema(schema)
 				, this.Quote(GeometryColumnsViewName)
+				, this.SqlTypeName
 			);
 
 			string script = string.Format(@"
@@ -547,10 +550,11 @@ namespace NHibernate.Spatial.Dialect
 
 			builder.Append(this.MultipleQueriesSeparator);
 
-			builder.AppendFormat("ALTER TABLE {0}{1} ADD {2} GEOMETRY"
+			builder.AppendFormat("ALTER TABLE {0}{1} ADD {2} {3}"
 				, quotedSchema
 				, quoteForTableName
 				, quoteForColumnName
+				, this.SqlTypeName
 				);
 
 			builder.Append(this.MultipleQueriesSeparator);
