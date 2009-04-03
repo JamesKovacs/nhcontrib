@@ -22,6 +22,7 @@
 			<include name="NHibernate.Test.dll" />
 			<include name="Castle.DynamicProxy2.dll" />
 			<include name="Castle.Core.dll" />
+			<include name="NHibernate.ByteCode.Castle" />
 			<include name="nunit.framework.dll" />
 		</assemblyfileset>
 		<resourcefileset id="project.resources" prefix="NHibernate.Burrow.AppBlock.Test" dynamicprefix="true">

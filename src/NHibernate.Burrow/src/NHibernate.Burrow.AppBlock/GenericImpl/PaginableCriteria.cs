@@ -60,7 +60,7 @@ namespace NHibernate.Burrow.AppBlock.GenericImpl
         private static DetachedCriteria TransformToRowCount(DetachedCriteria criteria)
         {
             DetachedCriteria cloned = CriteriaTransformer.Clone(criteria);
-            cloned.Orders.Clear();
+            cloned.ClearOrders();
             cloned.SetResultTransformer(null).SetFirstResult(0).SetMaxResults(RowSelection.NoValue).SetProjection(
                 Projections.RowCountInt64());
             return cloned;

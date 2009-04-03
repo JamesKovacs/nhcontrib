@@ -304,7 +304,7 @@ namespace NHibernate.Burrow.AppBlock.DAOBases
             Order o = ParseOrder(sortExpression);
             if (o != null)
             {
-                c.Orders.Clear();
+                c.ClearOrders();
                 c.AddOrder(o);
             }
             return Find(pageSize, startRow, c);

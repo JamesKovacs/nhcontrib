@@ -28,6 +28,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\net\2.0\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\net\2.0\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate\net\2.0\Iesi.Collections.dll</HintPath>
@@ -39,6 +47,10 @@
     <Reference Include="NHibernate, Version=2.0.0.1001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate\net\2.0\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle, Version=2.1.0.1002, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate\net\2.0\NHibernate.ByteCode.Castle.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -54,8 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="aReposEmul\GenericNHibernateDAO.cs" />
-    <Compile Include="CriterionTest\CriterionTest.cs" />
-    <Compile Include="CriterionTest\Simple.cs" />
     <Compile Include="DebugConnectionProvider.cs" />
     <Compile Include="DynamicQuery\DetachedDynQueryFixture.cs" />
     <Compile Include="DynamicQuery\DynQueryFixture.cs" />
@@ -80,7 +90,6 @@
     <Compile Include="UserTypes\UpperStringFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CriterionTest\Simple.hbm.xml" />
     <EmbeddedResource Include="Pagination\PagTest.hbm.xml" />
     <EmbeddedResource Include="UserTypes\UpperStringMappings.hbm.xml" />
   </ItemGroup>

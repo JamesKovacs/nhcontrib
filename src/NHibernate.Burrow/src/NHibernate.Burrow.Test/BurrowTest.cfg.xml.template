@@ -7,6 +7,7 @@
       Server=(local);initial catalog=NHibernateBurrow;Integrated Security=SSPI
     </property>
 		<property name="dialect">NHibernate.Dialect.MsSql2005Dialect</property>
+		<property name="proxyfactory.factory_class">NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle</property>
 		<mapping assembly='NHibernate.Burrow.Test' />
 	</session-factory>
 </hibernate-configuration>

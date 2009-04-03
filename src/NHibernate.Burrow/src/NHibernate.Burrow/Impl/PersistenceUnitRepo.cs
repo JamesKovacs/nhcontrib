@@ -48,7 +48,7 @@ namespace NHibernate.Burrow.Impl {
 				return PersistenceUnits[0];
 			foreach (PersistenceUnit pu in persistenceUnits) {
 				ISessionFactoryImplementor sfi = (ISessionFactoryImplementor) pu.SessionFactory;
-				if (sfi.GetEntityPersister(t.FullName, false) != null)
+				if (sfi.GetClassMetadata(t) != null)
 					return pu;
 			}
 

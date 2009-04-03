@@ -1,6 +1,7 @@
 using System;
 using NHibernate.Burrow.Exceptions;
 using NHibernate.Burrow.Test.MockEntities;
+using NHibernate.Engine;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConfigurationTests
@@ -68,11 +69,11 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
 			NHibernate.Cfg.Configuration cfg = fe.GetNHConfig("PersistenceUnit1");
 			cfg.SetProperty("dialect", "NHibernate.Dialect.MsSql2000Dialect");
 			fe.RebuildSessionFactories();
-		  	Assert.AreEqual( new BurrowFramework().GetSessionFactory(typeof (MockEntity)).Dialect.GetType(),
+		  	Assert.AreEqual(  ((ISessionFactoryImplementor)new BurrowFramework().GetSessionFactory(typeof (MockEntity))).Dialect.GetType(),
 				typeof (NHibernate.Dialect.MsSql2000Dialect));
 			cfg.SetProperty("dialect", "NHibernate.Dialect.MsSql2005Dialect");
 			fe.RebuildSessionFactories();
-		  	Assert.AreEqual( new BurrowFramework().GetSessionFactory(typeof (MockEntity)).Dialect.GetType(),
+			Assert.AreEqual(((ISessionFactoryImplementor)new BurrowFramework().GetSessionFactory(typeof(MockEntity))).Dialect.GetType(),
 				typeof (NHibernate.Dialect.MsSql2005Dialect));
 			 
 		}

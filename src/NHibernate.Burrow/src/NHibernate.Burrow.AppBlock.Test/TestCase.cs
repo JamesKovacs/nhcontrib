@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using log4net;
 using log4net.Config;
+using NHibernate.Engine;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
@@ -189,7 +190,7 @@ namespace NHibernate.Burrow.AppBlock.Test
         protected virtual void BuildSessionFactory()
         {
             sessions = cfg.BuildSessionFactory();
-            connectionProvider = sessions.ConnectionProvider as DebugConnectionProvider;
+            connectionProvider =((ISessionFactoryImplementor) sessions).ConnectionProvider as DebugConnectionProvider;
         }
 
         private void Cleanup()

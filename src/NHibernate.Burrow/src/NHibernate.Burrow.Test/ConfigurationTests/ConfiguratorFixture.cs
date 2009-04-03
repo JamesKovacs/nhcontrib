@@ -1,5 +1,6 @@
 using System;
 using NHibernate.Burrow.Test.MockEntities;
+using NHibernate.Engine;
 using NUnit.Framework;
 
 namespace NHibernate.Burrow.Test.ConfigurationTests
@@ -33,7 +34,7 @@ namespace NHibernate.Burrow.Test.ConfigurationTests
         private void CheckResults()
         {
             BurrowFramework bf = new BurrowFramework();
-            ISessionFactory factory = bf.GetSessionFactory(MockPersistenceUnitCfg.MockPUName);
+			ISessionFactoryImplementor factory = (ISessionFactoryImplementor)bf.GetSessionFactory(MockPersistenceUnitCfg.MockPUName);
             Assert.IsNotNull(factory);
             Assert.AreEqual(TestConfigurator.TestAdoBatchSize, factory.Settings.AdoBatchSize);
         }

@@ -48,8 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Criterions\Criterion.cs" />
-    <Compile Include="Criterions\EqOrNullExpression.cs" />
     <Compile Include="DAOBases\GenericDAO.cs" />
     <Compile Include="DynQuery\DetachedDynQuery.cs" />
     <Compile Include="DynQuery\From.cs" />
