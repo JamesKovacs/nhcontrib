@@ -43,10 +43,10 @@
 	<target name="Caches" depends="init"
 					description="Builds all Cache projects">
 		<call target="Caches.SysCache" />
+		<call target="Caches.SysCache2" />
 		<!-- Not moved yet
 		<call target="Caches.MemCache" />
 		<call target="Caches.Prevalence" />
-		<call target="Caches.SysCache2" />
 		<call target="Caches.Velocity" />
 		-->
 	</target>
@@ -60,6 +60,11 @@
 					description="Builds NHibernate.Caches.SysCache">
 		<nant buildfile="${root.dir}\NHibernate.Caches\SysCache\default.build" target="${targets}" />
 	</target>
+	
+	<target name="Caches.SysCache2" depends="init"
+					description="Builds NHibernate.Caches.SysCache2">
+		<nant buildfile="${root.dir}\NHibernate.Caches\SysCache2\default.build" target="${targets}" />
+	</target>
 
 	<target name="Caches.MemCache" depends="init"
 					description="Builds NHibernate.Caches.MemCache">
@@ -69,11 +74,6 @@
 	<target name="Caches.Prevalence" depends="init"
 					description="Builds NHibernate.Caches.Prevalence">
 		<nant buildfile="${root.dir}\NHibernate.Caches.Prevalence\default.build" target="${targets}" />
-	</target>
-
-	<target name="Caches.SysCache2" depends="init"
-					description="Builds NHibernate.Caches.SysCache2">
-		<nant buildfile="${root.dir}\NHibernate.Caches.SysCache2\default.build" target="${targets}" />
 	</target>
 
 	<target name="Caches.Velocity" depends="init"
