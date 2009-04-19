@@ -23,10 +23,11 @@
 
 		<!-- Not available yet: <call target="Burrow" /> -->
 		<call target="Caches" />
-		<call target="Caches.MemCache" />
-		<call target="Caches.Prevalence" />
 		<call target="Caches.SysCache" />
 		<call target="Caches.SysCache2" />
+		<call target="Caches.SharedCache" />
+		<call target="Caches.MemCache" />
+		<call target="Caches.Prevalence" />
 		<call target="Caches.Velocity" />
 		<call target="JetDriver" />
 		<call target="Mapping.Attributes" />
@@ -40,10 +41,10 @@
 
 	</target>
 	
-	<target name="Caches" depends="init"
-					description="Builds all Cache projects">
+	<target name="Caches" depends="init" description="Builds all Cache projects">
 		<call target="Caches.SysCache" />
 		<call target="Caches.SysCache2" />
+		<call target="Caches.SharedCache" />
 		<!-- Not moved yet
 		<call target="Caches.MemCache" />
 		<call target="Caches.Prevalence" />
@@ -64,6 +65,11 @@
 	<target name="Caches.SysCache2" depends="init"
 					description="Builds NHibernate.Caches.SysCache2">
 		<nant buildfile="${root.dir}\NHibernate.Caches\SysCache2\default.build" target="${targets}" />
+	</target>
+
+	<target name="Caches.SharedCache" depends="init"
+					description="Builds NHibernate.Caches.SharedCache">
+		<nant buildfile="${root.dir}\NHibernate.Caches\SharedCache\default.build" target="${targets}" />
 	</target>
 
 	<target name="Caches.MemCache" depends="init"
