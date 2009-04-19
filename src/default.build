@@ -46,9 +46,9 @@
 		<call target="Caches.SysCache2" />
 		<call target="Caches.SharedCache" />
 		<call target="Caches.MemCache" />
+		<call target="Caches.Velocity" />
 		<!-- Not moved yet
 		<call target="Caches.Prevalence" />
-		<call target="Caches.Velocity" />
 		-->
 	</target>
 
@@ -84,7 +84,7 @@
 
 	<target name="Caches.Velocity" depends="init"
 					description="Builds NHibernate.Caches.Velocity">
-		<nant buildfile="${root.dir}\NHibernate.Caches.Velocity\default.build" target="${targets}" />
+		<nant buildfile="${root.dir}\NHibernate.Caches\Velocity\default.build" target="${targets}" />
 	</target>
 
 	<target name="JetDriver" depends="init"
