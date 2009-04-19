@@ -45,8 +45,8 @@
 		<call target="Caches.SysCache" />
 		<call target="Caches.SysCache2" />
 		<call target="Caches.SharedCache" />
-		<!-- Not moved yet
 		<call target="Caches.MemCache" />
+		<!-- Not moved yet
 		<call target="Caches.Prevalence" />
 		<call target="Caches.Velocity" />
 		-->
@@ -74,7 +74,7 @@
 
 	<target name="Caches.MemCache" depends="init"
 					description="Builds NHibernate.Caches.MemCache">
-		<nant buildfile="${root.dir}\NHibernate.Caches.MemCache\default.build" target="${targets}" />
+		<nant buildfile="${root.dir}\NHibernate.Caches\MemCache\default.build" target="${targets}" />
 	</target>
 
 	<target name="Caches.Prevalence" depends="init"
