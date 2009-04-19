@@ -22,6 +22,7 @@
 					description="Builds all projects">
 
 		<!-- Not available yet: <call target="Burrow" /> -->
+		<call target="Caches" />
 		<call target="Caches.MemCache" />
 		<call target="Caches.Prevalence" />
 		<call target="Caches.SysCache" />
@@ -38,10 +39,26 @@
 		<!-- Not available yet: <call target="Validator" /> -->
 
 	</target>
+	
+	<target name="Caches" depends="init"
+					description="Builds all Cache projects">
+		<call target="Caches.SysCache" />
+		<!-- Not moved yet
+		<call target="Caches.MemCache" />
+		<call target="Caches.Prevalence" />
+		<call target="Caches.SysCache2" />
+		<call target="Caches.Velocity" />
+		-->
+	</target>
 
 	<target name="Burrow" depends="init"
 					description="Builds NHibernate.Burrow">
 		<nant buildfile="${root.dir}\NHibernate.Burrow\default.build" target="${targets}" />
+	</target>
+	
+	<target name="Caches.SysCache" depends="init"
+					description="Builds NHibernate.Caches.SysCache">
+		<nant buildfile="${root.dir}\NHibernate.Caches\SysCache\default.build" target="${targets}" />
 	</target>
 
 	<target name="Caches.MemCache" depends="init"
@@ -52,11 +69,6 @@
 	<target name="Caches.Prevalence" depends="init"
 					description="Builds NHibernate.Caches.Prevalence">
 		<nant buildfile="${root.dir}\NHibernate.Caches.Prevalence\default.build" target="${targets}" />
-	</target>
-
-	<target name="Caches.SysCache" depends="init"
-					description="Builds NHibernate.Caches.SysCache">
-		<nant buildfile="${root.dir}\NHibernate.Caches.SysCache\default.build" target="${targets}" />
 	</target>
 
 	<target name="Caches.SysCache2" depends="init"
