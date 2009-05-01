@@ -18,7 +18,7 @@ namespace NHibernate.Linq.Visitors
 		// value          criteria
 		// criteria       criteria
 
-		private ExpressionType NegateType(ExpressionType type)
+		private ExpressionType ReflectExpressionType(ExpressionType type)
 		{
 			switch (type)
 			{
@@ -35,10 +35,10 @@ namespace NHibernate.Linq.Visitors
 					return ExpressionType.LessThanOrEqual;
 
 				case ExpressionType.Equal:
-					return ExpressionType.NotEqual;
+                    return ExpressionType.Equal;
 
 				case ExpressionType.NotEqual:
-					return ExpressionType.Equal;
+                    return ExpressionType.NotEqual;
 
 				default:
 					return type;
@@ -47,7 +47,7 @@ namespace NHibernate.Linq.Visitors
 
 		private Expression Swap(BinaryExpression expr)
 		{
-			ExpressionType nodeType = NegateType(expr.NodeType);
+			ExpressionType nodeType = ReflectExpressionType(expr.NodeType);
 			return Expression.MakeBinary(nodeType, expr.Right, expr.Left, expr.IsLiftedToNull, expr.Method, expr.Conversion);
 		}
 

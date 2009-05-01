@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="AggregateTests.cs" />
     <Compile Include="BinaryBooleanExpressionTests.cs" />
+    <Compile Include="BinaryExpressionOrdererTests.cs" />
     <Compile Include="CategoryAttribute.cs" />
     <Compile Include="CollectionAssert.cs" />
     <Compile Include="Entities\Animal.cs" />
