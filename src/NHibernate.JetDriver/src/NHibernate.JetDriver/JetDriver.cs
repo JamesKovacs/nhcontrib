@@ -102,18 +102,26 @@ namespace NHibernate.JetDriver
 
 			int beginOfFrom = sqlString.IndexOfCaseInsensitive("from");
 			int endOfFrom = sqlString.IndexOfCaseInsensitive("where");
+		    int beginOfOrderBy = sqlString.IndexOfCaseInsensitive("order by");
 
 			if (beginOfFrom < 0)
 			{
 				return sqlString;
 			}
 
-			if (endOfFrom < 0)
-			{
-				endOfFrom = sqlString.Length;
-			}
+            if (beginOfOrderBy < 0)
+            {
+                if (endOfFrom < 0)
+                {
+                    endOfFrom = sqlString.Length;
+                }
+            }
+            else
+            {
+                endOfFrom = beginOfOrderBy;
+            }
 
-			string fromClause = sqlString.Substring(beginOfFrom, endOfFrom - beginOfFrom).ToString();
+		    string fromClause = sqlString.Substring(beginOfFrom, endOfFrom - beginOfFrom).ToString();
 
 			string transformedFrom = TransformFromClause(fromClause);
 

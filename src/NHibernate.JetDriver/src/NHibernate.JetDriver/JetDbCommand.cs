@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 
 namespace NHibernate.JetDriver
 {
@@ -26,9 +28,10 @@ namespace NHibernate.JetDriver
 	{
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(JetDbCommand));
 
-		private OleDbCommand _command;
 		private JetDbConnection _connection;
 		private JetDbTransaction _transaction;
+        private readonly OleDbCommand _command;
+        private readonly List<IDataParameter> _convertedDateParameters = new List<IDataParameter>();
 
 		public static string IdentitySpecPlaceHolder
 		{
@@ -71,7 +74,7 @@ namespace NHibernate.JetDriver
 		/// </summary>
 		private void CheckParameters()
 		{
-			if (Command.Parameters == null || Command.Parameters.Count == 0) return;
+			if (Command.Parameters.Count == 0) return;
 
 			foreach (IDataParameter p in Command.Parameters)
 			{
@@ -85,11 +88,19 @@ namespace NHibernate.JetDriver
 						if (p.Value != DBNull.Value)
 						{
 							p.DbType = DbType.String;
-							string normalizedDateValue = ((DateTime)p.Value).ToString("yyyy/MM/dd HH:mm:ss");
-							Log.DebugFormat("Changing datetime parameter value to [{0}] as string, to avoid DB confusion", normalizedDateValue);
-							p.Value = normalizedDateValue;
+							p.Value = GetNormalizedDateValue((DateTime)p.Value);
+                            AddToConvertedDate(p);
 						}
 						break;
+                    case DbType.String:
+                        if(_convertedDateParameters.Contains(p))
+                        {
+                            //Someimes two pass conversion makes a parameter value
+                            //of type DateTime to be of String Dbtype
+                            DateTime date = DateTime.Parse(p.Value.ToString());
+                            p.Value = GetNormalizedDateValue(date);
+                        }
+                        break;
 					case DbType.Int64:
 						if (p.Value != DBNull.Value)
 						{
@@ -98,12 +109,25 @@ namespace NHibernate.JetDriver
 							Log.DebugFormat("Changing Int64 parameter value to [{0}] as Int32, to avoid DB confusion", normalizedLongValue);
 							p.Value = normalizedLongValue;
 						}
-						break;
+				        break;
 				}
 			}
 		}
 
-		#region IDbCommand Members
+	    private void AddToConvertedDate(IDataParameter parameter)
+	    {
+	        _convertedDateParameters.Add(parameter);
+	    }
+
+	    private string GetNormalizedDateValue(DateTime date)
+        {
+            string normalizedDateValue = date.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
+            Log.DebugFormat("Changing datetime parameter value to [{0}] as string, to avoid DB confusion", normalizedDateValue);
+
+            return normalizedDateValue;
+        }
+
+	    #region IDbCommand Members
 
 		public void Cancel()
 		{
@@ -209,6 +233,7 @@ namespace NHibernate.JetDriver
 		public void Dispose()
 		{
 			Command.Dispose();
+            _convertedDateParameters.Clear();
 		}
 
 		#endregion

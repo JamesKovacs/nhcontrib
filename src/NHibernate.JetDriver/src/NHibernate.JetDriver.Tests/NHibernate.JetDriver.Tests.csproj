@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{408B5045-9B30-44BC-B10B-D2E2F17BC4FE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContextCultureSwitch.cs" />
+    <Compile Include="JetCommandFixture.cs" />
     <Compile Include="JetDialectFixture.cs" />
+    <Compile Include="JetOrderByFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.JetDriver\NHibernate.JetDriver-2.0.csproj">

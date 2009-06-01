@@ -2,9 +2,11 @@ using System.Collections.Specialized;
 using NHibernate.Dialect.Function;
 using NUnit.Framework;
 
-namespace NHibernate.JetDriver.Tests {
+namespace NHibernate.JetDriver.Tests 
+{
     [TestFixture]
-    public class JetDialectFixture {
+    public class JetDialectFixture 
+    {
         [Test]
         public void NH1181_SupportHqlUpper()
         {
@@ -14,7 +16,7 @@ namespace NHibernate.JetDriver.Tests {
 
             StringCollection sqlFuncParams = new StringCollection();
             sqlFuncParams.Add("foo");
-            string sqlString = func.Render(sqlFuncParams, null);
+            string sqlString = func.Render(sqlFuncParams, null).ToString();
             Assert.AreEqual("ucase(foo)", sqlString);
         }
 
@@ -27,7 +29,7 @@ namespace NHibernate.JetDriver.Tests {
 
             StringCollection sqlFuncParams = new StringCollection();
             sqlFuncParams.Add("foo");
-            string sqlString = func.Render(sqlFuncParams, null);
+            string sqlString = func.Render(sqlFuncParams, null).ToString();
             Assert.AreEqual("lcase(foo)", sqlString);
         }
     }
