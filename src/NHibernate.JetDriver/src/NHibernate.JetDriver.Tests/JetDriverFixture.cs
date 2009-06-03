@@ -1,16 +1,10 @@
-using System.Data;
 using NUnit.Framework;
-using NHibernate.SqlCommand;
-using NHibernate.SqlTypes;
 
 namespace NHibernate.JetDriver.Tests
 {
     [TestFixture]
-    public class JetDriverFixture
+    public class JetDriverFixture : JetTestBase
     {
-        private readonly JetDriver jetDriver = new JetDriver();
-        private readonly SqlType[] dummyParameterTypes = { };
-
         [Test]
         public void NHCD29_Column_With_From_Word()
         {
@@ -31,14 +25,21 @@ namespace NHibernate.JetDriver.Tests
 
             Assert.AreEqual(sqlQuery, transformedQuery);
         }
-        
-        private string GetTransformedSql(string sqlQuery)
+
+        [Test]
+        public void NHCD5_Query_Containing_From_Word()
         {
-            SqlString sql = SqlString.Parse(sqlQuery);
+            string query = "select table.OrganizationalUnitId as orgId, " +
+                                  "table.AssignId as assignId, " +
+                                  "table.ValidFrom as validFrom, " +
+                                  "table.ValidTo as validTo, " + 
+                                  "table.StatusId as status " + 
+                                  "from AssignUnitToStatus table where table.OrganizationalUnitId=?";
 
-            IDbCommand command = jetDriver.GenerateCommand(CommandType.Text, sql, dummyParameterTypes);
+            string transformed = GetTransformedSql(query);
 
-            return command.CommandText;
+            Assert.AreEqual(query, transformed);
         }
+       
     }
 }
