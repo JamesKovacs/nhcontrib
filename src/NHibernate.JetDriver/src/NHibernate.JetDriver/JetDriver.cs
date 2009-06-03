@@ -17,34 +17,23 @@ namespace NHibernate.JetDriver
 	/// into the Jet syntax. This cannot be done anywhere else without having to heavily modify the logic of query creation.
 	/// The translations of queries are cached.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Author: <a href="mailto:lukask@welldatatech.com">Lukas Krejci</a>
-	/// </para>
-	/// </remarks>
 	public class JetDriver : OleDbDriver
 	{
-		private static ILog logger = LogManager.GetLogger(typeof(JetDriver));
+		private static readonly ILog logger = LogManager.GetLogger(typeof(JetDriver));
 
-		private IDictionary _queryCache = new Hashtable();
+        private const string FromClause = " from ";
+        private const string WhereClause = " where ";
+	    private const string OrderByClause = " order by ";
+
+		private readonly IDictionary _queryCache = new Hashtable();
 
 		public override IDbCommand GenerateCommand(CommandType type, SqlString sqlString, SqlType[] parameterTypes)
 		{
-			SqlString final;
-			if (IsSelectStatement(sqlString))
-			{
-				final = FinalizeJoins(sqlString);
-			}
-				//else if(IsCreateOrAlterStatement(sqlString)) final = FinalizeDDL(sqlString);
-			else
-			{
-				final = sqlString;
-			}
-
-			return base.GenerateCommand(type, final, parameterTypes);
+		    SqlString final = IsSelectStatement(sqlString) ? FinalizeJoins(sqlString) : sqlString;
+		    return base.GenerateCommand(type, final, parameterTypes);
 		}
 
-		/// <summary></summary>
+	    /// <summary></summary>
 		public override IDbConnection CreateConnection()
 		{
 			return new JetDbConnection();
@@ -100,9 +89,9 @@ namespace NHibernate.JetDriver
 				return (SqlString) _queryCache[sqlString];
 			}
 
-			int beginOfFrom = sqlString.IndexOfCaseInsensitive("from");
-			int endOfFrom = sqlString.IndexOfCaseInsensitive("where");
-		    int beginOfOrderBy = sqlString.IndexOfCaseInsensitive("order by");
+			var beginOfFrom = sqlString.IndexOfCaseInsensitive(FromClause);
+			var endOfFrom = sqlString.IndexOfCaseInsensitive(WhereClause);
+			var beginOfOrderBy = sqlString.IndexOfCaseInsensitive(OrderByClause);
 
 			if (beginOfFrom < 0)
 			{
@@ -121,12 +110,11 @@ namespace NHibernate.JetDriver
                 endOfFrom = beginOfOrderBy;
             }
 
-		    string fromClause = sqlString.Substring(beginOfFrom, endOfFrom - beginOfFrom).ToString();
-
-			string transformedFrom = TransformFromClause(fromClause);
+			var fromClause = sqlString.Substring(beginOfFrom, endOfFrom - beginOfFrom).ToString();
+			var transformedFrom = TransformFromClause(fromClause);
 
 			//put it all together again
-			SqlStringBuilder final = new SqlStringBuilder(sqlString.Count + 1);
+			var final = new SqlStringBuilder(sqlString.Count + 1);
 			final.Add(sqlString.Substring(0, beginOfFrom));
 			final.Add(transformedFrom);
 			final.Add(sqlString.Substring(endOfFrom));
@@ -141,8 +129,7 @@ namespace NHibernate.JetDriver
 		{
 			string transformed;
 
-			//"from ".Length
-			const int fromLength = 5;
+			int fromLength = FromClause.Length;
 			fromClause = fromClause.Substring(fromLength, fromClause.Length - fromLength);
 			string[] blocks = fromClause.Split(',');
 			if (blocks.Length > 1)
@@ -152,7 +139,7 @@ namespace NHibernate.JetDriver
 					string tr = TransformJoinBlock(blocks[i]);
 					if (tr.IndexOf(" join ") > -1)
 					{
-						blocks[i] = "(select * from " + tr + ") as jetJoinAlias" + i.ToString();
+						blocks[i] = "(select * from " + tr + ") as jetJoinAlias" + i;
 					}
 					else
 					{
@@ -164,14 +151,18 @@ namespace NHibernate.JetDriver
 			}
 			else
 			{
-				transformed = "from " + TransformJoinBlock(blocks[0]);
+				transformed = TransformJoinBlock(blocks[0]);
 			}
 
-			return transformed;
+            return FromClause + transformed;
 		}
 
-/// <param name="block">A string representing one join block.</param>
-		private string TransformJoinBlock(string block)
+        /// <summary>
+        /// Transforms the join block
+        /// </summary>
+        /// <param name="block">A string representing one join block.</param>
+        /// <returns></returns>
+		private static string TransformJoinBlock(string block)
 		{
 			int parenthesisCount = 0;
 
@@ -207,7 +198,7 @@ namespace NHibernate.JetDriver
 						}
 
 						//everything went ok. I'm processing the last block part and I've got no parenthesis to add.
-						StringBuilder b = new StringBuilder(" ");
+						var b = new StringBuilder(" ");
 						for (int j = 0; j < parenthesisCount; j++)
 						{
 							b.Append("(");
@@ -233,7 +224,7 @@ namespace NHibernate.JetDriver
 			}
 		}
 
-		private bool IsSelectStatement(SqlString sqlString)
+		private static bool IsSelectStatement(SqlString sqlString)
 		{
 			return sqlString.StartsWithCaseInsensitive("select");
 		}

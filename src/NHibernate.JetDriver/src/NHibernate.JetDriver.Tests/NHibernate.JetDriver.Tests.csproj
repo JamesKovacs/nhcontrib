@@ -44,6 +44,7 @@
     <Compile Include="ContextCultureSwitch.cs" />
     <Compile Include="JetCommandFixture.cs" />
     <Compile Include="JetDialectFixture.cs" />
+    <Compile Include="JetDriverFixture.cs" />
     <Compile Include="JetOrderByFixture.cs" />
   </ItemGroup>
   <ItemGroup>
