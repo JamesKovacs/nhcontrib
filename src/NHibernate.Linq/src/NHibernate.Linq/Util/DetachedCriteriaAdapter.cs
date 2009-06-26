@@ -181,11 +181,13 @@ namespace NHibernate.Linq.Util
 			return detachedCriteria.SetProjection(projection).Adapt(session);
 		}
 
-		public ICriteria SetProjection(params IProjection[] projection)
+		public ICriteria SetProjection(params IProjection[] projections)
 		{
-			foreach (var proj in projection)
-				detachedCriteria.SetProjection(proj);
-			return detachedCriteria.Adapt(session);
+			var projectionList = Projections.ProjectionList();
+			foreach (var proj in projections)
+				projectionList.Add(proj);
+
+			return detachedCriteria.SetProjection(projectionList).Adapt(session);
 		}
 
 		public ICriteria SetResultTransformer(IResultTransformer resultTransformer)
