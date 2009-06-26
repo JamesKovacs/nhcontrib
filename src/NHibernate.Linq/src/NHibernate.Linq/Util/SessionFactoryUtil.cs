@@ -14,7 +14,7 @@ namespace NHibernate.Linq.Util
 				if (item.Value.HasProxy)
 				{
 					var proxyType = factory.GetEntityPersister(item.Key).GetConcreteProxyClass(EntityMode.Poco);
-					if (proxyType != item.Value.GetMappedClass(EntityMode.Poco))
+					if (proxyType != item.Value.GetMappedClass(EntityMode.Poco) && !dict.ContainsKey(proxyType))
 					{
 						dict.Add(proxyType, item.Key);
 					}
@@ -36,7 +36,7 @@ namespace NHibernate.Linq.Util
 				if (item.Value.HasProxy)
 				{
 					var proxyType = factory.GetEntityPersister(item.Key).GetConcreteProxyClass(EntityMode.Poco);
-					if (proxyType != type)
+					if (proxyType != type && !dict.ContainsKey(proxyType.FullName))
 					{
 						dict.Add(proxyType.FullName, proxyType);
 					}
