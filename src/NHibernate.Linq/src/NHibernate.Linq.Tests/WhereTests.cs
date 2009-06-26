@@ -387,5 +387,70 @@ namespace NHibernate.Linq.Tests
 
 			Assert.AreEqual(2, query.Count);
 		}
+
+		[Test]
+		public void WhereWithConstantFalse()
+		{
+			User user = session.Get<User>(1);
+
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where false
+						 select sheet).ToList();
+
+			Assert.AreEqual(0, query.Count);
+		}
+
+		[Test]
+		public void WhereWithConstantTrue()
+		{
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where true
+						 select sheet).ToList();
+
+			Assert.AreEqual(3, query.Count);
+		}
+
+		[Test]
+		public void WhereWithConstantNotFalse()
+		{
+			User user = session.Get<User>(1);
+
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where !(false)
+						 select sheet).ToList();
+
+			Assert.AreEqual(3, query.Count);
+		}
+
+		[Test]
+		public void WhereWithConstantNotTrue()
+		{
+			User user = session.Get<User>(1);
+
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where !(true)
+						 select sheet).ToList();
+
+			Assert.AreEqual(0, query.Count);
+		}
+
+		[Test]
+		public void WhereWithBooleanEqualFalse()
+		{
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where sheet.Submitted == false
+						 select sheet).ToList();
+
+			Assert.AreEqual(1, query.Count);
+		}
+		[Test]
+		public void WhereWithBooleanEqualTrue()
+		{
+			var query = (from sheet in session.Linq<Timesheet>()
+						 where sheet.Submitted == true
+						 select sheet).ToList();
+
+			Assert.AreEqual(2, query.Count);
+		}
 	}
 }

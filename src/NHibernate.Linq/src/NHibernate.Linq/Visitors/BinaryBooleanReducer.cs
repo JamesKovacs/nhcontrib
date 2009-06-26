@@ -27,10 +27,10 @@ namespace NHibernate.Linq.Visitors
 						return visitor.Constant.Value ? Expression.Not(exprToReturn) : exprToReturn;
 					case ExpressionType.Or:
 					case ExpressionType.OrElse:
-						return visitor.Constant.Value ? Expression.Not(Expression.Not(Expression.Constant(true))) : exprToReturn;
+						return visitor.Constant.Value ? Expression.Constant(true) : exprToReturn;
 					case ExpressionType.And:
 					case ExpressionType.AndAlso:
-						return visitor.Constant.Value ? exprToReturn : Expression.Not(Expression.Constant(true));
+						return visitor.Constant.Value ? exprToReturn : Expression.Constant(false);
 					default:
 						return original;
 				}

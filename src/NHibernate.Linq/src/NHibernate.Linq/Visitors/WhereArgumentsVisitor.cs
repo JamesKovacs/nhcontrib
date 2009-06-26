@@ -50,6 +50,31 @@ namespace NHibernate.Linq.Visitors
 				|| "Equals".Equals(methodName);
 		}
 
+		protected override Expression VisitConstant(ConstantExpression expr)
+		{
+			if (expr.Type == typeof(bool))
+			{
+				bool value = (bool)expr.Value;
+				var falseCriteria = NHibernate.Criterion.Expression.Sql("1=0");
+				var trueCriteria = NHibernate.Criterion.Expression.Sql("1=1");
+				if (value)
+				{
+					this.CurrentCriterions.Add(trueCriteria);
+				}
+				else
+				{
+					this.CurrentCriterions.Add(falseCriteria);
+				}
+
+				return expr;
+			}
+
+			if (expr.Type.IsSubclassOf(typeof(Expression)))
+				return Visit(expr.Value as Expression);
+
+			return base.VisitConstant(expr);
+		}
+
 		protected override Expression VisitMethodCall(MethodCallExpression expr)
 		{
 			switch (expr.Method.Name)
