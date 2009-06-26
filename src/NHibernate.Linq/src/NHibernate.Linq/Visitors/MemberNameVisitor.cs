@@ -86,7 +86,7 @@ namespace NHibernate.Linq.Visitors
 		{
 			expr = (EntityExpression)base.VisitEntity(expr);
 
-			if (!IsRootEntity(expr))
+            if (currentCriteria.GetCriteriaByAlias(expr.Alias) != null || !IsRootEntity(expr))
 			{
 				if (!String.IsNullOrEmpty(expr.AssociationPath))
 					currentCriteria = EnsureCriteria(expr.AssociationPath, expr.Alias);
