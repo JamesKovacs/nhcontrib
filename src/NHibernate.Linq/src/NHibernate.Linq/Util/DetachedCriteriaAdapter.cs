@@ -18,23 +18,23 @@ namespace NHibernate.Linq.Util
 
 	public class DetachedCriteriaAdapter : ICriteria
 	{
-		private readonly DetachedCriteria _detachedCriteria;
-		private readonly ISession _session;
+		private readonly DetachedCriteria detachedCriteria;
+		private readonly ISession session;
 
 		public DetachedCriteriaAdapter(DetachedCriteria detachedCriteria, ISession session)
 		{
-			_detachedCriteria = detachedCriteria;
-			_session = session;
+			this.detachedCriteria = detachedCriteria;
+			this.session = session;
 		}
 
 		public DetachedCriteria DetachedCriteria
 		{
-			get { return _detachedCriteria; }
+			get { return detachedCriteria; }
 		}
 
 		public ISession Session
 		{
-			get { return _session; }
+			get { return session; }
 		}
 
 		#region ICriteria Members
@@ -48,17 +48,17 @@ namespace NHibernate.Linq.Util
 		}
 		public ICriteria Add(ICriterion expression)
 		{
-			return _detachedCriteria.Add(expression).Adapt(_session);
+			return detachedCriteria.Add(expression).Adapt(session);
 		}
 
 		public ICriteria AddOrder(Order order)
 		{
-			return _detachedCriteria.AddOrder(order).Adapt(_session);
+			return detachedCriteria.AddOrder(order).Adapt(session);
 		}
 
 		public string Alias
 		{
-			get { return _detachedCriteria.Alias; }
+			get { return detachedCriteria.Alias; }
 		}
 
 		public void ClearOrderds()
@@ -68,42 +68,42 @@ namespace NHibernate.Linq.Util
 
 		public ICriteria CreateAlias(string associationPath, string alias, JoinType joinType)
 		{
-			return _detachedCriteria.CreateAlias(associationPath, alias, joinType).Adapt(_session);
+			return detachedCriteria.CreateAlias(associationPath, alias, joinType).Adapt(session);
 		}
 
 		public ICriteria CreateAlias(string associationPath, string alias)
 		{
-			return _detachedCriteria.CreateAlias(associationPath, alias).Adapt(_session);
+			return detachedCriteria.CreateAlias(associationPath, alias).Adapt(session);
 		}
 
 		public ICriteria CreateCriteria(string associationPath, string alias, JoinType joinType)
 		{
-			return _detachedCriteria.CreateCriteria(associationPath, alias, joinType).Adapt(_session);
+			return detachedCriteria.CreateCriteria(associationPath, alias, joinType).Adapt(session);
 		}
 
 		public ICriteria CreateCriteria(string associationPath, string alias)
 		{
-			return _detachedCriteria.CreateCriteria(associationPath, alias).Adapt(_session);
+			return detachedCriteria.CreateCriteria(associationPath, alias).Adapt(session);
 		}
 
 		public ICriteria CreateCriteria(string associationPath, JoinType joinType)
 		{
-			return _detachedCriteria.CreateCriteria(associationPath, joinType).Adapt(_session);
+			return detachedCriteria.CreateCriteria(associationPath, joinType).Adapt(session);
 		}
 
 		public ICriteria CreateCriteria(string associationPath)
 		{
-			return _detachedCriteria.CreateCriteria(associationPath).Adapt(_session);
+			return detachedCriteria.CreateCriteria(associationPath).Adapt(session);
 		}
 
 		public ICriteria GetCriteriaByAlias(string alias)
 		{
-			return _detachedCriteria.GetCriteriaByAlias(alias).Adapt(_session);
+			return detachedCriteria.GetCriteriaByAlias(alias).Adapt(session);
 		}
 
 		public ICriteria GetCriteriaByPath(string path)
 		{
-			return _detachedCriteria.GetCriteriaByPath(path).Adapt(_session);
+			return detachedCriteria.GetCriteriaByPath(path).Adapt(session);
 		}
 
 		public IList<T> List<T>()
@@ -123,7 +123,7 @@ namespace NHibernate.Linq.Util
 
 		public ICriteria SetCacheMode(CacheMode cacheMode)
 		{
-			return _detachedCriteria.SetCacheMode(cacheMode).Adapt(_session);
+			return detachedCriteria.SetCacheMode(cacheMode).Adapt(session);
 		}
 
 		public ICriteria SetCacheRegion(string cacheRegion)
@@ -143,7 +143,7 @@ namespace NHibernate.Linq.Util
 
 		public ICriteria SetFetchMode(string associationPath, FetchMode mode)
 		{
-			return _detachedCriteria.SetFetchMode(associationPath, mode).Adapt(_session);
+			return detachedCriteria.SetFetchMode(associationPath, mode).Adapt(session);
 		}
 
 		public ICriteria SetFetchSize(int fetchSize)
@@ -153,7 +153,7 @@ namespace NHibernate.Linq.Util
 
 		public ICriteria SetFirstResult(int firstResult)
 		{
-			return _detachedCriteria.SetFirstResult(firstResult).Adapt(_session);
+			return detachedCriteria.SetFirstResult(firstResult).Adapt(session);
 		}
 
 		public ICriteria SetFlushMode(FlushMode flushMode)
@@ -173,17 +173,24 @@ namespace NHibernate.Linq.Util
 
 		public ICriteria SetMaxResults(int maxResults)
 		{
-			return _detachedCriteria.SetMaxResults(maxResults).Adapt(_session);
+			return detachedCriteria.SetMaxResults(maxResults).Adapt(session);
 		}
 
 		public ICriteria SetProjection(IProjection projection)
 		{
-			return _detachedCriteria.SetProjection(projection).Adapt(_session);
+			return detachedCriteria.SetProjection(projection).Adapt(session);
+		}
+
+		public ICriteria SetProjection(params IProjection[] projection)
+		{
+			foreach (var proj in projection)
+				detachedCriteria.SetProjection(proj);
+			return detachedCriteria.Adapt(session);
 		}
 
 		public ICriteria SetResultTransformer(IResultTransformer resultTransformer)
 		{
-			return _detachedCriteria.SetResultTransformer(resultTransformer).Adapt(_session);
+			return detachedCriteria.SetResultTransformer(resultTransformer).Adapt(session);
 		}
 
 		public ICriteria SetTimeout(int timeout)
@@ -203,12 +210,12 @@ namespace NHibernate.Linq.Util
 
 		public System.Type GetRootEntityTypeIfAvailable()
 		{
-			return _detachedCriteria.GetRootEntityTypeIfAvailable();
+			return detachedCriteria.GetRootEntityTypeIfAvailable();
 		}
 
 		public void ClearOrders()
 		{
-			_detachedCriteria.ClearOrders();
+			detachedCriteria.ClearOrders();
 		}
 
 		public IEnumerable<T> Future<T>()
