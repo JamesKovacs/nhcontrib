@@ -8,7 +8,7 @@
 	<property name="framework.family" value="${framework::get-family(framework::get-target-framework())}"/>
 	<property name="framework.version" value="${framework::get-version(framework::get-target-framework())}"/>
 
-	<property name="folders.lib" value="../../lib/${framework.family}/${framework.version}" />
+	<property name="folders.lib" value="/lib/${framework.family}/${framework.version}" />
 	<property name="folders.build" value="build" />
 	
 	<target name="build">
