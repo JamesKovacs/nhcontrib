@@ -8,12 +8,26 @@
 	<property name="framework.family" value="${framework::get-family(framework::get-target-framework())}"/>
 	<property name="framework.version" value="${framework::get-version(framework::get-target-framework())}"/>
 
-	<property name="folders.lib" value="/lib/${framework.family}/${framework.version}" />
+	<property name="folders.lib" value="lib/${framework.family}/${framework.version}" />
 	<property name="folders.build" value="build" />
 	
 	<target name="build">
 		<mkdir dir="${folders.build}"/>
 
+		<copy file="src/NHibernate.JetDriver.Tests/App.config"
+			  tofile="${folders.build}/NHibernate.JetDriver.Tests.dll.config"
+			  if="${file::exists('src/NHibernate.JetDriver.Tests/App.config')}"
+		/>
+
+		<copy todir="${folders.build}" flatten="true">
+			<fileset>
+				<include name="${folders.lib}/NHibernate.dll"/>
+				<include name="${folders.lib}/Iesi.Collections.dll"/>
+				<include name="${folders.lib}/log4net.dll"/>
+				<include name="${folders.lib}/nunit.framework.dll"/>
+				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
+			</fileset>
+		</copy>
 		<csc target="library"
 			 output="${folders.build}/NHibernate.JetDriver.dll"
 		>
@@ -41,9 +55,9 @@
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
-				<include name="${folders.build}/NHibernate.dll"/>
-				<include name="${folders.build}/log4net.dll"/>
-				<include name="${folders.build}/nunit.framework.dll"/>
+				<include name="${folders.lib}/NHibernate.dll"/>
+				<include name="${folders.lib}/log4net.dll"/>
+				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
 			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
@@ -53,20 +67,6 @@
 			</resources>
 		</csc>
 
-		<copy file="src/NHibernate.JetDriver.Tests/App.config"
-			  tofile="${folders.build}/NHibernate.JetDriver.Tests.dll.config"
-			  if="${file::exists('src/NHibernate.JetDriver.Tests/App.config')}"
-		/>
-
-		<copy todir="${folders.build}" flatten="true">
-			<fileset>
-				<include name="${folders.lib}/NHibernate.dll"/>
-				<include name="${folders.lib}/Iesi.Collections.dll"/>
-				<include name="${folders.lib}/log4net.dll"/>
-				<include name="${folders.lib}/nunit.framework.dll"/>
-				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
-			</fileset>
-		</copy>
 	</target>
 
 	<target name="test"
