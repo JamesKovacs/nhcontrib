@@ -41,9 +41,9 @@
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
-				<include name="${folders.lib}/NHibernate.dll"/>
-				<include name="${folders.lib}/log4net.dll"/>
-				<include name="${folders.lib}/nunit.framework.dll"/>
+				<include name="${folders.build}/NHibernate.dll"/>
+				<include name="${folders.build}/log4net.dll"/>
+				<include name="${folders.build}/nunit.framework.dll"/>
 				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
 			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
