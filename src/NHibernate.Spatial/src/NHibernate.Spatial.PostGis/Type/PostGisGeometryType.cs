@@ -52,22 +52,19 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
+			// PostGIS can't parse a WKB of any empty geometry other than GeomtryCollection
+			// (throws the error: "geometry requires more points")
+			// and parses WKT of empty geometries always as GeometryCollection
+			// (ie. "select AsText(GeomFromText('LINESTRING EMPTY', -1)) = 'GEOMETRYCOLLECTION EMPTY'").
+			// Force GeometryCollection.Empty to avoid the error.
+			if (!(geometry is IGeometryCollection) && geometry.IsEmpty)
 			{
-				// PostGIS can't parse a WKB of any empty geometry other than GeomtryCollection
-				// (throws the error: "geometry requires more points")
-				// and parses WKT of empty geometries always as GeometryCollection
-				// (ie. "select AsText(GeomFromText('LINESTRING EMPTY', -1)) = 'GEOMETRYCOLLECTION EMPTY'").
-				// Force GeometryCollection.Empty to avoid the error.
-				if (!(geometry is IGeometryCollection) && geometry.IsEmpty)
-				{
-					geometry = GeometryCollection.Empty;
-				}
-
-				this.SetDefaultSRID(geometry);
-				byte[] bytes = new PostGisWriter().Write(geometry);
-				return ToString(bytes);
+				geometry = GeometryCollection.Empty;
 			}
+
+			this.SetDefaultSRID(geometry);
+			byte[] bytes = new PostGisWriter().Write(geometry);
+			return ToString(bytes);
 		}
 
 		/// <summary>
@@ -83,38 +80,26 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
+
+			// Bounding boxes are not serialized as hexadecimal string (?) 
+			const string boxToken = "BOX(";
+			if (bytes.StartsWith(boxToken))
 			{
-				try
-				{
-					// Bounding boxes are not serialized as hexadecimal string (?) 
-					const string BoxToken = "BOX(";
-					if (bytes.StartsWith(BoxToken))
-					{
-						// TODO: Optimize?
-						bytes = bytes.Substring(BoxToken.Length, bytes.Length - BoxToken.Length - 1);
-						string[] parts = bytes.Split(',');
-						string[] min = parts[0].Split(' ');
-						string[] max = parts[1].Split(' ');
-						string wkt = string.Format(
-							"POLYGON(({0} {1},{0} {3},{2} {3},{2} {1},{0} {1}))",
-							min[0], min[1], max[0], max[1]);
-						return new WKTReader().Read(wkt);
-					}
-					else
-					{
-						PostGisReader reader = new PostGisReader();
-						IGeometry geometry = reader.Read(ToByteArray(bytes));
-						this.SetDefaultSRID(geometry);
-						return geometry;
-					}
-				}
-				catch
-				{
-					throw;
-				}
-				return null;
+				// TODO: Optimize?
+				bytes = bytes.Substring(boxToken.Length, bytes.Length - boxToken.Length - 1);
+				string[] parts = bytes.Split(',');
+				string[] min = parts[0].Split(' ');
+				string[] max = parts[1].Split(' ');
+				string wkt = string.Format(
+					"POLYGON(({0} {1},{0} {3},{2} {3},{2} {1},{0} {1}))",
+					min[0], min[1], max[0], max[1]);
+				return new WKTReader().Read(wkt);
 			}
+
+			PostGisReader reader = new PostGisReader();
+			IGeometry geometry = reader.Read(ToByteArray(bytes));
+			this.SetDefaultSRID(geometry);
+			return geometry;
 		}
 
 		private static byte[] ToByteArray(string hex)
