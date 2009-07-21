@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NHibernate.JetDriver.Tests.Entities;
 using NHibernate.Tool.hbm2ddl;
@@ -50,6 +51,22 @@ namespace NHibernate.JetDriver.Tests
 
             Assert.That(schema, Is.Not.Empty);
             Assert.That(schema.Contains("ModuleId  COUNTER"), Is.True, "DataType of ModuleId (PK) is of type COUNTER");
+        }
+
+        [Test]
+        public void NHCD23_Supporting_Relative_Path_To_DataSource()
+        {
+            var relativePath = @"..\data\datafile.mdb";
+            var absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+
+            var constrRelative = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", relativePath);
+            var constrAbsolute = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", absolutePath);
+
+            var connRelative = new JetDbConnection(constrRelative);
+            var connAbsolute = new JetDbConnection(constrAbsolute);
+
+            Assert.That(connRelative.ConnectionString.Contains(absolutePath), Is.True);
+            Assert.That(connAbsolute.ConnectionString.Contains(absolutePath), Is.True);
         }
     }
 }

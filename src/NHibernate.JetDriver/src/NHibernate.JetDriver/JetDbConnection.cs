@@ -1,6 +1,8 @@
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
+using System.IO;
 
 namespace NHibernate.JetDriver
 {
@@ -14,6 +16,7 @@ namespace NHibernate.JetDriver
 	public sealed class JetDbConnection : DbConnection
 	{
 		private readonly OleDbConnection _connection;
+	    private const string DATASOURCE_KEY = "Data Source";
 
 		internal OleDbConnection Connection
 		{
@@ -27,7 +30,7 @@ namespace NHibernate.JetDriver
 
 		public JetDbConnection(string connectionString)
 		{
-			_connection = new OleDbConnection(connectionString);
+			_connection = new OleDbConnection(ConvertRelativePath(connectionString));
 		}
 
 		public JetDbConnection(OleDbConnection connection)
@@ -45,11 +48,6 @@ namespace NHibernate.JetDriver
 	        return new JetDbTransaction(this, Connection.BeginTransaction(il));
 	    }
 
-        //IDbTransaction IDbConnection.BeginTransaction()
-        //{
-        //    return new JetDbTransaction(this, Connection.BeginTransaction());
-        //}
-
 	    public override string ServerVersion
 	    {
 	        get { return "4.0"; }
@@ -63,7 +61,7 @@ namespace NHibernate.JetDriver
 		public override string ConnectionString
 		{
 			get { return Connection.ConnectionString; }
-			set { Connection.ConnectionString = value; }
+			set { Connection.ConnectionString = ConvertRelativePath(value); }
 		}
 
 	    protected override DbCommand CreateDbCommand()
@@ -104,6 +102,22 @@ namespace NHibernate.JetDriver
             }
 
  	        base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Converts relative path to datasource (e.g. '..\data\datafile.mdb') to 
+        /// an absolute path.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
+        private static string ConvertRelativePath(string connectionString)
+        {
+            var builder = new DbConnectionStringBuilder { ConnectionString = connectionString };
+            var datasource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, (string) builder[DATASOURCE_KEY]);
+
+            builder[DATASOURCE_KEY] = datasource;
+
+            return builder.ConnectionString;
         }
 	}
 }
