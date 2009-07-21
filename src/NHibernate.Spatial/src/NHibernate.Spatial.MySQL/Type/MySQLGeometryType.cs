@@ -43,18 +43,15 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
+			// MySQL parses empty geometry as NULL
+			if (geometry.IsEmpty)
 			{
-				// MySQL parses empty geometry as NULL
-				if (geometry.IsEmpty)
-				{
-					return null;
-				}
-
-				this.SetDefaultSRID(geometry);
-				byte[] bytes = new MySQLWriter().Write(geometry);
-				return bytes;
+				return null;
 			}
+
+			this.SetDefaultSRID(geometry);
+			byte[] bytes = new MySQLWriter().Write(geometry);
+			return bytes;
 		}
 
 		/// <summary>
@@ -70,13 +67,11 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
-			{
-				MySQLReader reader = new MySQLReader();
-				IGeometry geometry = reader.Read(bytes);
-				this.SetDefaultSRID(geometry);
-				return geometry;
-			}
+			
+			MySQLReader reader = new MySQLReader();
+			IGeometry geometry = reader.Read(bytes);
+			this.SetDefaultSRID(geometry);
+			return geometry;
 		}
 	}
 }

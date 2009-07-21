@@ -48,7 +48,7 @@ namespace NHibernate.Spatial.Type
 		/// <returns></returns>
 		public override object Get(IDataReader rs, int index)
 		{
-			return ASCIIEncoding.ASCII.GetString((byte[])rs[index]);
+			return Encoding.ASCII.GetString((byte[])rs[index]);
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace NHibernate.Spatial.Type
 		/// <returns></returns>
 		public override object Get(IDataReader rs, string name)
 		{
-			return ASCIIEncoding.ASCII.GetString((byte[])rs[name]);
+			return Encoding.ASCII.GetString((byte[])rs[name]);
 		}
 
 		/// <summary></summary>
