@@ -15,12 +15,9 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Text;
-using System.Collections;
 using NHibernate.Cfg;
 using NHibernate.Type;
-using NHibernate.Util;
 using NHibernate.Mapping;
 using NHibernate.Engine;
 using NHibernate.Spatial.Type;
@@ -104,7 +101,7 @@ namespace NHibernate.Spatial.Mapping
 			this.configuration = configuration;
 		}
 
-		private Configuration configuration;
+		private readonly Configuration configuration;
 
 		private delegate void VisitGeometryColumnDelegate(Table table, Column column);
 

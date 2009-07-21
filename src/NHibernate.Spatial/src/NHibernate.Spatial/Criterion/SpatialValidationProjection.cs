@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
 using NHibernate.Criterion;
@@ -31,7 +30,7 @@ namespace NHibernate.Spatial.Criterion
 	[Serializable]
 	public class SpatialValidationProjection : SpatialProjection
 	{
-		private SpatialValidation validation;
+		private readonly SpatialValidation validation;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialValidationProjection"/> class.
@@ -61,6 +60,7 @@ namespace NHibernate.Spatial.Criterion
 		/// <param name="criteria"></param>
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
+		/// <param name="enabledFilters"></param>
 		/// <returns></returns>
 		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{

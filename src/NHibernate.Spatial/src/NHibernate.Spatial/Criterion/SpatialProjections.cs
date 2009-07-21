@@ -15,14 +15,6 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.Type;
-using NHibernate.SqlCommand;
-using NHibernate.Spatial.Dialect;
-using GeoAPI.Geometries;
-
 namespace NHibernate.Spatial.Criterion
 {
 	/// <summary>

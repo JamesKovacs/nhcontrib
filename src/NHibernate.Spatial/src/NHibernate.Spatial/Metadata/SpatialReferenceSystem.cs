@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Reflection;
-using NHibernate.Cfg;
 
 namespace NHibernate.Spatial.Metadata
 {
@@ -37,60 +35,60 @@ namespace NHibernate.Spatial.Metadata
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialReferenceSystem"/> class.
 		/// </summary>
-		/// <param name="SRID">The SRID.</param>
-		/// <param name="AuthorityName">Name of the authority.</param>
-		/// <param name="AuthoritySRID">The authority SRID.</param>
-		/// <param name="WellKnownText">The well known text.</param>
-		public SpatialReferenceSystem(int SRID, string AuthorityName, int AuthoritySRID, string WellKnownText)
+		/// <param name="srid">The SRID.</param>
+		/// <param name="authorityName">Name of the authority.</param>
+		/// <param name="authoritySRID">The authority srid.</param>
+		/// <param name="wellKnownText">The well known text.</param>
+		public SpatialReferenceSystem(int srid, string authorityName, int authoritySRID, string wellKnownText)
 		{
-			this.SRID = SRID;
-			this.AuthorityName = AuthorityName;
-			this.AuthoritySRID = AuthoritySRID;
-			this.WellKnownText = WellKnownText;
+			this.SRID = srid;
+			this.AuthorityName = authorityName;
+			this.AuthoritySRID = authoritySRID;
+			this.WellKnownText = wellKnownText;
 		}
 
-		private int _SRID;
+		private int srid;
 		/// <summary>
 		/// Gets or sets the SRID.
 		/// </summary>
 		/// <value>The SRID.</value>
 		public virtual int SRID
 		{
-			get { return _SRID; }
-			set { _SRID = value; }
+			get { return this.srid; }
+			set { this.srid = value; }
 		}
 
-		private string _AuthorityName;
+		private string authorityName;
 		/// <summary>
 		/// Gets or sets the name of the authority.
 		/// </summary>
 		/// <value>The name of the authority.</value>
 		public virtual string AuthorityName
 		{
-			get { return _AuthorityName; }
-			set { _AuthorityName = value; }
+			get { return this.authorityName; }
+			set { this.authorityName = value; }
 		}
 
-		private int _AuthoritySRID;
+		private int authoritySRID;
 		/// <summary>
 		/// Gets or sets the authority SRID.
 		/// </summary>
 		/// <value>The authority SRID.</value>
 		public virtual int AuthoritySRID
 		{
-			get { return _AuthoritySRID; }
-			set { _AuthoritySRID = value; }
+			get { return this.authoritySRID; }
+			set { this.authoritySRID = value; }
 		}
 
-		private string _WellKnownText;
+		private string wellKnownText;
 		/// <summary>
 		/// Gets or sets the well known text.
 		/// </summary>
 		/// <value>The well known text.</value>
 		public virtual string WellKnownText
 		{
-			get { return _WellKnownText; }
-			set { _WellKnownText = value; }
+			get { return this.wellKnownText; }
+			set { this.wellKnownText = value; }
 		}
 
 	}

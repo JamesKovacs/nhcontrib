@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Reflection;
-using NHibernate.Cfg;
 
 namespace NHibernate.Spatial.Metadata
 {
@@ -27,81 +25,81 @@ namespace NHibernate.Spatial.Metadata
 	[Serializable]
 	public class GeometryColumn
 	{
-		private string _TableCatalog;
+		private string tableCatalog;
 		/// <summary>
 		/// Gets or sets the table catalog.
 		/// </summary>
 		/// <value>The table catalog.</value>
 		public virtual string TableCatalog
 		{
-			get { return _TableCatalog; }
-			set { _TableCatalog = value; }
+			get { return this.tableCatalog; }
+			set { this.tableCatalog = value; }
 		}
 
-		private string _TableSchema;
+		private string tableSchema;
 		/// <summary>
 		/// Gets or sets the table schema.
 		/// </summary>
 		/// <value>The table schema.</value>
 		public virtual string TableSchema
 		{
-			get { return _TableSchema; }
-			set { _TableSchema = value; }
+			get { return this.tableSchema; }
+			set { this.tableSchema = value; }
 		}
 
-		private string _TableName;
+		private string tableName;
 		/// <summary>
 		/// Gets or sets the name of the table.
 		/// </summary>
 		/// <value>The name of the table.</value>
 		public virtual string TableName
 		{
-			get { return _TableName; }
-			set { _TableName = value; }
+			get { return this.tableName; }
+			set { this.tableName = value; }
 		}
 
-		private string _Name;
+		private string name;
 		/// <summary>
 		/// Gets or sets the name of the geometry column.
 		/// </summary>
 		/// <value>The name.</value>
 		public virtual string Name
 		{
-			get { return _Name; }
-			set { _Name = value; }
+			get { return this.name; }
+			set { this.name = value; }
 		}
 
-		private int _SRID;
+		private int srid;
 		/// <summary>
 		/// Gets or sets the SRID.
 		/// </summary>
 		/// <value>The SRID.</value>
 		public virtual int SRID
 		{
-			get { return _SRID; }
-			set { _SRID = value; }
+			get { return this.srid; }
+			set { this.srid = value; }
 		}
 
-		private string _Subtype;
+		private string subtype;
 		/// <summary>
 		/// Gets or sets the geometry subtype.
 		/// </summary>
 		/// <value>The subtype.</value>
 		public virtual string Subtype
 		{
-			get { return _Subtype; }
-			set { _Subtype = value; }
+			get { return this.subtype; }
+			set { this.subtype = value; }
 		}
 
-		private int _Dimension;
+		private int dimension;
 		/// <summary>
 		/// Gets or sets the geometry dimension.
 		/// </summary>
 		/// <value>The dimension.</value>
 		public virtual int Dimension
 		{
-			get { return _Dimension; }
-			set { _Dimension = value; }
+			get { return this.dimension; }
+			set { this.dimension = value; }
 		}
 
 		#region System.Object Members

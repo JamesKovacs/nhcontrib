@@ -17,7 +17,6 @@
 
 using System;
 using NHibernate.SqlCommand;
-using NHibernate.Criterion;
 using NHibernate.Spatial.Dialect;
 
 namespace NHibernate.Spatial.Criterion
@@ -28,7 +27,7 @@ namespace NHibernate.Spatial.Criterion
 	[Serializable]
 	public class SpatialTransformProjection : SpatialProjection
 	{
-		private int targetSrid;
+		private readonly int targetSrid;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialTransformProjection"/> class.

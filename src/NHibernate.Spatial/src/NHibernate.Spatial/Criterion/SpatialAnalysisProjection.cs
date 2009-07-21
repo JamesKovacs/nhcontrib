@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
 using NHibernate.Criterion;
@@ -31,9 +30,9 @@ namespace NHibernate.Spatial.Criterion
 	[Serializable]
 	public class SpatialAnalysisProjection : SpatialProjection
 	{
-		private SpatialAnalysis analysis;
-		private string anotherPropertyName;
-		private object[] arguments;
+		private readonly SpatialAnalysis analysis;
+		private readonly string anotherPropertyName;
+		private readonly object[] arguments;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialAnalysisProjection"/> class.
@@ -73,10 +72,7 @@ namespace NHibernate.Spatial.Criterion
 			{
 				return new IType[] { NHibernateUtil.Double };
 			}
-			else
-			{
-				return base.GetTypes(criteria, criteriaQuery);
-			}
+			return base.GetTypes(criteria, criteriaQuery);
 		}
 
 		/// <summary>
@@ -85,6 +81,7 @@ namespace NHibernate.Spatial.Criterion
 		/// <param name="criteria"></param>
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
+		/// <param name="enabledFilters"></param>
 		/// <returns></returns>
 		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{

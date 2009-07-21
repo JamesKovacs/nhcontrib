@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
 using NHibernate.Spatial.Dialect;
 using NHibernate.SqlCommand;
 using NHibernate.Criterion;
@@ -31,8 +30,8 @@ namespace NHibernate.Spatial.Criterion
 	[Serializable]
 	public class SpatialRelationProjection : SpatialProjection
 	{
-		private SpatialRelation relation;
-		private string anotherPropertyName;
+		private readonly SpatialRelation relation;
+		private readonly string anotherPropertyName;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialRelationProjection"/> class.
@@ -64,6 +63,7 @@ namespace NHibernate.Spatial.Criterion
 		/// <param name="criteria"></param>
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
+		/// <param name="enabledFilters"></param>
 		/// <returns></returns>
 		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
