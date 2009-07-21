@@ -8,7 +8,7 @@
 		<property name="Geometry" column="the_geom">
 			<type name="NHibernate.Spatial.Type.GeometryType,NHibernate.Spatial">
 				<param name="subtype">POINT</param>
-				<param name="srid">32719</param>
+				<param name="srid">4326</param>
 			</type>
 		</property>
 	</class>

@@ -16,9 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Data;
-using NHibernate.Type;
 using NHibernate.UserTypes;
 using NHibernate.Spatial.Dialect;
 
@@ -165,7 +164,7 @@ namespace NHibernate.Spatial.Type
 		/// The SQL types for the columns mapped by this type.
 		/// </summary>
 		/// <value></value>
-		public NHibernate.SqlTypes.SqlType[] SqlTypes
+		public SqlTypes.SqlType[] SqlTypes
 		{
 			get { return this.geometryUserType.SqlTypes; }
 		}
@@ -186,7 +185,7 @@ namespace NHibernate.Spatial.Type
 		/// the implementation.
 		/// </summary>
 		/// <param name="parameters"></param>
-		public void SetParameterValues(IDictionary parameters)
+		public void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			this.geometryUserType.SetParameterValues(parameters);
 		}

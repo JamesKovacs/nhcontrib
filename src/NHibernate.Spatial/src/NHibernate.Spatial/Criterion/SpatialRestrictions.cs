@@ -16,17 +16,30 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using NHibernate.Criterion;
 using GeoAPI.Geometries;
-using NHibernate.Spatial.Dialect;
 
 namespace NHibernate.Spatial.Criterion
 {
+	/// <summary> 
+	/// This class is semi-deprecated. Please use <see cref="T:NHibernate.Spatial.Criterion.SpatialRestrictions" instead. />. 
+	/// </summary>
+	/// <seealso cref="T:NHibernate.Criterion.Restrictions" />
+	public sealed class SpatialExpression : SpatialRestrictions
+	{
+		private SpatialExpression()
+		{
+		}
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>
-	public static class SpatialExpression
+	public class SpatialRestrictions
 	{
+		internal SpatialRestrictions()
+		{
+		}
+
 		#region Filter
 
 		/// <summary>

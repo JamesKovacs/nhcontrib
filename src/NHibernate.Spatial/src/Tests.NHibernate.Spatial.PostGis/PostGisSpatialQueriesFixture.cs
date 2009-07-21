@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using NHibernate;
 using NHibernate.Cfg;
@@ -18,7 +17,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			return string.Format(@"
 SELECT count(*) 
 FROM linestringtest 
-WHERE the_geom && GeomFromText('{0}', 32719)
+WHERE the_geom && GeomFromText('{0}', 4326)
 ", filterString);
 		}
 
@@ -27,7 +26,7 @@ WHERE the_geom && GeomFromText('{0}', 32719)
 			return string.Format(@"
 SELECT count(*) 
 FROM polygontest 
-WHERE the_geom && GeomFromText('{0}', 32719)
+WHERE the_geom && GeomFromText('{0}', 4326)
 ", filterString);
 		}
 
@@ -36,7 +35,7 @@ WHERE the_geom && GeomFromText('{0}', 32719)
 			return string.Format(@"
 SELECT count(*) 
 FROM multilinestringtest 
-WHERE the_geom && GeomFromText('{0}', 32719)
+WHERE the_geom && GeomFromText('{0}', 4326)
 ", filterString);
 		}
 
@@ -46,7 +45,7 @@ WHERE the_geom && GeomFromText('{0}', 32719)
 SELECT count(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND ST_Overlaps(PolygonFromText('{0}', 32719), the_geom)
+AND ST_Overlaps(PolygonFromText('{0}', 4326), the_geom)
 ", filterString);
 		}
 
@@ -56,7 +55,7 @@ AND ST_Overlaps(PolygonFromText('{0}', 32719), the_geom)
 SELECT count(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND ST_Intersects(PolygonFromText('{0}', 32719), the_geom)
+AND ST_Intersects(PolygonFromText('{0}', 4326), the_geom)
 ", filterString);
 		}
 

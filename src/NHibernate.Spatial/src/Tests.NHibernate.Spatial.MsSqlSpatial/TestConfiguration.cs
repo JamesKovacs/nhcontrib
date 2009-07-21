@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using NHibernate.ByteCode.Castle;
 using NHibernate.Cfg;
 using NHibernate.Driver;
 using NHibernate.Spatial.Dialect;
-using NUnit.Framework;
 using Environment = NHibernate.Cfg.Environment;
 using Settings = Tests.NHibernate.Spatial.Properties.Settings;
 
@@ -13,6 +13,7 @@ namespace Tests.NHibernate.Spatial
 		public static void Configure(Configuration configuration)
 		{
 			IDictionary<string, string> properties = new Dictionary<string, string>();
+			properties[Environment.ProxyFactoryFactoryClass] = typeof(ProxyFactoryFactory).AssemblyQualifiedName;
 			properties[Environment.Dialect] = typeof(MsSqlSpatialDialect).AssemblyQualifiedName;
 			properties[Environment.ConnectionProvider] = typeof(DebugConnectionProvider).AssemblyQualifiedName;
 			properties[Environment.ConnectionDriver] = typeof(SqlClientDriver).AssemblyQualifiedName;

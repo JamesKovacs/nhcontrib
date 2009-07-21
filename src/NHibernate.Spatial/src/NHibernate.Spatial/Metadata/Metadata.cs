@@ -15,8 +15,6 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Reflection;
 using NHibernate.Cfg;
 using NHibernate.Engine;
 using NHibernate.Spatial.Dialect;
@@ -70,9 +68,10 @@ namespace NHibernate.Spatial.Metadata
         /// 	<c>true</c> if it supports spatial metadata; otherwise, <c>false</c>.
         /// </value>
         /// <param name="session">The session</param>
+        /// <param name="metadataClass">The metadata class</param>
         public static bool SupportsSpatialMetadata(ISession session, MetadataClass metadataClass)
         {
-            ISpatialDialect spatialDialect = (ISpatialDialect)session.SessionFactory.Dialect;
+            ISpatialDialect spatialDialect = (ISpatialDialect)((ISessionFactoryImplementor)session.SessionFactory).Dialect;
             return spatialDialect.SupportsSpatialMetadata(metadataClass);
         }
 	}

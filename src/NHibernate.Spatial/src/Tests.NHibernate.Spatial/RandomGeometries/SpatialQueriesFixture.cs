@@ -15,8 +15,8 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 	/// </summary>
 	public abstract class SpatialQueriesFixture : AbstractFixture
 	{
-		private IGeometry filter = null;
-		private const string filterString = "POLYGON((0.0 0.0, 25000.0 0.0, 25000.0 25000.0, 0.0 25000.0, 0.0 0.0))";
+		private IGeometry filter;
+		private const string FilterString = "POLYGON((0.0 0.0, 25000.0 0.0, 25000.0 25000.0, 0.0 25000.0, 0.0 0.0))";
 
 		protected override Type[] Mappings
 		{
@@ -44,8 +44,8 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		{
 			DataGenerator.Generate(sessions);
 
-			this.filter = Wkt.Read(filterString);
-			this.filter.SRID = 32719;
+			this.filter = Wkt.Read(FilterString);
+			this.filter.SRID = 4326;
 		}
 
 		protected override void OnTestFixtureTearDown()
@@ -80,13 +80,13 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void LineStringFiltering()
 		{
 			IList results = session.CreateCriteria(typeof(LineStringEntity))
-				.Add(SpatialExpression.Filter("Geometry", this.filter))
+				.Add(SpatialRestrictions.Filter("Geometry", this.filter))
 				.List();
 
 			long count;
 			using (IDbCommand command = session.Connection.CreateCommand())
 			{
-				command.CommandText = this.SqlLineStringFilter(filterString);
+				command.CommandText = this.SqlLineStringFilter(FilterString);
 				count = (long)command.ExecuteScalar();
 			}
 
@@ -97,13 +97,13 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void PolygonFiltering()
 		{
 			IList results = session.CreateCriteria(typeof(PolygonEntity))
-				.Add(SpatialExpression.Filter("Geometry", this.filter))
+				.Add(SpatialRestrictions.Filter("Geometry", this.filter))
 				.List();
 
 			long count;
 			using (IDbCommand command = session.Connection.CreateCommand())
 			{
-				command.CommandText = this.SqlPolygonFilter(filterString);
+				command.CommandText = this.SqlPolygonFilter(FilterString);
 				count = (long)command.ExecuteScalar();
 			}
 
@@ -114,13 +114,13 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void MultiLineStringFiltering()
 		{
 			IList results = session.CreateCriteria(typeof(MultiLineStringEntity))
-				.Add(SpatialExpression.Filter("Geometry", this.filter))
+				.Add(SpatialRestrictions.Filter("Geometry", this.filter))
 				.List();
 
 			long count;
 			using (IDbCommand command = session.Connection.CreateCommand())
 			{
-				command.CommandText = this.SqlMultiLineStringFilter(filterString);
+				command.CommandText = this.SqlMultiLineStringFilter(FilterString);
 				count = (long)command.ExecuteScalar();
 			}
 
@@ -182,7 +182,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			long count;
 			using (IDbCommand command = session.Connection.CreateCommand())
 			{
-				command.CommandText = this.SqlOvelapsLineString(filterString);
+				command.CommandText = this.SqlOvelapsLineString(FilterString);
 				count = (long)command.ExecuteScalar();
 			}
 
@@ -193,7 +193,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlRelateLineString()
 		{
 			long count = session
-				.CreateQuery("select count(*) from LineStringEntity l where NHSP.Relate(l.Geometry, ?, 'TT*******') = NHSP.TRUE and l.Geometry is not null")
+				.CreateQuery("select count(*) from LineStringEntity l where l.Geometry is not null and NHSP.Relate(l.Geometry, ?, 'TT*******') = true")
 				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.UniqueResult<long>();
 
@@ -215,7 +215,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 
 			long altIntersects = session
-				.CreateQuery("select count(*) from LineStringEntity as l where NHSP.Intersects(l.Geometry, ?) = NHSP.TRUE")
+				.CreateQuery("select count(*) from LineStringEntity as l where NHSP.Intersects(l.Geometry, ?) = true")
 				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.UniqueResult<long>();
 
@@ -224,14 +224,14 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			long count;
 			using (IDbCommand command = session.Connection.CreateCommand())
 			{
-				command.CommandText = this.SqlIntersectsLineString(filterString);
+				command.CommandText = this.SqlIntersectsLineString(FilterString);
 				count = (long)command.ExecuteScalar();
 			}
 
 			Assert.AreEqual(intersects, count);
 
 			results = session
-				.CreateQuery("from LineStringEntity as l where NHSP.Intersects(?,l.Geometry) = NHSP.TRUE")
+				.CreateQuery("from LineStringEntity as l where NHSP.Intersects(?,l.Geometry) = true")
 				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.List();
 
@@ -249,7 +249,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			foreach (object item in results)
 			{
 				int srid = (int)item;
-				Assert.AreEqual(32719, srid);
+				Assert.AreEqual(4326, srid);
 			}
 		}
 
@@ -374,13 +374,43 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		public void HqlDistance()
 		{
 			IList results = session
-				.CreateQuery("select NHSP.Distance(l.Geometry, ?), l.Geometry from LineStringEntity as l where l.Geometry is not null")
+				.CreateQuery(@"
+					select NHSP.Distance(l.Geometry, ?), l.Geometry
+					from LineStringEntity as l
+					where l.Geometry is not null")
 				.SetParameter(0, this.filter, SpatialDialect.GeometryTypeOf(session))
 				.SetMaxResults(100)
 				.List();
 			foreach (object[] item in results)
 			{
 				double distance = (double)item[0];
+				IGeometry geom = (IGeometry)item[1];
+				Assert.AreEqual(geom.Distance(this.filter), distance, 0.003);
+			}
+		}
+
+		[Test]
+		public void HqlDistanceMin()
+		{
+			const int minDistance = 40000;
+
+			IList results = session
+				.CreateQuery(@"
+					select NHSP.Distance(l.Geometry, :filter), l.Geometry
+					from LineStringEntity as l
+					where l.Geometry is not null
+					and NHSP.Distance(l.Geometry, :filter) > :minDistance
+					order by NHSP.Distance(l.Geometry, :filter)")
+				.SetParameter("filter", this.filter, SpatialDialect.GeometryTypeOf(session))
+				.SetParameter("minDistance", minDistance)
+				.SetMaxResults(100)
+				.List();
+
+			Assert.IsNotEmpty(results);
+			foreach (object[] item in results)
+			{
+				double distance = (double)item[0];
+				Assert.Greater(distance, minDistance);
 				IGeometry geom = (IGeometry)item[1];
 				Assert.AreEqual(geom.Distance(this.filter), distance, 0.003);
 			}
@@ -577,7 +607,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 
 		private static bool IsApproximateCoincident(IGeometry g1, IGeometry g2, double tolerance)
 		{
-			IGeometry symdiff = null;
+			IGeometry symdiff;
 			if (g1.Dimension < Dimensions.Surface && g2.Dimension < Dimensions.Surface)
 			{
 				g1 = g1.Buffer(tolerance);

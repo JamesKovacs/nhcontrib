@@ -17,10 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Spatial.MsSql200
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.NHibernate.Spatial.MsSql2008.vs2008", "Tests.NHibernate.Spatial.MsSql2008\Tests.NHibernate.Spatial.MsSql2008.vs2008.csproj", "{96CE5CA4-56B6-45CD-9581-736C8483CD7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Spatial.Oracle.vs2008", "NHibernate.Spatial.Oracle\NHibernate.Spatial.Oracle.vs2008.csproj", "{AE6A6FAE-966D-4D4D-BCBD-62C2B25EF02A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.NHibernate.Spatial.Oracle.vs2008", "Tests.NHibernate.Spatial.Oracle\Tests.NHibernate.Spatial.Oracle.vs2008.csproj", "{AF2DABFB-35D2-48CE-88CB-4E35B616C07C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Spatial.MySQL.vs2008", "NHibernate.Spatial.MySQL\NHibernate.Spatial.MySQL.vs2008.csproj", "{2A41BF37-ACD3-4F0B-804A-C8EC6517D51A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.NHibernate.Spatial.MySQL.vs2008", "Tests.NHibernate.Spatial.MySQL\Tests.NHibernate.Spatial.MySQL.vs2008.csproj", "{89DB7429-40E8-4D5F-B560-64B59CEE4FC0}"
@@ -63,12 +59,6 @@ Global
 		{96CE5CA4-56B6-45CD-9581-736C8483CD7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96CE5CA4-56B6-45CD-9581-736C8483CD7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96CE5CA4-56B6-45CD-9581-736C8483CD7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE6A6FAE-966D-4D4D-BCBD-62C2B25EF02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE6A6FAE-966D-4D4D-BCBD-62C2B25EF02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE6A6FAE-966D-4D4D-BCBD-62C2B25EF02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF2DABFB-35D2-48CE-88CB-4E35B616C07C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF2DABFB-35D2-48CE-88CB-4E35B616C07C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF2DABFB-35D2-48CE-88CB-4E35B616C07C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A41BF37-ACD3-4F0B-804A-C8EC6517D51A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A41BF37-ACD3-4F0B-804A-C8EC6517D51A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A41BF37-ACD3-4F0B-804A-C8EC6517D51A}.Release|Any CPU.ActiveCfg = Release|Any CPU

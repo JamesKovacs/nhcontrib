@@ -59,6 +59,11 @@ namespace NHibernate.Spatial.Criterion
 			return new TypedValue[] { };
 		}
 
+		public override IProjection[] GetProjections()
+		{
+			return null;
+		}
+
 		/// <summary>
 		/// Render a SqlString for the expression.
 		/// </summary>
@@ -70,12 +75,13 @@ namespace NHibernate.Spatial.Criterion
 		/// </returns>
 		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
+			criteriaQuery.AddUsedTypedValues(GetTypedValues(criteria, criteriaQuery));
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string[] columnsUsingProjection = criteriaQuery.GetColumnsUsingProjection(criteria, this.propertyName);
 			IType typeUsingProjection = criteriaQuery.GetTypeUsingProjection(criteria, this.propertyName);
 			if (typeUsingProjection.ReturnedClass != typeof(IGeometry))
 			{
-				throw new QueryException(string.Format("Type mismatch in {0}: {1} expected type {2}, actual type {3}", base.GetType(), this.propertyName, typeof(IGeometry), typeUsingProjection.ReturnedClass));
+				throw new QueryException(string.Format("Type mismatch in {0}: {1} expected type {2}, actual type {3}", GetType(), this.propertyName, typeof(IGeometry), typeUsingProjection.ReturnedClass));
 			}
 			if (typeUsingProjection.IsCollectionType)
 			{

@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using NHibernate.Engine;
 using NHibernate.Type;
 
 namespace NHibernate.Spatial.Dialect
@@ -72,7 +73,7 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public static IType GeometryTypeOf(ISessionFactory sessionFactory)
 		{
-			return ((ISpatialDialect)sessionFactory.Dialect).GeometryType;
+			return ((ISpatialDialect)((ISessionFactoryImplementor)sessionFactory).Dialect).GeometryType;
 		}
 
 		/// <summary>
@@ -82,7 +83,7 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public static IType GeometryTypeOf(ISession session)
 		{
-			return ((ISpatialDialect)session.SessionFactory.Dialect).GeometryType;
+			return ((ISpatialDialect)((ISessionFactoryImplementor)session.SessionFactory).Dialect).GeometryType;
 		}
 
 		#endregion

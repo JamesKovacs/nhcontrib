@@ -103,8 +103,6 @@ namespace NHibernate.Spatial.Dialect
 		/// <remarks>
 		/// One parameter placeholder must be added to the SqlString.
 		/// </remarks>
-		/// <param name="geometry"></param>
-		/// <param name="relation"></param>
 		/// <returns>A <c><SqlString/c> object containing
 		/// a SQL spatial relation expression</returns>
 		SqlString GetSpatialFilterString(string tableAlias, string geometryColumnName, string primaryKeyColumnName, string tableName);
@@ -150,5 +148,9 @@ namespace NHibernate.Spatial.Dialect
 		/// 	<c>true</c> if it supports spatial metadata; otherwise, <c>false</c>.
 		/// </value>
 		bool SupportsSpatialMetadata(MetadataClass metadataClass);
+
+
+		// TODO: Use ISessionFactory.ConnectionProvider.Driver.MultipleQueriesSeparator
+		string MultipleQueriesSeparator { get; }
 	}
 }

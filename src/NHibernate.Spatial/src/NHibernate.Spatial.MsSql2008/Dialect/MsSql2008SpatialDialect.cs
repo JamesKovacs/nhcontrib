@@ -31,7 +31,7 @@ namespace NHibernate.Spatial.Dialect
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract class MsSql2008SpatialDialect : MsSql2005Dialect, ISpatialDialect
+	public abstract class MsSql2008SpatialDialect : MsSql2008Dialect, ISpatialDialect
 	{
 		private const string DialectPrefix = "ST";
 
@@ -90,9 +90,6 @@ namespace NHibernate.Spatial.Dialect
 
 		private void RegisterFunctions()
 		{
-			RegisterConstantValue("TRUE", "1", NHibernateUtil.Boolean);
-			RegisterConstantValue("FALSE", "0", NHibernateUtil.Boolean);
-
 			RegisterSpatialFunction("Boundary");
 			RegisterSpatialFunction("Centroid");
 			RegisterSpatialFunction("EndPoint");
@@ -141,11 +138,6 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunction("NumPoints", NHibernateUtil.Int32);
 
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);
-		}
-
-		private void RegisterConstantValue(string standardName, string value, IType returnedType)
-		{
-			RegisterFunction(SpatialDialect.HqlPrefix + standardName, new ConstantValueFunction(value, returnedType));
 		}
 
 		private void RegisterSpatialFunction(string standardName, string dialectName, IType returnedType, int allowedArgsCount)
@@ -207,11 +199,6 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
 		}
 
-		private void RegisterSpatialFunction(string standardName, string dialectName)
-		{
-			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
-		}
-
 		private void RegisterSpatialFunction(SpatialRelation relation)
 		{
 			RegisterFunction(SpatialDialect.HqlPrefix + relation.ToString(), new SpatialRelationFunction(this, relation));
@@ -251,7 +238,7 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public SqlString GetSpatialTransformString(object geometry, int srid)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -262,7 +249,7 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public SqlString GetSpatialAggregateString(object geometry, SpatialAggregate aggregate)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -519,10 +506,7 @@ namespace NHibernate.Spatial.Dialect
 			{
 				return null;
 			}
-			else
-			{
-				return this.QuoteForSchemaName(schema) + StringHelper.Dot;
-			}
+			return this.QuoteForSchemaName(schema) + StringHelper.Dot;
 		}
 
 		/// <summary>
@@ -646,5 +630,11 @@ namespace NHibernate.Spatial.Dialect
 		}
 
 		#endregion
+
+		// TODO: Use ISessionFactory.ConnectionProvider.Driver.MultipleQueriesSeparator
+		public string MultipleQueriesSeparator
+		{
+			get { return ";"; }
+		}
 	}
 }

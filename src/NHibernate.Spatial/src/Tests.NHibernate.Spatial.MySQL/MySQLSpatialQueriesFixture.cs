@@ -18,7 +18,7 @@ namespace Tests.NHibernate.Spatial
 			return string.Format(@"
 SELECT count(*) 
 FROM linestringtest 
-WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
+WHERE MBRIntersects(the_geom, GeomFromText('{0}', 4326))
 ", filterString);
 		}
 
@@ -27,7 +27,7 @@ WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
 			return string.Format(@"
 SELECT count(*) 
 FROM polygontest 
-WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
+WHERE MBRIntersects(the_geom, GeomFromText('{0}', 4326))
 ", filterString);
 		}
 
@@ -36,7 +36,7 @@ WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
 			return string.Format(@"
 SELECT count(*) 
 FROM multilinestringtest 
-WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
+WHERE MBRIntersects(the_geom, GeomFromText('{0}', 4326))
 ", filterString);
 		}
 
@@ -46,7 +46,7 @@ WHERE MBRIntersects(the_geom, GeomFromText('{0}', 32719))
 SELECT count(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND Overlaps(PolygonFromText('{0}', 32719), the_geom)
+AND Overlaps(PolygonFromText('{0}', 4326), the_geom)
 ", filterString);
 		}
 
@@ -56,7 +56,7 @@ AND Overlaps(PolygonFromText('{0}', 32719), the_geom)
 SELECT count(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND Intersects(PolygonFromText('{0}', 32719), the_geom)
+AND Intersects(PolygonFromText('{0}', 4326), the_geom)
 ", filterString);
 		}
 

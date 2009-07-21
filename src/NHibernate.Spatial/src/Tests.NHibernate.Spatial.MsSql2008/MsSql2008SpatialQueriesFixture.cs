@@ -1,9 +1,6 @@
-using System;
 using NUnit.Framework;
 using NHibernate;
 using NHibernate.Cfg;
-using Tests.NHibernate.Spatial.NtsTestCases;
-using Tests.NHibernate.Spatial.OgcSfSql11Compliance;
 
 namespace Tests.NHibernate.Spatial.RandomGeometries
 {
@@ -20,7 +17,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			return string.Format(@"
 SELECT count_big(*) 
 FROM linestringtest 
-WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
+WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 4326)) = 1
 ", filterString);
 		}
 
@@ -29,7 +26,7 @@ WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
 			return string.Format(@"
 SELECT count_big(*) 
 FROM polygontest 
-WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
+WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 4326)) = 1
 ", filterString);
 		}
 
@@ -38,7 +35,7 @@ WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
 			return string.Format(@"
 SELECT count_big(*) 
 FROM multilinestringtest 
-WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
+WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 4326)) = 1
 ", filterString);
 		}
 
@@ -48,7 +45,7 @@ WHERE the_geom.Filter(geometry::STGeomFromText('{0}', 32719)) = 1
 SELECT count_big(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND the_geom.STOverlaps(geometry::STPolyFromText('{0}', 32719)) = 1
+AND the_geom.STOverlaps(geometry::STPolyFromText('{0}', 4326)) = 1
 ", filterString);
 		}
 
@@ -58,7 +55,7 @@ AND the_geom.STOverlaps(geometry::STPolyFromText('{0}', 32719)) = 1
 SELECT count_big(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND the_geom.STIntersects(geometry::STPolyFromText('{0}', 32719)) = 1
+AND the_geom.STIntersects(geometry::STPolyFromText('{0}', 4326)) = 1
 ", filterString);
 		}
 

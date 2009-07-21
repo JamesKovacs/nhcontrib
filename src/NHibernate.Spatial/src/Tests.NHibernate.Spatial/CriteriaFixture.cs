@@ -27,7 +27,7 @@ namespace Tests.NHibernate.Spatial
 		{
 			session = sessions.OpenSession();
 
-			session.Save(new Simple("a point", new Point(123, 456)));
+			session.Save(new Simple("a point", new Point(12, 45)));
 			session.Save(new Simple("a null", null));
 			session.Save(new Simple("a collection empty 1", Wkt.Read("GEOMETRYCOLLECTION EMPTY")));
 			session.Save(new Simple("a collection empty 2", GeometryCollection.Empty));
@@ -56,9 +56,9 @@ namespace Tests.NHibernate.Spatial
 		public void CountNullOrSpatialEmpty()
 		{
 			IList results = session.CreateCriteria(typeof(Simple))
-				.Add(Expression.Or(
-					Expression.IsNull("Geometry"),
-					SpatialExpression.IsEmpty("Geometry")
+				.Add(Restrictions.Or(
+					Restrictions.IsNull("Geometry"),
+					SpatialRestrictions.IsEmpty("Geometry")
 				))
 				.List();
 			Assert.AreEqual(3, results.Count);
@@ -75,7 +75,7 @@ namespace Tests.NHibernate.Spatial
 		public void CountNull()
 		{
 			IList results = session.CreateCriteria(typeof(Simple))
-				.Add(Expression.IsNull("Geometry"))
+				.Add(Restrictions.IsNull("Geometry"))
 				.List();
 			Assert.AreEqual(1, results.Count);
 			foreach (Simple item in results)
@@ -89,7 +89,7 @@ namespace Tests.NHibernate.Spatial
 		public void CountEmpty()
 		{
 			IList results = session.CreateCriteria(typeof(Simple))
-				.Add(Expression.IsEmpty("Geometry"))
+				.Add(Restrictions.IsEmpty("Geometry"))
 				.List();
 			Assert.AreEqual(0, results.Count);
 		}
@@ -98,7 +98,7 @@ namespace Tests.NHibernate.Spatial
 		public void CountSpatialEmpty()
 		{
 			IList results = session.CreateCriteria(typeof(Simple))
-				.Add(SpatialExpression.IsEmpty("Geometry"))
+				.Add(SpatialRestrictions.IsEmpty("Geometry"))
 				.List();
 			Assert.AreEqual(2, results.Count);
 			foreach (Simple item in results)

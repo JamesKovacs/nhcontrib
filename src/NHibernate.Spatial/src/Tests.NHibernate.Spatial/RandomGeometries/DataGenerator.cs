@@ -13,7 +13,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 		private const int MaxCoordValue = 100000;
 		private const int MaxNumGeom = 10;
 		private const int MaxNumCoords = 20;
-		private static readonly Random random = new Random();
+		private static readonly Random Random = new Random();
 
 		public static void Generate(ISessionFactory factory)
 		{
@@ -22,7 +22,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			GenerateData(factory, typeof(PolygonEntity), new PolygonCreator());
 		}
 		
-		private static void GenerateData(ISessionFactory factory, Type entityClass, GeomCreator creator)
+		private static void GenerateData(ISessionFactory factory, Type entityClass, IGeometryCreator creator)
 		{
 			using (ISession session = factory.OpenSession())
 			{
@@ -33,7 +33,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 						for (int i = 0; i < GeneratedRowsPerEntityCount; i++)
 						{
 							IGeometry geom = creator.Create();
-							geom.SRID = -1;
+							geom.SRID = 4326;
 							object entity = Activator.CreateInstance(entityClass, i, "feature " + i, geom);
 							session.Save(entity);
 						}
@@ -51,17 +51,17 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 
 		private static double GetRandomCoordinateValue()
 		{
-			return random.Next(MinCoordValue, MaxCoordValue);
+			return Random.Next(MinCoordValue, MaxCoordValue);
 		}
 
 		private static int GetRandomNumGeoms()
 		{
-			return random.Next(1, MaxNumGeom);
+			return Random.Next(1, MaxNumGeom);
 		}
 
 		private static int GetRandomNumCoords(int minValue)
 		{
-			return random.Next(minValue, MaxNumCoords);
+			return Random.Next(minValue, MaxNumCoords);
 		}
 
 		private static ICoordinate GetRandomCoordinate() {
@@ -70,12 +70,12 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			return new Coordinate(x, y);
 		}
 
-		private interface GeomCreator
+		private interface IGeometryCreator
 		{
 			IGeometry Create();
 		}
 
-		private class LineStringCreator : GeomCreator
+		private class LineStringCreator : IGeometryCreator
 		{
 			public IGeometry Create()
 			{
@@ -88,7 +88,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 		}
 
-		private class MultiLineStringCreator : GeomCreator
+		private class MultiLineStringCreator : IGeometryCreator
 		{
 			public IGeometry Create()
 			{
@@ -107,12 +107,12 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 
 		// This create small boxes
 		// TODO -- find a better way to generate random linear rings
-		private class LinearRingCreator : GeomCreator
+		private class LinearRingCreator : IGeometryCreator
 		{
 			public IGeometry Create()
 			{
 
-				int numCoords = 4;
+				const int numCoords = 4;
 				ICoordinate[] coordinates = new ICoordinate[numCoords + 1];
 
 				coordinates[0] = GetRandomCoordinate();
@@ -128,7 +128,7 @@ namespace Tests.NHibernate.Spatial.RandomGeometries
 			}
 		}
 
-		private class PolygonCreator : GeomCreator
+		private class PolygonCreator : IGeometryCreator
 		{
 			public IGeometry Create()
 			{

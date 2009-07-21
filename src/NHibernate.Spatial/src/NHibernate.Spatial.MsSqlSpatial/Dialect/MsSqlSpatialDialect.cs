@@ -81,9 +81,6 @@ namespace NHibernate.Spatial.Dialect
 
 		private void RegisterFunctions()
 		{
-			RegisterConstantValue("TRUE", "1", NHibernateUtil.Boolean);
-			RegisterConstantValue("FALSE", "0", NHibernateUtil.Boolean);
-
 			RegisterSpatialFunction("Boundary");
 			RegisterSpatialFunction("Centroid");
 			RegisterSpatialFunction("EndPoint");
@@ -134,11 +131,6 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);
 		}
 
-		private void RegisterConstantValue(string standardName, string value, IType returnedType)
-		{
-			RegisterFunction(SpatialDialect.HqlPrefix + standardName, new ConstantValueFunction(value, returnedType));
-		}
-
 		private void RegisterSpatialFunction(string standardName, string dialectName, IType returnedType, int allowedArgsCount)
 		{
 			RegisterFunction(SpatialDialect.HqlPrefix + standardName, new SpatialStandardSafeFunction(DialectPrefix + dialectName, returnedType, allowedArgsCount));
@@ -170,11 +162,6 @@ namespace NHibernate.Spatial.Dialect
 		}
 
 		private void RegisterSpatialFunction(string standardName, string dialectName, int allowedArgsCount)
-		{
-			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
-		}
-
-		private void RegisterSpatialFunction(string standardName, string dialectName)
 		{
 			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
 		}
@@ -495,5 +482,11 @@ namespace NHibernate.Spatial.Dialect
 		}
 
 		#endregion
+
+		// TODO: Use ISessionFactory.ConnectionProvider.Driver.MultipleQueriesSeparator
+		public string MultipleQueriesSeparator
+		{
+			get { return ";"; }
+		}
 	}
 }

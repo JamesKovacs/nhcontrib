@@ -166,10 +166,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 			{
 				return new Polygon((ILinearRing)geometry, null);
 			}
-			else
-			{
-				return geometry;
-			}
+			return geometry;
 		}
 
 		protected override void OnTestFixtureTearDown()
@@ -210,7 +207,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		private void TestGeometryBinaryOperation(string operationCriterion, SpatialProjectionBinaryDelegate projection)
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("GeometryResult"))
@@ -239,7 +236,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		private void TestGeometryUnaryOperation(string operationCriterion, SpatialProjectionUnaryDelegate projection)
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("GeometryResult"))
@@ -268,7 +265,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		private void TestBooleanBinaryOperation(string operationCriterion, SpatialProjectionBinaryDelegate projection, SpatialRelationCriterionDelegate criterion)
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("BooleanResult"))
@@ -295,7 +292,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 			// RowCount uses "count(*)" which in PostgreSQL returns Int64 and
 			// in MS SQL Server return Int32.
 			long countRows = Convert.ToInt64(session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.Add(criterion("GeometryA", "GeometryB"))
 				.SetProjection(Projections.RowCount())
 				.UniqueResult());
@@ -306,7 +303,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		private void TestBooleanUnaryOperation(string operationCriterion, SpatialProjectionUnaryDelegate projection, SpatialCriterionUnaryDelegate criterion)
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("BooleanResult"))
@@ -333,7 +330,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 			// RowCount uses "count(*)" which in PostgreSQL returns Int64 and
 			// in MS SQL Server return Int32.
 			long countRows = Convert.ToInt64(session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", operationCriterion))
+				.Add(Restrictions.Eq("Operation", operationCriterion))
 				.Add(criterion("GeometryA"))
 				.SetProjection(Projections.RowCount())
 				.UniqueResult());
@@ -383,7 +380,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		public void BooleanRelate()
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", "Relate"))
+				.Add(Restrictions.Eq("Operation", "Relate"))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("BooleanResult"))
@@ -407,7 +404,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		public void StringRelate()
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
-				.Add(Expression.Eq("Operation", "Relate"))
+				.Add(Restrictions.Eq("Operation", "Relate"))
 				.SetProjection(Projections.ProjectionList()
 					.Add(Projections.Property("Description"))
 					.Add(Projections.Property("RelatePattern"))
@@ -430,66 +427,66 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		[Test]
 		public void Contains()
 		{
-			TestBooleanBinaryOperation("Contains", SpatialProjections.Contains, SpatialExpression.Contains);
+			TestBooleanBinaryOperation("Contains", SpatialProjections.Contains, SpatialRestrictions.Contains);
 		}
 
 		[Test]
 		public void CoveredBy()
 		{
-			TestBooleanBinaryOperation("CoveredBy", SpatialProjections.CoveredBy, SpatialExpression.CoveredBy);
+			TestBooleanBinaryOperation("CoveredBy", SpatialProjections.CoveredBy, SpatialRestrictions.CoveredBy);
 		}
 
 		[Test]
 		public void Covers()
 		{
-			TestBooleanBinaryOperation("Covers", SpatialProjections.Covers, SpatialExpression.Covers);
+			TestBooleanBinaryOperation("Covers", SpatialProjections.Covers, SpatialRestrictions.Covers);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void Crosses()
 		{
-			TestBooleanBinaryOperation("Crosses", SpatialProjections.Crosses, SpatialExpression.Crosses);
+			TestBooleanBinaryOperation("Crosses", SpatialProjections.Crosses, SpatialRestrictions.Crosses);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void Disjoint()
 		{
-			TestBooleanBinaryOperation("Disjoint", SpatialProjections.Disjoint, SpatialExpression.Disjoint);
+			TestBooleanBinaryOperation("Disjoint", SpatialProjections.Disjoint, SpatialRestrictions.Disjoint);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void Equals()
 		{
-			TestBooleanBinaryOperation("Equals", SpatialProjections.Equals, SpatialExpression.Eq);
+			TestBooleanBinaryOperation("Equals", SpatialProjections.Equals, SpatialRestrictions.Eq);
 		}
 
 		[Test]
 		public void Intersects()
 		{
-			TestBooleanBinaryOperation("Intersects", SpatialProjections.Intersects, SpatialExpression.Intersects);
+			TestBooleanBinaryOperation("Intersects", SpatialProjections.Intersects, SpatialRestrictions.Intersects);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void Overlaps()
 		{
-			TestBooleanBinaryOperation("Overlaps", SpatialProjections.Overlaps, SpatialExpression.Overlaps);
+			TestBooleanBinaryOperation("Overlaps", SpatialProjections.Overlaps, SpatialRestrictions.Overlaps);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void Touches()
 		{
-			TestBooleanBinaryOperation("Touches", SpatialProjections.Touches, SpatialExpression.Touches);
+			TestBooleanBinaryOperation("Touches", SpatialProjections.Touches, SpatialRestrictions.Touches);
 		}
 
 		[Test]
 		public virtual void Within()
 		{
-			TestBooleanBinaryOperation("Within", SpatialProjections.Within, SpatialExpression.Within);
+			TestBooleanBinaryOperation("Within", SpatialProjections.Within, SpatialRestrictions.Within);
 		}
 
 		#endregion
@@ -500,33 +497,33 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		[Ignore("No data to test")]
 		public void IsClosed()
 		{
-			TestBooleanUnaryOperation("IsClosed", SpatialProjections.IsClosed, SpatialExpression.IsClosed);
+			TestBooleanUnaryOperation("IsClosed", SpatialProjections.IsClosed, SpatialRestrictions.IsClosed);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void IsEmpty()
 		{
-			TestBooleanUnaryOperation("IsEmpty", SpatialProjections.IsEmpty, SpatialExpression.IsEmpty);
+			TestBooleanUnaryOperation("IsEmpty", SpatialProjections.IsEmpty, SpatialRestrictions.IsEmpty);
 		}
 
 		[Test]
 		[Ignore("No data to test")]
 		public void IsRing()
 		{
-			TestBooleanUnaryOperation("IsRing", SpatialProjections.IsRing, SpatialExpression.IsRing);
+			TestBooleanUnaryOperation("IsRing", SpatialProjections.IsRing, SpatialRestrictions.IsRing);
 		}
 
 		[Test]
 		public void IsSimple()
 		{
-			TestBooleanUnaryOperation("IsSimple", SpatialProjections.IsSimple, SpatialExpression.IsSimple);
+			TestBooleanUnaryOperation("IsSimple", SpatialProjections.IsSimple, SpatialRestrictions.IsSimple);
 		}
 
 		[Test]
 		public virtual void IsValid()
 		{
-			TestBooleanUnaryOperation("IsValid", SpatialProjections.IsValid, SpatialExpression.IsValid);
+			TestBooleanUnaryOperation("IsValid", SpatialProjections.IsValid, SpatialRestrictions.IsValid);
 		}
 
 		#endregion

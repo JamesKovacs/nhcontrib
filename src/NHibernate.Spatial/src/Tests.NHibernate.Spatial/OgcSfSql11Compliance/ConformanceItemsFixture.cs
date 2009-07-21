@@ -3,7 +3,6 @@ using System.Collections;
 using GeoAPI.Geometries;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Spatial;
 using NHibernate.Spatial.Metadata;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model;
@@ -392,7 +391,7 @@ UNIT[""Meter"", 1.0]]";
                 Assert.Ignore("Provider does not support spatial metadata");
             }
             SpatialReferenceSystem srs = session.CreateCriteria(typeof(SpatialReferenceSystem))
-				.Add(Expression.IdEq(101))
+				.Add(Restrictions.IdEq(101))
 				.UniqueResult<SpatialReferenceSystem>();
 
 			Assert.IsNotNull(srs);
@@ -417,7 +416,7 @@ UNIT[""Meter"", 1.0]]";
 		public void ConformanceItemT06()
 		{
 			Lake lake = session.CreateCriteria(typeof(Lake))
-			.Add(Expression.Eq("Name", "Blue Lake"))
+			.Add(Restrictions.Eq("Name", "Blue Lake"))
 			.UniqueResult<Lake>();
 
 			Assert.AreEqual(2, (int)lake.Shore.Dimension);
@@ -459,7 +458,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT07()
 		{
 			DividedRoute route = session.CreateCriteria(typeof(DividedRoute))
-				.Add(Expression.Eq("Name", "Route 75"))
+				.Add(Restrictions.Eq("Name", "Route 75"))
 				.UniqueResult<DividedRoute>();
 			Assert.AreEqual("MULTILINESTRING", route.Centerlines.GeometryType.ToUpper());
 		}
@@ -496,7 +495,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT08()
 		{
 			NamedPlace place = session.CreateCriteria(typeof(NamedPlace))
-				.Add(Expression.Eq("Name", "Goose Island"))
+				.Add(Restrictions.Eq("Name", "Goose Island"))
 				.UniqueResult<NamedPlace>();
 
 			IGeometry expected = Wkt.Read("POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )");
@@ -603,8 +602,8 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT11()
 		{
 			RoadSegment entity = session.CreateCriteria(typeof(RoadSegment))
-				.Add(Expression.Eq("Name", "Route 5"))
-				.Add(Expression.Eq("Aliases", "Main Street"))
+				.Add(Restrictions.Eq("Name", "Route 5"))
+				.Add(Restrictions.Eq("Aliases", "Main Street"))
 				.UniqueResult<RoadSegment>();
 
 			Assert.IsFalse(entity.Centerline.IsEmpty);
@@ -647,7 +646,7 @@ where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 		public void ConformanceItemT12()
 		{
 			Lake entity = session.CreateCriteria(typeof(Lake))
-				.Add(Expression.Eq("Name", "Blue Lake"))
+				.Add(Restrictions.Eq("Name", "Blue Lake"))
 				.UniqueResult<Lake>();
 
 			Assert.IsTrue(entity.Shore.IsSimple);
@@ -686,7 +685,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT13()
 		{
 			NamedPlace entity = session.CreateCriteria(typeof(NamedPlace))
-				.Add(Expression.Eq("Name", "Goose Island"))
+				.Add(Restrictions.Eq("Name", "Goose Island"))
 				.UniqueResult<NamedPlace>();
 
 			IGeometry expected = Wkt.Read("LINESTRING( 67 13, 67 18, 59 18, 59 13, 67 13 )");
@@ -1091,7 +1090,7 @@ where t.Name = 'Goose Island'
 		public void ConformanceItemT25()
 		{
 			NamedPlace entity = session.CreateCriteria(typeof(NamedPlace))
-				.Add(Expression.Eq("Name", "Goose Island"))
+				.Add(Restrictions.Eq("Name", "Goose Island"))
 				.UniqueResult<NamedPlace>();
 
 			Assert.IsTrue(entity.Boundary.Contains(entity.Boundary.PointOnSurface));
@@ -1221,7 +1220,7 @@ where t.Name = 'Blue Lake'
 		public void ConformanceItemT29()
 		{
 			Lake entity = session.CreateCriteria(typeof(Lake))
-				.Add(Expression.Eq("Name", "Blue Lake"))
+				.Add(Restrictions.Eq("Name", "Blue Lake"))
 				.UniqueResult<Lake>();
 
 			IGeometry geometry = (entity.Shore as IPolygon).InteriorRings[0];
@@ -1298,7 +1297,7 @@ where t.Name = 'Route 75'
 		public void ConformanceItemT31()
 		{
 			DividedRoute entity = session.CreateCriteria(typeof(DividedRoute))
-				.Add(Expression.Eq("Name", "Route 75"))
+				.Add(Restrictions.Eq("Name", "Route 75"))
 				.UniqueResult<DividedRoute>();
 
 			IGeometry geometry = (entity.Centerlines as IMultiLineString).Geometries[1];
@@ -1448,7 +1447,7 @@ where t.Fid = 120
 		public void ConformanceItemT35()
 		{
 			Pond entity = session.CreateCriteria(typeof(Pond))
-				.Add(Expression.Eq("Fid", (long)120))
+				.Add(Restrictions.Eq("Fid", (long)120))
 				.UniqueResult<Pond>();
 
 			Assert.IsTrue(entity.Shores.Contains(entity.Shores.PointOnSurface));
@@ -1972,13 +1971,13 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 		{
 			IGeometry shore  = session
 				.CreateCriteria(typeof(Lake), "l")
-				.Add(Expression.Eq("l.Name", "Blue Lake"))
+				.Add(Restrictions.Eq("l.Name", "Blue Lake"))
 				.SetProjection(Projections.Property("l.Shore"))
 				.UniqueResult<IGeometry>();
 
 			IGeometry boundary = session
 				.CreateCriteria(typeof(NamedPlace))
-				.Add(Expression.Eq("Name", "Goose Island"))
+				.Add(Restrictions.Eq("Name", "Goose Island"))
 				.SetProjection(Projections.Property("Boundary"))
 				.UniqueResult<IGeometry>();
 
@@ -2036,7 +2035,7 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 			string query =
 @"select count(*)
 from Building bl, Bridge br
-where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = NHSP.TRUE
+where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = true
 ";
 			long result = session.CreateQuery(query)
 				.UniqueResult<long>();

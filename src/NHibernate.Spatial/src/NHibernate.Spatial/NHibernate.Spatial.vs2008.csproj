@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{50868B60-AC38-47E1-BD09-B4A4AA06B6F2}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -59,7 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialect\Function\ConstantValueFunction.cs" />
     <Compile Include="Dialect\Function\SpatialAnalysisFunction.cs" />
     <Compile Include="Dialect\Function\SpatialPropertyFunction.cs" />
     <Compile Include="Dialect\Function\SpatialRelationFunction.cs" />
@@ -85,7 +84,7 @@
     <Compile Include="Criterion\SpatialValidationCriterion.cs" />
     <Compile Include="SpatialAggregate.cs" />
     <Compile Include="Criterion\SpatialAggregateProjection.cs" />
-    <Compile Include="Criterion\SpatialExpression.cs" />
+    <Compile Include="Criterion\SpatialRestrictions.cs" />
     <Compile Include="Criterion\SpatialProjection.cs" />
     <Compile Include="Criterion\SpatialProjections.cs" />
     <Compile Include="Criterion\SpatialRelationCriterion.cs" />

@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
 using NHibernate.SqlTypes;
@@ -48,20 +48,20 @@ namespace NHibernate.Spatial.Type
 		private int srid = -1;
 		private string subtype = "GEOMETRY";
 
-		private NullableType nullableType;
-		private SqlType sqlType;
+		private readonly NullableType nullableType;
+		private readonly SqlType sqlType;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GeometryTypeBase&lt;T&gt;"/> class.
 		/// </summary>
 		/// <param name="nullableType">Type of the nullable.</param>
-		public GeometryTypeBase(NullableType nullableType)
+		protected GeometryTypeBase(NullableType nullableType)
 		{
 			this.nullableType = nullableType;
 			this.sqlType = nullableType.SqlType;
 		}
 
-		#region IGeometryType Members
+		#region IGeometryUserType Members
 
 		/// <summary>
 		/// Return a deep copy of the persistent state, stopping at entities and at collections.
@@ -232,20 +232,20 @@ namespace NHibernate.Spatial.Type
 		/// the implementation.
 		/// </summary>
 		/// <param name="parameters"></param>
-		public void SetParameterValues(IDictionary parameters)
+		public void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			if (parameters != null)
 			{
-				string srid = parameters["srid"] as string;
-				string subtype = parameters["subtype"] as string;
+				string parameterSRID = parameters["srid"];
+				string parameterSubtype = parameters["subtype"];
 
-				if (!string.IsNullOrEmpty(srid))
+				if (!string.IsNullOrEmpty(parameterSRID))
 				{
-					Int32.TryParse(srid, out this.srid);
+					Int32.TryParse(parameterSRID, out this.srid);
 				}
-				if (!string.IsNullOrEmpty(subtype))
+				if (!string.IsNullOrEmpty(parameterSubtype))
 				{
-					this.subtype = subtype;
+					this.subtype = parameterSubtype;
 				}
 			}
 		}

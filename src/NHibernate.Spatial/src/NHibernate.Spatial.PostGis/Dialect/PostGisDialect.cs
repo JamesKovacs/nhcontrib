@@ -66,6 +66,11 @@ namespace NHibernate.Spatial.Dialect
 			}
 		}
 
+		public override string ToBooleanValueString(bool value)
+		{
+			return value ? "true" : "false";
+		}
+
 		#region Functions registration
 
 		private void RegisterBasicFunctions()
@@ -101,9 +106,6 @@ namespace NHibernate.Spatial.Dialect
 
 		private void RegisterFunctions()
 		{
-			RegisterConstantValue("TRUE", "true", NHibernateUtil.Boolean);
-			RegisterConstantValue("FALSE", "false", NHibernateUtil.Boolean);
-
 			RegisterSpatialFunction("Boundary");
 			RegisterSpatialFunction("Centroid");
 			RegisterSpatialFunction("EndPoint");
@@ -154,11 +156,6 @@ namespace NHibernate.Spatial.Dialect
 			RegisterSpatialFunction("Relate", NHibernateUtil.Boolean, 3);
 		}
 
-		private void RegisterConstantValue(string standardName, string value, IType returnedType)
-		{
-			RegisterFunction(SpatialDialect.HqlPrefix + standardName, new ConstantValueFunction(value, returnedType));
-		}
-
 		private void RegisterSpatialFunction(string standardName, string dialectName, IType returnedType, int allowedArgsCount)
 		{
 			RegisterFunction(SpatialDialect.HqlPrefix + standardName, new SpatialStandardSafeFunction(dialectName, returnedType, allowedArgsCount));
@@ -187,16 +184,6 @@ namespace NHibernate.Spatial.Dialect
 		private void RegisterSpatialFunction(string name)
 		{
 			RegisterSpatialFunction(name, this.GeometryType);
-		}
-
-		private void RegisterSpatialFunction(string standardName, string dialectName, int allowedArgsCount)
-		{
-			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
-		}
-
-		private void RegisterSpatialFunction(string standardName, string dialectName)
-		{
-			RegisterSpatialFunction(standardName, dialectName, this.GeometryType);
 		}
 
 		private void RegisterSpatialFunction(SpatialRelation relation)
@@ -281,7 +268,7 @@ namespace NHibernate.Spatial.Dialect
 		public SqlString GetSpatialAggregateString(object geometry, SpatialAggregate aggregate)
 		{
 			// PostGIS aggregate functions do not need prefix
-			string aggregateFunction = null;
+			string aggregateFunction;
 			switch (aggregate)
 			{
 				case SpatialAggregate.Collect:
@@ -474,10 +461,7 @@ namespace NHibernate.Spatial.Dialect
 			{
 				return null;
 			}
-			else
-			{
-				return this.QuoteForSchemaName(schema) + StringHelper.Dot;
-			}
+			return this.QuoteForSchemaName(schema) + StringHelper.Dot;
 		}
 
 		/// <summary>
@@ -552,6 +536,12 @@ namespace NHibernate.Spatial.Dialect
 		}
 
 		#endregion
+
+		// TODO: Use ISessionFactory.ConnectionProvider.Driver.MultipleQueriesSeparator
+		public string MultipleQueriesSeparator
+		{
+			get { return ";"; }
+		}
 
 	}
 }

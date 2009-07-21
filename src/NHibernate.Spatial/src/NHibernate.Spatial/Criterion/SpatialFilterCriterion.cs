@@ -74,6 +74,11 @@ namespace NHibernate.Spatial.Criterion
 			return new TypedValue[] { criteriaQuery.GetTypedValue(criteria, this.propertyName, this.envelope ) };
 		}
 
+		public override IProjection[] GetProjections()
+		{
+			return null;
+		}
+
 		/// <summary>
 		/// Render a SqlString for the expression.
 		/// </summary>
@@ -85,6 +90,7 @@ namespace NHibernate.Spatial.Criterion
 		/// </returns>
 		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
+			criteriaQuery.AddUsedTypedValues(GetTypedValues(criteria, criteriaQuery));
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string[] columnsUsingProjection = criteriaQuery.GetColumnsUsingProjection(criteria, this.propertyName);
 			IType typeUsingProjection = criteriaQuery.GetTypeUsingProjection(criteria, this.propertyName);

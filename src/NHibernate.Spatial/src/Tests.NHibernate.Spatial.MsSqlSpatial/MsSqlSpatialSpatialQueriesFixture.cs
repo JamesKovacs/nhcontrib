@@ -22,7 +22,7 @@ SELECT count_big(*)
 FROM linestringtest 
 WHERE oid in (
 	SELECT oid 
-	FROM ST.FilterQuery('linestringtest', 'the_geom', ST.GeomFromText('{0}', 32719))
+	FROM ST.FilterQuery('linestringtest', 'the_geom', ST.GeomFromText('{0}', 4326))
 )
 ", filterString);
 		}
@@ -34,7 +34,7 @@ SELECT count_big(*)
 FROM polygontest 
 WHERE oid in (
 	SELECT oid 
-	FROM ST.FilterQuery('polygontest', 'the_geom', ST.GeomFromText('{0}', 32719))
+	FROM ST.FilterQuery('polygontest', 'the_geom', ST.GeomFromText('{0}', 4326))
 )
 ", filterString);
 		}
@@ -46,7 +46,7 @@ SELECT count_big(*)
 FROM multilinestringtest 
 WHERE oid in (
 	SELECT oid 
-	FROM ST.FilterQuery('multilinestringtest', 'the_geom', ST.GeomFromText('{0}', 32719))
+	FROM ST.FilterQuery('multilinestringtest', 'the_geom', ST.GeomFromText('{0}', 4326))
 )
 ", filterString);
 		}
@@ -57,7 +57,7 @@ WHERE oid in (
 SELECT count_big(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND ST.Overlaps(ST.PolygonFromText('{0}', 32719), the_geom) = 1
+AND ST.Overlaps(ST.PolygonFromText('{0}', 4326), the_geom) = 1
 ", filterString);
 		}
 
@@ -67,7 +67,7 @@ AND ST.Overlaps(ST.PolygonFromText('{0}', 32719), the_geom) = 1
 SELECT count_big(*)
 FROM linestringtest
 WHERE the_geom IS NOT NULL
-AND ST.Intersects(ST.PolygonFromText('{0}', 32719), the_geom) = 1
+AND ST.Intersects(ST.PolygonFromText('{0}', 4326), the_geom) = 1
 ", filterString);
 		}
 

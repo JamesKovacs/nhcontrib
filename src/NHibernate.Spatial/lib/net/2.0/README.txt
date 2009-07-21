@@ -1,20 +1,18 @@
-The following libraries:
-
-Castle.ActiveRecord.dll
-Castle.Core.dll
-NetTopologySuite.dll
-GeoAPI.dll
-
-...are custom versions not corresponding to any official release.
-This situation is temporary and all the libraries should be upgraded to their last official release before releasing NHibernate.Spatial.
-
 Official releases used:
 
-NHibernate.dll			1.2.0.4000
-Iesi.Collections.dll		1.2.0.4000
-Castle.DynamicProxy.dll		1.1.5.0
+NHibernate-2.1.0.GA-bin.zip:
+Antlr3.Runtime.dll		3.1.0.39271
+Iesi.Collections.dll		2.1.0.4000
 log4net.dll			1.2.10.0
+NHibernate.dll			2.1.0.4000
+Castle.Core.dll			1.1.0.0
+Castle.DynamicProxy2.dll	2.1.0.0
+NHibernate.ByteCode.Castle.dll	2.1.0.4000
+
 nunit.core.dll			2.2.8.0
 nunit.framework.dll		2.2.8.0
 
 
+NTS 1.7.3 Build 416 Binaries.zip (http://code.google.com/p/nettopologysuite/downloads/list)
+NetTopologySuite.dll		1.7.3.17298
+GeoAPI.dll			1.1.0.0

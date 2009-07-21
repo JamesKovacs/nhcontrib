@@ -22,7 +22,7 @@ namespace Tests.NHibernate.Spatial
 	// Copied and modified from NHibernate.Test/TestCase.cs
 	public abstract class AbstractFixture
 	{
-		private static readonly ILog log = LogManager.GetLogger(typeof(AbstractFixture));
+		private static readonly ILog Log = LogManager.GetLogger(typeof(AbstractFixture));
 		protected static readonly WKTReader Wkt = new WKTReader();
 		protected Configuration configuration;
 		protected ISessionFactory sessions;
@@ -67,7 +67,7 @@ namespace Tests.NHibernate.Spatial
 			}
 			catch (Exception e)
 			{
-				log.Error("Error while setting up the test fixture", e);
+				Log.Error("Error while setting up the test fixture", e);
 				throw;
 			}
 			OnTestFixtureSetUp();
@@ -172,7 +172,7 @@ namespace Tests.NHibernate.Spatial
 		{
 			if (lastOpenedSession != null && lastOpenedSession.IsOpen)
 			{
-				log.Error("Test case didn't close a session, closing");
+				Log.Error("Test case didn't close a session, closing");
 				lastOpenedSession.Close();
 				return false;
 			}
@@ -203,7 +203,7 @@ namespace Tests.NHibernate.Spatial
 
 			if (!empty)
 			{
-				log.Error("Test case didn't clean up the database after itself, re-creating the schema");
+				Log.Error("Test case didn't clean up the database after itself, re-creating the schema");
 				DropSchema();
 				CreateSchema();
 			}
@@ -218,7 +218,7 @@ namespace Tests.NHibernate.Spatial
 				return true;
 			}
 
-			log.Error("Test case didn't close all open connections, closing");
+			Log.Error("Test case didn't close all open connections, closing");
 			connectionProvider.CloseAllConnections();
 			return false;
 		}
@@ -273,8 +273,8 @@ namespace Tests.NHibernate.Spatial
 		private void BuildSessionFactory()
 		{
 			sessions = configuration.BuildSessionFactory();
-			spatialDialect = (ISpatialDialect)this.sessions.Dialect;
-			connectionProvider = (sessions as ISessionFactoryImplementor).ConnectionProvider as DebugConnectionProvider;
+			spatialDialect = (ISpatialDialect)((ISessionFactoryImplementor)this.sessions).Dialect;
+			connectionProvider = ((ISessionFactoryImplementor)this.sessions).ConnectionProvider as DebugConnectionProvider;
 		}
 
 		private void Cleanup()

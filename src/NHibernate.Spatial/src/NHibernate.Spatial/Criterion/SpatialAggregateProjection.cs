@@ -17,7 +17,6 @@
 
 using System;
 using NHibernate.SqlCommand;
-using NHibernate.Criterion;
 using NHibernate.Spatial.Dialect;
 
 namespace NHibernate.Spatial.Criterion
@@ -61,6 +60,11 @@ namespace NHibernate.Spatial.Criterion
 		public override string ToString()
 		{
 			return this.aggregate.ToString() + "(" + this.propertyName + ")";
+		}
+
+		public override bool IsAggregate
+		{
+			get { return true; }
 		}
 	}
 }

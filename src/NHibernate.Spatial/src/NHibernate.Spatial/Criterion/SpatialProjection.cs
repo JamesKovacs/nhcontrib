@@ -40,7 +40,7 @@ namespace NHibernate.Spatial.Criterion
 		/// Initializes a new instance of the <see cref="SpatialProjection"/> class.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
-		public SpatialProjection(string propertyName)
+		protected SpatialProjection(string propertyName)
 		{
 			this.propertyName = propertyName;
 		}
@@ -62,6 +62,7 @@ namespace NHibernate.Spatial.Criterion
 		/// <param name="criteria"></param>
 		/// <param name="position"></param>
 		/// <param name="criteriaQuery"></param>
+		/// <param name="enabledFilters"></param>
 		/// <returns></returns>
 		public override SqlString ToSqlString(ICriteria criteria, int position, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
@@ -87,10 +88,13 @@ namespace NHibernate.Spatial.Criterion
 			return null;
 		}
 
+		public override bool IsAggregate
+		{
+			get { return false; }
+		}
 
 		public override bool IsGrouped
 		{
-			//TODO:
 			get { return false; }
 		}
 
