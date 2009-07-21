@@ -76,7 +76,7 @@ namespace NHibernate.Spatial.Type
 
 		public override void Set(IDbCommand cmd, object value, int index)
 		{
-			object parameterValue = (value as INullable).IsNull ? DBNull.Value : value;
+			object parameterValue = ((INullable) value).IsNull ? DBNull.Value : value;
 
 			SqlParameter sqlParameter = (SqlParameter)cmd.Parameters[index];
 			sqlParameter.SqlDbType = SqlDbType.Udt;

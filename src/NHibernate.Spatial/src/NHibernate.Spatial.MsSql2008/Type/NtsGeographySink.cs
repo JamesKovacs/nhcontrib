@@ -25,17 +25,17 @@ namespace NHibernate.Spatial.Type
 {
 	internal class NtsGeographySink : IGeographySink
 	{
-		private IGeometry _geometry;
-		private int _srid;
-		private Stack<OpenGisGeographyType> _types = new Stack<OpenGisGeographyType>();
-		private List<ICoordinate> _coordinates = new List<ICoordinate>();
-		private List<ICoordinate[]> _rings = new List<ICoordinate[]>();
-		private List<IGeometry> _geometries = new List<IGeometry>();
-		private bool _inFigure = false;
+		private IGeometry geometry;
+		private int srid;
+		private readonly Stack<OpenGisGeographyType> types = new Stack<OpenGisGeographyType>();
+		private List<ICoordinate> coordinates = new List<ICoordinate>();
+		private readonly List<ICoordinate[]> rings = new List<ICoordinate[]>();
+		private readonly List<IGeometry> geometries = new List<IGeometry>();
+		private bool inFigure;
 
 		public IGeometry ConstructedGeometry
 		{
-			get { return _geometry; }
+			get { return this.geometry; }
 		}
 
 		private void AddCoordinate(double x, double y, double? z, double? m)
@@ -49,14 +49,14 @@ namespace NHibernate.Spatial.Type
 			{
 				coordinate = new Coordinate(x, y);
 			}
-			_coordinates.Add(coordinate);
+			this.coordinates.Add(coordinate);
 		}
 
 		#region IGeometrySink Members
 
 		public void AddLine(double x, double y, double? z, double? m)
 		{
-			if (!_inFigure)
+			if (!this.inFigure)
 			{
 				throw new ApplicationException();
 			}
@@ -65,35 +65,35 @@ namespace NHibernate.Spatial.Type
 
 		public void BeginFigure(double x, double y, double? z, double? m)
 		{
-			if (_inFigure)
+			if (this.inFigure)
 			{
 				throw new ApplicationException();
 			}
-			_coordinates = new List<ICoordinate>();
+			this.coordinates = new List<ICoordinate>();
 			AddCoordinate(x, y, z, m);
-			_inFigure = true;
+			this.inFigure = true;
 		}
 
 		public void BeginGeography(OpenGisGeographyType type)
 		{
-			_types.Push(type);
+			this.types.Push(type);
 		}
 
 		public void EndFigure()
 		{
-			OpenGisGeographyType type = _types.Peek();
+			OpenGisGeographyType type = this.types.Peek();
 			if (type == OpenGisGeographyType.Polygon)
 			{
-				_rings.Add(_coordinates.ToArray());
+				this.rings.Add(this.coordinates.ToArray());
 			}
-			_inFigure = false;
+			this.inFigure = false;
 		}
 
 		public void EndGeography()
 		{
 			IGeometry geometry = null;
 
-			OpenGisGeographyType type = _types.Pop();
+			OpenGisGeographyType type = this.types.Pop();
 
 			switch (type)
 			{
@@ -120,51 +120,48 @@ namespace NHibernate.Spatial.Type
 					break;
 			}
 
-			if (_types.Count == 0)
+			if (this.types.Count == 0)
 			{
-				_geometry = geometry;
-				_geometry.SRID = _srid;
+				this.geometry = geometry;
+				this.geometry.SRID = this.srid;
 			}
 			else
 			{
-				_geometries.Add(geometry);
+				this.geometries.Add(geometry);
 			}
 		}
 
 		private IGeometry BuildPoint()
 		{
-			return new Point(_coordinates[0]);
+			return new Point(this.coordinates[0]);
 		}
 
 		private LineString BuildLineString()
 		{
-			return new LineString(_coordinates.ToArray());
+			return new LineString(this.coordinates.ToArray());
 		}
 
 		private IGeometry BuildPolygon()
 		{
-			if (_rings.Count == 0)
+			if (this.rings.Count == 0)
 			{
 				return Polygon.Empty;
 			}
-			else
-			{
-				ILinearRing shell = new LinearRing(_rings[0]);
-				ILinearRing[] holes =
-					_rings.GetRange(1, _rings.Count - 1)
-						.ConvertAll<ILinearRing>(delegate(ICoordinate[] coordinates)
-						{
-							return new LinearRing(coordinates);
-						}).ToArray();
-				_rings.Clear();
-				return new Polygon(shell, holes);
-			}
+			ILinearRing shell = new LinearRing(this.rings[0]);
+			ILinearRing[] holes =
+				this.rings.GetRange(1, this.rings.Count - 1)
+					.ConvertAll<ILinearRing>(delegate(ICoordinate[] coordinates)
+					{
+						return new LinearRing(coordinates);
+					}).ToArray();
+			this.rings.Clear();
+			return new Polygon(shell, holes);
 		}
 
 		private IGeometry BuildMultiPoint()
 		{
 			IPoint[] points =
-				_geometries.ConvertAll<IPoint>(delegate(IGeometry g)
+				this.geometries.ConvertAll<IPoint>(delegate(IGeometry g)
 				{
 					return g as IPoint;
 				}).ToArray();
@@ -174,7 +171,7 @@ namespace NHibernate.Spatial.Type
 		private IGeometry BuildMultiLineString()
 		{
 			ILineString[] lineStrings =
-				_geometries.ConvertAll<ILineString>(delegate(IGeometry g)
+				this.geometries.ConvertAll<ILineString>(delegate(IGeometry g)
 				{
 					return g as ILineString;
 				}).ToArray();
@@ -184,7 +181,7 @@ namespace NHibernate.Spatial.Type
 		private IGeometry BuildMultiPolygon()
 		{
 			IPolygon[] polygons =
-				_geometries.ConvertAll<IPolygon>(delegate(IGeometry g)
+				this.geometries.ConvertAll<IPolygon>(delegate(IGeometry g)
 				{
 					return g as IPolygon;
 				}).ToArray();
@@ -193,12 +190,12 @@ namespace NHibernate.Spatial.Type
 
 		private GeometryCollection BuildGeometryCollection()
 		{
-			return new GeometryCollection(_geometries.ToArray());
+			return new GeometryCollection(this.geometries.ToArray());
 		}
 
 		public void SetSrid(int srid)
 		{
-			_srid = srid;
+			this.srid = srid;
 		}
 
 		#endregion

@@ -27,13 +27,13 @@ namespace NHibernate.Spatial.Type
 	/// </summary>
 	public class MsSql2008GeographyType : GeometryTypeBase<SqlGeography>
 	{
-		private static readonly NullableType sqlGeographyType = new SqlGeographyType();
+		private static readonly NullableType SqlGeographyType = new SqlGeographyType();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MsSql2008GeographyType"/> class.
 		/// </summary>
 		public MsSql2008GeographyType()
-			: base(sqlGeographyType)
+			: base(SqlGeographyType)
 		{
 		}
 
@@ -62,29 +62,23 @@ namespace NHibernate.Spatial.Type
 			{
 				return SqlGeography.Null;
 			}
-			else
-			{
-				this.SetDefaultSRID(geometry);
+			SetDefaultSRID(geometry);
 
-				try
+			try
+			{
+				MsSql2008GeographyWriter writer = new MsSql2008GeographyWriter();
+				SqlGeography sqlGeography = writer.Write(geometry);
+				return sqlGeography;
+			}
+			catch (FormatException ex)
+			{
+				if (ex.Message == "24117: The LineString input is not valid because it does not have enough distinct points. A LineString must have at least two distinct points." ||
+				    ex.Message == "24305: The Polygon input is not valid because the ring does not have enough distinct points. Each ring of a polygon must contain at least three distinct points.")
 				{
-					MsSql2008GeographyWriter writer = new MsSql2008GeographyWriter();
-					SqlGeography sqlGeography = writer.Write(geometry);
-					return sqlGeography;
+					// TODO: Not sure what to do in these cases...
+					return null;
 				}
-				catch (FormatException ex)
-				{
-					if (ex.Message == "24117: The LineString input is not valid because it does not have enough distinct points. A LineString must have at least two distinct points." ||
-						ex.Message == "24305: The Polygon input is not valid because the ring does not have enough distinct points. Each ring of a polygon must contain at least three distinct points.")
-					{
-						// TODO: Not sure what to do in these cases...
-						return null;
-					}
-					else
-					{
-						throw;
-					}
-				}
+				throw;
 			}
 		}
 
@@ -101,13 +95,11 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
-			{
-				MsSql2008GeographyReader reader = new MsSql2008GeographyReader();
-				IGeometry geometry = reader.Read(sqlGeography);
-				this.SetDefaultSRID(geometry);
-				return geometry;
-			}
+			
+			MsSql2008GeographyReader reader = new MsSql2008GeographyReader();
+			IGeometry geometry = reader.Read(sqlGeography);
+			SetDefaultSRID(geometry);
+			return geometry;
 		}
 
 	}

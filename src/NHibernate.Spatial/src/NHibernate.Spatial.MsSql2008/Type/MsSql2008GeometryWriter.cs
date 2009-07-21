@@ -23,13 +23,13 @@ namespace NHibernate.Spatial.Type
 {
     internal class MsSql2008GeometryWriter
     {
-        private readonly SqlGeometryBuilder _builder = new SqlGeometryBuilder();
+        private readonly SqlGeometryBuilder builder = new SqlGeometryBuilder();
 
         public SqlGeometry Write(IGeometry geometry)
         {
-            _builder.SetSrid(geometry.SRID);
+            builder.SetSrid(geometry.SRID);
             AddGeometry(geometry);
-            return _builder.ConstructedGeometry;
+            return builder.ConstructedGeometry;
         }
 
         private void AddGeometry(IGeometry geometry)
@@ -66,39 +66,39 @@ namespace NHibernate.Spatial.Type
 
         private void AddGeometryCollection(IGeometry geometry, OpenGisGeometryType type)
         {
-            _builder.BeginGeometry(type);
+            builder.BeginGeometry(type);
             IGeometryCollection coll = geometry as IGeometryCollection;
             Array.ForEach<IGeometry>(coll.Geometries, delegate(IGeometry g)
             {
                 AddGeometry(g);
             });
-            _builder.EndGeometry();
+            builder.EndGeometry();
         }
 
         private void AddPolygon(IGeometry geometry)
         {
-            _builder.BeginGeometry(OpenGisGeometryType.Polygon);
+            builder.BeginGeometry(OpenGisGeometryType.Polygon);
             IPolygon polygon = geometry as IPolygon;
             AddCoordinates(polygon.ExteriorRing.Coordinates);
             Array.ForEach<ILineString>(polygon.InteriorRings, delegate(ILineString ring)
             {
                 AddCoordinates(ring.Coordinates);
             });
-            _builder.EndGeometry();
+            builder.EndGeometry();
         }
 
         private void AddLineString(IGeometry geometry)
         {
-            _builder.BeginGeometry(OpenGisGeometryType.LineString);
+            builder.BeginGeometry(OpenGisGeometryType.LineString);
             AddCoordinates(geometry.Coordinates);
-            _builder.EndGeometry();
+            builder.EndGeometry();
         }
 
         private void AddPoint(IGeometry geometry)
         {
-            _builder.BeginGeometry(OpenGisGeometryType.Point);
+            builder.BeginGeometry(OpenGisGeometryType.Point);
             AddCoordinates(geometry.Coordinates);
-            _builder.EndGeometry();
+            builder.EndGeometry();
         }
 
         private void AddCoordinates(ICoordinate[] coordinates)
@@ -113,23 +113,23 @@ namespace NHibernate.Spatial.Type
                 }
                 if (points == 0)
                 {
-                    _builder.BeginFigure(coordinate.X, coordinate.Y, z, null);
+                    builder.BeginFigure(coordinate.X, coordinate.Y, z, null);
                 }
                 else
                 {
-                    _builder.AddLine(coordinate.X, coordinate.Y, z, null);
+                    builder.AddLine(coordinate.X, coordinate.Y, z, null);
                 }
                 points++;
             });
             if (points != 0)
             {
-                _builder.EndFigure();
+                builder.EndFigure();
             }
         }
 
         public SqlGeometry ConstructedGeometry
         {
-            get { return _builder.ConstructedGeometry; }
+            get { return builder.ConstructedGeometry; }
         }
     }
 }

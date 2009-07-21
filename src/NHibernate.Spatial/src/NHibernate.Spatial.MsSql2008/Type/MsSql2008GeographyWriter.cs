@@ -23,13 +23,13 @@ namespace NHibernate.Spatial.Type
 {
 	internal class MsSql2008GeographyWriter
 	{
-		private readonly SqlGeographyBuilder _builder = new SqlGeographyBuilder();
+		private readonly SqlGeographyBuilder builder = new SqlGeographyBuilder();
 
 		public SqlGeography Write(IGeometry geometry)
 		{
-			_builder.SetSrid(geometry.SRID);
+			builder.SetSrid(geometry.SRID);
 			AddGeometry(geometry);
-			return _builder.ConstructedGeography;
+			return builder.ConstructedGeography;
 		}
 
 		private void AddGeometry(IGeometry geometry)
@@ -66,39 +66,39 @@ namespace NHibernate.Spatial.Type
 
 		private void AddGeometryCollection(IGeometry geometry, OpenGisGeographyType type)
 		{
-			_builder.BeginGeography(type);
+			builder.BeginGeography(type);
 			IGeometryCollection coll = geometry as IGeometryCollection;
 			Array.ForEach<IGeometry>(coll.Geometries, delegate(IGeometry g)
 			{
 				AddGeometry(g);
 			});
-			_builder.EndGeography();
+			builder.EndGeography();
 		}
 
 		private void AddPolygon(IGeometry geometry)
 		{
-			_builder.BeginGeography(OpenGisGeographyType.Polygon);
+			builder.BeginGeography(OpenGisGeographyType.Polygon);
 			IPolygon polygon = geometry as IPolygon;
 			AddCoordinates(polygon.ExteriorRing.Coordinates);
 			Array.ForEach<ILineString>(polygon.InteriorRings, delegate(ILineString ring)
 			{
 				AddCoordinates(ring.Coordinates);
 			});
-			_builder.EndGeography();
+			builder.EndGeography();
 		}
 
 		private void AddLineString(IGeometry geometry)
 		{
-			_builder.BeginGeography(OpenGisGeographyType.LineString);
+			builder.BeginGeography(OpenGisGeographyType.LineString);
 			AddCoordinates(geometry.Coordinates);
-			_builder.EndGeography();
+			builder.EndGeography();
 		}
 
 		private void AddPoint(IGeometry geometry)
 		{
-			_builder.BeginGeography(OpenGisGeographyType.Point);
+			builder.BeginGeography(OpenGisGeographyType.Point);
 			AddCoordinates(geometry.Coordinates);
-			_builder.EndGeography();
+			builder.EndGeography();
 		}
 
 		private void AddCoordinates(ICoordinate[] coordinates)
@@ -113,23 +113,23 @@ namespace NHibernate.Spatial.Type
 				}
 				if (points == 0)
 				{
-					_builder.BeginFigure(coordinate.X, coordinate.Y, z, null);
+					builder.BeginFigure(coordinate.X, coordinate.Y, z, null);
 				}
 				else
 				{
-					_builder.AddLine(coordinate.X, coordinate.Y, z, null);
+					builder.AddLine(coordinate.X, coordinate.Y, z, null);
 				}
 				points++;
 			});
 			if (points != 0)
 			{
-				_builder.EndFigure();
+				builder.EndFigure();
 			}
 		}
 
 		public SqlGeography ConstructedGeography
 		{
-			get { return _builder.ConstructedGeography; }
+			get { return builder.ConstructedGeography; }
 		}
 	}
 }
