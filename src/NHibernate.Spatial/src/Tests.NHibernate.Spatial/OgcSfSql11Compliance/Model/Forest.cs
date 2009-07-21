@@ -10,32 +10,32 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public Forest(long Fid, string Name, IGeometry Boundary)
+		public Forest(long fid, string name, IGeometry boundary)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.Boundary = Boundary;
+			this.Fid = fid;
+			this.Name = name;
+			this.Boundary = boundary;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private IGeometry _boundary;
+		private IGeometry boundary;
 		public IGeometry Boundary
 		{
-			get { return _boundary; }
-			set { _boundary = value; }
+			get { return boundary; }
+			set { boundary = value; }
 		}
 }
 }

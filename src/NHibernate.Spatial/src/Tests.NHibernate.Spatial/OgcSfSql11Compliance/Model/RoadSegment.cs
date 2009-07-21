@@ -10,48 +10,48 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public RoadSegment(long Fid, string Name, string Aliases, int NumLanes, IGeometry Centerline)
+		public RoadSegment(long fid, string name, string aliases, int numLanes, IGeometry centerline)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.Aliases = Aliases;
-			this.NumLanes = NumLanes;
-			this.Centerline = Centerline;
+			this.Fid = fid;
+			this.Name = name;
+			this.Aliases = aliases;
+			this.NumLanes = numLanes;
+			this.Centerline = centerline;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private string _aliases;
+		private string aliases;
 		public string Aliases
 		{
-			get { return _aliases; }
-			set { _aliases = value; }
+			get { return aliases; }
+			set { aliases = value; }
 		}
 
-		private int _numLanes;
+		private int numLanes;
 		public int NumLanes
 		{
-			get { return _numLanes; }
-			set { _numLanes = value; }
+			get { return numLanes; }
+			set { numLanes = value; }
 		}
 
-		private IGeometry _centerline;
+		private IGeometry centerline;
 		public IGeometry Centerline
 		{
-			get { return _centerline; }
-			set { _centerline = value; }
+			get { return centerline; }
+			set { centerline = value; }
 		}
 	}
 }

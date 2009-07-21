@@ -10,24 +10,24 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public MapNeatline(long Fid, IGeometry Neatline)
+		public MapNeatline(long fid, IGeometry neatline)
 		{
-			this.Fid = Fid;
-			this.Neatline = Neatline;
+			this.Fid = fid;
+			this.Neatline = neatline;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private IGeometry _neatline;
+		private IGeometry neatline;
 		public IGeometry Neatline
 		{
-			get { return _neatline; }
-			set { _neatline = value; }
+			get { return neatline; }
+			set { neatline = value; }
 		}
 	}
 }

@@ -10,40 +10,40 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public Pond(long Fid, string Name, string Type, IGeometry Shores)
+		public Pond(long fid, string name, string type, IGeometry shores)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.Type = Type;
-			this.Shores = Shores;
+			this.Fid = fid;
+			this.Name = name;
+			this.Type = type;
+			this.Shores = shores;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private string _type;
+		private string type;
 		public string Type
 		{
-			get { return _type; }
-			set { _type = value; }
+			get { return type; }
+			set { type = value; }
 		}
 
-		private IGeometry _shores;
+		private IGeometry shores;
 		public IGeometry Shores
 		{
-			get { return _shores; }
-			set { _shores = value; }
+			get { return shores; }
+			set { shores = value; }
 		}
 
 	}

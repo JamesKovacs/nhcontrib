@@ -10,40 +10,40 @@ namespace Tests.NHibernate.Spatial.Model
 		{
 		}
 
-		public County(string Name, string State, IGeometry Boundaries)
+		public County(string name, string state, IGeometry boundaries)
 		{
-			this.Name = Name;
-			this.State = State;
-			this.Boundaries = Boundaries;
+			this.Name = name;
+			this.State = state;
+			this.Boundaries = boundaries;
 		}
 
-		private long _Id;
+		private long id;
 		public virtual long Id
 		{
-			get { return _Id; }
-			set { _Id = value; }
+			get { return id; }
+			set { id = value; }
 		}
 
-		private string _Name;
+		private string name;
 		public virtual string Name
 		{
-			get { return _Name; }
-			set { _Name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
 
-		private string _State;
+		private string state;
 		public virtual string State
 		{
-			get { return _State; }
-			set { _State = value; }
+			get { return state; }
+			set { state = value; }
 		}
 
-		private IGeometry _Boundaries;
+		private IGeometry boundaries;
 		public virtual IGeometry Boundaries
 		{
-			get { return this._Boundaries; }
-			set { this._Boundaries = value; }
+			get { return boundaries; }
+			set { boundaries = value; }
 		}
 	}
 }

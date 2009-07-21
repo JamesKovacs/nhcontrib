@@ -10,32 +10,32 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public Bridge(long Fid, string Name, IGeometry Position)
+		public Bridge(long fid, string name, IGeometry position)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.Position = Position;
+			this.Fid = fid;
+			this.Name = name;
+			this.Position = position;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private IGeometry _position;
+		private IGeometry position;
 		public IGeometry Position
 		{
-			get { return _position; }
-			set { _position = value; }
+			get { return position; }
+			set { position = value; }
 		}
 	}
 }

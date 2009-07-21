@@ -10,40 +10,40 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public Building(long Fid, string Address, IGeometry Position, IGeometry Footprint)
+		public Building(long fid, string address, IGeometry position, IGeometry footprint)
 		{
-			this.Fid = Fid;
-			this.Address = Address;
-			this.Position = Position;
-			this.Footprint = Footprint;
+			this.Fid = fid;
+			this.Address = address;
+			this.Position = position;
+			this.Footprint = footprint;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _address;
+		private string address;
 		public string Address
 		{
-			get { return _address; }
-			set { _address = value; }
+			get { return address; }
+			set { address = value; }
 		}
 
-		private IGeometry _position;
+		private IGeometry position;
 		public IGeometry Position
 		{
-			get { return _position; }
-			set { _position = value; }
+			get { return position; }
+			set { position = value; }
 		}
 
-		private IGeometry _Footprint;
+		private IGeometry footprint;
 		public IGeometry Footprint
 		{
-			get { return _Footprint; }
-			set { _Footprint = value; }
+			get { return footprint; }
+			set { footprint = value; }
 		}
 	}
 }

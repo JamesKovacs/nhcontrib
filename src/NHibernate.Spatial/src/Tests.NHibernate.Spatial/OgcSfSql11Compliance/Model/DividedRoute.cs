@@ -10,40 +10,40 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public DividedRoute(long Fid, string Name, int NumLanes, IGeometry Centerlines)
+		public DividedRoute(long fid, string name, int numLanes, IGeometry centerlines)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.NumLanes = NumLanes;
-			this.Centerlines = Centerlines;
+			this.Fid = fid;
+			this.Name = name;
+			this.NumLanes = numLanes;
+			this.Centerlines = centerlines;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private int _numLanes;
+		private int numLanes;
 		public int NumLanes
 		{
-			get { return _numLanes; }
-			set { _numLanes = value; }
+			get { return numLanes; }
+			set { numLanes = value; }
 		}
 
-		private IGeometry _centerlines;
+		private IGeometry centerlines;
 		public IGeometry Centerlines
 		{
-			get { return _centerlines; }
-			set { _centerlines = value; }
+			get { return centerlines; }
+			set { centerlines = value; }
 		}
 
 	}

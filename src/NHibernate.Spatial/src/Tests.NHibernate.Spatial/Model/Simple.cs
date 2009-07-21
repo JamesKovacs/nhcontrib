@@ -10,31 +10,31 @@ namespace Tests.NHibernate.Spatial.Model
 		{
 		}
 
-		public Simple(string Description, IGeometry Geometry)
+		public Simple(string description, IGeometry geometry)
 		{
-			this.Description = Description;
-			this.Geometry = Geometry;
+			this.Description = description;
+			this.Geometry = geometry;
 		}
 
-		private long _Id;
+		private long id;
 		public virtual long Id
 		{
-			get { return _Id; }
-			set { _Id = value; }
+			get { return id; }
+			set { id = value; }
 		}
 
-		private string _Description;
+		private string description;
 		public virtual string Description
 		{
-			get { return _Description; }
-			set { _Description = value; }
+			get { return description; }
+			set { description = value; }
 		}
 
-		private IGeometry _Geometry;
+		private IGeometry geometry;
 		public virtual IGeometry Geometry
 		{
-			get { return this._Geometry; }
-			set { this._Geometry = value; }
+			get { return geometry; }
+			set { geometry = value; }
 		}
 	}
 }

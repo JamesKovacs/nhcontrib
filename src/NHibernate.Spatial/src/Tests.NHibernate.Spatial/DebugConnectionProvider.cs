@@ -11,7 +11,7 @@ namespace Tests.NHibernate.Spatial
 	/// </summary>
 	public class DebugConnectionProvider : DriverConnectionProvider
 	{
-		private ISet connections = new ListSet();
+		private readonly ISet connections = new ListSet();
 
 		public override IDbConnection GetConnection()
 		{
@@ -39,23 +39,20 @@ namespace Tests.NHibernate.Spatial
 					// all of the closings went through CloseConnection.
 					return false;
 				}
-				else
+				// Disposing of an ISession does not call CloseConnection (should it???)
+				// so a Diposed of ISession will leave an IDbConnection in the list but
+				// the IDbConnection will be closed (atleast with MsSql it works this way).
+				foreach (IDbConnection conn in connections)
 				{
-					// Disposing of an ISession does not call CloseConnection (should it???)
-					// so a Diposed of ISession will leave an IDbConnection in the list but
-					// the IDbConnection will be closed (atleast with MsSql it works this way).
-					foreach (IDbConnection conn in connections)
+					if (conn.State != ConnectionState.Closed)
 					{
-						if (conn.State != ConnectionState.Closed)
-						{
-							return true;
-						}
+						return true;
 					}
-
-					// all of the connections have been Disposed and were closed that way
-					// or they were Closed through the CloseConnection method.
-					return false;
 				}
+
+				// all of the connections have been Disposed and were closed that way
+				// or they were Closed through the CloseConnection method.
+				return false;
 			}
 		}
 

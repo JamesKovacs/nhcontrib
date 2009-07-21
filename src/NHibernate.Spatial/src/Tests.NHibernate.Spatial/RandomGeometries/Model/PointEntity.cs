@@ -10,38 +10,38 @@ namespace Tests.NHibernate.Spatial.RandomGeometries.Model
 		{
 		}
 
-		public PointEntity(string Name, IGeometry Geometry)
+		public PointEntity(string name, IGeometry geometry)
 		{
-			this.Name = Name;
-			this.Geometry = Geometry;
+			this.Name = name;
+			this.Geometry = geometry;
 		}
 
-		public PointEntity(long Id, string Name, IGeometry Geometry)
+		public PointEntity(long id, string name, IGeometry geometry)
 		{
-			this.Id = Id;
-			this.Name = Name;
-			this.Geometry = Geometry;
+			this.Id = id;
+			this.Name = name;
+			this.Geometry = geometry;
 		}
 
-		private long _Id;
+		private long id;
 		public virtual long Id
 		{
-			get { return _Id; }
-			set { _Id = value; }
+			get { return id; }
+			set { id = value; }
 		}
 
-		private string _Name;
+		private string name;
 		public virtual string Name
 		{
-			get { return _Name; }
-			set { _Name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private IGeometry _Geometry;
+		private IGeometry geometry;
 		public virtual IGeometry Geometry
 		{
-			get { return this._Geometry; }
-			set { this._Geometry = value; }
+			get { return geometry; }
+			set { geometry = value; }
 		}
 	}
 }

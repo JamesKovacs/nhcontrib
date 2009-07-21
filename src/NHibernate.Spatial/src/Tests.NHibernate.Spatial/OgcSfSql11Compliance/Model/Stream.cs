@@ -10,32 +10,32 @@ namespace Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model
 		{
 		}
 
-		public Stream(long Fid, string Name, IGeometry Centerline)
+		public Stream(long fid, string name, IGeometry centerline)
 		{
-			this.Fid = Fid;
-			this.Name = Name;
-			this.Centerline = Centerline;
+			this.Fid = fid;
+			this.Name = name;
+			this.Centerline = centerline;
 		}
 
-		private long _fid;
+		private long fid;
 		public long Fid
 		{
-			get { return _fid; }
-			set { _fid = value; }
+			get { return fid; }
+			set { fid = value; }
 		}
 
-		private string _name;
+		private string name;
 		public string Name
 		{
-			get { return _name; }
-			set { _name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
-		private IGeometry _centerline;
+		private IGeometry centerline;
 		public IGeometry Centerline
 		{
-			get { return _centerline; }
-			set { _centerline = value; }
+			get { return centerline; }
+			set { centerline = value; }
 		}
 	}
 }

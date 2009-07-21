@@ -7,60 +7,60 @@ namespace Tests.NHibernate.Spatial.NtsTestCases.Model
 	[Serializable]
 	public class NtsTestCase
 	{
-		private long _Id;
+		private long id;
 		public virtual long Id
 		{
-			get { return _Id; }
-			set { _Id = value; }
+			get { return id; }
+			set { id = value; }
 		}
 
-		private string _Description;
+		private string description;
 		public virtual string Description
 		{
-			get { return _Description; }
-			set { _Description = value; }
+			get { return description; }
+			set { description = value; }
 		}
 
-		private IGeometry _GeometryA = GeometryCollection.Empty;
+		private IGeometry geometryA = GeometryCollection.Empty;
 		public virtual IGeometry GeometryA
 		{
-			get { return this._GeometryA; }
-			set { this._GeometryA = value; }
+			get { return geometryA; }
+			set { geometryA = value; }
 		}
 
-		private IGeometry _GeometryB = GeometryCollection.Empty;
+		private IGeometry geometryB = GeometryCollection.Empty;
 		public virtual IGeometry GeometryB
 		{
-			get { return this._GeometryB; }
-			set { this._GeometryB = value; }
+			get { return geometryB; }
+			set { geometryB = value; }
 		}
 
-		private string _Operation;
+		private string operation;
 		public virtual string Operation
 		{
-			get { return _Operation; }
-			set { _Operation = value; }
+			get { return operation; }
+			set { operation = value; }
 		}
 
-		private string _RelatePattern;
+		private string relatePattern;
 		public virtual string RelatePattern
 		{
-			get { return _RelatePattern; }
-			set { _RelatePattern = value; }
+			get { return relatePattern; }
+			set { relatePattern = value; }
 		}
 
-		private IGeometry _GeometryResult = GeometryCollection.Empty;
+		private IGeometry geometryResult = GeometryCollection.Empty;
 		public virtual IGeometry GeometryResult
 		{
-			get { return this._GeometryResult; }
-			set { this._GeometryResult = value; }
+			get { return geometryResult; }
+			set { geometryResult = value; }
 		}
 
-		private bool _BooleanResult;
+		private bool booleanResult;
 		public virtual bool BooleanResult
 		{
-			get { return this._BooleanResult; }
-			set { this._BooleanResult = value; }
+			get { return booleanResult; }
+			set { booleanResult = value; }
 		}
 	}
 }
