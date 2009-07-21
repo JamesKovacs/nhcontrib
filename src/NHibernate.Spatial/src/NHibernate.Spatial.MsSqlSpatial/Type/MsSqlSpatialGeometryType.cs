@@ -15,11 +15,8 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.IO;
-using NHibernate.SqlTypes;
-using NHibernate.Type;
 
 namespace NHibernate.Spatial.Type
 {
@@ -48,11 +45,8 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
-			{
-				this.SetDefaultSRID(geometry);
-				return (new MsSqlSpatialWriter()).Write(geometry);
-			}
+			this.SetDefaultSRID(geometry);
+			return (new MsSqlSpatialWriter()).Write(geometry);
 		}
 
 		/// <summary>
@@ -68,18 +62,16 @@ namespace NHibernate.Spatial.Type
 			{
 				return null;
 			}
-			else
+			
+			try
 			{
-				try
-				{
-					MsSqlSpatialReader reader = new MsSqlSpatialReader();
-					IGeometry geometry = reader.Read(bytes);
-					this.SetDefaultSRID(geometry);
-					return geometry;
-				}
-				catch { }
-				return null;
+				MsSqlSpatialReader reader = new MsSqlSpatialReader();
+				IGeometry geometry = reader.Read(bytes);
+				this.SetDefaultSRID(geometry);
+				return geometry;
 			}
+			catch { }
+			return null;
 		}
 
 	}
