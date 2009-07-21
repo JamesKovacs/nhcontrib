@@ -1,20 +1,16 @@
-using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 
 namespace NHibernate.JetDriver
 {
 	/// <summary>
 	/// Summary description for JetDbTransaction.
-	/// 
-	/// <p>
-	/// Author: <a href="mailto:lukask@welldatatech.com">Lukas Krejci</a>
-	/// </p>
 	/// </summary>
-	public sealed class JetDbTransaction : IDbTransaction
+	public sealed class JetDbTransaction : DbTransaction
 	{
-		private OleDbTransaction _transaction;
-		private JetDbConnection _connection;
+		private readonly OleDbTransaction _transaction;
+		private readonly JetDbConnection _connection;
 
 		internal OleDbTransaction Transaction
 		{
@@ -27,37 +23,24 @@ namespace NHibernate.JetDriver
 			_transaction = transaction;
 		}
 
-		#region IDbTransaction Members
+	    protected override DbConnection DbConnection
+	    {
+            get { return _connection; }
+	    }
 
-		public void Rollback()
-		{
-			Transaction.Rollback();
-		}
+	    public override IsolationLevel IsolationLevel
+	    {
+	        get { return Transaction.IsolationLevel; }
+	    }
 
-		public void Commit()
-		{
-			Transaction.Commit();
-		}
+	    public override void Commit()
+	    {
+	        Transaction.Commit();
+	    }
 
-		public IDbConnection Connection
-		{
-			get { return _connection; }
-		}
-
-		public IsolationLevel IsolationLevel
-		{
-			get { return Transaction.IsolationLevel; }
-		}
-
-		#endregion
-
-		#region IDisposable Members
-
-		public void Dispose()
-		{
-			(_transaction as IDisposable).Dispose();
-		}
-
-		#endregion
+	    public override void Rollback()
+	    {
+	        Transaction.Rollback();
+	    }
 	}
 }

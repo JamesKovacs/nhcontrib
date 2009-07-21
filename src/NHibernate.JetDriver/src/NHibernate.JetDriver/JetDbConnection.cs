@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 
 namespace NHibernate.JetDriver
@@ -10,9 +11,9 @@ namespace NHibernate.JetDriver
 	/// Author: <a href="mailto:lukask@welldatatech.com">Lukas Krejci</a>
 	/// </p>
 	/// </summary>
-	public sealed class JetDbConnection : IDbConnection
+	public sealed class JetDbConnection : DbConnection
 	{
-		private OleDbConnection _connection;
+		private readonly OleDbConnection _connection;
 
 		internal OleDbConnection Connection
 		{
@@ -34,68 +35,75 @@ namespace NHibernate.JetDriver
 			_connection = connection;
 		}
 
-		#region IDbConnection Members
+	    public override void ChangeDatabase(string databaseName)
+	    {
+	        Connection.ChangeDatabase(databaseName);
+	    }
 
-		public void ChangeDatabase(string databaseName)
-		{
-			Connection.ChangeDatabase(databaseName);
-		}
+	    protected override DbTransaction BeginDbTransaction(IsolationLevel il)
+	    {
+	        return new JetDbTransaction(this, Connection.BeginTransaction(il));
+	    }
 
-		public IDbTransaction BeginTransaction(IsolationLevel il)
-		{
-			return new JetDbTransaction(this, Connection.BeginTransaction(il));
-		}
+        //IDbTransaction IDbConnection.BeginTransaction()
+        //{
+        //    return new JetDbTransaction(this, Connection.BeginTransaction());
+        //}
 
-		IDbTransaction IDbConnection.BeginTransaction()
-		{
-			return new JetDbTransaction(this, Connection.BeginTransaction());
-		}
+	    public override string ServerVersion
+	    {
+	        get { return "4.0"; }
+	    }
 
-		public ConnectionState State
+	    public override ConnectionState State
 		{
 			get { return Connection.State; }
 		}
 
-		public string ConnectionString
+		public override string ConnectionString
 		{
 			get { return Connection.ConnectionString; }
 			set { Connection.ConnectionString = value; }
 		}
 
-		public IDbCommand CreateCommand()
-		{
-			return new JetDbCommand(Connection.CreateCommand());
-		}
+	    protected override DbCommand CreateDbCommand()
+	    {
+	        return new JetDbCommand(Connection.CreateCommand());
+	    }
 
-		public void Open()
+	    public override void Open()
 		{
 			Connection.Open();
 		}
 
-		public void Close()
+		public override void Close()
 		{
 			Connection.Close();
 		}
 
-		public string Database
+		public override string Database
 		{
 			get { return Connection.Database; }
 		}
 
-		public int ConnectionTimeout
+	    public override string DataSource
+	    {
+	        get { return Connection.DataSource; }
+	    }
+
+	    public override int ConnectionTimeout
 		{
 			get { return Connection.ConnectionTimeout; }
 		}
 
-		#endregion
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                Connection.Dispose();
+            }
 
-		#region IDisposable Members
-
-		public void Dispose()
-		{
-			Connection.Dispose();
-		}
-
-		#endregion
+ 	        base.Dispose(disposing);
+        }
 	}
 }

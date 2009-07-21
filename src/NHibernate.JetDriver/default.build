@@ -10,6 +10,7 @@
 
 	<property name="folders.lib" value="lib/${framework.family}/${framework.version}" />
 	<property name="folders.build" value="build" />
+  <property name="folders.src" value="src" />
 	
 	<target name="build">
 		<mkdir dir="${folders.build}"/>
@@ -21,11 +22,13 @@
 
 		<copy todir="${folders.build}" flatten="true">
 			<fileset>
+			  <include name="${folders.lib}/NHibernate.ByteCode.Castle.dll"/>
 				<include name="${folders.lib}/NHibernate.dll"/>
 				<include name="${folders.lib}/Iesi.Collections.dll"/>
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
+        <include name="${folders.src}/NHibernate.JetDriver.Tests/JetTests.db" />
 			</fileset>
 		</copy>
 		<csc target="library"
@@ -53,15 +56,17 @@
 			</nowarn>
 			<sources basedir="src/NHibernate.JetDriver.Tests">
 				<include name="**/*.cs"/>
+				<include name="**/Entities/*.cs"/>
 			</sources>
 			<references>
 				<include name="${folders.lib}/NHibernate.dll"/>
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
+		    <include name="${folders.lib}/NHibernate.ByteCode.Castle.dll"/>
 				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
 			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
-				<include name="**/*.hbm.xml"/>
+				<include name="**/Entities/*.hbm.xml"/>
 				<exclude name="**/bin/**/*.hbm.xml"/>
 				<exclude name="**/obj/**/*.hbm.xml"/>
 			</resources>

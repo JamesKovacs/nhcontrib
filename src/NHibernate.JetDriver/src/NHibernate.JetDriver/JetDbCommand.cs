@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 using System.Globalization;
 
@@ -24,7 +25,7 @@ namespace NHibernate.JetDriver
 	/// Author: <a href="mailto:lukask@welldatatech.com">Lukas Krejci</a>
 	/// </p>
 	/// </summary>
-	public sealed class JetDbCommand : IDbCommand
+	public sealed class JetDbCommand : DbCommand
 	{
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(JetDbCommand));
 
@@ -127,115 +128,129 @@ namespace NHibernate.JetDriver
             return normalizedDateValue;
         }
 
-	    #region IDbCommand Members
-
-		public void Cancel()
+		public override void Cancel()
 		{
 			Command.Cancel();
 		}
 
-		public void Prepare()
+		public override void Prepare()
 		{
 			Command.Prepare();
 		}
 
-		public CommandType CommandType
+		public override CommandType CommandType
 		{
 			get { return Command.CommandType; }
 			set { Command.CommandType = value; }
 		}
 
-		public IDataReader ExecuteReader(CommandBehavior behavior)
-		{
-			CheckParameters();
-			return Command.ExecuteReader(behavior);
-		}
+	    protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
+	    {
+	        CheckParameters();
+	        return Command.ExecuteReader(behavior);
+	    }
 
-		IDataReader IDbCommand.ExecuteReader()
-		{
-			CheckParameters();
-			return Command.ExecuteReader();
-		}
+        //IDataReader IDbCommand.ExecuteReader()
+        //{
+            
+        //}
 
-		public object ExecuteScalar()
+	    //public IDataReader ExecuteReader(CommandBehavior behavior)
+        //{
+        //    CheckParameters();
+        //    return Command.ExecuteReader(behavior);
+        //}
+
+        //IDataReader IDbCommand.ExecuteReader()
+        //{
+        //    CheckParameters();
+        //    return Command.ExecuteReader();
+        //}
+
+		public override object ExecuteScalar()
 		{
 			CheckParameters();
 			return Command.ExecuteScalar();
 		}
 
-		public int ExecuteNonQuery()
+		public override int ExecuteNonQuery()
 		{
 			CheckParameters();
 			Command.CommandText = Command.CommandText.Replace("INT " + IdentitySpecPlaceHolder, "COUNTER");
 			return Command.ExecuteNonQuery();
 		}
 
-		public int CommandTimeout
+		public override int CommandTimeout
 		{
 			get { return Command.CommandTimeout; }
 			set { Command.CommandTimeout = value; }
 		}
 
-		public IDbDataParameter CreateParameter()
-		{
-			return Command.CreateParameter();
-		}
+	    protected override DbParameter CreateDbParameter()
+	    {
+	        return Command.CreateParameter();
+	    }
 
-		public IDbConnection Connection
-		{
-			get { return _connection; }
-			set
-			{
-				_connection = (JetDbConnection) value;
-				Command.Connection = _connection.Connection;
-			}
-		}
+	    protected override DbConnection DbConnection
+	    {
+            get { return _connection; }
+	        set 
+            {
+                _connection = (JetDbConnection) value;
+                Command.Connection = _connection.Connection;
+            }
+	    }
 
-		public UpdateRowSource UpdatedRowSource
+		public override UpdateRowSource UpdatedRowSource
 		{
 			get { return Command.UpdatedRowSource; }
 			set { Command.UpdatedRowSource = value; }
 		}
 
-		public string CommandText
+		public override string CommandText
 		{
 			get { return Command.CommandText; }
 			set { Command.CommandText = value; }
 		}
 
-		public IDataParameterCollection Parameters
-		{
-			get { return Command.Parameters; }
-		}
+	    protected override DbParameterCollection DbParameterCollection
+	    {
+            get { return Command.Parameters; }
+	    }
 
-		public IDbTransaction Transaction
-		{
-			get { return _transaction; }
-			set
-			{
-				if (value == null)
-				{
-					_transaction = null;
-					Command.Transaction = null;
-				}
-				else
-				{
-					_transaction = (JetDbTransaction) value;
-					Command.Transaction = _transaction.Transaction;
-				}
-			}
-		}
+	    protected override DbTransaction DbTransaction
+	    {
+            get { return _transaction; }
+	        set
+	        {
+	            if(value == null)
+	            {
+	                _transaction = null;
+	                Command.Transaction = null;
+	            }
+	            else
+	            {
+	                _transaction = (JetDbTransaction) value;
+                    Command.Transaction = _transaction.Transaction;
+	            }
+	        }
+	    }
 
-		#endregion
+	    public override bool DesignTimeVisible
+	    {
+            get { return Command.DesignTimeVisible; }
+            set { Command.DesignTimeVisible = value; }
+	    }
 
-		#region IDisposable Members
+	    protected override void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                Command.Dispose();
+                _convertedDateParameters.Clear();                
+            }
 
-		public void Dispose()
-		{
-			Command.Dispose();
-            _convertedDateParameters.Clear();
-		}
-
-		#endregion
+            base.Dispose(disposing);
+        }
 	}
 }

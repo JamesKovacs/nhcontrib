@@ -94,10 +94,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JetDbCommand.cs">
-      <SubType>Code</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="JetDbConnection.cs">
-      <SubType>Code</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="JetDbTransaction.cs">
       <SubType>Code</SubType>

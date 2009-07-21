@@ -1,36 +1,37 @@
 using System.Collections.Specialized;
 using NHibernate.Dialect.Function;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace NHibernate.JetDriver.Tests 
 {
     [TestFixture]
-    public class JetDialectFixture 
+    public class JetDialectFixture : JetTestBase
     {
         [Test]
         public void NH1181_SupportHqlUpper()
         {
-            JetDialect dialect = new JetDialect();
+            var dialect = new JetDialect();
             ISQLFunction func;
             Assert.IsTrue(dialect.Functions.TryGetValue("upper", out func));
 
-            StringCollection sqlFuncParams = new StringCollection();
-            sqlFuncParams.Add("foo");
-            string sqlString = func.Render(sqlFuncParams, null).ToString();
-            Assert.AreEqual("ucase(foo)", sqlString);
+            var sqlFuncParams = new StringCollection { "foo" };
+            var sqlString = func.Render(sqlFuncParams, null).ToString();
+
+            Assert.That(sqlString, Is.EqualTo("ucase(foo)"));
         }
 
         [Test]
         public void NH1181_SupportHqlLower()
         {
-            JetDialect dialect = new JetDialect();
+            var dialect = new JetDialect();
             ISQLFunction func;
             Assert.IsTrue(dialect.Functions.TryGetValue("lower", out func));
 
-            StringCollection sqlFuncParams = new StringCollection();
-            sqlFuncParams.Add("foo");
-            string sqlString = func.Render(sqlFuncParams, null).ToString();
-            Assert.AreEqual("lcase(foo)", sqlString);
+            var sqlFuncParams = new StringCollection { "foo" };
+            var sqlString = func.Render(sqlFuncParams, null).ToString();
+
+            Assert.That(sqlString, Is.EqualTo("lcase(foo)"));
         }
     }
 }
