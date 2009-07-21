@@ -26,8 +26,8 @@ namespace NHibernate.Spatial.Dialect.Function
 	/// </summary>
 	public class SpatialRelationFunction : SpatialStandardSafeFunction
 	{
-		private ISpatialDialect spatialDialect;
-		private SpatialRelation relation;
+		private readonly ISpatialDialect spatialDialect;
+		private readonly SpatialRelation relation;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialRelationFunction"/> class.
@@ -50,7 +50,7 @@ namespace NHibernate.Spatial.Dialect.Function
 		/// <returns>SQL fragment for the function.</returns>
 		public override SqlString Render(IList args, ISessionFactoryImplementor factory)
 		{
-			base.ValidateArgsCount(args);
+			ValidateArgsCount(args);
 			return this.spatialDialect.GetSpatialRelationString(args[0], this.relation, args[1], false);
 		}
 

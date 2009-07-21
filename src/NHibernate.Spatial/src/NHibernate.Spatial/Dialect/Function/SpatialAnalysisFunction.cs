@@ -26,8 +26,8 @@ namespace NHibernate.Spatial.Dialect.Function
 	/// </summary>
 	public class SpatialAnalysisFunction : SpatialStandardSafeFunction
 	{
-		private ISpatialDialect spatialDialect;
-		private SpatialAnalysis analysis;
+		private readonly ISpatialDialect spatialDialect;
+		private readonly SpatialAnalysis analysis;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialAnalysisFunction"/> class.
@@ -61,15 +61,12 @@ namespace NHibernate.Spatial.Dialect.Function
 		/// <returns>SQL fragment for the function.</returns>
 		public override SqlString Render(IList args, ISessionFactoryImplementor factory)
 		{
-			base.ValidateArgsCount(args);
+			ValidateArgsCount(args);
 			if (this.analysis == SpatialAnalysis.ConvexHull)
 			{
 				return this.spatialDialect.GetSpatialAnalysisString(args[0], this.analysis, null);
 			}
-			else
-			{
-				return this.spatialDialect.GetSpatialAnalysisString(args[0], this.analysis, args[1]);
-			}
+			return this.spatialDialect.GetSpatialAnalysisString(args[0], this.analysis, args[1]);
 		}
 
 	}

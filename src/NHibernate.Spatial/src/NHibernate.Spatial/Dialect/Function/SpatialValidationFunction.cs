@@ -26,8 +26,8 @@ namespace NHibernate.Spatial.Dialect.Function
 	/// </summary>
 	public class SpatialValidationFunction : SpatialStandardSafeFunction
 	{
-		private ISpatialDialect spatialDialect;
-		private SpatialValidation validation;
+		private readonly ISpatialDialect spatialDialect;
+		private readonly SpatialValidation validation;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SpatialValidationFunction"/> class.
@@ -50,7 +50,7 @@ namespace NHibernate.Spatial.Dialect.Function
 		/// <returns>SQL fragment for the function.</returns>
 		public override SqlString Render(IList args, ISessionFactoryImplementor factory)
 		{
-			base.ValidateArgsCount(args);
+			ValidateArgsCount(args);
 			return this.spatialDialect.GetSpatialValidationString(args[0], this.validation, false);
 		}
 

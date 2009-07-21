@@ -28,7 +28,7 @@ namespace NHibernate.Spatial.Dialect.Function
 	/// </summary>
 	public class SpatialStandardFunction : ISQLFunction
 	{
-		private IType returnType = null;
+		private readonly IType returnType;
 		protected readonly string name;
 
 		/// <summary>
