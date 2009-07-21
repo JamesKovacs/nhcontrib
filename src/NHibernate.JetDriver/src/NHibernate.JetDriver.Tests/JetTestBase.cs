@@ -27,21 +27,29 @@ namespace NHibernate.JetDriver.Tests
 
         protected JetTestBase(bool autoCreateTables)
         {
-            configuration = new Configuration()
-                                .SetProperty(Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
-                                .SetProperty(Environment.Dialect, typeof(JetDialect).AssemblyQualifiedName)
-                                .SetProperty(Environment.ConnectionDriver, typeof(JetDriver).AssemblyQualifiedName)
-                                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).FullName)
-                                .SetProperty(Environment.ConnectionString, string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
-
-            AddEntities();
-
-            factory = configuration.BuildSessionFactory();
-            factoryImpl = (ISessionFactoryImplementor)factory;
-
-            if(autoCreateTables)
+            try
             {
-                CreateTables();
+                configuration = new Configuration()
+                    .SetProperty(Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
+                    .SetProperty(Environment.Dialect, typeof(JetDialect).AssemblyQualifiedName)
+                    .SetProperty(Environment.ConnectionDriver, typeof(JetDriver).AssemblyQualifiedName)
+                    .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).FullName)
+                    .SetProperty(Environment.ConnectionString, string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
+
+                AddEntities();
+
+                factory = configuration.BuildSessionFactory();
+                factoryImpl = (ISessionFactoryImplementor)factory;
+
+                if(autoCreateTables)
+                {
+                    CreateTables();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
@@ -51,6 +59,11 @@ namespace NHibernate.JetDriver.Tests
             {
                 configuration.AddClass(type);
             }
+        }
+
+        protected Configuration Configuration
+        {
+            get { return configuration; }
         }
 
         protected virtual void CreateTables()

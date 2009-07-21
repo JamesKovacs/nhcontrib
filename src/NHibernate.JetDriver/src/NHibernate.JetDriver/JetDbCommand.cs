@@ -34,11 +34,6 @@ namespace NHibernate.JetDriver
         private readonly OleDbCommand _command;
         private readonly List<IDataParameter> _convertedDateParameters = new List<IDataParameter>();
 
-		public static string IdentitySpecPlaceHolder
-		{
-			get { return "!!! REPLACE THE PRECEEDING 'INT' AND THIS PLACEHOLDER WITH 'COUNTER' !!!"; }
-		}
-
 		internal OleDbCommand Command
 		{
 			get { return _command; }
@@ -176,7 +171,6 @@ namespace NHibernate.JetDriver
 		public override int ExecuteNonQuery()
 		{
 			CheckParameters();
-			Command.CommandText = Command.CommandText.Replace("INT " + IdentitySpecPlaceHolder, "COUNTER");
 			return Command.ExecuteNonQuery();
 		}
 

@@ -60,7 +60,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Entities\Foo.hbm.xml" />
+    <EmbeddedResource Include="Entities\Foo.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="JetTests.db">

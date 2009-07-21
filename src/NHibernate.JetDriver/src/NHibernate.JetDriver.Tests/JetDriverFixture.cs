@@ -1,11 +1,20 @@
+using System.IO;
+using NHibernate.JetDriver.Tests.Entities;
+using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using System.Collections.Generic;
 
 namespace NHibernate.JetDriver.Tests
 {
     [TestFixture]
     public class JetDriverFixture : JetTestBase
     {
+        protected override IList<System.Type> EntityTypes
+        {
+            get { return new[] { typeof(Foo) }; }
+        }
+
         [Test]
         public void NHCD29_Multiple_Tables_In_From_Clause()
         {
@@ -30,6 +39,17 @@ namespace NHibernate.JetDriver.Tests
             var transformed = GetTransformedSql(query);
 
             Assert.That(query, Is.EqualTo(transformed));
+        }
+
+        [Test]
+        public void NHCD25_Supporting_Counter_DataType_For_Identity_Column()
+        {
+            var tw = new StringWriter();
+            new SchemaExport(base.Configuration).Execute(true, false, false, base.SessionFactoryImpl.ConnectionProvider.GetConnection(), tw);
+            var schema = tw.ToString();
+
+            Assert.That(schema, Is.Not.Empty);
+            Assert.That(schema.Contains("ModuleId  COUNTER"), Is.True, "DataType of ModuleId (PK) is of type COUNTER");
         }
     }
 }

@@ -131,15 +131,19 @@ namespace NHibernate.JetDriver
 		}
 
 		/// <summary>
-		/// Access is not conforming to standards of other databases in identity/autoincrement columns specifications.
-		/// Instead of something like "INT NOT NULL AUTO_INCREMENT" for MySQL or "INT IDENTITY NOT NULL" for MsSQL, 
-		/// Access autoincremented column has a special datatype - COUNTER. This is not compatible with NHibernate way
-		/// of doing things, so I define some non-SQL string, that is translated in the JetDbCommand..
+        /// Access uses a COUNTER type for identity columns
 		/// </summary>
 		public override string IdentityColumnString
 		{
-			get { return JetDbCommand.IdentitySpecPlaceHolder; }
+            get { return "COUNTER"; }
 		}
+
+        /// <summary>
+        /// Whether this dialect has a seperate identity data type
+        /// </summary>
+        public override bool HasDataTypeInIdentityColumn {
+            get { return false; }
+        }
 
 		/// <summary></summary>
 		public override string NoColumnsInsertString
