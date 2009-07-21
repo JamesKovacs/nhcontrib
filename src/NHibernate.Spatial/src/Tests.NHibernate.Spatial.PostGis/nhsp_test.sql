@@ -12,7 +12,7 @@ CREATE DATABASE nhsp_test
        ENCODING = 'UTF8'
        TEMPLATE=postgis;
 
--- Change current connection to nhso_test before runing the following:
+-- Change current connection to nhsp_test before runing the following:
 
 ALTER TABLE nhsp_test.public.geometry_columns OWNER TO nhsp_test;
 ALTER TABLE nhsp_test.public.spatial_ref_sys OWNER TO nhsp_test;
