@@ -18,13 +18,13 @@ public class ObjectDumper
 
 	public static void Write(object o)
 	{
-		//Write(o, 0);
+		Write(o, 0);
 	}
 
 	public static void Write(object o, int depth)
 	{
-		//var dumper = new ObjectDumper(depth);
-		//dumper.WriteObject(null, o);
+		var dumper = new ObjectDumper(depth);
+		dumper.WriteObject(null, o);
 	}
 
 	private void Write(string s)
