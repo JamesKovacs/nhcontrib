@@ -19,7 +19,7 @@ namespace NHibernate.Linq.Tests
 		}
 
 		[Test]
-		public void QueryForProxiedEntity()
+		public void CanQueryOnEntityName()
 		{
 			var query = (from e in session.Linq<Person>("person")
 						 where e.Id == 1
