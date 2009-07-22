@@ -55,6 +55,13 @@ namespace NHibernate.Linq.Visitors
 			return expr;
 		}
 
+		protected override Expression VisitMemberAccess(MemberExpression expr)
+		{
+			Type = BinaryCriterionType.Property;
+			Name = expr.Member.Name;
+			return expr;
+		}
+
 		protected override Expression VisitConstant(ConstantExpression expr)
 		{
 			Type = BinaryCriterionType.Value;

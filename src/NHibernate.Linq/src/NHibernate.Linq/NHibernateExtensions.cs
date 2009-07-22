@@ -1,4 +1,8 @@
-﻿
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Linq.Expressions;
+
 namespace NHibernate.Linq
 {
 	/// <summary>
@@ -16,6 +20,32 @@ namespace NHibernate.Linq
 		{
 			QueryOptions options = new QueryOptions();
 			return new Query<T>(new NHibernateQueryProvider(session, options), options);
+		}
+
+		public static void List<T>(this ISession session, Expression expr, IList list)
+		{
+			var options = new QueryOptions();
+			var queryProvider = new NHibernateQueryProvider(session, options);
+			IQueryable<T> queryable = new Query<T>(queryProvider, options);
+			queryable = queryable.Where((Expression<Func<T, bool>>)expr);
+
+			var result = queryProvider.TranslateExpression(queryable.Expression);
+			var criteria = result as ICriteria;
+			if (criteria != null)
+			{
+				criteria.List(list);
+			}
+			else
+			{
+				var items = result as IEnumerable;
+				if (items != null)
+				{
+					foreach (var item in items)
+					{
+						list.Add(item);
+					}
+				}
+			}
 		}
 	}
 }

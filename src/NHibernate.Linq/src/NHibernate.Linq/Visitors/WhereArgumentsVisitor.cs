@@ -122,7 +122,7 @@ namespace NHibernate.Linq.Visitors
 					}
 					break;
 				case "Equals":
-					CurrentCriterions.Add(GetLikeCriteria(expr, MatchMode.Exact));
+					VisitBinaryCriterionExpression(Expression.Equal(expr.Object, expr.Arguments[0]));
 					break;
 			}
 

@@ -22,10 +22,10 @@ namespace NHibernate.Linq
 			System.Type elementType = TypeSystem.GetElementType(expression.Type);
 
 			return Activator.CreateInstance(typeof(CriteriaResultReader<>)
-				.MakeGenericType(elementType), criteria);
+			  .MakeGenericType(elementType), criteria);
 		}
 
-		public override object Execute(Expression expression)
+		public object TranslateExpression(Expression expression)
 		{
 			expression = Evaluator.PartialEval(expression);
 			expression = new BinaryBooleanReducer().Visit(expression);
@@ -36,8 +36,13 @@ namespace NHibernate.Linq
 			expression = new BinaryExpressionOrderer().Visit(expression);
 
 			NHibernateQueryTranslator translator = new NHibernateQueryTranslator(_session);
-			object results = translator.Translate(expression, this.queryOptions);
-			ICriteria criteria = results as ICriteria;
+			return translator.Translate(expression, this.queryOptions);
+		}
+
+		public override object Execute(Expression expression)
+		{
+			var results = TranslateExpression(expression);
+			var criteria = results as ICriteria;
 
 			if (criteria != null)
 				return ResultsFromCriteria(criteria, expression);

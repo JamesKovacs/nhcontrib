@@ -73,6 +73,7 @@ namespace NHibernate.Linq.Visitors
 					HandleSelectManyCall(expr);
 					break;
 				case "OfType":
+				case "Cast":
 					//ignore OfType calls -- handled by InheritanceVisitor
 					break;
 				case "First":
