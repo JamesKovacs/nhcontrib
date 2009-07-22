@@ -324,7 +324,7 @@ namespace NHibernate.Linq.Visitors
 				}
 			}
 
-			string identifierName = rootEntity.MetaData.IdentifierPropertyName;
+			string identifierName = rootEntity.GetAliasedIdentifierPropertyName();
 			return Subqueries.PropertyIn(identifierName, query);
 		}
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using NHibernate.Linq.Expressions;
@@ -114,8 +115,8 @@ namespace NHibernate.Linq.Visitors
 		protected override Expression VisitCollectionAccess(CollectionAccessExpression expr)
 		{
 			expr = (CollectionAccessExpression)base.VisitCollectionAccess(expr);
-			memberNameBuilder.Append(expr.Name + ".");
-
+			//memberNameBuilder.Append(expr.Name + ".");
+			ResetMemberName(expr.Name + ".");
 			currentExpression = expr;
 
 			if (createCriteriaForCollections)
@@ -142,6 +143,11 @@ namespace NHibernate.Linq.Visitors
 			MemberNameVisitor visitor = new MemberNameVisitor(rootCriteria);
 			visitor.Visit(expr);
 			return visitor.MemberName;
+		}
+
+		public static string GetLastMemberName(ICriteria rootCriteria, Expression expr)
+		{
+			return GetMemberName(rootCriteria, expr).Split('.').Last();
 		}
 	}
 }

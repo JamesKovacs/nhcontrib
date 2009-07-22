@@ -452,5 +452,34 @@ namespace NHibernate.Linq.Tests
 
 			Assert.AreEqual(2, query.Count);
 		}
+
+
+		[Test]
+		public void PatientWithDeepAny()
+		{
+			var query = (from patientRecord in session.Linq<PatientRecord>()
+						 where patientRecord.Patient.PatientRecords.Any()
+			             select patientRecord).ToList();
+			Assert.That(query.Count,Is.GreaterThan(0));
+		}
+
+		//[Test]
+		//public void OrdersWithNestedAny()
+		//{
+		//    bool value = true;
+		//    var query = (from order in nwsession.Linq<OrderG>()
+		//                 where order.Employee.DirectlyManages.Any(em => em.DirectlyManages.Any())
+		//                 select order).ToList();
+		//    Assert.AreEqual(96, query.Count);
+		//}
+		//[Test]
+		//public void OrdersWithDeepCollectionContains()
+		//{
+		//    var emp = nwsession.Linq<EmployeeG>().First();
+		//    var query = (from order in nwsession.Linq<OrderG>()
+		//                 where order.Employee.DirectlyManages.Contains(emp)
+		//                 select order).ToList();
+		//    Assert.AreEqual(96, query.Count);
+		//}
 	}
 }

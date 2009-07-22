@@ -50,5 +50,14 @@ namespace NHibernate.Linq.Expressions
 		{
 			return Alias;
 		}
+
+		public virtual string GetAliasedIdentifierPropertyName()
+		{
+			if (this.NodeType == NHibernateExpressionType.RootEntity)
+			{
+				return this.MetaData.IdentifierPropertyName;
+			}
+			return string.Format("{0}.{1}", this.Alias, this.MetaData.IdentifierPropertyName);
+		}
 	}
 }

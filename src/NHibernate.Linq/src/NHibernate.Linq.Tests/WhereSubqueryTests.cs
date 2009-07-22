@@ -2,11 +2,21 @@ using System.Linq;
 using NHibernate.Linq.Tests.Entities;
 using NUnit.Framework;
 
+
 namespace NHibernate.Linq.Tests
 {
 	[TestFixture]
 	public class WhereSubqueryTests : BaseTest
 	{
+		protected ISession nwsession;
+
+		[SetUp]
+		public override void Setup()
+		{
+			base.Setup();
+			nwsession = base.CreateSession();
+		}
+
 		protected override ISession CreateSession()
 		{
 			return GlobalSetup.CreateSession();
@@ -234,6 +244,33 @@ namespace NHibernate.Linq.Tests
 						 select timesheet).ToList();
 
 			Assert.AreEqual(2, query.Count);
+		}
+
+		[Test]
+		public void OrdersWithDeepAny()
+		{
+			var query = (from patientRecord in session.Linq<PatientRecord>()
+						 where patientRecord.Patient.PatientRecords.Any()
+			             select patientRecord).ToList();
+			Assert.That(query.Count,Is.GreaterThan(0));
+		}
+
+		[Test]
+		public void OrdersWithNestedAny()
+		{
+			var query = (from patientRecord in session.Linq<PatientRecord>()
+						 where patientRecord.Patient.PatientRecords.Any(pr => pr.Patient.PatientRecords.Any())
+						 select patientRecord).ToList();
+			Assert.That(query.Count,Is.GreaterThan(0));
+		}
+		[Test,Ignore]
+		public void OrdersWithDeepCollectionContains()
+		{
+			var pr = session.Linq<PatientRecord>().First();
+			var query = (from pr2 in session.Linq<PatientRecord>()
+						 where pr2.Patient.PatientRecords.Contains(pr)
+						 select pr2).ToList();
+			Assert.That(query.Count,Is.GreaterThan(0));
 		}
 	}
 }
