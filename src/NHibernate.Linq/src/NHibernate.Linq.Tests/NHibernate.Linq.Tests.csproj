@@ -71,6 +71,7 @@
     <Compile Include="CollectionAssert.cs" />
     <Compile Include="Entities\Animal.cs" />
     <Compile Include="Entities\AnotherEntity.cs" />
+    <Compile Include="Entities\IHaveName.cs" />
     <Compile Include="Entities\Patient.cs" />
     <Compile Include="Entities\Person.cs" />
     <Compile Include="Entities\ProxiedEntity.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="IUpdatableTests.cs" />
     <Compile Include="LinqQuerySamples.cs" />
     <Compile Include="MethodCallTests.cs" />
+    <Compile Include="NHLQ19.cs" />
     <Compile Include="PatientTests.cs" />
     <Compile Include="PropertyMethodMappingTests.cs" />
     <Compile Include="ProxiedEntityTests.cs" />

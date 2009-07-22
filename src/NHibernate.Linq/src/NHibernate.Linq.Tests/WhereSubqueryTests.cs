@@ -8,14 +8,6 @@ namespace NHibernate.Linq.Tests
 	[TestFixture]
 	public class WhereSubqueryTests : BaseTest
 	{
-		protected ISession nwsession;
-
-		[SetUp]
-		public override void Setup()
-		{
-			base.Setup();
-			nwsession = base.CreateSession();
-		}
 
 		protected override ISession CreateSession()
 		{
