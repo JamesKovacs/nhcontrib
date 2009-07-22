@@ -22,6 +22,12 @@ namespace NHibernate.Linq
 			return new Query<T>(new NHibernateQueryProvider(session, options), options);
 		}
 
+		public static INHibernateQueryable<T> Linq<T>(this ISession session,string entityName)
+		{
+			QueryOptions options = new QueryOptions();
+			return new Query<T>(new NHibernateQueryProvider(session, options,entityName), options);
+		}
+
 		public static void List<T>(this ISession session, Expression expr, IList list)
 		{
 			var options = new QueryOptions();

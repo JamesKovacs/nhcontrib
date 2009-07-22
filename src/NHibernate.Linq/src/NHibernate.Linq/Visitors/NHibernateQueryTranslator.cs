@@ -15,12 +15,18 @@ namespace NHibernate.Linq.Visitors
 	public class NHibernateQueryTranslator : NHibernateExpressionVisitor
 	{
 		private readonly ISession session;
+		private readonly string entityName;
 		private ICriteria rootCriteria;
 		private QueryOptions options;
 
 		public NHibernateQueryTranslator(ISession session)
 		{
 			this.session = session;
+		}
+		public NHibernateQueryTranslator(ISession session,string entityName)
+		{
+			this.session = session;
+			this.entityName = entityName;
 		}
 
 		public virtual object Translate(LinqExpression expression, QueryOptions queryOptions)
@@ -39,7 +45,10 @@ namespace NHibernate.Linq.Visitors
 		{
 			if (rootCriteria == null)
 			{
-				rootCriteria = session.CreateCriteria(expr.ElementType, expr.Alias);
+				if(!string.IsNullOrEmpty(this.entityName))
+					rootCriteria = session.CreateCriteria(entityName, expr.Alias);
+				else
+					rootCriteria = session.CreateCriteria(expr.ElementType, expr.Alias);
 				options.Execute(rootCriteria);
 			}
 			return expr;

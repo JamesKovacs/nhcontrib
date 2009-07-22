@@ -9,6 +9,7 @@ namespace NHibernate.Linq
 	public class NHibernateQueryProvider : QueryProvider
 	{
 		private readonly ISession _session;
+		private readonly string entityName;
 
 		public NHibernateQueryProvider(ISession session, QueryOptions queryOptions)
 		{
@@ -16,6 +17,15 @@ namespace NHibernate.Linq
 			_session = session;
 			this.queryOptions = queryOptions;
 		}
+
+		public NHibernateQueryProvider(ISession session, QueryOptions queryOptions,string entityName)
+		{
+			if (session == null) throw new ArgumentNullException("session");
+			_session = session;
+			this.entityName = entityName;
+			this.queryOptions = queryOptions;
+		}
+
 
 		private static object ResultsFromCriteria(ICriteria criteria, Expression expression)
 		{
@@ -35,7 +45,7 @@ namespace NHibernate.Linq
 			expression = new PropertyToMethodVisitor().Visit(expression);
 			expression = new BinaryExpressionOrderer().Visit(expression);
 
-			NHibernateQueryTranslator translator = new NHibernateQueryTranslator(_session);
+			NHibernateQueryTranslator translator = new NHibernateQueryTranslator(_session,entityName);
 			return translator.Translate(expression, this.queryOptions);
 		}
 

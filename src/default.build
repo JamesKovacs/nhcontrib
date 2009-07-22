@@ -32,11 +32,12 @@
 		<call target="JetDriver" />
 		<call target="Mapping.Attributes" />
 		<call target="Search" />
-		<call target="Shards" />
+		<!--<call target="Shards" />-->
 		<call target="Tasks" />
 		<call target="Tool.hbm2net" />
 		<call target="UserTypes.Oracle" />
 		<call target="UserTypes.SqlTypes" />
+		<call target="Linq" />
 		<!-- Not available yet: <call target="Validator" /> -->
 
 	</target>
@@ -128,6 +129,11 @@
 	<target name="Validator" depends="init"
 					description="Builds NHibernate.Validator">
 		<nant buildfile="${root.dir}\NHibernate.Validator\default.build" target="${targets}" />
+	</target>
+
+	<target name="Linq" depends="init"
+					description="Builds NHibernate.Linq">
+		<nant buildfile="${root.dir}\NHibernate.Linq\default.build" target="${targets}" />
 	</target>
 
 </project>
