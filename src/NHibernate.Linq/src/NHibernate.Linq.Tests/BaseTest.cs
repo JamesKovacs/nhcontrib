@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using NHibernate.Linq.Tests.Entities;
 using NUnit.Framework;
-
+using System;
 namespace NHibernate.Linq.Tests
 {
 	public class BaseTest
@@ -12,7 +12,7 @@ namespace NHibernate.Linq.Tests
 		protected TestContext nhib;
 		protected NorthwindContext nwnd;
 		protected ISession session;
-
+		private static Exception ex;
 		protected virtual string ConnectionStringName
 		{
 			get { return "Northwind"; }
@@ -20,12 +20,15 @@ namespace NHibernate.Linq.Tests
 
 		static BaseTest()
 		{
-			new GlobalSetup().SetupNHibernate();
+			try{new GlobalSetup().SetupNHibernate();}
+			catch(Exception ex){BaseTest.ex=ex;}
 		}
 
 		[SetUp]
 		public virtual void Setup()
 		{
+			if(ex!=null)
+				throw ex;
 			session = CreateSession();
 			nwnd = db = new NorthwindContext(session);
 			nhib = new TestContext(session);

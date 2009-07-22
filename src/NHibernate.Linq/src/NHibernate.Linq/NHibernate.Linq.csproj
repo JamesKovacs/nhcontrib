@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\NH.Linq.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -97,7 +97,6 @@
     <Compile Include="Util\LinqUtil.cs" />
     <Compile Include="NHibernateContext.cs" />
     <Compile Include="Visitors\NHibernateQueryTranslator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\QueryUtil.cs" />
     <Compile Include="Visitors\SelectArgumentsVisitor.cs" />
     <Compile Include="SqlClient\SqlClientExtensions.cs" />
@@ -108,6 +107,9 @@
     <None Include="..\NH.Linq.snk">
       <Link>NH.Linq.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

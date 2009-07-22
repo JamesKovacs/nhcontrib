@@ -19,13 +19,9 @@ namespace NHibernate.Linq.Tests
 			Configuration cfg = new Configuration().Configure();
 			new SchemaExport(cfg).Execute(false, true, false);
 
-			try
-			{
-				factory = cfg.BuildSessionFactory();
+			factory = cfg.BuildSessionFactory();
 
-				CreateTestData();
-			}
-			catch { }
+			CreateTestData();
 		}
 
 		[TearDown]
