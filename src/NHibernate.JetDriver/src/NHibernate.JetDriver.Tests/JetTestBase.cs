@@ -25,35 +25,29 @@ namespace NHibernate.JetDriver.Tests
         {
         }
 
-        protected JetTestBase(bool autoCreateTables)
-        {
-            try
-            {
-                configuration = new Configuration()
-                    .SetProperty(Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
-                    .SetProperty(Environment.Dialect, typeof(JetDialect).AssemblyQualifiedName)
-                    .SetProperty(Environment.ConnectionDriver, typeof(JetDriver).AssemblyQualifiedName)
-                    .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).FullName)
-                    .SetProperty(Environment.ConnectionString, string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
+		protected JetTestBase(bool autoCreateTables)
+		{
+			configuration = new Configuration()
+				.SetProperty(Environment.ProxyFactoryFactoryClass, typeof (ProxyFactoryFactory).AssemblyQualifiedName)
+				.SetProperty(Environment.Dialect, typeof (JetDialect).AssemblyQualifiedName)
+				.SetProperty(Environment.ConnectionDriver, typeof (JetDriver).AssemblyQualifiedName)
+				.SetProperty(Environment.ConnectionProvider, typeof (DriverConnectionProvider).FullName)
+				.SetProperty(Environment.ConnectionString,
+				             string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
 
-                AddEntities();
+			AddEntities();
 
-                factory = configuration.BuildSessionFactory();
-                factoryImpl = (ISessionFactoryImplementor)factory;
+			factory = configuration.BuildSessionFactory();
+			factoryImpl = (ISessionFactoryImplementor) factory;
 
-                if(autoCreateTables)
-                {
-                    CreateTables();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
+			if (autoCreateTables)
+			{
+				CreateTables();
+			}
 
-        private void AddEntities()
+		}
+
+    	private void AddEntities()
         {
             foreach (var type in EntityTypes)
             {
