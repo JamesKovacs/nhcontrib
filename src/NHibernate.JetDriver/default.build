@@ -28,7 +28,8 @@
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
-        <include name="${folders.src}/NHibernate.JetDriver.Tests/JetTests.db" />
+				<include name="${folders.lib}/Castle.Core.dll"/>
+				<include name="${folders.src}/NHibernate.JetDriver.Tests/JetTests.db" />
 			</fileset>
 		</copy>
 		<csc target="library"
