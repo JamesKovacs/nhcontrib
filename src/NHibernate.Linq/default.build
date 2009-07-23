@@ -100,6 +100,12 @@
 	
 	<target name="sources">
 		<property name="source.tmpdir" value="${build.dir}/tmp-src" />
+		<property name="source.tmpdir.database" value="${source.tmpdir}/Databases" />
+		<copy todir="${source.tmpdir}">
+			<fileset>
+				<include name="Database/*.mdf"/>
+			</fileset>
+		</copy>
 		<copy todir="${source.tmpdir}">
 			<fileset>
 				<!-- copy dlls used by this build -->
@@ -142,6 +148,7 @@
 	</target>
 	<target name="sources-zip" depends="init sources">
 		<zip zipfile="${build.dir}/NHibernate-${project.version}-src.zip">
+			
 			<fileset basedir="${source.tmpdir}">
 				<include name="**/*" />
 			</fileset>
@@ -171,6 +178,5 @@
 	
 	<target name="clean" depends="init" description="Deletes current build">
 		<delete dir="${build.dir}" failonerror="false" />
-		<delete dir="${clover.src}" failonerror="false" />
 	</target>
 </project>
