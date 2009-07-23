@@ -101,9 +101,9 @@
 	<target name="sources">
 		<property name="source.tmpdir" value="${build.dir}/tmp-src" />
 		<property name="source.tmpdir.database" value="${source.tmpdir}/Databases" />
-		<copy todir="${source.tmpdir}">
+		<copy todir="${source.tmpdir.database}">
 			<fileset>
-				<include name="Database/*.mdf"/>
+				<include name="Databases/*.mdf"/>
 			</fileset>
 		</copy>
 		<copy todir="${source.tmpdir}">
