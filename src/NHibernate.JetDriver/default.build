@@ -80,12 +80,9 @@
 
 	<target name="test"
 			depends="build">
-		<nunit2>
-			<formatter type="Xml"
-			           usefile="true"
-			           extension=".xml" />
-			<test assemblyname="${folders.build}/NHibernate.JetDriver.Tests.dll"/>
-		</nunit2>
+		<exec program="Tools/nunit/nunit-console-x86.exe">
+			<arg line="${folders.build}/NHibernate.JetDriver.Tests.dll /xml:${folders.build}/NHibernate.JetDriver.Tests.dll-results.xml " />
+		</exec>
 	</target>
 
 	<target name="clean">
