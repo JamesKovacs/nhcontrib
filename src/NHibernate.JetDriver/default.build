@@ -60,10 +60,13 @@
 				<include name="**/Entities/*.cs"/>
 			</sources>
 			<references>
+		    <include name="${folders.lib}/NHibernate.ByteCode.Castle.dll"/>
 				<include name="${folders.lib}/NHibernate.dll"/>
+				<include name="${folders.lib}/Iesi.Collections.dll"/>
 				<include name="${folders.lib}/log4net.dll"/>
 				<include name="${folders.lib}/nunit.framework.dll"/>
-		    <include name="${folders.lib}/NHibernate.ByteCode.Castle.dll"/>
+				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
+				<include name="${folders.lib}/Castle.Core.dll"/>
 				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
 			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
