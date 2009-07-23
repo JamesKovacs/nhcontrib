@@ -157,8 +157,11 @@
 
 	<target name="binaries-zip" depends="init binaries">
 		<zip zipfile="${build.dir}/NHibernate-${project.version}-bin.zip">
-			<fileset basedir="${bin.dir}">
+			<fileset basedir="${bin.dir}"  prefix="bin">
 				<include name="**/*" />
+			</fileset>
+			<fileset basedir="${root.dir}">
+				<include name="releasenotes.txt" />
 			</fileset>
 		</zip>
 	</target>
