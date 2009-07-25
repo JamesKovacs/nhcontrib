@@ -44,7 +44,6 @@
 
 	<target name="build" description="Build NHibernate"
 		depends="generate-assemblyinfo common.compile-tests">
-		<copy file="${bin.dir}/NHibernate.dll" tofile="${root.dir}/${lib.framework.dir}/NHibernate.dll"/>
 		<if test="${property::exists('connection.string.test')}">
 			<xmlpoke
 				file="${bin.dir}/${project::get-name()}.dll.config"
