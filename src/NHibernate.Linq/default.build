@@ -147,7 +147,7 @@
 		</nant>
 	</target>
 	<target name="sources-zip" depends="init sources">
-		<zip zipfile="${build.dir}/NHibernate-${project.version}-src.zip">
+		<zip zipfile="${build.dir}/NHibernate.Linq-${project.version}-src.zip">
 			
 			<fileset basedir="${source.tmpdir}">
 				<include name="**/*" />
@@ -156,7 +156,7 @@
 	</target>
 
 	<target name="binaries-zip" depends="init binaries">
-		<zip zipfile="${build.dir}/NHibernate-${project.version}-bin.zip">
+		<zip zipfile="${build.dir}/NHibernate.Linq-${project.version}-bin.zip">
 			<fileset basedir="${bin.dir}"  prefix="bin">
 				<include name="**/*" />
 			</fileset>
