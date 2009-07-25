@@ -17,7 +17,7 @@
 		<property name="lib.framework.dir" value="${path::combine(lib.family.dir, string::substring(framework::get-target-framework(), 4, 3))}" dynamic="true" />
 	</if>
 	<property name="project.company" value="NHForge.org" />
-	<property name="project.version" value="1.0.0.Alpha1" overwrite="false" />
+	<property name="project.version" value="1.1.0.Alpha1" overwrite="false" />
 	<regex input="${project.version}" pattern="^(?'shortversion'\d+\.\d+)" />
 	<property name="project.version.short" value="${shortversion}" />
 
