@@ -57,10 +57,6 @@
     <Reference Include="System.Data.Services">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Linq.Dynamic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\System.Linq.Dynamic.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +65,7 @@
     <Compile Include="BinaryExpressionOrdererTests.cs" />
     <Compile Include="CategoryAttribute.cs" />
     <Compile Include="CollectionAssert.cs" />
+    <Compile Include="DynamicQuery.cs" />
     <Compile Include="Entities\Animal.cs" />
     <Compile Include="Entities\AnotherEntity.cs" />
     <Compile Include="Entities\IHaveName.cs" />
