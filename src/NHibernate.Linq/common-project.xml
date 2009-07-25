@@ -44,6 +44,7 @@
 			keyfile="${key.file}"
 			output="${bin.dir}/${project::get-name()}.dll" 
 			doc="${bin.dir}/${project::get-name()}.xml"
+			optimize="${build.release}"
 			if="${sign}"
 		>
 			<nowarn>
@@ -60,6 +61,7 @@
 			debug="${build.debug}" 
 			output="${bin.dir}/${project::get-name()}.dll" 
 			doc="${bin.dir}/${project::get-name()}.xml"
+			optimize="${build.release}"
 			unless="${sign}"
 		>
 			<nowarn>
