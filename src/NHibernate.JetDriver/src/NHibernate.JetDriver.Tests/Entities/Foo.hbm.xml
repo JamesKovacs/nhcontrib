@@ -5,5 +5,9 @@
       <generator class="native" />
     </id>
     <property name="Module" column="`Module`" type="System.String" />
+    <property name="ModuleValue" column="ModuleValue" type="System.Int64" />
+    <property name="ShortName" column="ShortName" type="System.String" length="100" />
+    <property name="LongName" column="LongName" type="System.String" length="500" />
+    <property name="Description" column="Description" type="AnsiString" length="5000" />
   </class>
 </hibernate-mapping>

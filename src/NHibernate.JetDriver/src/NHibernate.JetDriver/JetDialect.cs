@@ -43,13 +43,13 @@ namespace NHibernate.JetDriver
 			//Byte size number datatype is called BYTE.
 
 			RegisterColumnType(DbType.AnsiStringFixedLength, "CHAR(255)");
-			RegisterColumnType(DbType.AnsiStringFixedLength, 255, "CHAR($1)");
+            RegisterColumnType(DbType.AnsiStringFixedLength, 255, "CHAR($l)");
 			RegisterColumnType(DbType.AnsiString, "TEXT(255)");
-			RegisterColumnType(DbType.AnsiString, 255, "TEXT($1)");
-			RegisterColumnType(DbType.AnsiString, 1073741823, "TEXT($1)");
-			RegisterColumnType(DbType.AnsiString, 1073741823, "TEXT");
+            RegisterColumnType(DbType.AnsiString, 255, "TEXT($l)");
+            //RegisterColumnType(DbType.AnsiString, 1073741823, "MEMO");
+			RegisterColumnType(DbType.AnsiString, 1073741823, "MEMO");
 			RegisterColumnType(DbType.Binary, "IMAGE");
-			//RegisterColumnType( DbType.Binary, 8000, "VARBINARY($1)" );
+			//RegisterColumnType( DbType.Binary, 8000, "VARBINARY($i)" );
 			RegisterColumnType(DbType.Binary, 2147483647, "IMAGE");
 			RegisterColumnType(DbType.Boolean, "BIT");
 			RegisterColumnType(DbType.Byte, "BYTE");
@@ -64,19 +64,20 @@ namespace NHibernate.JetDriver
 			// sql-type="decimal(20,5)" if they need to do that.  The Decimal parameter and ddl will get generated
 			// correctly with minimal work.
 			RegisterColumnType(DbType.Decimal, "DECIMAL(19,5)");
-			RegisterColumnType(DbType.Decimal, 19, "DECIMAL(19, $1)");
+            RegisterColumnType(DbType.Decimal, 19, "DECIMAL(19, $l)");
 			RegisterColumnType(DbType.Double, "FLOAT");
 			RegisterColumnType(DbType.Guid, "GUID");
 			RegisterColumnType(DbType.Int16, "SMALLINT");
 			RegisterColumnType(DbType.Int32, "INT");
-			RegisterColumnType(DbType.Int64, "INT"); //this is dangerous, I know
+            RegisterColumnType(DbType.Int64, "REAL"); 
 			RegisterColumnType(DbType.Single, "REAL");
 			RegisterColumnType(DbType.StringFixedLength, "CHAR(255)");
-			RegisterColumnType(DbType.StringFixedLength, 1073741823, "TEXT($1)");
+			RegisterColumnType(DbType.StringFixedLength, 255, "CHAR($l)");
+            RegisterColumnType(DbType.StringFixedLength, 1073741823, "MEMO");
 			RegisterColumnType(DbType.String, "TEXT(255)");
-			RegisterColumnType(DbType.String, 255, "TEXT($1)");
-			RegisterColumnType(DbType.String, 1073741823, "TEXT($1)");
-			RegisterColumnType(DbType.String, 1073741823, "TEXT");
+            RegisterColumnType(DbType.String, 255, "TEXT($l)");
+			RegisterColumnType(DbType.String, 1073741823, "MEMO");
+			//RegisterColumnType(DbType.String, 1073741823, "MEMO");
 			RegisterColumnType(DbType.Time, "DATETIME");
 
             RegisterFunction("upper", new StandardSQLFunction("ucase"));

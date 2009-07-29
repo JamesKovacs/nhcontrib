@@ -15,5 +15,33 @@ namespace NHibernate.JetDriver.Tests.Entities
             get { return module; }
             set { module = value; }
         }
+
+        private string shortName;
+        public virtual string ShortName
+        {
+            get { return shortName; }
+            set { shortName = value; }
+        }
+
+        private string longName;
+        public virtual string LongName
+        {
+            get { return longName; }
+            set { longName = value; }
+        }
+
+        private string description;
+        public virtual string Description
+        {
+            get { return description; }
+            set { description = value; }
+        }
+
+        private long moduleValue;
+        public virtual long ModuleValue
+        {
+            get { return moduleValue; }
+            set { moduleValue = value;}
+        }
     }
 }
