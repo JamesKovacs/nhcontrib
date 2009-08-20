@@ -204,7 +204,16 @@ namespace NHibernate.Linq.Visitors
 
 		private void HandleSelectMethodCall(MethodCallExpression call)
 		{
-			throw new NotImplementedException();
+			if (SelectArgumentsVisitor.SupportsMethod(call.Method.Name))
+			{
+				var projectionVisitor = new SelectArgumentsVisitor(rootCriteria, session);
+				projectionVisitor.Visit(call);
+				rootCriteria.SetProjection(projectionVisitor.Projection);
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
 		}
 	}
 }

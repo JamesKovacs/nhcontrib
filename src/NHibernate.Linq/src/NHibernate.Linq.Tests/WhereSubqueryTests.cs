@@ -243,8 +243,8 @@ namespace NHibernate.Linq.Tests
 		{
 			var query = (from patientRecord in session.Linq<PatientRecord>()
 						 where patientRecord.Patient.PatientRecords.Any()
-			             select patientRecord).ToList();
-			Assert.That(query.Count,Is.GreaterThan(0));
+						 select patientRecord).ToList();
+			Assert.That(query.Count, Is.GreaterThan(0));
 		}
 
 		[Test]
@@ -253,16 +253,27 @@ namespace NHibernate.Linq.Tests
 			var query = (from patientRecord in session.Linq<PatientRecord>()
 						 where patientRecord.Patient.PatientRecords.Any(pr => pr.Patient.PatientRecords.Any())
 						 select patientRecord).ToList();
-			Assert.That(query.Count,Is.GreaterThan(0));
+			Assert.That(query.Count, Is.GreaterThan(0));
 		}
-		[Test,Ignore]
+
+		[Test, Ignore]
 		public void OrdersWithDeepCollectionContains()
 		{
 			var pr = session.Linq<PatientRecord>().First();
 			var query = (from pr2 in session.Linq<PatientRecord>()
 						 where pr2.Patient.PatientRecords.Contains(pr)
 						 select pr2).ToList();
-			Assert.That(query.Count,Is.GreaterThan(0));
+			Assert.That(query.Count, Is.GreaterThan(0));
+		}
+
+		[Test]
+		public void PatientRecordsWithSubquerySumInWhereClause()
+		{
+			var query = session.Linq<Patient>()
+				.Where(p => p.PatientRecords.Where(r => r.Gender == Gender.Male).Sum(r => r.Amount) >= 100).ToArray();
+
+			Assert.AreEqual(1, query.Length);
+			Assert.AreEqual("John", query[0].PatientRecords.Select(r => r.Name.FirstName).Distinct().Single());
 		}
 	}
 }

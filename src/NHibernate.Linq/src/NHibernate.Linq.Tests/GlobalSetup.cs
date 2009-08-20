@@ -69,7 +69,8 @@ namespace NHibernate.Linq.Tests
 					ZipCode = "10001"
 				},
 				BirthDate = new DateTime(1930, 1, 1),
-				Gender = Gender.Male
+				Gender = Gender.Male,
+				Amount = 50
 			};
 
 			PatientRecord johnDoeRecord1 = new PatientRecord
@@ -87,7 +88,8 @@ namespace NHibernate.Linq.Tests
 					ZipCode = "33602"
 				},
 				BirthDate = new DateTime(1969, 1, 1),
-				Gender = Gender.Male
+				Gender = Gender.Male,
+				Amount = 50
 			};
 
 			PatientRecord johnDoeRecord2 = new PatientRecord
@@ -105,11 +107,50 @@ namespace NHibernate.Linq.Tests
 					State = florida,
 					ZipCode = "33602"
 				},
-				BirthDate = new DateTime(1969, 1, 1)
+				BirthDate = new DateTime(1969, 1, 1),
+				Gender = Gender.Male,
+				Amount = 50
+			};
+
+			PatientRecord janeDoeRecord1 = new PatientRecord
+			{
+				Name = new PatientName
+				{
+					FirstName = "Jane",
+					LastName = "Doe"
+				},
+				Address = new Address
+				{
+					AddressLine1 = "123 Main St",
+					City = "Tampa",
+					State = florida,
+					ZipCode = "33602"
+				},
+				BirthDate = new DateTime(1972, 12, 1),
+				Gender = Gender.Female,
+				Amount = 101
+			};
+
+			PatientRecord janeDoeRecord2 = new PatientRecord
+			{
+				Name = new PatientName
+				{
+					FirstName = "Jane",
+					LastName = "Doe"
+				},
+				Address = new Address
+				{
+					AddressLine1 = "123 Main St",
+					City = "Tampa",
+					State = florida,
+					ZipCode = "33602"
+				},
+				BirthDate = new DateTime(1972, 12, 1)
 			};
 
 			Patient bobBarker = new Patient(new[] { bobBarkerRecord }, false, drDobbs);
 			Patient johnDoe = new Patient(new[] { johnDoeRecord1, johnDoeRecord2 }, true, drWatson);
+			Patient janeDoe = new Patient(new[] { janeDoeRecord1, janeDoeRecord2 }, true, drWatson);
 
 			session.Save(newYork);
 			session.Save(florida);
@@ -117,6 +158,7 @@ namespace NHibernate.Linq.Tests
 			session.Save(drWatson);
 			session.Save(bobBarker);
 			session.Save(johnDoe);
+			session.Save(janeDoe);
 		}
 
 		private static void CreateTestData()

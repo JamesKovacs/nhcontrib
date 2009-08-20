@@ -45,12 +45,8 @@ namespace NHibernate.Linq.Visitors
 				Criteria.Add(Restrictions.EqProperty(rootCriteria.Alias + "." + identifierName, "sub." + identifierName));
 			}
 
-			if (SelectArgumentsVisitor.SupportsMethod(expr.Method.Name))
-			{
-				var projectionVisitor = new SelectArgumentsVisitor(Criteria.Adapt(session), session);
-				projectionVisitor.Visit(expr);
-				Criteria.SetProjection(projectionVisitor.Projection);
-			}
+			var visitor = new RootVisitor(Criteria.Adapt(session), session, false);
+			visitor.Visit(expr);
 
 			return expr;
 		}

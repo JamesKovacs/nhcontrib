@@ -19,7 +19,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Name.LastName == "Doe"
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 
 		[Test]
@@ -31,7 +31,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Address.State == florida
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Address.State.Abbreviation == "FL"
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 
 		[Test]
@@ -61,7 +61,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Patient.Active == true
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 
 		[Test]
@@ -73,7 +73,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Patient.Physician == drWatson
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 
 		[Test]
@@ -83,7 +83,7 @@ namespace NHibernate.Linq.Tests
 						 where pr.Patient.Physician.Name == "Dr Watson"
 						 select pr).ToList();
 
-			Assert.AreEqual(2, query.Count);
+			Assert.AreEqual(4, query.Count);
 		}
 	}
 }
