@@ -57,6 +57,13 @@ namespace NHibernate.Linq.Tests.Entities
 		public virtual Address Address { get; set; }
 		public virtual Patient Patient { get; set; }
 		public virtual double Amount { get; set; }
+		public virtual PatientRecordType Type { get; set; }
+	}
+
+	public class PatientRecordType
+	{
+		public virtual int TypeCode { get; set; }
+		public virtual string TypeName { get; set; }
 	}
 
 	public enum Gender

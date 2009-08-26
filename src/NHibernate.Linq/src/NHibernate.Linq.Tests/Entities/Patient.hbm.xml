@@ -40,9 +40,19 @@
     </component>
     
     <many-to-one name="Patient" cascade="none" column="PatientId" not-null="true" class="Patient" />
+    <many-to-one name="Type" cascade="all" column="PatientTypeId" />
     <property name="Amount" />
   </class>
 
+  <class name="PatientRecordType" table="PatientRecordTypes">
+    <id column="PatientRecordTypeId" type="System.Int64">
+      <generator class="native" />
+    </id>
+
+    <property name="TypeCode" />
+    <property name="TypeName" />
+  </class>
+  
   <class name="State" table="States">
     <id name="Id" column="StateId" type="System.Int64">
       <generator class="native" />

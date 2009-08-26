@@ -19,12 +19,14 @@ namespace NHibernate.Linq.Visitors
 		private readonly ISessionFactoryImplementor _sessionFactory;
 		private readonly IDictionary<string, IClassMetadata> _metaData;
 		private readonly IDictionary<System.Type, string> _proxyTypes;
+		private readonly IList<string> _associationPathsToInclude;
 
 		public AssociationVisitor(ISessionFactoryImplementor sessionFactory)
 		{
 			_sessionFactory = sessionFactory;
 			_metaData = _sessionFactory.GetAllClassMetadata();
 			_proxyTypes = _sessionFactory.GetProxyMetaData(_metaData);
+			_associationPathsToInclude = new List<string>();
 		}
 
 		private IClassMetadata GetMetaData(System.Type type)
@@ -128,7 +130,10 @@ namespace NHibernate.Linq.Visitors
 		{
 			IClassMetadata metaData = GetMetaData(expr.Type);
 			if (metaData != null)
-				return new EntityExpression(null, expr.Name, expr.Type, metaData, null);
+			{
+				string associationPath = _associationPathsToInclude.Contains(expr.Name) ? expr.Name : null;
+				return new EntityExpression(associationPath, expr.Name, expr.Type, metaData, null);
+			}
 
 			return expr;
 		}
@@ -141,6 +146,22 @@ namespace NHibernate.Linq.Visitors
 				return new QuerySourceExpression("this", query);
 			}
 			return expr;
+		}
+
+		protected override Expression VisitMethodCall(MethodCallExpression call)
+		{
+			if (call.Method.Name == "SelectMany")
+			{
+				if (call.Arguments.Count == 3)
+				{
+					var resultSelector = (LambdaExpression)LinqUtil.StripQuotes(call.Arguments[2]);
+					string alias = resultSelector.Parameters[1].Name;
+
+					_associationPathsToInclude.Add(alias);
+				}
+			}
+
+			return base.VisitMethodCall(call);
 		}
 	}
 }

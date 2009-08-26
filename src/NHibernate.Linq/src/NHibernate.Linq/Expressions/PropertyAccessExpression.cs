@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using NHibernate.Type;
 
 namespace NHibernate.Linq.Expressions
@@ -11,16 +12,19 @@ namespace NHibernate.Linq.Expressions
 
 		public string Name
 		{
+			[DebuggerStepThrough]
 			get { return _name; }
 		}
 
 		public EntityExpression Expression
 		{
+			[DebuggerStepThrough]
 			get { return _expression; }
 		}
 
 		public IType NHibernateType
 		{
+			[DebuggerStepThrough]
 			get { return _nhibernateType; }
 		}
 

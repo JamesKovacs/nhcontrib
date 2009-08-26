@@ -104,6 +104,7 @@
     <Compile Include="PagingTests.cs" />
     <Compile Include="ProjectionsTests.cs" />
     <Compile Include="QueryReuseTests.cs" />
+    <Compile Include="SelectManyTests.cs" />
     <Compile Include="SqlFunctionExtensions.cs" />
     <Compile Include="WhereSubqueryTests.cs" />
     <Compile Include="WhereTests.cs" />

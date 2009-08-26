@@ -89,7 +89,8 @@ namespace NHibernate.Linq.Tests
 				},
 				BirthDate = new DateTime(1969, 1, 1),
 				Gender = Gender.Male,
-				Amount = 50
+				Amount = 50,
+				Type = new PatientRecordType() { TypeCode = 5, TypeName = "Type 1" }
 			};
 
 			PatientRecord johnDoeRecord2 = new PatientRecord
@@ -109,7 +110,8 @@ namespace NHibernate.Linq.Tests
 				},
 				BirthDate = new DateTime(1969, 1, 1),
 				Gender = Gender.Male,
-				Amount = 50
+				Amount = 50,
+				Type = new PatientRecordType() { TypeCode = 15, TypeName = "Type 2" }
 			};
 
 			PatientRecord janeDoeRecord1 = new PatientRecord
@@ -128,7 +130,8 @@ namespace NHibernate.Linq.Tests
 				},
 				BirthDate = new DateTime(1972, 12, 1),
 				Gender = Gender.Female,
-				Amount = 101
+				Amount = 101,
+				Type = new PatientRecordType() { TypeCode = 25, TypeName = "Type 3" }
 			};
 
 			PatientRecord janeDoeRecord2 = new PatientRecord
@@ -145,7 +148,8 @@ namespace NHibernate.Linq.Tests
 					State = florida,
 					ZipCode = "33602"
 				},
-				BirthDate = new DateTime(1972, 12, 1)
+				BirthDate = new DateTime(1972, 12, 1),
+				Type = new PatientRecordType() { TypeCode = 5, TypeName = "Type 1" }
 			};
 
 			Patient bobBarker = new Patient(new[] { bobBarkerRecord }, false, drDobbs);

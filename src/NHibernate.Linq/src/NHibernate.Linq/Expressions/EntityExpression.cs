@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq.Expressions;
 using NHibernate.Metadata;
 
@@ -12,21 +13,25 @@ namespace NHibernate.Linq.Expressions
 
 		public string Alias
 		{
+			[DebuggerStepThrough]
 			get { return _alias; }
 		}
 
 		public string AssociationPath
 		{
+			[DebuggerStepThrough]
 			get { return _associationPath; }
 		}
 
 		public IClassMetadata MetaData
 		{
+			[DebuggerStepThrough]
 			get { return _metaData; }
 		}
 
 		public Expression Expression
 		{
+			[DebuggerStepThrough]
 			get { return _expression; }
 		}
 
