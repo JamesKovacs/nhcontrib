@@ -95,6 +95,17 @@
   <ItemGroup>
     <Compile Include="Criteria\AddCriterionEventTest.cs" />
     <Compile Include="Criteria\AddOrderEventTest.cs" />
+    <Compile Include="Query\SetBinaryEventTest.cs" />
+    <Compile Include="Query\SetBooleanEventTest.cs" />
+    <Compile Include="Query\SetByteEventTest.cs" />
+    <Compile Include="Query\SetCacheableEventTest.cs" />
+    <Compile Include="Query\SetCacheModeEventTest.cs" />
+    <Compile Include="Query\SetCacheRegionEventTest.cs" />
+    <Compile Include="Query\SetCharacterEventTest.cs" />
+    <Compile Include="Query\SetCommentEventTest.cs" />
+    <Compile Include="Query\SetDateTimeEventTest.cs" />
+    <Compile Include="Query\SetDecimalEventTest.cs" />
+    <Compile Include="Query\SetDoubleEventTest.cs" />
     <Compile Include="Util\IterablesFixture.cs" />
     <Compile Include="Id\ShardedUUIDGeneratorFixture.cs" />
     <Compile Include="Mock\TestFixtureBaseWithMock.cs" />
