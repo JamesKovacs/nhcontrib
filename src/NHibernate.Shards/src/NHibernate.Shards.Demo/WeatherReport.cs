@@ -4,7 +4,7 @@ namespace NHibernate.Shards.Demo
 {
 	public class WeatherReport
 	{
-		public long ReportId { get; set; }
+		public string ReportId { get; set; }
 
 		public string Continent { get; set; }
 
