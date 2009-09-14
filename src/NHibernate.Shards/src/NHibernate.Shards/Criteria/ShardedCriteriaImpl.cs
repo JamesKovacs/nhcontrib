@@ -1,202 +1,496 @@
 ﻿using System;
 using System.Collections;
-using NHibernate.Criterion;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using NHibernate.Criterion;
+using NHibernate.Shards.Strategy.Access;
+using NHibernate.Shards.Strategy.Exit;
 using NHibernate.SqlCommand;
 using NHibernate.Transform;
 
 namespace NHibernate.Shards.Criteria
 {
-	public class ShardedCriteriaImpl : IShardedCriteria
-	{
-		public object Clone()
-		{
-			throw new NotImplementedException();
-		}
+    public class ShardedCriteriaImpl:IShardedCriteria
+    {
+        private CriteriaId criteriaId;
 
-		public ICriteria SetProjection(IProjection projection)
-		{
-			throw new NotImplementedException();
-		}
+        private IList<IShard> shards;
 
-		public ICriteria SetProjection(params IProjection[] projection)
-		{
-			throw new NotImplementedException();
-		}
+        private ICriteriaFactory criteriaFactory;
 
-		public ICriteria Add(ICriterion expression)
-		{
-			throw new NotImplementedException();
-		}
+        private IShardAccessStrategy shardAccessStrategy;
 
-		public ICriteria AddOrder(Order order)
-		{
-			throw new NotImplementedException();
-		}
+        private ExitOperationsCriteriaCollector criteriaCollector;
 
-		public ICriteria SetFetchMode(string associationPath, FetchMode mode)
-		{
-			throw new NotImplementedException();
-		}
+        public ShardedCriteriaImpl(CriteriaId criteriaId,IList<IShard> shards, ICriteriaFactory criteriaFactory,IShardAccessStrategy shardAccessStrategy)
+        {
+            this.criteriaId = criteriaId;
+            this.shards = shards;
+            this.criteriaFactory = criteriaFactory;
+            this.shardAccessStrategy = shardAccessStrategy;
+            this.criteriaCollector = new ExitOperationsCriteriaCollector();
+            criteriaCollector.SetSessionFactory(shards[0].SessionFactoryImplementor);
+        }
 
-		public ICriteria SetLockMode(LockMode lockMode)
-		{
-			throw new NotImplementedException();
-		}
+        
+        public CriteriaId CriteriaId
+        {
+            get { return this.criteriaId; }
+        }
 
-		public ICriteria SetLockMode(string alias, LockMode lockMode)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteriaFactory CriteriaFactory
+        {
+            get { return this.criteriaFactory; }
+        }
 
-		public ICriteria CreateAlias(string associationPath, string alias)
-		{
-			throw new NotImplementedException();
-		}
+        private ICriteria GetSomeCriteria()
+        {
+            foreach(IShard shard in shards)
+            {
+                ICriteria crit = shard.GetCriteriaById(criteriaId);
+                if(crit != null)
+                {
+                    return crit;
+                }
+            }
+            return null;
+        }
 
-		public ICriteria CreateAlias(string associationPath, string alias, JoinType joinType)
-		{
-			throw new NotImplementedException();
-		}
+        private ICriteria GetOrEstablishSomeCriteria()
+        {
+            ICriteria crit = GetSomeCriteria();
+            if(crit != null)
+            {
+                IShard shard = shards[0];
+                crit = shard.EstablishCriteria(this);
+            }
+            return crit;
+        }
 
-		public ICriteria CreateCriteria(string associationPath)
-		{
-			throw new NotImplementedException();
-		}
+        public string GetAlias()
+        {
+            return GetSomeCriteria().Alias;
+        }
 
-		public ICriteria CreateCriteria(string associationPath, JoinType joinType)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetProjection(IProjection projectionValue)
+        {
+            criteriaCollector.AddProjection(projectionValue);
+            if(projectionValue.GetType().IsAssignableFrom(typeof(AvgProjection)))
+            {
+                SetAvgProjection(projectionValue);
+            }
+            return this;
+        }
 
-		public ICriteria CreateCriteria(string associationPath, string alias)
-		{
-			throw new NotImplementedException();
-		}
+        private void SetAvgProjection(IProjection projection)
+        {
+            ProjectionList projectionList = Projections.ProjectionList();
+            projectionList.Add(projection);
+            projectionList.Add(Projections.RowCount());
+            ICriteriaEvent criteriaEvent = new SetProjectionEvent(projectionList);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetProjection(projectionList);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+        }
 
-		public ICriteria CreateCriteria(string associationPath, string alias, JoinType joinType)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetProjection(params IProjection[] projection)
+        {
+            throw new NotImplementedException();
+        }
 
-		public ICriteria SetResultTransformer(IResultTransformer resultTransformer)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria Add(ICriterion criterion)
+        {
+            ICriteriaEvent criteriaEvent = new AddCriterionEvent(criterion);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).Add(criterion);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetMaxResults(int maxResults)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria AddOrder(Order order)
+        {
+            criteriaCollector.AddOrder(order);
+            return this;
+        }
 
-		public ICriteria SetFirstResult(int firstResult)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetFetchMode(string associationPath, FetchMode fetchMode)
+        {
+            ICriteriaEvent criteriaEvent = new SetFetchModeEvent(associationPath, fetchMode);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetFetchMode(associationPath, fetchMode);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetFetchSize(int fetchSize)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetLockMode(LockMode lockMode)
+        {
+            ICriteriaEvent criteriaEvent = new SetLockModeEvent(lockMode);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetLockMode(lockMode);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetTimeout(int timeout)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetLockMode(string alias,LockMode lockMode)
+        {
+            ICriteriaEvent criteriaEvent = new SetLockModeEvent(lockMode, alias);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetLockMode(alias,lockMode); //fixed
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetCacheable(bool cacheable)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria CreateAlias(string associationPath, string alias)
+        {
+            ICriteriaEvent criteriaEvent = new CreateAliasEvent(associationPath, alias);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).CreateAlias(associationPath, alias);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetCacheRegion(string cacheRegion)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria CreateAlias(string associationPath, string alias, JoinType joinType)
+        {
+            ICriteriaEvent criteriaEvent = new CreateAliasEvent(associationPath, alias, joinType);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).CreateAlias(associationPath, alias,joinType);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria SetComment(string comment)
-		{
-			throw new NotImplementedException();
-		}
+        private static IEnumerable<ICriteriaEvent> NoCriteriaEvents =
+            new ReadOnlyCollection<ICriteriaEvent>(new List<ICriteriaEvent>());
 
-		public ICriteria SetFlushMode(FlushMode flushMode)
-		{
-			throw new NotImplementedException();
-		}
+        private ShardedSubcriteriaImpl CreateSubcriteria(ISubcriteriaFactory factory)
+        {
+            ShardedSubcriteriaImpl subCrit = new ShardedSubcriteriaImpl(shards, this);
+            foreach(IShard shard in shards)
+            {
+                ICriteria crit = shard.GetCriteriaById(criteriaId);
+                if(crit != null)
+                {
+                    factory.CreateSubcriteria(crit, NoCriteriaEvents);
+                }
+                else
+                {
+                    CreateSubcriteriaEvent subCriteriaEvent = new CreateSubcriteriaEvent(factory,
+                                                                                         subCrit.SubcriteriaRegistrar(
+                                                                                             shard),
+                                                                                         subCrit.ShardToCriteriaMap,
+                                                                                         subCrit.ShardToEventListMap);
+                    shard.AddCriteriaEvent(criteriaId,subCriteriaEvent);
+                }
+            }
+            return subCrit;
+        }
+        
+        public ICriteria CreateCriteria(string associationPath)
+        {
+            ISubcriteriaFactory factory = new SubcriteriaFactoryImpl(associationPath);
+            return CreateSubcriteria(factory);
+        }
 
-		public ICriteria SetCacheMode(CacheMode cacheMode)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria CreateCriteria(string associationPath, JoinType joinType)
+        {
+            ISubcriteriaFactory factory = new SubcriteriaFactoryImpl(associationPath, joinType);
+            return CreateSubcriteria(factory);
+        }
 
-		public IList List()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria CreateCriteria(string associationPath, string alias)
+        {
+            ISubcriteriaFactory factory = new SubcriteriaFactoryImpl(associationPath, alias);
+            return CreateSubcriteria(factory);
+        }
 
-		public object UniqueResult()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria CreateCriteria(string associationPath, string alias, JoinType joinType)
+        {
+            ISubcriteriaFactory factory = new SubcriteriaFactoryImpl(associationPath, alias, joinType);
+            return CreateSubcriteria(factory);
+        }
 
-		public IEnumerable<T> Future<T>()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetResultTransformer(IResultTransformer resultTransformer)
+        {
+            ICriteriaEvent criteriaEvent = new SetResultTransformerEvent(resultTransformer);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId)!= null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetResultTransformer(resultTransformer);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId,criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public IFutureValue<T> FutureValue<T>()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetMaxResults(int maxResults)
+        {
+            criteriaCollector.MaxResults(maxResults);
+            return this;
+        }
 
-		public void List(IList results)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetFirstResult(int firstResult)
+        {
+            criteriaCollector.FirstResult(firstResult);
+            return this;
+        }
 
-		public IList<T> List<T>()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetFetchSize(int fetchSize)
+        {
+            ICriteriaEvent criteriaEvent = new SetFetchSizeEvent(fetchSize);
+            foreach(IShard shard in shards)
+            {
+                if(shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetFetchSize(fetchSize);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public T UniqueResult<T>()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetTimeout(int timeout)
+        {
+            ICriteriaEvent criteriaEvent = new SetTimeoutEvent(timeout);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetTimeout(timeout);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public void ClearOrders()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetCacheable(bool cacheable)
+        {
+            ICriteriaEvent criteriaEvent = new SetCacheableEvent(cacheable);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetCacheable(cacheable);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria GetCriteriaByPath(string path)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetCacheRegion(string cacheRegion)
+        {
+            ICriteriaEvent criteriaEvent = new SetCacheRegionEvent(cacheRegion);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetCacheRegion(cacheRegion);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public ICriteria GetCriteriaByAlias(string alias)
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetComment(string comment)
+        {
+            ICriteriaEvent criteriaEvent = new SetCommentEvent(comment);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetComment(comment);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public System.Type GetRootEntityTypeIfAvailable()
-		{
-			throw new NotImplementedException();
-		}
+        public ICriteria SetFlushMode(FlushMode flushMode)
+        {
+            ICriteriaEvent criteriaEvent = new SetFlushModeEvent(flushMode);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetFlushMode(flushMode);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public string Alias
-		{
-			get { throw new NotImplementedException(); }
-		}
+        public ICriteria SetCacheMode(CacheMode cacheMode)
+        {
+            ICriteriaEvent criteriaEvent = new SetCacheModeEvent(cacheMode);
+            foreach (IShard shard in shards)
+            {
+                if (shard.GetCriteriaById(criteriaId) != null)
+                {
+                    shard.GetCriteriaById(criteriaId).SetCacheMode(cacheMode);
+                }
+                else
+                {
+                    shard.AddCriteriaEvent(criteriaId, criteriaEvent);
+                }
+            }
+            return this;
+        }
 
-		public CriteriaId CriteriaId
-		{
-			get { throw new NotImplementedException(); }
-		}
+        //public ScrollableResults Scroll()
+        //{
+        //    throw new NotSupportedException();
+        //}
 
-		public ICriteriaFactory CriteriaFactory
-		{
-			get { throw new NotImplementedException(); }
-		}
-	}
+        //public ScrollableResults Scroll(ScrollMode scrollMode)
+        //{
+        //    throw new NotSupportedException();
+        //}
+
+        public IList List()
+        {
+            IShardOperation<IList> shardOp = new ListShardOperation<IList>(this);
+            IExitStrategy<IList> exitStrategy = new ConcatenateListsExitStrategy();
+            return this.shardAccessStrategy.Apply(this.shards, shardOp, exitStrategy,
+                                                                    this.criteriaCollector);
+        }
+
+        public Object UniqueResult()
+        {
+            IShardOperation<object> shardOp = new UniqueResultShardOperation<object>(this);
+            IExitStrategy<object> exitStrategy = new FirstNonNullResultExitStrategy<object>();
+            return this.shardAccessStrategy.Apply(this.shards, shardOp, exitStrategy, this.criteriaCollector);
+        }
+
+        public IEnumerable<T> Future<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFutureValue<T> FutureValue<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void List(IList results)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<T> List<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T UniqueResult<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearOrders()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICriteria GetCriteriaByPath(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICriteria GetCriteriaByAlias(string alias)
+        {
+            throw new NotImplementedException();
+        }
+
+        public System.Type GetRootEntityTypeIfAvailable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Alias
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

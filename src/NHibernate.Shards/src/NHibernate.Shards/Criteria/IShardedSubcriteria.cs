@@ -2,6 +2,6 @@
 {
 	public interface IShardedSubcriteria : ICriteria
 	{
-		IShardedCriteria GetParentCriteria();
+		IShardedCriteria ParentCriteria { get; }
 	}
 }
