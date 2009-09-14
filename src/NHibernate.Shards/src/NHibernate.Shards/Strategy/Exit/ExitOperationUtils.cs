@@ -15,7 +15,7 @@ namespace NHibernate.Shards.Strategy.Exit
 		public static IList GetNonNullList(IList list)
 		{
 			List<object> nonNullList = new List<object>();
-			foreach(object obj in list)
+			foreach (object obj in list)
 			{
 				if (obj != null)
 					nonNullList.Add(obj);
@@ -32,63 +32,61 @@ namespace NHibernate.Shards.Strategy.Exit
 		/// <returns></returns>
 		public static IList GetSubList(IList results, int fromIndex, int toIndex)
 		{
-            IList subList = new List<object>();
-            for (int i = fromIndex; i < toIndex; i++)
-            {
-                subList.Add(results[i]);
-            }
-            return subList;
+			IList subList = new List<object>();
+			for (int i = fromIndex; i <= toIndex; i++)
+			{
+				subList.Add(results[i]);
+			}
+			return subList;
 		}
 
-        public static IList GetMinList(IList results)
-        {
-            return GetMinOrMaxList(results, CompareType.MIN);
-        }
+		public static IList GetMinList(IList results)
+		{
+			return GetMinOrMaxList(results, CompareType.MIN);
+		}
 
-	    public enum CompareType
-	    {
-	        MIN,
-            MAX
-	    }
+		public enum CompareType
+		{
+			MIN,
+			MAX
+		}
 
-        private static IList GetMinOrMaxList(IList results, CompareType compareType)
-        {
-            bool first = true;
-            object result = null;
-            IComparer comparer = Comparer.Default;
-            foreach (object value in results)
-            {
-                if (first)
-                {
-                    result = value;
-                    first = false;
-                }
-                if(compareType == CompareType.MAX)
-                {
-                    if (comparer.Compare(result, value) < 0)
-                    {
-                        result = value;
-                    }
-                }
-                else
-                {
-                    if(comparer.Compare(result,value) > 0)
-                    {
-                        result = value;
-                    }
-                }
-            }
-            IList maxList = new ArrayList();
-            maxList.Add(result);
-            return maxList;
+		private static IList GetMinOrMaxList(IList results, CompareType compareType)
+		{
+			bool first = true;
+			object result = null;
+			IComparer comparer = Comparer.Default;
+			foreach (object value in results)
+			{
+				if (first)
+				{
+					result = value;
+					first = false;
+				}
+				if (compareType == CompareType.MAX)
+				{
+					if (comparer.Compare(result, value) < 0)
+					{
+						result = value;
+					}
+				}
+				else
+				{
+					if (comparer.Compare(result, value) > 0)
+					{
+						result = value;
+					}
+				}
+			}
+			IList maxList = new ArrayList();
+			maxList.Add(result);
+			return maxList;
+		}
 
-        }
-
-	    public static IList GetMaxList(IList results)
-        {
-	        return GetMinOrMaxList(results, CompareType.MAX);
-        }
-
+		public static IList GetMaxList(IList results)
+		{
+			return GetMinOrMaxList(results, CompareType.MAX);
+		}
 
 
 		public static IComparable GetPropertyValue(object obj, string propertyName)

@@ -3,7 +3,7 @@ using NHibernate.SqlCommand;
 
 namespace NHibernate.Shards.Criteria
 {
-	internal class CreateAliasEvent : ICriteriaEvent
+	public class CreateAliasEvent : ICriteriaEvent
 	{
 		private enum MethodSig
 		{
