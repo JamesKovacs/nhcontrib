@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using NHibernate.Shards.Util;
 
 namespace NHibernate.Shards.Session
 {
 	internal class CrossShardRelationshipDetectingInterceptorDecorator : InterceptorDecorator
-	{
-		private CrossShardRelationshipDetectingInterceptor csrdi;
+    {
+        private CrossShardRelationshipDetectingInterceptor csrdi;
 
 		public CrossShardRelationshipDetectingInterceptorDecorator(CrossShardRelationshipDetectingInterceptor csrdi,
 		                                                           IInterceptor delegateInterceptor)

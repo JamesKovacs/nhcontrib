@@ -155,12 +155,20 @@ namespace NHibernate.Shards
 		public ICriteria EstablishCriteria(IShardedCriteria shardedCriteria)
 		{
 			CriteriaId critId = shardedCriteria.CriteriaId;
-			ICriteria crit = criteriaMap[critId];
+			ICriteria crit = null;
+			if(criteriaMap.Keys.Contains(critId))
+			{
+				crit = criteriaMap[critId];
+			}
 			if (crit == null)
 			{
 				crit = shardedCriteria.CriteriaFactory.CreateCriteria(EstablishSession());
 				criteriaMap.Add(critId, crit);
-				ICollection<ICriteriaEvent> critEvents = criteriaEventMap[critId];
+				ICollection<ICriteriaEvent> critEvents = null;
+				if(criteriaEventMap.Keys.Contains(critId))
+				{
+					critEvents = criteriaEventMap[critId];	
+				}				
 				if (critEvents != null)
 				{
 					foreach (ICriteriaEvent critEvent in critEvents)

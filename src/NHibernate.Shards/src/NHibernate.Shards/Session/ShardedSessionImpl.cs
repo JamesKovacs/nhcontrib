@@ -61,7 +61,14 @@ namespace NHibernate.Shards.Session
         private int nextQueryId = 0;
         private IShardedTransaction transaction;
 
-
+		/**
+		 * Constructor used for openSession(...) processing.
+		 *
+		 * @param shardedSessionFactory The factory from which this session was obtained
+		 * @param shardStrategy The shard strategy for this session
+		 * @param classesWithoutTopLevelSaveSupport The set of classes on which top-level save can not be performed
+		 * @param checkAllAssociatedObjectsForDifferentShards Should we check for cross-shard relationships
+		 */
         internal ShardedSessionImpl(
             IShardedSessionFactoryImplementor shardedSessionFactory,
             IShardStrategy shardStrategy,
@@ -75,7 +82,15 @@ namespace NHibernate.Shards.Session
         {
         }
 
-
+		/**
+		 * Constructor used for openSession(...) processing.
+		 *
+		 * @param interceptor The interceptor to be applied to this session
+		 * @param shardedSessionFactory The factory from which this session was obtained
+		 * @param shardStrategy The shard strategy for this session
+		 * @param classesWithoutTopLevelSaveSupport The set of classes on which top-level save can not be performed
+		 * @param checkAllAssociatedObjectsForDifferentShards Should we check for cross-shard relationships
+		 */
         internal ShardedSessionImpl(
             /*@Nullable*/ IInterceptor interceptor,
                           IShardedSessionFactoryImplementor shardedSessionFactory,
@@ -277,10 +292,11 @@ namespace NHibernate.Shards.Session
             {
                 if (shard.Session != null)
                 {
-                    ISession session = shard.Session;
-                    session.Disconnect();
+                	shard.Session.Disconnect();
                 }
             }
+			// we do not allow application-supplied connections, so we can always return
+			// null
             return null;
         }
 
@@ -384,6 +400,7 @@ namespace NHibernate.Shards.Session
         {
             get
             {
+				// one open session means the sharded session is open
                 foreach(IShard shard in shards)
                 {
                     if(shard.Session != null && shard.Session.IsOpen)
@@ -544,6 +561,7 @@ namespace NHibernate.Shards.Session
         private object Get(string entityName, object id, LockMode mode)
         {
             IShardOperation<object> shardOp = new GetShardOperationByEntityNameIdAndLockMode(entityName, (ISerializable) id, mode);
+			// we're not letting people customize shard selection by lockMode
             return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(entityName, id));
         }
 
@@ -708,6 +726,7 @@ namespace NHibernate.Shards.Session
         ISerializable ExtractId(object obj)
         {
             IClassMetadata cmd = shardedSessionFactory.GetClassMetadata(obj.GetType());
+			// I'm just guessing about the EntityMode
             return (ISerializable) cmd.GetIdentifier(obj, EntityMode.Poco);
         }
 
@@ -735,16 +754,24 @@ namespace NHibernate.Shards.Session
             }
             Preconditions.CheckNotNull(shardId);
             SetCurrentSubgraphShardId(shardId);
-            log.Debug(String.Format("Saving object of type %s to shard %s", obj.GetType(), shardId));
+            log.Debug(String.Format("Saving object of type {0} to shard {1}", obj.GetType(), shardId));
             return shardIdsToShards[shardId].EstablishSession().Save(entityName, obj);
 
         }
 
         public static void SetCurrentSubgraphShardId(ShardId shardId)
         {
-            //currentSubgraphShardId.set(shardId);
+        	currentSubgraphShardId = shardId;           
         }
 
+		/*
+		 * We already know that we don't have a shardId locked in for this session,
+		 * and we already know that this object can't grab its session from some
+		 * other object (we looked).  If this class is in the set of classes
+		 * that don't support top-level saves, it's an error.
+		 * This is to prevent clients from accidentally splitting their object graphs
+		 * across multiple shards.
+		 */
         private void CheckForUnsupportedToplevelSave(System.Type clazz)
         {
             if(classesWithoutTopLevelSaveSupport.Contains(clazz))
@@ -778,6 +805,7 @@ namespace NHibernate.Shards.Session
                 CheckForUnsupportedToplevelSave(obj.GetType());
                 shardId = shardStrategy.ShardSelectionStrategy.SelectShardIdForNewObject(obj);             
             }
+			// lock has been requested but shard has not yet been selected - lock it in
             if(lockedShard)
             {
                 lockedShardId = shardId;
@@ -789,6 +817,10 @@ namespace NHibernate.Shards.Session
             
         }
 
+		/**
+		 * TODO(maxr) I can see this method benefitting from a cache that lets us quickly
+		 * see which properties we might need to look at.
+		 */
         ShardId GetShardIdOfRelatedObject(object obj)
         {
             IClassMetadata cmd = GetClassMetadata(obj.GetType());
@@ -809,10 +841,10 @@ namespace NHibernate.Shards.Session
                      */
                     if (collections == null)
                     {
-                        collections = new List<Collection<object>>(); //Lists.newArrayList();
+                        collections = new List<Collection<object>>();
                     }
-                    //@SuppressWarnings("unchecked")
-                    var coll = (Collection<Object>)pair.Value; //(Collection<Object>)pair.getSecond();
+                    
+                    var coll = (Collection<Object>)pair.Value; 
                     collections.Add(coll);
                 }
                 else
@@ -911,6 +943,7 @@ namespace NHibernate.Shards.Session
             ShardId shardId = GetShardIdForObject(obj);
             if(shardId != null)
             {
+				// attached object
                 op.SaveOrUpdate(shardIdsToShards[shardId], obj);
                 return;
             }
@@ -921,6 +954,11 @@ namespace NHibernate.Shards.Session
                 return;
             }
 
+			/**
+			 * Too bad, we've got a detached object that could be on more than 1 shard.
+			 * The only safe way to handle this is to try and lookup the object, and if
+			 * it exists, do a merge, and if it doesn't, do a save.
+			 */
             ISerializable id = ExtractId(obj);
             if(id != null)
             {
@@ -979,6 +1017,7 @@ namespace NHibernate.Shards.Session
             ShardId shardId = GetShardIdForObject(obj);
             if(shardId != null)
             {
+				// attached object
                 updateOperation.Update(shardIdsToShards[shardId], obj);
                 return;
             }
@@ -988,6 +1027,11 @@ namespace NHibernate.Shards.Session
                 updateOperation.Update(potentialShards[0], obj);
                 return;
             }
+			/**
+			  * Too bad, we've got a detached object that could be on more than 1 shard.
+			  * The only safe way to perform the update is to load the object and then
+			  * do a merge.
+			  */
             ISerializable id = ExtractId(obj);
             if(id != null)
             {
@@ -1140,8 +1184,36 @@ namespace NHibernate.Shards.Session
             ShardId shardId = GetShardIdForObject(obj);
             if (shardId != null)
             {
+				// attached object
                 deleteOperation.Delete(shardIdsToShards[shardId], obj);
+				return;
             }
+			/**
+			 * Detached object.
+			 * We can't just try to delete on each shard because if you have an
+			 * object associated with Session x and you try to delete that object in
+			 * Session y, and if that object has persistent collections, Hibernate will
+			 * blow up because it will try to associate the persistent collection with
+			 * a different Session as part of the cascade.  In order to avoid this we
+			 * need to be precise about the shard on which we perform the delete.
+			 *
+			 * First let's see if we can derive the shard just from the object's id.
+			 */
+        	IList<IShard> potentialShards = DetermineShardsObjectViaResolutionStrategy(obj);
+			if(potentialShards.Count == 1)
+			{
+				deleteOperation.Delete(potentialShards[0], obj);
+				return;
+			}
+			/**
+			 * Too bad, we've got a detached object that could be on more than 1 shard.
+			 * The only safe way to perform the delete is to load the object before
+			 * deleting.
+			 */
+        	object persistent = Get(obj.GetType(), ExtractId(obj));
+        	shardId = GetShardIdForObject(persistent);
+        	deleteOperation.Delete(shardIdsToShards[shardId], persistent);
+
         }
 
         /// <summary>
@@ -1585,6 +1657,9 @@ namespace NHibernate.Shards.Session
             ISession session;
             if(shard == null)
             {
+				// collection not associated with any of our shards, so just delegate to
+				// a random shard.  We'll end up failing, but we'll fail with the
+				// error that users typically get.
                 session = SomeSession;
                 if(session!=null )
                 {
@@ -1706,12 +1781,14 @@ namespace NHibernate.Shards.Session
         public object Get(System.Type clazz, object id, LockMode lockMode)
         {
             IShardOperation<object> shardOp = new GetShardOperationByTypeIdAndLockMode(clazz, (ISerializable) id, lockMode);
+			// we're not letting people customize shard selection by lockMode
             return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(clazz, id));
         }
 
         public object Get(string entityName, object id)
         {
             IShardOperation<object> shardOp = new GetShardOperationByEntityNameAndId(entityName, (ISerializable) id);
+			// we're not letting people customize shard selection by lockMode
             return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(entityName, id));
         }
 
@@ -1739,12 +1816,19 @@ namespace NHibernate.Shards.Session
         public string GetEntityName(object obj)
         {
             IShardOperation<string> invoker = new GetShardOperationByEntityName(obj);
-            return InvokeOnShardWithObject<string>(invoker, obj);
+            return InvokeOnShardWithObject(invoker, obj);
         }
 
+		/**
+		  * Helper method we can use when we need to find the Shard with which a
+		  * specified object is associated and invoke the method on that Shard.
+		  * If the object isn't associated with a Session we just invoke it on a
+		  * random Session with the expectation that this will cause an error.
+		  */
         T InvokeOnShardWithObject<T>(IShardOperation<T> so, object obj )
         {
             ShardId shardId = GetShardIdForObject(obj);
+			// just ask this question of a random shard so we get the proper error
             IShard shardToUse = shardId == null ? this.shards[0] : this.shardIdsToShards[shardId];
             return so.Execute(shardToUse);
         }
@@ -1779,6 +1863,7 @@ namespace NHibernate.Shards.Session
         /// <returns>The Filter instance representing the enabled fiter.</returns>
         public IFilter GetEnabledFilter(string filterName)
         {
+			// TODO(maxr) what do we return here?  A sharded filter?
             foreach(IShard shard in shards)
             {
                 if(shard.Session != null)
@@ -1954,9 +2039,7 @@ namespace NHibernate.Shards.Session
         }
 
         private IShard GetShardForObject(object obj, IList<IShard> shardsToConsider)
-        {
-            //TODO: optimize this by keeping an identity map of objects to shardId
-
+        {            
             foreach (IShard shard in shardsToConsider)
             {
                 if (shard.Session != null && shard.Session.Contains(obj))
@@ -1967,8 +2050,8 @@ namespace NHibernate.Shards.Session
 
         internal ShardId GetShardIdForObject(object obj, List<IShard> shardsToConsider)
         {
-            //TODO Also, wouldn't it be faster to first see if there's just a single shard id mapped to the shard?
-
+            //TODO: Also, wouldn't it be faster to first see if there's just a single shard id mapped to the shard?
+			//TODO: optimize this by keeping an identity map of objects to shardId
             IShard shard = GetShardForObject(obj, shardsToConsider);
 
             if (shard == null)
@@ -2024,14 +2107,19 @@ namespace NHibernate.Shards.Session
                 IInterceptor interceptorToSet = interceptor;
                 if(checkAllAssociatedObjectsForDifferentShards)
                 {
+					// cross shard association checks for updates are handled using interceptors
                     var csrdi =
                         new CrossShardRelationshipDetectingInterceptor(shardIdResolver);
                     if(interceptorToSet == null)
                     {
+						// no interceptor to wrap so just use the cross-shard detecting interceptor raw
+						// this is safe because it's a stateless interceptor
                         interceptorToSet = csrdi;
                     }
                     else
                     {
+						// user specified their own interceptor, so wrap it with a decorator
+						// that will still do the cross shard association checks
                         Pair<IInterceptor, IOpenSessionEvent> result = DecorateInterceptor(csrdi, interceptor);
                         interceptorToSet = result.first;
                         eventToRegister = result.second;
@@ -2039,6 +2127,8 @@ namespace NHibernate.Shards.Session
                 }
                 else if(interceptorToSet != null)
                 {
+					// user specified their own interceptor so need to account for the fact
+					// that it might be stateful
                     Pair<IInterceptor, IOpenSessionEvent> result = HandleStatefulInterceptor(interceptorToSet);
                     interceptorToSet = result.first;
                     eventToRegister = result.second;

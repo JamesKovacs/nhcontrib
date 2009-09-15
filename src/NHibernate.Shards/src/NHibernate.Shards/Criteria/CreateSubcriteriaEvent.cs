@@ -2,6 +2,11 @@
 
 namespace NHibernate.Shards.Criteria
 {
+	/**
+	 * Event that allows a Subcriteria to be lazily added to a Criteria.
+	 *
+	 * @author maxr@google.com (Max Ross)
+	 */
 	public class CreateSubcriteriaEvent : ICriteriaEvent
 	{
 		private readonly ISubcriteriaFactory subcriteriaFactory;
@@ -13,7 +18,7 @@ namespace NHibernate.Shards.Criteria
 		                              IDictionary<IShard, ICriteria> shardToCriteriaMap,
 		                              IDictionary<IShard, IList<ICriteriaEvent>> shardToCriteriaEventListMap)
 		{
-			subcriteriaFactory = subCriteriaFactory;
+            this.subcriteriaFactory = subCriteriaFactory;
 			this.subCriteriaRegistrar = subCriteriaRegistrar;
 			this.shardToCriteriaMap = shardToCriteriaMap;
 			this.shardToCriteriaEventListMap = shardToCriteriaEventListMap;

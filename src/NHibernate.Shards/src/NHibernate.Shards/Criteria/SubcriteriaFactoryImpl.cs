@@ -4,6 +4,16 @@ using NHibernate.SqlCommand;
 
 namespace NHibernate.Shards.Criteria
 {
+	/**
+	 * Concrete implementation of the {@link SubcriteriaFactory} interface.
+	 * Used to lazily create {@link org.hibernate.impl.CriteriaImpl.Subcriteria}
+	 * @see Criteria#createCriteria(String)
+	 * @see Criteria#createCriteria(String, int)
+	 * @see Criteria#createCriteria(String, String)
+	 * @see Criteria#createCriteria(String, String, int)
+	 *
+	 * @author maxr@google.com (Max Ross)
+	 */
     public class SubcriteriaFactoryImpl:ISubcriteriaFactory
     {
         private enum MethodSig
@@ -14,14 +24,26 @@ namespace NHibernate.Shards.Criteria
             AssociationAndAliasAndJoinType
         }
 
+		// used to tell us which overload of createCriteria to invoke
         private readonly MethodSig methodSig;
 
-        private readonly JoinType joinType;
-
+		// the association we'll pass to createCriteria
         private readonly string association;
 
+		// the join type we'll pass to createCriteria.  Can be null.
+		private readonly JoinType joinType;
+
+		// the alias we'll pass to createCriteria.  Can be null.
         private readonly string alias;
 
+		/**
+		 * Construct a SubcriteriaFactoryImpl
+		 *
+		 * @param methodSig used to tell us which overload of createCriteria to invoke
+		 * @param association the association we'll pass to createCriteria
+		 * @param joinType the join type we'll pass to createCriteria.  Can be null.
+		 * @param alias the alias we'll pass to createCriteria.  Can be null.
+		 */
         private SubcriteriaFactoryImpl(MethodSig methodSig, string association, JoinType joinType, string alias)
         {
             this.methodSig = methodSig;
@@ -30,21 +52,45 @@ namespace NHibernate.Shards.Criteria
             this.alias = alias;
         }
 
+		/**
+		 * Construct a SubcriteriaFactoryImpl
+		 *
+		 * @param association the association we'll pass to createCriteria
+		 */
         public SubcriteriaFactoryImpl(string association):this(MethodSig.Association,association,JoinType.None,null)
         {            
         }
 
+		/**
+		 * Construct a SubcriteriaFactoryImpl
+		 *
+		 * @param association the association we'll pass to createCriteria
+		 * @param joinType the join type we'll pass to createCriteria
+		 */
         public SubcriteriaFactoryImpl(string association, JoinType joinType)
             : this(MethodSig.AssociationAndJoinType, association, joinType, null)
         {
             
         }
 
+		/**
+		 * Construct a SubcriteriaFactoryImpl
+		 *
+		 * @param association the association we'll pass to createCriteria
+		 * @param alias the alias we'll pass to createCriteria
+		 */
         public SubcriteriaFactoryImpl(string association,string alias):this(MethodSig.AssociationAndAlias,association,JoinType.None,alias)
         {
             
         }
 
+		/**
+		 * Construct a SubcriteriaFactoryImpl
+		 *
+		 * @param association the association we'll pass to createCriteria
+		 * @param alias the alias we'll pass to createCriteria
+		 * @param joinType the join type we'll pass to createCriteria
+		 */
         public SubcriteriaFactoryImpl(string association, string alias, JoinType joinType):this(MethodSig.AssociationAndAliasAndJoinType,association,joinType,alias)
         {
             
@@ -52,6 +98,7 @@ namespace NHibernate.Shards.Criteria
 
         public ICriteria CreateSubcriteria(ICriteria parent, IEnumerable<ICriteriaEvent> criteriaEvents)
         {
+			// call the right overload to actually create the Criteria
             ICriteria crit;
             switch(methodSig)
             {
@@ -70,6 +117,7 @@ namespace NHibernate.Shards.Criteria
                 default:
                     throw new ShardedSessionException("Unknown constructor type for subcriteria creation: " + methodSig);
             }
+			// apply the events
             foreach(ICriteriaEvent criteriaEvent in criteriaEvents)
             {
                 criteriaEvent.OnEvent(crit);

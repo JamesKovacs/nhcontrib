@@ -1,5 +1,10 @@
 namespace NHibernate.Shards.Session
 {
+	/**
+	 * OpenSessionEvent which sets the provided Session on a RequiresSession.
+	 *
+	 * @author maxr@google.com (Max Ross)
+	 */
 	public class SetSessionOnRequiresSessionEvent : IOpenSessionEvent
 	{
 	    private readonly IRequiresSession requiresSession;

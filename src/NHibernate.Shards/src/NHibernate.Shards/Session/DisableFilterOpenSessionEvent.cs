@@ -1,5 +1,10 @@
 namespace NHibernate.Shards.Session
 {
+	/**
+	 * OpenSessionEvent which disables specified filter.
+	 *
+	 * @author maxr@google.com (Max Ross)
+	 */
 	public class DisableFilterOpenSessionEvent : IOpenSessionEvent
 	{
 	    private readonly string filterName;

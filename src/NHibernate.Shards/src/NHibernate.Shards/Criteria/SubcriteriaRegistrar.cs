@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NHibernate.Shards.Criteria
 {
@@ -17,8 +14,11 @@ namespace NHibernate.Shards.Criteria
         public void EstablishSubCriteria(ICriteria parentCriteria, ISubcriteriaFactory subcriteriaFactory, IDictionary<IShard, ICriteria> shardToCriteriaMap, IDictionary<IShard, IList<ICriteriaEvent>> shardToCriteriaEventListMap)
         {
             IList<ICriteriaEvent> criteriaEvents = shardToCriteriaEventListMap[shard];
+			// create the subcrit with the proper list of events
             ICriteria newCrit = subcriteriaFactory.CreateSubcriteria(parentCriteria, criteriaEvents);
+			// clear the list of events
             criteriaEvents.Clear();
+			// add it to our map
             shardToCriteriaMap[shard] = newCrit;
         }
     }

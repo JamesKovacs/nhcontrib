@@ -7,34 +7,79 @@ using NHibernate.Shards.Strategy.Exit;
 
 namespace NHibernate.Shards.Criteria
 {
+	using log4net;
+
+	/**
+	 * Implements the ExitOperationsCollector interface for Critierias
+	 *
+	 * @author Maulik Shah
+	 */
 	public class ExitOperationsCriteriaCollector : IExitOperationsCollector
 	{
+		// maximum number of results requested by the client
 		private int? maxResults;
+
+		// index of the first result requested by the client
 		private int? firstResult;
-        private readonly Distinct distinct;
+
+		// Distinct operation applied to the Criteria
+        private Distinct distinct;
+
+		// Average Projection operation applied to the Criteria
 		private AggregateProjection avgProjection;
+
+		// Aggregate Projecton operation applied to the Criteria
 		private AggregateProjection aggregateProjection;
+
+		// Row Count Projection operation applied to the Criteria
 		private RowCountProjection rowCountProjection;
+
+		// The Session Factory Implementor with which the Criteria is associated
 		private ISessionFactoryImplementor sessionFactoryImplementor;
 
+		// Order operations applied to the Criteria
 		private readonly IList<Order> orders = new List<Order>();
 
+		// Our friendly neighborhood logger
+    	private readonly ILog log = LogManager.GetLogger(typeof (ExitOperationsCriteriaCollector));
+
+		/**
+		 * Sets the maximum number of results requested by the client
+		 *
+		 * @param maxResults maximum number of results requested by the client
+		 * @return this
+		 */
 		public IExitOperationsCollector MaxResults(int maxResultsValue)
 		{
 			maxResults = maxResultsValue;
 			return this;
 		}
 
+		/**
+		 * Sets the index of the first result requested by the client
+		 *
+		 * @param firstResult index of the first result requested by the client
+		 * @return this
+		 */
 		public IExitOperationsCollector FirstResult(int firstResultValue)
 		{
-			firstResult = firstResultValue;
+            this.firstResult = firstResultValue;
 			return this;
 		}
 
+		/**
+		 * Adds the given projection.
+		 *
+		 * @param projection the projection to add
+		 * @return this
+		 */
 		public IExitOperationsCollector AddProjection(IProjection projection)
 		{
 			if (projection.GetType().IsAssignableFrom(distinct.GetType()))
 			{
+            	this.distinct = (Distinct) projection;
+				//TODO: Distinct doesn't work yet
+            	log.Error("Distinct is not ready yet");
 				throw new NotSupportedException();
 			}
 			if (projection.GetType().IsAssignableFrom(rowCountProjection.GetType()))
@@ -45,29 +90,53 @@ namespace NHibernate.Shards.Criteria
 			{
 				if (projection.ToString().ToLower().StartsWith("avg"))
 				{
-					avgProjection = (AggregateProjection) projection;
+                    this.avgProjection = (AggregateProjection)projection;
 				}
 				else
 				{
-					aggregateProjection = (AggregateProjection) projection;
+                    this.aggregateProjection = (AggregateProjection)projection;
 				}
 			}
 			else
 			{
+            	log.Error("Adding an unsupported Projection: " + projection.GetType().Name);
 				throw new NotSupportedException();
 			}
 
 			return this;
 		}
 
+		/**
+		 * Add the given Order
+		 *
+		 * @param order the order to add
+		 * @return this
+		 */
 		public IExitOperationsCollector AddOrder(Order order)
 		{
-			orders.Add(order);
+            this.orders.Add(order);
 			return this;
 		}
 
 		public IList Apply(IList result)
 		{
+			/**
+			 * Herein lies the glory
+			 *
+			 * hibernate has done as much as it can, we're going to have to deal with
+			 * the rest in memory.
+			 *
+			 * The heirarchy of operations is this so far:
+			 * Distinct
+			 * Order
+			 * FirstResult
+			 * MaxResult
+			 * RowCount
+			 * Average
+			 * Min/Max/Sum
+			 */
+
+			// ordering of the following operations *really* matters!
 			if (distinct != null)
 			{
 				result = new DistinctExitOperation(distinct).Apply(result);
@@ -94,6 +163,7 @@ namespace NHibernate.Shards.Criteria
 			{
 				result = new AvgResultsExitOperation().Apply(result);
 			}
+			// min, max, sum
 			if (aggregateProjection != null)
 			{
 				result = factory.GetProjectionExitOperation(aggregateProjection, sessionFactoryImplementor).Apply(result);
@@ -102,9 +172,13 @@ namespace NHibernate.Shards.Criteria
 			return result;
 		}
 
+		/**
+		 * Sets the session factory implementor
+		 * @param sessionFactoryImplementor the session factory implementor to set
+		 */
 		public void SetSessionFactory(ISessionFactoryImplementor sessionFactoryImplementorValue)
 		{
-			sessionFactoryImplementor = sessionFactoryImplementorValue;
+            this.sessionFactoryImplementor = sessionFactoryImplementorValue;
 		}
 	}
 }

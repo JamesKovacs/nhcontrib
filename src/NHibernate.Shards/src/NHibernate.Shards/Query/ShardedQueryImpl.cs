@@ -23,6 +23,7 @@ namespace NHibernate.Shards.Query
 	/// </summary>
 	public class ShardedQueryImpl : IShardedQuery
 	{
+
 		private readonly QueryId queryId;
 		private readonly IList<IShard> shards;
 		private readonly IQueryFactory queryFactory;
@@ -53,7 +54,7 @@ namespace NHibernate.Shards.Query
 			this.shards = shards;
 			this.queryFactory = queryFactory;
 			this.shardAccessStrategy = shardAccessStrategy;
-			queryCollector = new ExitOperationsQueryCollector();
+            this.queryCollector = new ExitOperationsQueryCollector();
 
 			Preconditions.CheckState(!(shards.Count == 0));
 			foreach (IShard shard in shards)
@@ -62,6 +63,14 @@ namespace NHibernate.Shards.Query
 			}
 		}
 
+		/**
+		 * This method currently wraps list().
+		 *
+		 * {@inheritDoc}
+		 *
+		 * @return an iterator over the results of the query
+		 * @throws HibernateException
+		 */                
 		public IEnumerable Enumerable()
 		{
 			return List();
@@ -72,10 +81,24 @@ namespace NHibernate.Shards.Query
 			return List<T>();
 		}
 
+		/**
+		 * The implementation executes the query on each shard and concatenates the
+		 * results.
+		 *
+		 * {@inheritDoc}
+		 *
+		 * @return a list containing the concatenated results of executing the
+		 * query on all shards
+		 * @throws HibernateException
+		 */
 		public IList List()
 		{
 			IShardOperation<IList> shardOp = new ListShardOperation<IList>(queryId, this);
 			IExitStrategy<IList> exitStrategy = new ConcatenateListsExitStrategy();
+			/**
+			 * We don't support shard selection for HQL queries.  If you want
+			 * custom shards, create a ShardedSession with only the shards you want.
+			 */
 			return shardAccessStrategy.Apply(shards, shardOp, exitStrategy, queryCollector);
 		}
 
@@ -89,10 +112,24 @@ namespace NHibernate.Shards.Query
 			throw new NotImplementedException();
 		}
 
+		/**
+		 * The implementation executes the query on each shard and returns the first
+		 * non-null result.
+		 *
+		 * {@inheritDoc}
+		 *
+		 * @return the first non-null result, or null if no non-null result found
+		 * @throws HibernateException
+		 */
 		public object UniqueResult()
 		{
-			IShardOperation<object> shardOp = new ListShardOperation<object>(queryId, this);
+            IShardOperation<object> shardOp = new UniqueResultShardOperation<object>(queryId, this);
+			/**
+			 * We don't support shard selection for HQL queries.  If you want
+			 * custom shards, create a ShardedSession with only the shards you want.
+			 */
 			return shardAccessStrategy.Apply(shards, shardOp, new FirstNonNullResultExitStrategy<object>(), queryCollector);
+
 		}
 
 		public T UniqueResult<T>()
@@ -101,6 +138,12 @@ namespace NHibernate.Shards.Query
 			return shardAccessStrategy.Apply(shards, shardOp, new FirstNonNullResultExitStrategy<T>(), queryCollector);
 		}
 
+		/**
+		 * ExecuteUpdate is not supported and throws an
+		 * UnsupportedOperationException.
+		 *
+		 * @throws HibernateException
+		 */
 		public int ExecuteUpdate()
 		{
 			throw new NotSupportedException();
@@ -1146,12 +1189,12 @@ namespace NHibernate.Shards.Query
 
 		public QueryId QueryId
 		{
-			get { return queryId; }
+            get { return this.queryId; }
 		}
 
 		public IQueryFactory QueryFactory
 		{
-			get { return queryFactory; }
+            get { return this.queryFactory; }
 		}
 
 		private class UniqueResultShardOperation<T> : IShardOperation<T>
@@ -1168,7 +1211,7 @@ namespace NHibernate.Shards.Query
 			public T Execute(IShard shard)
 			{
 				shard.EstablishQuery(shardedQuery);
-				return (T) shard.UniqueResult(queryId);
+                return (T) shard.UniqueResult(this.queryId);
 			}
 
 			public string OperationName
@@ -1191,7 +1234,7 @@ namespace NHibernate.Shards.Query
 			public T Execute(IShard shard)
 			{
 				shard.EstablishQuery(shardedQuery);
-				return (T) shard.List(queryId);
+                return (T) shard.List(this.queryId);
 			}
 
 			public string OperationName

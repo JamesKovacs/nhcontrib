@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using NHibernate.Criterion;
 using NHibernate.Shards.Strategy.Access;
 using NHibernate.Shards.Strategy.Exit;
@@ -11,18 +10,39 @@ using NHibernate.Transform;
 
 namespace NHibernate.Shards.Criteria
 {
+	/**
+	 * Concrete implementation of the {@link ShardedCriteria} interface.
+	 *
+	 * @author maxr@google.com (Max Ross)
+	 */
     public class ShardedCriteriaImpl:IShardedCriteria
     {
+		// unique id for this ShardedCriteria
         private CriteriaId criteriaId;
 
+		// the shards we know about
         private IList<IShard> shards;
 
+		// a factory that knows how to create actual Criteria objects
         private ICriteriaFactory criteriaFactory;
 
+		// the shard access strategy we use when we execute the Criteria
+		// across multiple shards
         private IShardAccessStrategy shardAccessStrategy;
 
+		// the criteria collector we use to process the results of executing
+		// the Criteria across multiple shards
         private ExitOperationsCriteriaCollector criteriaCollector;
 
+		/**
+		 * Construct a ShardedCriteriaImpl
+		 *
+		 * @param criteriaId unique id for this ShardedCriteria
+		 * @param shards the shards that this ShardedCriteria is aware of
+		 * @param criteriaFactory factory that knows how to create concrete {@link Criteria} objects
+		 * @param shardAccessStrategy the access strategy we use when we execute this
+		 * ShardedCriteria across multiple shards.
+		 */
         public ShardedCriteriaImpl(CriteriaId criteriaId,IList<IShard> shards, ICriteriaFactory criteriaFactory,IShardAccessStrategy shardAccessStrategy)
         {
             this.criteriaId = criteriaId;
@@ -44,6 +64,9 @@ namespace NHibernate.Shards.Criteria
             get { return this.criteriaFactory; }
         }
 
+		/**
+		  * @return any Criteria, or null if we don't have one
+		  */
         private ICriteria GetSomeCriteria()
         {
             foreach(IShard shard in shards)
@@ -57,6 +80,10 @@ namespace NHibernate.Shards.Criteria
             return null;
         }
 
+		/**
+		 * @return any Criteria.  If no Criteria has been established we establish
+		 * one and return it.
+		 */
         private ICriteria GetOrEstablishSomeCriteria()
         {
             ICriteria crit = GetSomeCriteria();
@@ -70,7 +97,7 @@ namespace NHibernate.Shards.Criteria
 
         public string GetAlias()
         {
-            return GetSomeCriteria().Alias;
+        	return GetOrEstablishSomeCriteria().Alias;
         }
 
         public ICriteria SetProjection(IProjection projectionValue)
@@ -80,11 +107,15 @@ namespace NHibernate.Shards.Criteria
             {
                 SetAvgProjection(projectionValue);
             }
+			//TODO - handle ProjectionList
             return this;
         }
 
         private void SetAvgProjection(IProjection projection)
         {
+			// We need to modify the query to pull back not just the average but also
+			// the count.  We'll do this by creating a ProjectionList with both the
+			// average and the row count.
             ProjectionList projectionList = Projections.ProjectionList();
             projectionList.Add(projection);
             projectionList.Add(Projections.RowCount());
@@ -215,12 +246,20 @@ namespace NHibernate.Shards.Criteria
             return this;
         }
 
-        private static IEnumerable<ICriteriaEvent> NoCriteriaEvents =
+        private static readonly IEnumerable<ICriteriaEvent> NoCriteriaEvents =
             new ReadOnlyCollection<ICriteriaEvent>(new List<ICriteriaEvent>());
 
+		/**
+		 * Creating sharded subcriteria is tricky.  We need to give the client a
+		 * reference to a ShardedSubcriteriaImpl (which to the client just looks like
+		 * a Criteria object).  Then, for each shard where the Criteria has already been
+		 * established we need to create the actual subcriteria, and for each shard
+		 * where the Criteria has not yet been established we need to register an
+		 * event that will create the Subcriteria when the Criteria is established.
+		 */
         private ShardedSubcriteriaImpl CreateSubcriteria(ISubcriteriaFactory factory)
         {
-            ShardedSubcriteriaImpl subCrit = new ShardedSubcriteriaImpl(shards, this);
+            var subCrit = new ShardedSubcriteriaImpl(shards, this);
             foreach(IShard shard in shards)
             {
                 ICriteria crit = shard.GetCriteriaById(criteriaId);
@@ -230,7 +269,7 @@ namespace NHibernate.Shards.Criteria
                 }
                 else
                 {
-                    CreateSubcriteriaEvent subCriteriaEvent = new CreateSubcriteriaEvent(factory,
+                    var subCriteriaEvent = new CreateSubcriteriaEvent(factory,
                                                                                          subCrit.SubcriteriaRegistrar(
                                                                                              shard),
                                                                                          subCrit.ShardToCriteriaMap,
@@ -425,16 +464,30 @@ namespace NHibernate.Shards.Criteria
 
         public IList List()
         {
+			//build a shard operation and apply it across all shards
             IShardOperation<IList> shardOp = new ListShardOperation<IList>(this);
             IExitStrategy<IList> exitStrategy = new ConcatenateListsExitStrategy();
+
+			/**
+			 * We don't support shard selection for criteria queries.  If you want
+			 * custom shards, create a ShardedSession with only the shards you want.
+			 * We're going to concatenate all our results and then use our
+			 * criteria collector to do post processing.
+			 */
             return this.shardAccessStrategy.Apply(this.shards, shardOp, exitStrategy,
                                                                     this.criteriaCollector);
         }
 
         public Object UniqueResult()
         {
+			// build a shard operation and apply it across all shards
             IShardOperation<object> shardOp = new UniqueResultShardOperation<object>(this);
             IExitStrategy<object> exitStrategy = new FirstNonNullResultExitStrategy<object>();
+			/**
+			 * We don't support shard selection for criteria queries.  If you want
+			 * custom shards, create a ShardedSession with only the shards you want.
+			 * We're going to return the first non-null result we get from a shard.
+			 */
             return this.shardAccessStrategy.Apply(this.shards, shardOp, exitStrategy, this.criteriaCollector);
         }
 
@@ -485,7 +538,7 @@ namespace NHibernate.Shards.Criteria
 
         public string Alias
         {
-            get { throw new NotImplementedException(); }
+			get { return GetOrEstablishSomeCriteria().Alias; }
         }
 
         public object Clone()
