@@ -712,7 +712,6 @@ namespace NHibernate.Shards.Session
 			// try to be helpful to apps that don't clean up properly
 			if (!this.IsClosed)
 			{
-				this.log.Warn("ShardedSessionFactoryImpl is being garbage collected but it was never properly closed.");
 				try
 				{
 					this.Close();
