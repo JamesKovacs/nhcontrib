@@ -146,6 +146,7 @@ namespace NHibernate.Shards
 		private void PopulatePrototypeWithVariableProperties(IShardConfiguration config)
 		{
 			SafeSet(prototypeConfiguration, Environment.ConnectionString, config.ConnectionString);
+			SafeSet(prototypeConfiguration, Environment.ConnectionStringName, config.ConnectionStringName);
 			SafeSet(prototypeConfiguration, Environment.CacheRegionPrefix, config.ShardCacheRegionPrefix);
 			SafeSet(prototypeConfiguration, Environment.SessionFactoryName, config.ShardSessionFactoryName);
 			SafeSet(prototypeConfiguration, ShardedEnvironment.ShardIdProperty, config.ShardId.ToString());
