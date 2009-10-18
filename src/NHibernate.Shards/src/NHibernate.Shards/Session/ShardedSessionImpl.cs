@@ -525,7 +525,7 @@ namespace NHibernate.Shards.Session
         /// <returns>the persistent instance</returns>
         public object Load(System.Type clazz, object id, LockMode lockMode)
         {
-            List<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(
+            IList<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(
                 new ShardResolutionStrategyDataImpl(clazz, id));
             if (shardIds.Count == 1)
             {
@@ -579,7 +579,7 @@ namespace NHibernate.Shards.Session
         /// <returns>The persistent instance or proxy</returns>
         public object Load(System.Type clazz, object id)
         {
-            List<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(new
+            IList<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(new
                                                                                     ShardResolutionStrategyDataImpl(clazz, id));
             if (shardIds.Count == 1)
             {
@@ -625,7 +625,7 @@ namespace NHibernate.Shards.Session
 
         public object Load(string entityName, object id)
         {
-            List<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(new
+            IList<ShardId> shardIds = SelectShardIdsFromShardResolutionStrategyData(new
                                                                                     ShardResolutionStrategyDataImpl(entityName, id));
             if (shardIds.Count == 1)
             {
@@ -1765,7 +1765,7 @@ namespace NHibernate.Shards.Session
         /// <returns>a persistent instance or null</returns>
         public object Get(System.Type clazz, object id)
         {
-            IShardOperation<Object> shardOp = new GetShardOperationByTypeAndId(clazz, (ISerializable) id);
+            IShardOperation<Object> shardOp = new GetShardOperationByTypeAndId(clazz, id);
             return ApplyGetOperation(shardOp, new ShardResolutionStrategyDataImpl(clazz, id));
         }
 
@@ -2000,14 +2000,14 @@ namespace NHibernate.Shards.Session
 
         #endregion
 
-        private List<ShardId> SelectShardIdsFromShardResolutionStrategyData(ShardResolutionStrategyDataImpl srsd)
+        private IList<ShardId> SelectShardIdsFromShardResolutionStrategyData(ShardResolutionStrategyDataImpl srsd)
         {
             IIdentifierGenerator idGenerator = shardedSessionFactory.GetIdentifierGenerator(srsd.EntityName);
             if ((idGenerator is IShardEncodingIdentifierGenerator) && (srsd.Id != null))
             {
-                //return Collections.singletonList(((IShardEncodingIdentifierGenerator) idGenerator).ExtractShardId(srsd.Id));
+				return new[] { ((IShardEncodingIdentifierGenerator)idGenerator).ExtractShardId(srsd.Id) };
             }
-            return shardStrategy.ShardResolutionStrategy.SelectShardIdsFromShardResolutionStrategyData(srsd) as List<ShardId>;
+            return shardStrategy.ShardResolutionStrategy.SelectShardIdsFromShardResolutionStrategyData(srsd);
         }
 
         private object ApplyGetOperation(IShardOperation<object> shardOp, ShardResolutionStrategyDataImpl srsd)
@@ -2316,9 +2316,9 @@ namespace NHibernate.Shards.Session
         {
 
             private readonly System.Type clazz;
-            private readonly ISerializable id;
+            private readonly object id;
 
-            public GetShardOperationByTypeAndId(System.Type clazz, ISerializable id)
+            public GetShardOperationByTypeAndId(System.Type clazz, object id)
             {
                 this.clazz = clazz;
                 this.id = id;
