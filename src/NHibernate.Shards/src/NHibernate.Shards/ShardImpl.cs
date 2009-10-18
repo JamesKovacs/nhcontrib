@@ -130,7 +130,9 @@ namespace NHibernate.Shards
 
 		public ICriteria GetCriteriaById(CriteriaId id)
 		{
-			return criteriaMap[id];
+			ICriteria value;
+			criteriaMap.TryGetValue(id, out value);
+			return value;
 		}
 
 		public void AddCriteriaEvent(CriteriaId id, ICriteriaEvent @event)
@@ -142,7 +144,8 @@ namespace NHibernate.Shards
 		{
 			Preconditions.CheckNotNull(id);
 			Preconditions.CheckNotNull(eventToAdd);
-			LinkedList<TValue> eventValues = map[id];
+			LinkedList<TValue> eventValues;
+			map.TryGetValue(id, out eventValues);
 			if (eventValues == null)
 			{
 				eventValues = new LinkedList<TValue>();
@@ -229,12 +232,14 @@ namespace NHibernate.Shards
 		public IQuery EstablishQuery(IShardedQuery shardedQuery)
 		{
 			QueryId queryId = shardedQuery.QueryId;
-			IQuery query = queryMap[queryId];
+			IQuery query;
+			queryMap.TryGetValue(queryId,out query);
 			if (query == null)
 			{
 				query = shardedQuery.QueryFactory.CreateQuery(EstablishSession());
 				queryMap.Add(queryId, query);
-				ICollection<IQueryEvent> queryEvents = queryEventMap[queryId];
+				LinkedList<IQueryEvent> queryEvents;
+				queryEventMap.TryGetValue(queryId, out queryEvents);
 				if (queryEvents != null)
 				{
 					foreach (IQueryEvent queryEvent in queryEvents)
