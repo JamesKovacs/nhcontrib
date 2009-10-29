@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateTests.cs" />
+    <Compile Include="ArbitraryCriteriaTests.cs" />
     <Compile Include="BinaryBooleanExpressionTests.cs" />
     <Compile Include="BinaryExpressionOrdererTests.cs" />
     <Compile Include="CategoryAttribute.cs" />

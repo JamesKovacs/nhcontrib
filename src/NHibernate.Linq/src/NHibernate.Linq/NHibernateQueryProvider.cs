@@ -8,24 +8,30 @@ namespace NHibernate.Linq
 {
 	public class NHibernateQueryProvider : QueryProvider
 	{
-		private readonly ISession _session;
+		private readonly ISession session;
 		private readonly string entityName;
+		private readonly ICriteria rootCriteria;
 
 		public NHibernateQueryProvider(ISession session, QueryOptions queryOptions)
-		{
-			if (session == null) throw new ArgumentNullException("session");
-			_session = session;
-			this.queryOptions = queryOptions;
-		}
+			: this(session, queryOptions, null) { }
 
-		public NHibernateQueryProvider(ISession session, QueryOptions queryOptions,string entityName)
+		public NHibernateQueryProvider(ISession session, QueryOptions queryOptions, string entityName)
 		{
 			if (session == null) throw new ArgumentNullException("session");
-			_session = session;
+
+			this.session = session;
 			this.entityName = entityName;
 			this.queryOptions = queryOptions;
 		}
 
+		public NHibernateQueryProvider(ISession session, ICriteria rootCriteria)
+		{
+			if (session == null) throw new ArgumentNullException("session");
+			if (rootCriteria == null) throw new ArgumentNullException("rootCriteria");
+
+			this.session = session;
+			this.rootCriteria = rootCriteria;
+		}
 
 		private static object ResultsFromCriteria(ICriteria criteria, Expression expression)
 		{
@@ -39,14 +45,17 @@ namespace NHibernate.Linq
 		{
 			expression = Evaluator.PartialEval(expression);
 			expression = new BinaryBooleanReducer().Visit(expression);
-			expression = new AssociationVisitor((ISessionFactoryImplementor)_session.SessionFactory).Visit(expression);
+			expression = new AssociationVisitor((ISessionFactoryImplementor)session.SessionFactory).Visit(expression);
 			expression = new InheritanceVisitor().Visit(expression);
 			expression = CollectionAliasVisitor.AssignCollectionAccessAliases(expression);
 			expression = new PropertyToMethodVisitor().Visit(expression);
 			expression = new BinaryExpressionOrderer().Visit(expression);
 
-			NHibernateQueryTranslator translator = new NHibernateQueryTranslator(_session,entityName);
-			return translator.Translate(expression, this.queryOptions);
+			var translator = new NHibernateQueryTranslator(session, entityName);
+
+			return this.rootCriteria == null ?
+				translator.Translate(expression, this.queryOptions) :
+				translator.Translate(expression, this.rootCriteria);
 		}
 
 		public override object Execute(Expression expression)

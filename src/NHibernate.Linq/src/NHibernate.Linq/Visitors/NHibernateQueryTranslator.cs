@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using NHibernate.Criterion;
-using NHibernate.Linq.Expressions;
-using NHibernate.Linq.Util;
+﻿using NHibernate.Linq.Expressions;
 using LinqExpression = System.Linq.Expressions.Expression;
 
 namespace NHibernate.Linq.Visitors
@@ -23,7 +17,8 @@ namespace NHibernate.Linq.Visitors
 		{
 			this.session = session;
 		}
-		public NHibernateQueryTranslator(ISession session,string entityName)
+
+		public NHibernateQueryTranslator(ISession session, string entityName)
 		{
 			this.session = session;
 			this.entityName = entityName;
@@ -34,6 +29,19 @@ namespace NHibernate.Linq.Visitors
 			this.rootCriteria = null;
 			this.options = queryOptions;
 
+			return TranslateInternal(expression);
+		}
+
+		public virtual object Translate(LinqExpression expression, ICriteria rootCriteria)
+		{
+			this.rootCriteria = rootCriteria;
+			this.options = null;
+
+			return TranslateInternal(expression);
+		}
+
+		private object TranslateInternal(LinqExpression expression)
+		{
 			Visit(expression); //ensure criteria
 
 			var visitor = new RootVisitor(rootCriteria, session, true);
@@ -45,7 +53,7 @@ namespace NHibernate.Linq.Visitors
 		{
 			if (rootCriteria == null)
 			{
-				if(!string.IsNullOrEmpty(this.entityName))
+				if (!string.IsNullOrEmpty(this.entityName))
 					rootCriteria = session.CreateCriteria(entityName, expr.Alias);
 				else
 					rootCriteria = session.CreateCriteria(expr.ElementType, expr.Alias);

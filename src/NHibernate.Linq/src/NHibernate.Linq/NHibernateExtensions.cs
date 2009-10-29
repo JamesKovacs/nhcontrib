@@ -22,10 +22,21 @@ namespace NHibernate.Linq
 			return new Query<T>(new NHibernateQueryProvider(session, options), options);
 		}
 
-		public static INHibernateQueryable<T> Linq<T>(this ISession session,string entityName)
+		public static INHibernateQueryable<T> Linq<T>(this ISession session, string entityName)
 		{
 			QueryOptions options = new QueryOptions();
-			return new Query<T>(new NHibernateQueryProvider(session, options,entityName), options);
+			return new Query<T>(new NHibernateQueryProvider(session, options, entityName), options);
+		}
+
+		public static INHibernateQueryable<T> Linq<T>(this ISession session, ICriteria criteria)
+		{
+			if (criteria == null)
+				throw new ArgumentNullException("criteria");
+
+			if (criteria.GetRootEntityTypeIfAvailable() != typeof(T))
+				throw new ArgumentException("Criteria root type must match type of Linq query.", "criteria");
+
+			return new Query<T>(new NHibernateQueryProvider(session, criteria), null);
 		}
 
 		public static void List<T>(this ISession session, Expression expr, IList list)
