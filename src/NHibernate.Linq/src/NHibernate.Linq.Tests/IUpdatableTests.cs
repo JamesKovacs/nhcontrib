@@ -216,5 +216,25 @@ namespace NHibernate.Linq.Tests
 			Assert.AreSame(usr, usr2);
 		}
 
+		[Test]
+		public void TestResetResourceForPrimitiveProperties()
+		{
+			var simpleEntity = (AnotherEntity) update.CreateResource("AnotherEntities", typeof(AnotherEntity).FullName);
+			update.ResetResource(simpleEntity);
+			Assert.IsNull(simpleEntity.Output);
+		}
+
+		[Test]
+		public void TestResetResourceForEntityProperties()
+		{
+			var complexEntity = (Role) update.CreateResource("Roles", typeof(Role).FullName);
+			var simpleEntity = (AnotherEntity) update.CreateResource("AnotherEntities", typeof(AnotherEntity).FullName);
+			complexEntity.Entity = simpleEntity;
+
+			update.ResetResource(complexEntity);
+			Assert.IsNull(complexEntity.Name, "Simple property gets reset.");
+			Assert.IsNotNull(complexEntity.Entity, "Entity property gets preserved.");
+		}
+
 	}
 }

@@ -302,11 +302,16 @@ namespace NHibernate.Linq
 			IClassMetadata metadata = session.SessionFactory.GetClassMetadata(resource.GetType().ToString());
 			object tempCopy = metadata.Instantiate(null, EntityMode.Poco);
 
-			// Copy the default non-keys
-			foreach (string propName in metadata.PropertyNames)
+			for (int i = 0; i < metadata.PropertyNames.Length; i++)
 			{
-				object value = metadata.GetPropertyValue(tempCopy, propName, EntityMode.Poco);
-				update.SetValue(resource, propName, value);
+				var propertyType = metadata.PropertyTypes[i];
+				var propName = metadata.PropertyNames[i];
+
+				if (!propertyType.IsEntityType)
+				{
+					object value = metadata.GetPropertyValue(tempCopy, propName, EntityMode.Poco);
+					update.SetValue(resource, propName, value);
+				}
 			}
 
 			//Return the new resource
