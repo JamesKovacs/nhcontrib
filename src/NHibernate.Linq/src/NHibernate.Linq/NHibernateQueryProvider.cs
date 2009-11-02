@@ -55,7 +55,7 @@ namespace NHibernate.Linq
 
 			return this.rootCriteria == null ?
 				translator.Translate(expression, this.queryOptions) :
-				translator.Translate(expression, this.rootCriteria);
+				translator.Translate(expression, (ICriteria)this.rootCriteria.Clone());
 		}
 
 		public override object Execute(Expression expression)

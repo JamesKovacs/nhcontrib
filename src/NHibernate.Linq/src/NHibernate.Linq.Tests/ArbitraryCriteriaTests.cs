@@ -27,5 +27,18 @@ namespace NHibernate.Linq.Tests
 			Assert.AreEqual(1, list.Count);
 			Assert.AreEqual("nhibernate", list.Single().Name);
 		}
+
+		[Test]
+		public void can_reuse_query_after_creating_from_criteria()
+		{
+			var criteria = session.CreateCriteria<User>();
+			var query = session.Linq<User>(criteria);
+
+			int totalCount = query.Count();
+			Assert.AreEqual(3, totalCount);
+
+			var users = query.ToList();
+			Assert.AreEqual(3, users.Count);
+		}
 	}
 }
