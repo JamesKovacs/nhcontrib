@@ -6,6 +6,8 @@
 		</id>
 
 		<property name="Dummy"/>
+
+		<many-to-one name="Child" class="ProxiedEntityChild" cascade="save-update" column="childId" />
 	</class>
 	<class name="AnotherProxiedEntity" table="AnotherProxiedEntity" proxy="IProxiedEntity">
 		<id name="Id">
@@ -13,5 +15,24 @@
 		</id>
 
 		<property name="Dummy"/>
+	</class>
+
+	<class name="ProxiedEntityChild" table="ProxiedEntityChild" proxy="IProxiedEntityChild">
+		<id name="Id">
+			<generator class="native"/>
+		</id>
+
+		<set name="Children" table="ProxiedEntityChildren" cascade="all-delete-orphan">
+			<key column="childId" />
+			<one-to-many class="AnotherChild" />
+		</set>
+	</class>
+
+	<class name="AnotherChild" table="AnotherChild">
+		<id name="Id">
+			<generator class="native" />
+		</id>
+
+		<property name="Foo"/>
 	</class>
 </hibernate-mapping>

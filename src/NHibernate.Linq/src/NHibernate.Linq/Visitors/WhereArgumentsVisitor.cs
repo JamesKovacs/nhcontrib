@@ -304,7 +304,13 @@ namespace NHibernate.Linq.Visitors
 			EntityExpression rootEntity = EntityExpressionVisitor.FirstEntity(expr);
 			string propertyName = MemberNameVisitor.GetMemberName(rootCriteria, expr);
 
-			DetachedCriteria query = DetachedCriteria.For(rootEntity.Type)
+			var rootEntityType = rootEntity.Type;
+			if (rootEntity.MetaData.HasProxy)
+			{
+				rootEntityType = rootEntity.MetaData.GetMappedClass(EntityMode.Poco);
+			}
+
+			DetachedCriteria query = DetachedCriteria.For(rootEntityType)
 				.SetProjection(Projections.Id())
 				.Add(Restrictions.IsNotEmpty(propertyName));
 
@@ -339,7 +345,13 @@ namespace NHibernate.Linq.Visitors
 		{
 			EntityExpression rootEntity = EntityExpressionVisitor.FirstEntity(arg);
 
-			DetachedCriteria query = DetachedCriteria.For(rootEntity.Type)
+			var rootEntityType = rootEntity.Type;
+			if (rootEntity.MetaData.HasProxy)
+			{
+				rootEntityType = rootEntity.MetaData.GetMappedClass(EntityMode.Poco);
+			}
+
+			DetachedCriteria query = DetachedCriteria.For(rootEntityType)
 				.SetProjection(Projections.Id());
 
 			var visitor = new MemberNameVisitor(query.Adapt(session), true);
