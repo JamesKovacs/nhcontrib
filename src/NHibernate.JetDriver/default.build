@@ -29,6 +29,7 @@
 				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
 				<include name="${folders.lib}/Castle.Core.dll"/>
+				<include name="${folders.lib}/Antlr3.Runtime.dll"/>
 				<include name="${folders.src}/NHibernate.JetDriver.Tests/JetTests.db" />
 			</fileset>
 		</copy>
@@ -67,6 +68,7 @@
 				<include name="${folders.lib}/nunit.framework.dll"/>
 				<include name="${folders.lib}/Castle.DynamicProxy2.dll"/>
 				<include name="${folders.lib}/Castle.Core.dll"/>
+				<include name="${folders.lib}/Antlr3.Runtime.dll"/>
 				<include name="${folders.build}/NHibernate.JetDriver.dll"/>
 			</references>
 			<resources basedir="src/NHibernate.JetDriver.Tests" prefix="NHibernate.JetDriver.Tests" dynamicprefix="true">
