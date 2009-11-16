@@ -20,7 +20,7 @@ namespace NHibernate.JetDriver.Tests
         private readonly Configuration configuration;
         private readonly ISessionFactory factory;
         private readonly ISessionFactoryImplementor factoryImpl;
-
+        
         protected JetTestBase() : this(false)
         {
         }
@@ -32,8 +32,7 @@ namespace NHibernate.JetDriver.Tests
 				.SetProperty(Environment.Dialect, typeof (JetDialect).AssemblyQualifiedName)
 				.SetProperty(Environment.ConnectionDriver, typeof (JetDriver).AssemblyQualifiedName)
 				.SetProperty(Environment.ConnectionProvider, typeof (DriverConnectionProvider).FullName)
-				.SetProperty(Environment.ConnectionString,
-				             string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
+				.SetProperty(Environment.ConnectionString, string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
 
 			AddEntities();
 
@@ -74,7 +73,7 @@ namespace NHibernate.JetDriver.Tests
             get { return new List<System.Type>(); }
         }
 
-        private string DataFile
+        private static string DataFile
         {
             get { return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JetTests.db"); }
         }

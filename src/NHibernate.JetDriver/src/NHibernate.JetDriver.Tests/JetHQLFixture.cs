@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NHibernate.JetDriver.Tests.Entities;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace NHibernate.JetDriver.Tests
 {
@@ -13,7 +15,18 @@ namespace NHibernate.JetDriver.Tests
 
         protected override IList<System.Type> EntityTypes
         {
-            get { return new[] { typeof (Foo)}; }
+            get 
+            { 
+                return new[]
+                           {
+                               typeof(Foo),
+                               typeof(ReportDTO),
+                               typeof(Catalog),
+                               typeof(Category), 
+                               typeof(ProductType),
+                               typeof(Product),
+                           }; 
+            }
         }
 
         [Test]
@@ -57,6 +70,27 @@ namespace NHibernate.JetDriver.Tests
             {
                 s.CreateQuery("delete from Foo").ExecuteUpdate();
                 t.Commit();
+            }
+        }
+
+        [Test]
+        public void Select_With_HQL_Will_Not_Emit_Two_From_Clauses()
+        {
+            using (var s = SessionFactory.OpenSession())
+            {
+                string hql = @"select new ReportDTO (
+                               c.Id,
+                               c.Category.Id, c.Category.Name,
+                               c.ProductType.Id, c.ProductType.Name) 
+                               from Catalog c
+                               where c.Category.Product.Id=:productId";
+
+                IQuery query = s.CreateQuery(hql);
+                query.SetParameter("productId", 5);
+                var list = query.List();
+                int count = list.Count;
+
+                Assert.That(count, Is.EqualTo(0));
             }
         }
     }

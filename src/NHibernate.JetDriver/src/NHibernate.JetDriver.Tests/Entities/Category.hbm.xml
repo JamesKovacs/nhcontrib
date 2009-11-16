@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="NHibernate.JetDriver.Tests.Entities.Category, NHibernate.JetDriver.Tests" table="`Category`">
+
+    <id name="Id" column="CategoryId" type="System.Int32" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+
+    <property name="Name" column="[Name]" not-null="false" type="System.String" />
+    
+    <set name="Catalogs" cascade="none" inverse="true" lazy="true">
+      <key>
+        <column name="CategoryId"/>
+      </key>
+      <one-to-many class="NHibernate.JetDriver.Tests.Entities.Catalog, NHibernate.JetDriver.Tests"/>
+    </set>
+
+    <many-to-one name="Product" not-null="false" outer-join="auto">
+      <column name="ProductId"/>
+    </many-to-one>
+    
+  </class>
+</hibernate-mapping>
