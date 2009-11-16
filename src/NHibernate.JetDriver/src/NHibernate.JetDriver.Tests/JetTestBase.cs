@@ -28,7 +28,7 @@ namespace NHibernate.JetDriver.Tests
 		protected JetTestBase(bool autoCreateTables)
 		{
 			configuration = new Configuration()
-				.SetProperty(Environment.ProxyFactoryFactoryClass, typeof (ProxyFactoryFactory).AssemblyQualifiedName)
+                .SetProperty(Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
 				.SetProperty(Environment.Dialect, typeof (JetDialect).AssemblyQualifiedName)
 				.SetProperty(Environment.ConnectionDriver, typeof (JetDriver).AssemblyQualifiedName)
 				.SetProperty(Environment.ConnectionProvider, typeof (DriverConnectionProvider).FullName)
@@ -44,7 +44,6 @@ namespace NHibernate.JetDriver.Tests
 			{
 				CreateTables();
 			}
-
 		}
 
     	private void AddEntities()

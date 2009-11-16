@@ -145,23 +145,6 @@ namespace NHibernate.JetDriver
 	        return Command.ExecuteReader(behavior);
 	    }
 
-        //IDataReader IDbCommand.ExecuteReader()
-        //{
-            
-        //}
-
-	    //public IDataReader ExecuteReader(CommandBehavior behavior)
-        //{
-        //    CheckParameters();
-        //    return Command.ExecuteReader(behavior);
-        //}
-
-        //IDataReader IDbCommand.ExecuteReader()
-        //{
-        //    CheckParameters();
-        //    return Command.ExecuteReader();
-        //}
-
 		public override object ExecuteScalar()
 		{
 			CheckParameters();

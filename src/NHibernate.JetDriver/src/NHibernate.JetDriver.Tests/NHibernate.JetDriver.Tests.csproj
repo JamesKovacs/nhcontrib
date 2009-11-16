@@ -50,6 +50,7 @@
     <Compile Include="JetCommandFixture.cs" />
     <Compile Include="JetDialectFixture.cs" />
     <Compile Include="JetDriverFixture.cs" />
+    <Compile Include="JetHQLFixture.cs" />
     <Compile Include="JetOrderByFixture.cs" />
     <Compile Include="JetTestBase.cs" />
   </ItemGroup>
