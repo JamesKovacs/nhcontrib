@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<codegen>
+  <generate renderer="NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net.T4" package="">
+    <param name="template">res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt</param>
+    <param name="output">clazz.GeneratedName+".generated.cs"</param>
+  </generate>
+</codegen>

@@ -4,7 +4,7 @@
 	<import class="NHibernate.DomainModel.S, NHibernate.DomainModel" />
 
     <class name="NHibernate.DomainModel.Simple, NHibernate.DomainModel">
-        <id type="Int64" column="id_" unsaved-value="0">
+        <id type="Int64" column="id_" unsaved-value="0" >
             <generator class="assigned"/>
         </id>
         <property name="Name"/>
@@ -12,7 +12,7 @@
         <property name="Count" column="count_" not-null="true" unique="true"/> 
         <property name="Date" column="date_"/>
         <property name="Pay" />
-        <many-to-one name="Other" access="field.camelcase"/>
+        <many-to-one name="Other" access="field.camelcase" />
     </class>
     
 

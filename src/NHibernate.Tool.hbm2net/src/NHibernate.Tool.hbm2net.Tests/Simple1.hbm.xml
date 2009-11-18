@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" default-lazy="false" assembly="SimpleAssembly" namespace="SimpleNS">
+	<import class="NHibernate.DomainModel.S, NHibernate.DomainModel" />
+    <class name="Simple" table="simple" schema="sch">
+      
+      <meta attribute="class-description">a simple class for T4 generator testing.
+      Blah Blah
+      etc etc.
+      </meta>
+        <id type="Int64" column="id_" unsaved-value="0" name="Id">
+            <generator class="native"/>
+        </id>
+      <set name="Children" inverse="true" lazy="true">
+        <key column="parent_id"/>
+        <one-to-many class="Eg.Child, Eg"/>
+      </set>
+      <array name="Foos" table="BAR_FOOS" cascade="all">
+        <key column="BAR_ID"/>
+        <index column="I"/>
+        <many-to-many column="FOO_ID" class="Eg.Foo, Eg"/>
+      </array>
+      <map name="Holidays" table="holidays" schema="dbo" order-by="hol_name asc">
+        <key column="id"/>
+        <index column="hol_name" type="String"/>
+        <element column="hol_date" type="Date"/>
+      </map>
+
+      <idbag name="Lovers" table="LOVERS" lazy="true">
+        <collection-id column="ID" type="Int64">
+          <generator class="hilo"/>
+        </collection-id>
+        <key column="PERSON1"/>
+        <many-to-many column="PERSON2" class="Eg.Person" fetch="join"/>
+      </idbag>
+      
+      <property name="Name"/>
+        <property name="Address" type="String" length="200" column="address" access="nosetter.pascalcase-m-underscore" />
+        <property name="Count" column="count_" not-null="true" unique="true"/>
+      <property name="Date" column="date_">
+        <meta attribute="field-description">This is a date,
+        or a string? </meta>
+      </property>
+        <property name="NullableDate" type="Date" column="nd" not-null="false" access="field.pascalcase-underscore" />
+        <property name="NullableInt" type="Int32" column="ni" not-null="false" access="field.camelcase" />
+        <property name="Pay" />
+        <many-to-one name="Other" class="OtherClass" access="field.camelcase" />
+      <joined-subclass name="ASubClass" table="ASubTable">
+        <meta attribute="class-description">
+          trying to generate a subclass
+        </meta>
+        <key column="sub"/>
+        <property name="Name" type="String"/>
+      </joined-subclass>
+
+
+
+    </class>
+</hibernate-mapping>

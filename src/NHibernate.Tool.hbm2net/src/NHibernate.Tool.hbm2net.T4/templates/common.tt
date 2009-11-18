@@ -1,0 +1,228 @@
+﻿<#+
+	string GetInheritance(ClassMapping clazz)
+	{
+		var sb = new StringBuilder();
+		if(languageTool.HasExtends(clazz)||languageTool.HasImplements(clazz))
+			sb.Append(languageTool.GetExtends(clazz));
+		if(languageTool.HasExtends(clazz)&& languageTool.HasImplements(clazz)) 
+			sb.Append(",");
+		sb.Append(languageTool.GetImplements(clazz));
+		string chunk = sb.ToString().Trim();
+		if( !string.IsNullOrEmpty(chunk) )
+			return ": "+chunk;
+		return  string.Empty;
+	}
+	bool IsCollection(FieldProperty field)
+	{
+		string[] coll = new string[]{"idbag","set","list","bag","map"};
+		return coll.Contains(field.XMLElement.Name);
+	}
+	string GetPrivateFieldName(FieldProperty field)
+	{
+		if( field.XMLElement.Attributes["access"] != null )
+		{
+			string access=field.XMLElement.Attributes["access"].Value;
+			string strategy=access.Split('.')[0];
+			string naming = access.Substring(strategy.Length).TrimStart('.');
+			
+			switch(naming)
+			{
+				case "camelcase":
+					return field.FieldName.Substring(0,1).ToLower()+field.FieldName.Substring(1);
+				case "camelcase-underscore":
+					return "_"+field.FieldName.Substring(0,1).ToLower()+field.FieldName.Substring(1);
+				case "lowercase":
+					return field.FieldName.ToLower();
+				case "lowercase-underscore":
+					return "_"+field.FieldName.ToLower();
+				case "pascalcase-underscore":
+					return "_"+field.FieldName.Substring(0,1).ToUpper()+field.FieldName.Substring(1);
+				case "pascalcase-m-underscore":
+					return "m_"+ field.FieldName.Substring(0,1).ToUpper()+field.FieldName.Substring(1);
+			}
+		}
+		return "_"+field.fieldcase;
+	}
+	bool HasSetter(FieldProperty field)
+	{
+		if( field.XMLElement.Attributes["access"] != null )
+		{
+			string access=field.XMLElement.Attributes["access"].Value;
+			string strategy=access.Split('.')[0];
+			if( strategy=="nosetter" )
+				return false;
+			
+		}
+		if (field.XMLElement.Name == "id")
+        {
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
+            nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
+            string[] nosetters = new string[] { "increment","identity","sequence","hilo","seqhilo","native" };
+            XmlNode generator = field.XMLElement.SelectSingleNode("urn:generator", nsmgr);
+            if (generator.Attributes["class"] != null)
+            {
+                if (nosetters.Contains(generator.Attributes["class"].Value))
+                    return false;
+            }
+
+         }
+		return true;
+	}
+	string ToNetDoc(string s,int ident)
+	{
+		string sident = new string('\t',ident);
+		StringBuilder sb = new StringBuilder();
+		StringReader reader = new StringReader(s);
+		string line=null;
+		while( null != (line = reader.ReadLine()) )
+		{
+			sb.Append(sident);
+			sb.Append("/// ");
+			sb.AppendLine(line.Trim());
+		}
+		string res = sb.ToString();
+		if( !string.IsNullOrEmpty(res) )
+			return Environment.NewLine+Environment.NewLine+sb.ToString().TrimEnd();	
+		else
+			return string.Empty;
+	}
+	string GetCommentForClass(ClassMapping clazz,int ident)
+	{
+		if( !string.IsNullOrEmpty(clazz.GetMetaAsString("class-description") ) )
+			return ToNetDoc(clazz.GetMetaAsString("class-description"),ident).Trim('\r','\n');
+		string sident = new string('\t',ident);
+		StringBuilder sb = new StringBuilder();
+		
+		sb.Append(sident);
+		sb.Append("/// a class mapping for the table: ");
+		if( null != clazz.XMLElement.Attributes["schema"]  )
+			sb.Append(clazz.XMLElement.Attributes["schema"].Value+".");
+		if( null != clazz.XMLElement.Attributes["table"] )
+			sb.AppendLine(clazz.XMLElement.Attributes["table"].Value);
+		else
+			sb.AppendLine(clazz.Name);
+		return sb.ToString();	
+	}
+	string GetCommentForColumn(FieldProperty field)
+	{
+		if( field.XMLElement.Attributes["column"] != null )
+		{
+			return string.Format("/* {0} */",field.XMLElement.Attributes["column"].Value);
+		}
+		return "";
+	}
+	string GetGenericCollectionImplementation(FieldProperty field)
+	{
+		string generic="";
+        XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
+        nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
+        
+        XmlNode n = field.XMLElement.SelectSingleNode("urn:one-to-many",nsmgr );
+        if( n == null )
+            n = field.XMLElement.SelectSingleNode("urn:many-to-many", nsmgr);
+        if (null != n)
+        {
+            if (n.Attributes["class"] != null && field.XMLElement.Name!="array")
+            {
+                generic = n.Attributes["class"].Value.Split(',')[0];
+            }
+            
+        }
+        else
+        {
+			//try if it is a collection of value types...
+			n = field.XMLElement.SelectSingleNode("urn:element", nsmgr);
+			if (null != n && n.Attributes["type"] != null && field.XMLElement.Name!="array")
+            {
+                generic = ClassMapping.GetFieldTypeName(n.Attributes["type"].Value.Split(',')[0],false,false);
+                //if there is an index element, add up do the generic definition...
+                var key = field.XMLElement.SelectSingleNode("urn:index", nsmgr);
+                if( null != key )
+                {
+					var keyType = ClassMapping.GetFieldTypeName(key.Attributes["type"].Value.Split(',')[0],false,false);
+					generic = keyType + "," + generic;
+                }
+            }
+        }
+        
+		//this is a bad hack to avoid modifyng hbm2net core 
+		//to use the same type for iesi.collections / iesi.collections.generic
+		string[] tokens = field.ImplementationClassName.Name.Split('.');
+		return tokens[tokens.Length-1]+"<"+ generic+">";
+		
+	}
+	string MakeGenericIfNeeded(FieldProperty field)
+	{
+		string generic="";
+        XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
+        nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
+        
+        XmlNode n = field.XMLElement.SelectSingleNode("urn:one-to-many",nsmgr );
+        if( n == null )
+            n = field.XMLElement.SelectSingleNode("urn:many-to-many", nsmgr);
+        if (null != n)
+        {
+            if (n.Attributes["class"] != null && field.XMLElement.Name!="array")
+            {
+                generic = n.Attributes["class"].Value.Split(',')[0];
+            }
+            
+        }
+        else
+        {
+			//try if it is a collection of value types...
+			n = field.XMLElement.SelectSingleNode("urn:element", nsmgr);
+			if (null != n && n.Attributes["type"] != null && field.XMLElement.Name!="array")
+            {
+                generic = ClassMapping.GetFieldTypeName(n.Attributes["type"].Value.Split(',')[0],false,false);
+                //if there is an index element, add up do the generic definition...
+                var key = field.XMLElement.SelectSingleNode("urn:index", nsmgr);
+                if( null != key )
+                {
+					var keyType = ClassMapping.GetFieldTypeName(key.Attributes["type"].Value.Split(',')[0],false,false);
+					generic = keyType + "," + generic;
+                }
+            }
+        }
+        if( string.IsNullOrEmpty(generic) )
+			return field.FullyQualifiedTypeName;
+		else
+		{
+			//this is a bad hack to avoid modifyng hbm2net core 
+			//to use the same type for iesi.collections / iesi.collections.generic
+			string[] tokens = field.FullyQualifiedTypeName.Split('.');
+			return tokens[tokens.Length-1]+"<"+ generic+">";
+		}
+	}
+	string GetType(FieldProperty field)
+	{
+		string type = field.FullyQualifiedTypeName;
+		if( !field.Nullable )
+			return MakeGenericIfNeeded(field);
+		if( type == "bool" 	 
+			|| type== "byte"
+			|| type== "char" 	
+			|| type== "double" 	
+			|| type== "decimal" 
+			|| type== "float" 	
+			|| type== "int" 	
+			|| type== "sbyte" 	
+			|| type== "short" 	
+			|| type== "string" 	
+			|| type== "ushort" 	
+			|| type== "uint" 	
+			|| type== "long" 	
+			|| type== "ulong")
+		return type+"?";
+		string fullType=null;
+		if( !type.StartsWith("System.") )
+			fullType = "System."+type;
+		else
+			fullType = type;
+		Type t = Type.GetType(fullType);
+		if( null != t && t.IsValueType )
+			return type+"?";
+		return type;
+	}
+#>
+

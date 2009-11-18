@@ -13,6 +13,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 	public class SimpleMappingFileConfigFileNoOutputArgsTests
 	{
 		private const string VelocityRenderer = "NHibernate.Tool.hbm2net.VelocityRenderer";
+        private const string T4Renderer = "NHibernate.Tool.hbm2net.VelocityRenderer";
 
 		private FileInfo mappingFile;
 		private FileInfo configFile;
@@ -47,6 +48,9 @@ namespace NHibernate.Tool.hbm2net.Tests
 				Assert.AreEqual(ResourceHelper.GetResource(ExpectedFileResourceName), sr.ReadToEnd());
 			}
 		}
+
+        
+
 
 		/// <summary>
 		///  <para>Test that the template and mapping file path is relative to the location of the 

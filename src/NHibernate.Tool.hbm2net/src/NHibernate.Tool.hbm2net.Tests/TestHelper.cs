@@ -12,10 +12,13 @@ namespace NHibernate.Tool.hbm2net.Tests
 		{
 			get { return new DirectoryInfo("generated"); }
 		}
-
-		public static FileInfo CreateConfigFile(FileInfo configFile, string templateFile, string renderer, string package)
+        public static FileInfo CreateConfigFile(FileInfo configFile, string templateFile, string renderer, string package)
+        {
+            return CreateConfigFile(configFile, templateFile, renderer, package, null);
+        }
+		public static FileInfo CreateConfigFile(FileInfo configFile, string templateFile, string renderer, string package,string output)
 		{
-			XmlDocument xmlDoc = CreateConfigXml(templateFile, renderer, package);
+			XmlDocument xmlDoc = CreateConfigXml(templateFile, renderer, package,output);
 			xmlDoc.Save(configFile.FullName);
 			return configFile;
 		}
@@ -28,8 +31,11 @@ namespace NHibernate.Tool.hbm2net.Tests
 //			xmlDoc.Save(configFile.FullName);
 //			return  configFile;
 		}
-
-		public static XmlDocument CreateConfigXml(string templateFile, string renderer, string package)
+        public static XmlDocument CreateConfigXml(string templateFile, string renderer, string package)
+        {
+            return CreateConfigXml(templateFile, renderer, package, null);
+        }
+		public static XmlDocument CreateConfigXml(string templateFile, string renderer, string package,string output)
 		{
 			// TODO: Look into using a serialized struct to encapsulate the config.xml
 			string configXml = ResourceHelper.GetResource("config.xml");
@@ -37,13 +43,13 @@ namespace NHibernate.Tool.hbm2net.Tests
 			xmlDoc.LoadXml(configXml);
 			if (package != null)
 			{
-				xmlDoc.SelectSingleNode("/codegen/generate").Attributes["package"].InnerText = "";
+                xmlDoc.SelectSingleNode("/codegen/generate").Attributes["package"].InnerText = "";
 			}
 			if (renderer != null)
 			{
 				xmlDoc.SelectSingleNode("/codegen/generate").Attributes["renderer"].Value = renderer;
 			}
-
+           
 			if (templateFile != null)
 			{
 				//<param name="template"></param>
@@ -53,7 +59,15 @@ namespace NHibernate.Tool.hbm2net.Tests
 				param.Attributes.Append(name);
 				param.InnerText = templateFile;
 				xmlDoc.SelectSingleNode("/codegen/generate").AppendChild(param);
-				//xmlDoc.SelectSingleNode("/codegen/generate/param[@name='template']").InnerText = templateFile;
+                if (null != output)
+                {
+                    param = xmlDoc.CreateElement("param");
+                    name = xmlDoc.CreateAttribute("name");
+                    name.Value = "output";
+                    param.Attributes.Append(name);
+                    param.InnerText = "clazz.GeneratedName+\".generated.cs\"";
+                    xmlDoc.SelectSingleNode("/codegen/generate").AppendChild(param);
+                }
 			}
 			return xmlDoc;
 		}

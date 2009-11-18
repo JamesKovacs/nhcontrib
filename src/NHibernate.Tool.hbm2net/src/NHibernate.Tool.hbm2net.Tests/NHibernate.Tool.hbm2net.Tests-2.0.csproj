@@ -1,7 +1,7 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F2FBD35E-28C4-461F-804D-0E43BED01185}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -26,6 +26,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -75,6 +76,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\net\2.0\nunit.framework.dll</HintPath>
@@ -97,6 +102,7 @@
     <None Include="App.config" />
     <EmbeddedResource Include="convert.vm" />
     <None Include="NHibernate.Tool.hbm2net.Tests.build" />
+    <EmbeddedResource Include="Simple1.csharp" />
     <EmbeddedResource Include="Simple.csharp" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -109,6 +115,7 @@
     <Compile Include="SimpleMappingFileNoConfigNoOutputArgsTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="T4GenTest.cs" />
     <Compile Include="TestHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -121,10 +128,59 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NHibernate.Tool.hbm2net.T4\NHibernate.Tool.hbm2net.T4.csproj">
+      <Project>{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}</Project>
+      <Name>NHibernate.Tool.hbm2net.T4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Tool.hbm2net\NHibernate.Tool.hbm2net-2.0.csproj">
       <Project>{136FFE16-EE3B-4556-90FB-E265113CB13F}</Project>
       <Name>NHibernate.Tool.hbm2net-2.0</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Simple1.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NHDomainModel\ABC.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\ABCExtends.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\ABCProxy.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Baz.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Blobber.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Broken.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Category.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Circular.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Componentizable.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Container.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Custom.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Eye.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Fee.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Fo.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\FooBar.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Fum.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Fumm.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Glarch.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Holder.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Immutable.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\INameable.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Location.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Many.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\MasterDetail.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Middle.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\MN.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Multi.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\MultiExtends.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\One.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\ParentChild.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Query.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Qux.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Simple.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\SingleSeveral.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Stuff.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\UpDown.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\Vetoer.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\WZ.hbm.xml" />
+    <EmbeddedResource Include="NHDomainModel\XY.hbm.xml" />
+    <Content Include="t4config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

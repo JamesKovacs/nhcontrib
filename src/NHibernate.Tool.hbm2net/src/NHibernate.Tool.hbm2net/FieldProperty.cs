@@ -5,13 +5,14 @@ using log4net;
 
 using MultiMap = System.Collections.Hashtable;
 using Element = System.Xml.XmlElement;
+using System.Collections.Generic;
 
 namespace NHibernate.Tool.hbm2net
 {
 	public class FieldProperty : MappingElement
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        private List<ClassName> genericArguments = new List<ClassName>();
 		public string fieldcase
 		{
 			get
@@ -21,7 +22,11 @@ namespace NHibernate.Tool.hbm2net
 				return fieldName.Substring(0, 1).ToLower() + fieldName.Substring(1);
 			}
 		}
-
+        public void AddGenericArgument(ClassName generic)
+        {
+            genericArguments.Add(generic);
+        }
+        public ClassName[] GenericArguments { get { return genericArguments.ToArray();} }
 		public string Propcase
 		{
 			get { return fieldName; }
@@ -173,7 +178,7 @@ namespace NHibernate.Tool.hbm2net
 		{
 			InitWith(name, type, implementationClassName, nullable, id, false, foreignClass, foreignKeys, metaattribs);
 		}
-
+        public bool IsValueType { get; private set; }
 		protected internal virtual void InitWith(string name, ClassName type, ClassName implementationClassName, bool nullable,
 		                                         bool id, bool generated, ClassName foreignClass,
 		                                         SupportClass.SetSupport foreignKeys, MultiMap metaattribs)
@@ -190,7 +195,21 @@ namespace NHibernate.Tool.hbm2net
 			MetaAttribs = metaattribs;
 			if (fieldName.Substring(0, 1) == fieldName.Substring(0, 1).ToLower())
 				log.Warn("Nonstandard naming convention found on " + fieldName);
+            IsValueType = CheckValueType(type);
 		}
+
+        private bool CheckValueType(ClassName type)
+        {
+            string name = type.FullyQualifiedName;
+            if (0 > name.IndexOf("."))
+                name = "System." + name;
+            var t = System.Type.GetType(name);
+            if (null != t)
+                return t.IsValueType;
+            return false;
+        }
+
+        
 
 		/// <summary> foo -> Foo
 		/// FOo -> FOo

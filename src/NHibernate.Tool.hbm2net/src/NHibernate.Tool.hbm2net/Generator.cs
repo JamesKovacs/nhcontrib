@@ -164,10 +164,22 @@ namespace NHibernate.Tool.hbm2net
 			string saveToPackage = renderer.GetSaveToPackage(classMapping);
 			string saveToClassName = renderer.GetSaveToClassName(classMapping);
 			FileInfo dir = this.GetDir(saveToPackage);
-			FileInfo file = new FileInfo(Path.Combine(dir.FullName, this.GetFileName(saveToClassName)));
-			log.Debug("Writing " + file);
-
-			StreamWriter writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
+            StreamWriter writer = null; 
+            // a render implementing this interface can
+            // decide a stream for output, so a directive in the 
+            // generation code can drive the output naming...
+            ICanProvideStream streamProvider = renderer as ICanProvideStream;
+            if (null == streamProvider)
+            {
+                FileInfo file = new FileInfo(Path.Combine(dir.FullName, this.GetFileName(saveToClassName)));
+                log.Debug("Writing " + file);
+                writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
+            }
+            else
+            {
+                writer = new StreamWriter(streamProvider.GetStream(classMapping,dir.FullName));
+                log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
+            }
 
 			renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
 			writer.Close();

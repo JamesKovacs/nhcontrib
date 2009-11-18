@@ -19,6 +19,7 @@ using MultiMap = System.Collections.Hashtable;
 
 namespace NHibernate.Tool.hbm2net
 {
+
 	public class ClassMapping : MappingElement
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -37,7 +38,7 @@ namespace NHibernate.Tool.hbm2net
 		private bool shouldBeAbstract_Renamed_Field = false;
 
 		#region Constructors
-
+        
 		static ClassMapping()
 		{
 		}
@@ -392,7 +393,7 @@ namespace NHibernate.Tool.hbm2net
 				// import implementingClassName should only be 
 				// added if the initialisaiton code of the field 
 				// is actually used - and currently it isn't!
-				//addImport(implementingClassName);
+                AddImport(implementationClassName);
 
 				ClassName foreignClass = null;
 				SupportClass.SetSupport foreignKeys = null;
@@ -426,6 +427,7 @@ namespace NHibernate.Tool.hbm2net
 				FieldProperty cf =
 					new FieldProperty(collection, this, propertyName, interfaceClassName, implementationClassName, false, foreignClass,
 					                  foreignKeys, metaForCollection);
+
 				AddFieldProperty(cf);
 				if (collection.SelectNodes("urn:composite-element", CodeGenerator.nsmgr).Count != 0)
 				{
@@ -453,8 +455,109 @@ namespace NHibernate.Tool.hbm2net
 						}
 					}
 				}
+                if (collection.SelectNodes("urn:composite-index", CodeGenerator.nsmgr).Count != 0)
+                {
+                    for (
+                        IEnumerator compositeElements =
+                            collection.SelectNodes("urn:composite-index", CodeGenerator.nsmgr).GetEnumerator();
+                        compositeElements.MoveNext(); )
+                    {
+                        Element compositeElement = (Element)compositeElements.Current;
+                        string compClass = compositeElement.Attributes["class"].Value;
+
+                        try
+                        {
+                            ClassMapping mapping = new ClassMapping(classPackage, compositeElement, this, true, MetaAttribs);
+                            ClassName classType = new ClassName(compClass);
+                            // add an import and field for this property
+                            AddImport(classType);
+                            object tempObject;
+                            tempObject = mapping;
+                            components[mapping.FullyQualifiedName] = tempObject;
+                        }
+                        catch (Exception e)
+                        {
+                            log.Error("Error building composite-index " + compClass, e);
+                        }
+                    }
+                }
+                ExtractGenericArguments(cf,xmlName);
 			}
 		}
+
+        private void ExtractGenericArguments(FieldProperty field,string xmlName)
+        {
+            ClassName genericArgument;
+            XmlNode n = field.XMLElement.SelectSingleNode("urn:one-to-many", CodeGenerator.nsmgr);
+            if (n == null)
+                n = field.XMLElement.SelectSingleNode("urn:many-to-many", CodeGenerator.nsmgr);
+            if (null != n)
+            {
+                if (n.Attributes["class"] != null )
+                {
+                    genericArgument = GetFieldType(n.Attributes["class"].Value,false,false);
+                    AddImport(genericArgument);
+                    field.AddGenericArgument(genericArgument);
+                }
+                else
+                    log.Error("Missing class argument on collection:" + this.GeneratedName + " in " + xmlName + " " + field.FieldName);
+
+            }
+            else
+            {
+                //if there is an index element, add up do the generic definition...
+                var key = field.XMLElement.SelectSingleNode("urn:index", CodeGenerator.nsmgr);
+                if (null != key)
+                {
+                    if (null != key.Attributes["type"])
+                    {
+                        genericArgument = GetFieldType(key.Attributes["type"].Value, false, false);
+                        AddImport(genericArgument);
+                        field.AddGenericArgument(genericArgument);
+                    }
+                    else
+                        log.Error("Missing type argument on index:"+this.GeneratedName+" in "+xmlName+" "+field.FieldName);
+                }
+                //check for composite index...
+                var compositeKey = field.XMLElement.SelectSingleNode("urn:composite-index", CodeGenerator.nsmgr);
+                if (null != compositeKey)
+                {
+                    if (null != compositeKey.Attributes["class"])
+                    {
+                        genericArgument = GetFieldType(compositeKey.Attributes["class"].Value, false, false);
+                        AddImport(genericArgument);
+                        field.AddGenericArgument(genericArgument);
+                    }
+                    else
+                        log.Error("Missing class argument on composite-index:" + this.GeneratedName + " in " + xmlName + " " + field.FieldName);
+                }
+                // if it is a collection of value types...
+                n = field.XMLElement.SelectSingleNode("urn:element", CodeGenerator.nsmgr);
+                if (null != n  )
+                {
+                    if (null != n.Attributes["type"])
+                    {
+                        genericArgument = GetFieldType(n.Attributes["type"].Value, false, false);
+                        AddImport(genericArgument);
+                        field.AddGenericArgument(genericArgument);
+                    }
+                    else
+                        log.Error("Missing type argument on element:" + this.GeneratedName + " in " + xmlName + " " + field.FieldName);
+                }
+                n = field.XMLElement.SelectSingleNode("urn:composite-element", CodeGenerator.nsmgr);
+                if (null != n)
+                {
+                    if (null != n.Attributes["class"])
+                    {
+                        genericArgument = GetFieldType(n.Attributes["class"].Value, false, false);
+                        AddImport(genericArgument);
+                        field.AddGenericArgument(genericArgument);
+                    }
+                    else
+                        log.Error("Missing type class on composite-element:" + this.GeneratedName + " in " + xmlName + " " + field.FieldName);
+                }
+            }
+        }
 
 		private void DoArrays(Element classElement, string type, MultiMap inheritedMeta)
 		{
@@ -495,6 +598,31 @@ namespace NHibernate.Tool.hbm2net
 		{
 			return GetFieldType(hibernateType, false, false);
 		}
+
+        public static string GetFieldTypeName(string hibernateType, bool mustBeNullable, bool isArray)
+        {
+            string postfix = isArray ? "[]" : "";
+            // deal with hibernate binary type
+            string cn = null;
+            if (hibernateType.Equals("binary"))
+            {
+                cn = "byte[]" + postfix;
+                return cn;
+            }
+            else
+            {
+                IType basicType = TypeFactory.Basic(hibernateType);
+                if (basicType != null)
+                {
+                    cn = basicType.ReturnedClass.Name + postfix;
+                    return cn;
+                }
+                else
+                {
+                    return hibernateType;
+                }
+            }
+        }
 
 		/// <summary> Return a ClassName for a hibernatetype.
 		/// 
@@ -577,7 +705,14 @@ namespace NHibernate.Tool.hbm2net
 				{
 					type = type.Substring(0, type.IndexOf("("));
 				}
-
+                if (null == System.Type.GetType(type))
+                {
+                    //fast resolve to use the type directly if the type could not be loaded...
+                    log.Warn("Error while trying to resolve UserType. Using the type '" + type + "' directly instead.");
+                    if (type.IndexOf(",") > 0)
+                        type = type.Substring(0, type.IndexOf(","));
+                    return type;
+                }
 				clazz = ReflectHelper.ClassForName(type);
 
 				if (typeof(IUserType).IsAssignableFrom(clazz))
@@ -869,14 +1004,14 @@ namespace NHibernate.Tool.hbm2net
 			}
 
 			// collections
-			DoCollections(classPackage, classElement, "list", "System.Collections.IList", "System.Collections.ArrayList",
+			DoCollections(classPackage, classElement, "list", "System.Collections.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
-			DoCollections(classPackage, classElement, "map", "System.Collections.IDictionary", "System.Collections.Hashtable",
+			DoCollections(classPackage, classElement, "map", "System.Collections.IDictionary", "System.Collections.Generic.Dictionary",
 			              MetaAttribs);
-			DoCollections(classPackage, classElement, "set", "Iesi.Collections.ISet", "Iesi.Collections.HashedSet", MetaAttribs);
-			DoCollections(classPackage, classElement, "bag", "System.Collections.IList", "System.Collections.ArrayList",
+			DoCollections(classPackage, classElement, "set", "Iesi.Collections.ISet", "Iesi.Collections.Generic.HashedSet", MetaAttribs);
+			DoCollections(classPackage, classElement, "bag", "System.Collections.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
-			DoCollections(classPackage, classElement, "idbag", "System.Collections.IList", "System.Collections.ArrayList",
+            DoCollections(classPackage, classElement, "idbag", "System.Collections.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
 			DoArrays(classElement, "array", MetaAttribs);
 			DoArrays(classElement, "primitive-array", MetaAttribs);
