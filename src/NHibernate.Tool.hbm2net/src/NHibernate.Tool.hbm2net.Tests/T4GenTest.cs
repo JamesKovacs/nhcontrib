@@ -101,14 +101,14 @@ namespace NHibernate.Tool.hbm2net.Tests
             
         }
 
-        private void CheckMappingAgainstCode(Assembly asm, string p)
+        private void CheckMappingAgainstCode(Assembly asm, string mappingFile)
         {
             Configuration cfg = new Configuration()
                                     .SetProperty(NHibernate.Cfg.Environment.Dialect, typeof(MsSql2005Dialect).AssemblyQualifiedName)
                                     .SetProperty(NHibernate.Cfg.Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
                                     .SetProperty(NHibernate.Cfg.Environment.ConnectionString, "nothing");
                                     ;
-            cfg.AddFile(new FileInfo(p));
+            cfg.AddFile(new FileInfo(mappingFile));
             cfg.AddAssembly(asm);
             //cfg.BuildMapping();
             cfg.BuildSessionFactory();//do some sanity check on mapping and code...
