@@ -46,7 +46,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			mappingFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Simple.hbm.xml"));
 			ResourceHelper.WriteToFileFromResource(mappingFile, MappingFileResourceName);
 			string[] args = new string[] {mappingFile.Name};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 
@@ -60,7 +60,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			Assert.AreEqual(Environment.CurrentDirectory, mappingFile.DirectoryName);
 			ResourceHelper.WriteToFileFromResource(mappingFile, MappingFileResourceName);
 			string[] args = new string[] {mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 
@@ -68,7 +68,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 		public void MappingFileDoesNotExist()
 		{
 			string[] args = new string[] {"non-existant-file.hbm.xml"};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 		{
 			mappingFile = ResourceHelper.CreateFileFromResource(MappingFileResourceName);
 			string[] args = new string[] {mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 	}

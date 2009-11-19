@@ -114,84 +114,30 @@
 	string GetGenericCollectionImplementation(FieldProperty field)
 	{
 		string generic="";
-        XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
-        nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
-        
-        XmlNode n = field.XMLElement.SelectSingleNode("urn:one-to-many",nsmgr );
-        if( n == null )
-            n = field.XMLElement.SelectSingleNode("urn:many-to-many", nsmgr);
-        if (null != n)
+		if( field.GenericArguments.Length > 0 )
         {
-            if (n.Attributes["class"] != null && field.XMLElement.Name!="array")
-            {
-                generic = n.Attributes["class"].Value.Split(',')[0];
-            }
-            
+			generic+=string.Join(",",field.GenericArguments.Select(g=>g.Name).ToArray());
         }
-        else
-        {
-			//try if it is a collection of value types...
-			n = field.XMLElement.SelectSingleNode("urn:element", nsmgr);
-			if (null != n && n.Attributes["type"] != null && field.XMLElement.Name!="array")
-            {
-                generic = ClassMapping.GetFieldTypeName(n.Attributes["type"].Value.Split(',')[0],false,false);
-                //if there is an index element, add up do the generic definition...
-                var key = field.XMLElement.SelectSingleNode("urn:index", nsmgr);
-                if( null != key )
-                {
-					var keyType = ClassMapping.GetFieldTypeName(key.Attributes["type"].Value.Split(',')[0],false,false);
-					generic = keyType + "," + generic;
-                }
-            }
-        }
-        
-		//this is a bad hack to avoid modifyng hbm2net core 
-		//to use the same type for iesi.collections / iesi.collections.generic
-		string[] tokens = field.ImplementationClassName.Name.Split('.');
-		return tokens[tokens.Length-1]+"<"+ generic+">";
+        if( string.IsNullOrEmpty(generic) )
+			return field.ImplementationClassName.Name;
+		else
+		{
+			return field.ImplementationClassName.Name+"<"+ generic+">";
+		}
 		
 	}
 	string MakeGenericIfNeeded(FieldProperty field)
 	{
 		string generic="";
-        XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
-        nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
-        
-        XmlNode n = field.XMLElement.SelectSingleNode("urn:one-to-many",nsmgr );
-        if( n == null )
-            n = field.XMLElement.SelectSingleNode("urn:many-to-many", nsmgr);
-        if (null != n)
+		if( field.GenericArguments.Length > 0 )
         {
-            if (n.Attributes["class"] != null && field.XMLElement.Name!="array")
-            {
-                generic = n.Attributes["class"].Value.Split(',')[0];
-            }
-            
-        }
-        else
-        {
-			//try if it is a collection of value types...
-			n = field.XMLElement.SelectSingleNode("urn:element", nsmgr);
-			if (null != n && n.Attributes["type"] != null && field.XMLElement.Name!="array")
-            {
-                generic = ClassMapping.GetFieldTypeName(n.Attributes["type"].Value.Split(',')[0],false,false);
-                //if there is an index element, add up do the generic definition...
-                var key = field.XMLElement.SelectSingleNode("urn:index", nsmgr);
-                if( null != key )
-                {
-					var keyType = ClassMapping.GetFieldTypeName(key.Attributes["type"].Value.Split(',')[0],false,false);
-					generic = keyType + "," + generic;
-                }
-            }
+			generic+=string.Join(",",field.GenericArguments.Select(g=>g.Name).ToArray());
         }
         if( string.IsNullOrEmpty(generic) )
-			return field.FullyQualifiedTypeName;
+			return field.ClassType.Name;
 		else
 		{
-			//this is a bad hack to avoid modifyng hbm2net core 
-			//to use the same type for iesi.collections / iesi.collections.generic
-			string[] tokens = field.FullyQualifiedTypeName.Split('.');
-			return tokens[tokens.Length-1]+"<"+ generic+">";
+			return field.ClassType.Name+"<"+ generic+">";
 		}
 	}
 	string GetType(FieldProperty field)

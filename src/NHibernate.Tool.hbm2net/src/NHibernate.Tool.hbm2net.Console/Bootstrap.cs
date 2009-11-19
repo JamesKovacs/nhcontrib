@@ -10,7 +10,7 @@ namespace NHibernate.Tool.hbm2net
 		[STAThread]
 		public static void Main(String[] args)
 		{
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 		}
 	}
 }

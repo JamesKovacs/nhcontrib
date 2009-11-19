@@ -7,19 +7,19 @@
       Blah Blah
       etc etc.
       </meta>
-        <id type="Int64" column="id_" unsaved-value="0" name="Id">
+        <id type="Int64" column="id_" unsaved-value="0" name="Id" access="field.camelcase-underscore">
             <generator class="native"/>
         </id>
       <set name="Children" inverse="true" lazy="true">
         <key column="parent_id"/>
-        <one-to-many class="Eg.Child, Eg"/>
+        <one-to-many class="Eg.Child"/>
       </set>
       <array name="Foos" table="BAR_FOOS" cascade="all">
         <key column="BAR_ID"/>
         <index column="I"/>
-        <many-to-many column="FOO_ID" class="Eg.Foo, Eg"/>
+        <many-to-many column="FOO_ID" class="Eg.Foo"/>
       </array>
-      <map name="Holidays" table="holidays" schema="dbo" order-by="hol_name asc">
+      <map name="Holidays" table="holidays" schema="dbo" >
         <key column="id"/>
         <index column="hol_name" type="String"/>
         <element column="hol_date" type="Date"/>
@@ -48,11 +48,51 @@
         <meta attribute="class-description">
           trying to generate a subclass
         </meta>
-        <key column="sub"/>
+                
+        <key column="sub" />
         <property name="Name" type="String"/>
       </joined-subclass>
 
 
 
     </class>
+<!--Some referenced classes without noting really interesting in-->
+  
+  <class name="Eg.Child" >
+    <meta attribute="class-description">
+     Dummy class to make mapping happy
+    </meta>
+    <id name="ID" access="nosetter.pascalcase-m-underscore">
+      <generator class="native">
+      </generator>
+    </id>
+  </class>
+
+  <class name="Eg.Foo" >
+    <meta attribute="class-description">
+      Dummy class to make mapping happy
+    </meta>
+    <id name="ID" access="nosetter.pascalcase-m-underscore">
+      <generator class="native">
+      </generator>
+    </id>
+  </class>
+  <class name="Eg.Person" >
+    <meta attribute="class-description">
+      Dummy class to make mapping happy
+    </meta>
+    <id name="ID" access="nosetter.pascalcase-m-underscore">
+      <generator class="native">
+      </generator>
+    </id>
+  </class>
+  <class name="OtherClass" >
+    <meta attribute="class-description">
+      Dummy class to make mapping happy
+    </meta>
+    <id name="ID" access="nosetter.pascalcase-m-underscore">
+      <generator class="native">
+      </generator>
+    </id>
+  </class>
 </hibernate-mapping>

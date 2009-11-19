@@ -74,5 +74,5 @@ namespace NHibernate.Tool.hbm2net
 		{
 			get { return this.workingDriectory; }
 		}
-	}
+    }
 }

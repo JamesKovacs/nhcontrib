@@ -9,7 +9,9 @@
 
 using System;
 using System.Collections.Generic;
+using Eg;
 using Iesi.Collections.Generic;
+
 namespace SimpleNS
 {
 	/// <summary>
@@ -28,8 +30,8 @@ namespace SimpleNS
 		public Simple()
 		{
 			_holidays = new Dictionary<String,DateTime>();
-			_children = new HashedSet<Eg.Child>();
-			_lovers = new List<Eg.Person>();
+			_children = new HashedSet<Child>();
+			_lovers = new List<Person>();
 		}
 #endregion
 
@@ -51,9 +53,9 @@ namespace SimpleNS
 		String _pay;	
 		OtherClass other;	
 		IDictionary<String,DateTime> _holidays;	
-		ISet<Eg.Child> _children;	
-		IList<Eg.Person> _lovers;	
-		Eg.Foo[] _foos;	
+		ISet<Child> _children;	
+		IList<Person> _lovers;	
+		Foo[] _foos;	
 #endregion
 		/*----------------*/
 		/*    properties  */
@@ -141,7 +143,7 @@ namespace SimpleNS
 		/// <summary>
 		
 		/// </summary>
-		public virtual ISet<Eg.Child> Children
+		public virtual ISet<Child> Children
 		{
 			get{ return _children; }
 			set{ _children = value; }
@@ -149,7 +151,7 @@ namespace SimpleNS
 		/// <summary>
 		
 		/// </summary>
-		public virtual IList<Eg.Person> Lovers
+		public virtual IList<Person> Lovers
 		{
 			get{ return _lovers; }
 			set{ _lovers = value; }
@@ -157,7 +159,7 @@ namespace SimpleNS
 		/// <summary>
 		
 		/// </summary>
-		public virtual Eg.Foo[] Foos
+		public virtual Foo[] Foos
 		{
 			get{ return _foos; }
 			set{ _foos = value; }

@@ -42,9 +42,9 @@ namespace NHibernate.Tool.hbm2net.T4
                                             );
             log.Debug("Generated File:\n"+res);
             
+            
             writer.Write(res);
             writer.Flush();
-            
         }
 
         private string GetTemplateForOutputName()
@@ -63,7 +63,7 @@ namespace NHibernate.Tool.hbm2net.T4
 
         #region ICanProvideStream Members
 
-        public Stream GetStream(ClassMapping clazz,string directory)
+        public Stream GetStream(ClassMapping clazz,string directory,out string fileName)
         {
             directoryForOutput = directory;
             if (!string.IsNullOrEmpty(directoryForOutput))
@@ -99,7 +99,7 @@ namespace NHibernate.Tool.hbm2net.T4
 
             FileStream output = new FileStream(toSave, FileMode.Create, FileAccess.ReadWrite);
             log.Debug("Flushing output on file:" + output.Name);
-
+            fileName = toSave;
             return output;
         }
 

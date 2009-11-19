@@ -7,7 +7,7 @@ namespace NHibernate.Tool.hbm2net
 {
 	public interface IRenderer
 	{
-		/// <summary>Called with the optional list of properties from config.xml </summary>
+        /// <summary>Called with the optional list of properties from config.xml </summary>
 		void Configure(DirectoryInfo workingDirectory, NameValueCollection properties);
 
 		/// <summary> </summary>

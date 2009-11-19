@@ -119,10 +119,11 @@ namespace NHibernate.Tool.hbm2net
 				params_Renamed[childNode.Attributes["name"].Value] = childNode.InnerText;
 			}
 		}
-
+        IFileCreationObserver fileObserver;
 		/// <summary> </summary>
-		public virtual void Generate(IDictionary classMappingsCol)
+		public virtual void Generate(IDictionary classMappingsCol,IFileCreationObserver fileObserver)
 		{
+            this.fileObserver = fileObserver;
 			log.Info("Generating " + classMappingsCol.Count + " in " + BaseDirName);
 			IRenderer renderer = (IRenderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
 
@@ -169,20 +170,26 @@ namespace NHibernate.Tool.hbm2net
             // decide a stream for output, so a directive in the 
             // generation code can drive the output naming...
             ICanProvideStream streamProvider = renderer as ICanProvideStream;
+            string fileName;
             if (null == streamProvider)
             {
-                FileInfo file = new FileInfo(Path.Combine(dir.FullName, this.GetFileName(saveToClassName)));
+                fileName = Path.Combine(dir.FullName, this.GetFileName(saveToClassName));
+                FileInfo file = new FileInfo(fileName);
                 log.Debug("Writing " + file);
                 writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
             }
             else
             {
-                writer = new StreamWriter(streamProvider.GetStream(classMapping,dir.FullName));
+                writer = new StreamWriter(streamProvider.GetStream(classMapping,dir.FullName,out fileName));
                 log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
             }
 
 			renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
 			writer.Close();
+            if (null != fileObserver)
+            {
+                fileObserver.FileCreated(fileName);
+            }
 		}
 
 		/// <summary> </summary>

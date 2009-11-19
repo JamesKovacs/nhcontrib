@@ -7,6 +7,6 @@ namespace NHibernate.Tool.hbm2net
 {
     public interface ICanProvideStream
     {
-        Stream GetStream(ClassMapping clazz,string outputDirectory);
+        Stream GetStream(ClassMapping clazz,string outputDirectory,out string fileName);
     }
 }

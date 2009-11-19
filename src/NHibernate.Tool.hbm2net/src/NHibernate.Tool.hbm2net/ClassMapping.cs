@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using System.Data.Linq;
 
 using Iesi.Collections;
 
@@ -16,6 +17,8 @@ using CompositeUserType = NHibernate.UserTypes.ICompositeUserType;
 using Type = NHibernate.Type.TypeType;
 using Element = System.Xml.XmlElement;
 using MultiMap = System.Collections.Hashtable;
+using System.Collections.Generic;
+using Iesi.Collections.Generic;
 
 namespace NHibernate.Tool.hbm2net
 {
@@ -31,6 +34,7 @@ namespace NHibernate.Tool.hbm2net
 		private string proxyClass = null;
 		private SupportClass.ListCollectionSupport fields;
 		private SupportClass.TreeSetSupport imports;
+        
 		private SupportClass.ListCollectionSupport subclasses;
 		private static readonly IDictionary components = new Hashtable();
 		private bool mustImplementEquals_Renamed_Field = false;
@@ -51,11 +55,13 @@ namespace NHibernate.Tool.hbm2net
 
 			if (this.superClassMapping != null)
 			{
+                AddImport(superClassMapping.FullyQualifiedName);
 				SupportClass.ListCollectionSupport l = this.superClassMapping.AllFieldsForFullConstructor;
 				for (IEnumerator iter = l.GetEnumerator(); iter.MoveNext();)
 				{
 					FieldProperty element = (FieldProperty) iter.Current;
 					ClassName ct = element.ClassType;
+                    
 					if (ct != null)
 					{
 						// add imports for superclasses possible fields.
@@ -99,10 +105,27 @@ namespace NHibernate.Tool.hbm2net
 			get { return fields; }
 		}
 
-		public virtual SupportClass.SetSupport Imports
+        
+        public virtual SupportClass.TreeSetSupport Imports
 		{
 			get { return imports; }
 		}
+        /// <summary>
+        /// Returns the imports as an enumerable: better for using with T4.
+        /// This function overlaps with Imports, but imports does not supports LinqToObjects extension methods
+        /// </summary>
+        public IEnumerable<string> Using 
+        {
+            get
+            {
+                List<string> @using = new List<string>();
+                foreach (var v in imports)
+                {
+                    @using.Add(v.ToString());
+                }
+                return @using;
+            }  
+        }
 
 		/// <summary>shorthand method for getClassName().getFullyQualifiedName() </summary>
 		public virtual string FullyQualifiedName
@@ -348,6 +371,8 @@ namespace NHibernate.Tool.hbm2net
 			fields = new SupportClass.ListCollectionSupport();
 			imports = new SupportClass.TreeSetSupport();
 			subclasses = new SupportClass.ListCollectionSupport();
+            //ensure imports System...
+            imports.Add("System");
 		}
 
 		private void DoCollections(string classPackage, Element classElement, string xmlName, string interfaceClass,
@@ -370,13 +395,13 @@ namespace NHibernate.Tool.hbm2net
 				{
 					if ("map".Equals(xmlName))
 					{
-						interfaceClass = typeof(IDictionary).FullName;
-						implementingClass = typeof(IDictionary).FullName;
+						interfaceClass = typeof(IDictionary<,>).FullName;
+                        implementingClass = typeof(IDictionary<,>).FullName;
 					}
 					else if ("set".Equals(xmlName))
 					{
-						interfaceClass = typeof(ISet).FullName;
-						implementingClass = typeof(ISet).FullName;
+						interfaceClass = typeof(ISet<>).FullName;
+						implementingClass = typeof(ISet<>).FullName;
 					}
 				}
 				else
@@ -390,9 +415,6 @@ namespace NHibernate.Tool.hbm2net
 
 				// add an import and field for this collection
 				AddImport(interfaceClassName);
-				// import implementingClassName should only be 
-				// added if the initialisaiton code of the field 
-				// is actually used - and currently it isn't!
                 AddImport(implementationClassName);
 
 				ClassName foreignClass = null;
@@ -859,9 +881,17 @@ namespace NHibernate.Tool.hbm2net
 					ClassName classType = new ClassName(cmpclass);
 					// add an import and field for this property
 					AddImport(classType);
-					FieldProperty cmpidfield =
-						new FieldProperty(cmpid, this, cmpname, classType, false, true, false, metaForCompositeid);
-					AddFieldProperty(cmpidfield);
+                    if (cmpname != null)
+                    {
+                        FieldProperty cmpidfield =
+                            new FieldProperty(cmpid, this, cmpname, classType, false, true, false, metaForCompositeid);
+                        AddFieldProperty(cmpidfield);
+                    }
+                    else
+                    {
+                        //composite id with class MUST have a property name associated with...
+                        log.Error("Composite id with class MUST have a property name. In:"+mapping.Name);
+                    }
 					object tempObject;
 					tempObject = mapping;
 					components[mapping.FullyQualifiedName] = tempObject;
@@ -1004,14 +1034,14 @@ namespace NHibernate.Tool.hbm2net
 			}
 
 			// collections
-			DoCollections(classPackage, classElement, "list", "System.Collections.IList", "System.Collections.Generic.List",
+            DoCollections(classPackage, classElement, "list", "System.Collections.Generic.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
-			DoCollections(classPackage, classElement, "map", "System.Collections.IDictionary", "System.Collections.Generic.Dictionary",
+            DoCollections(classPackage, classElement, "map", "System.Collections.Generic.IDictionary", "System.Collections.Generic.Dictionary",
 			              MetaAttribs);
-			DoCollections(classPackage, classElement, "set", "Iesi.Collections.ISet", "Iesi.Collections.Generic.HashedSet", MetaAttribs);
-			DoCollections(classPackage, classElement, "bag", "System.Collections.IList", "System.Collections.Generic.List",
+			DoCollections(classPackage, classElement, "set", "Iesi.Collections.Generic.ISet", "Iesi.Collections.Generic.HashedSet", MetaAttribs);
+            DoCollections(classPackage, classElement, "bag", "System.Collections.Generic.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
-            DoCollections(classPackage, classElement, "idbag", "System.Collections.IList", "System.Collections.Generic.List",
+            DoCollections(classPackage, classElement, "idbag", "System.Collections.Generic.IList", "System.Collections.Generic.List",
 			              MetaAttribs);
 			DoArrays(classElement, "array", MetaAttribs);
 			DoArrays(classElement, "primitive-array", MetaAttribs);
@@ -1100,25 +1130,15 @@ namespace NHibernate.Tool.hbm2net
 				(AllFieldsForFullConstructor.Count != AllFieldsForMinimalConstructor.Count) &&
 				AllFieldsForMinimalConstructor.Count > 0;
 		}
-
+        
 		public virtual void AddImport(ClassName className)
 		{
-			// if the package is java.lang or our own package don't add
-			if (!className.InJavaLang() && !className.InSamePackage(generatedName) && !className.Primitive &&
-			    className.PackageName != null && className.PackageName.Length > 0)
+			
+			//if (!className.InDotNetLang() && !className.InSamePackage(generatedName) && !className.Primitive &&
+			//    className.PackageName != null && className.PackageName.Length > 0)
+            if (!className.InSamePackage(generatedName) && className.PackageName != null && className.PackageName.Length > 0)
 			{
-				/*
-				if (className.Array)
-				{
-					//TODO: fix imports
-					imports.Add(className.PackageName.Substring(0, (className.FullyQualifiedName.Length - 2) - (0))); // remove []
-				}
-				else
-				{
-				*/
-				//TODO: fix imports
 				imports.Add(className.PackageName);
-				//}
 			}
 		}
 
@@ -1127,10 +1147,16 @@ namespace NHibernate.Tool.hbm2net
 			ClassName cn = new ClassName(className);
 			AddImport(cn);
 		}
+         
+        public virtual void AddImport(System.Type clazz)
+		{
+			AddImport(clazz.FullName);
+		}
+        
 
-		#endregion
+        #endregion
 
-		/// <summary> Method shouldBeAbstract.</summary>
+        /// <summary> Method shouldBeAbstract.</summary>
 		/// <returns> boolean
 		/// </returns>
 		public virtual bool ShouldBeAbstract()
@@ -1158,9 +1184,6 @@ namespace NHibernate.Tool.hbm2net
 			subclasses.Add(subclassMapping);
 		}
 
-		public virtual void AddImport(System.Type clazz)
-		{
-			AddImport(clazz.FullName);
-		}
+		
 	}
 }

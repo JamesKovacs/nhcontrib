@@ -81,7 +81,7 @@ namespace NHibernate.Tool.hbm2net
 			return base.GetHashCode();
 		}
 
-		public virtual bool InJavaLang()
+		public virtual bool InDotNetLang()
 		{
 			return "System".Equals(packageName);
 		}

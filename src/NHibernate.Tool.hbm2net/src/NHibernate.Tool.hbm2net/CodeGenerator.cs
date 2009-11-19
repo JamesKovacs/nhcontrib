@@ -24,8 +24,11 @@ namespace NHibernate.Tool.hbm2net
 		private static ArrayList children;
 		private static MultiMap allMaps;
 
-		[STAThread]
-		public static void Main(String[] args)
+        public static void Generate(String[] args)
+        {
+            Generate(args, null);
+        }
+		public static void Generate(String[] args,IFileCreationObserver fileCreationObserver)
 		{
 			nsmgr = new XmlNamespaceManager(new NameTable());
 			nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
@@ -135,14 +138,14 @@ namespace NHibernate.Tool.hbm2net
 
                 // Ok, pickup subclasses that we found before their superclasses
                 ProcessChildren(classMappings);
-
-                // generate source files
-                for (IEnumerator iterator = generators.GetEnumerator(); iterator.MoveNext(); )
-                {
-                    Generator g = (Generator)iterator.Current;
-                    g.BaseDirName = outputDir;
-                    g.Generate(classMappings);
-                }
+                
+            }
+            // generate source files
+            for (IEnumerator iterator = generators.GetEnumerator(); iterator.MoveNext(); )
+            {
+                Generator g = (Generator)iterator.Current;
+                g.BaseDirName = outputDir;
+                g.Generate(classMappings,fileCreationObserver);
             }
 		}
 

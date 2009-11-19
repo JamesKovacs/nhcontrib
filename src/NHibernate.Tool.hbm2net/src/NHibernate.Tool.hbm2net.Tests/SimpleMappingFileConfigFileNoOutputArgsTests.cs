@@ -82,7 +82,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
 
 			string[] args = new string[] {"--config=" + configFile.FullName, mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 
@@ -105,7 +105,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
 
 			string[] args = new string[] {"--config=" + configFile.FullName, mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 
@@ -134,7 +134,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
 
 			string[] args = new string[] {"--config=" + configFile.FullName, mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 
@@ -161,7 +161,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
 
 			string[] args = new string[] {"--config=" + configFile.FullName, mappingFile.FullName};
-			CodeGenerator.Main(args);
+			CodeGenerator.Generate(args);
 			AssertFile();
 		}
 	}
