@@ -132,7 +132,6 @@ namespace NHibernate.Tool.hbm2net.Tests
 
         }
         [Test]
-        [Ignore]
         public void UUIDCat()
         {
 

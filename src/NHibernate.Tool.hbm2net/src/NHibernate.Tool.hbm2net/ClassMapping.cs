@@ -940,10 +940,21 @@ namespace NHibernate.Tool.hbm2net
 
 				if ((Object) type == null || type.Trim().Equals(string.Empty))
 				{
-					if (property == id)
-						type = "Int32";
-					else
-						type = "String";
+                    if (property == id)
+                    {
+                        Element generator = property["generator"];
+                        string generatorClass = generator.Attributes["class"] == null ? string.Empty : generator.Attributes["class"].Value;
+                        if (generatorClass == "uuid.hex" )
+                        {
+                            type = "String";
+                        }
+                        else
+                        {
+                            type = "Int32";
+                        }
+                    }
+                    else
+                        type = "String";
 					log.Warn("property \"" + propertyName + "\" in class " + Name + " is missing a type attribute, guessing " + type);
 				}
 
