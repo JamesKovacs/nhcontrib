@@ -17,8 +17,8 @@ namespace NHibernate.Tool.hbm2net
 		{
 			get
 			{
-				if (fieldName.Substring(0, 1) == fieldName.Substring(0, 1).ToLower())
-					return "_" + fieldName;
+				//if (fieldName.Substring(0, 1) == fieldName.Substring(0, 1).ToLower())
+				//	return "_" + fieldName;
 				return fieldName.Substring(0, 1).ToLower() + fieldName.Substring(1);
 			}
 		}

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="OneToOne"
+    namespace="Entities">
+
+  <class name="Employee"
+      table="Employees">
+
+    <id name="Id">
+      <generator class="native"/>
+    </id>
+
+    <property name="Role"/>
+<!-- note: in the original sample the class for person is omitted. This work because NH guess the property type by reflection
+but DOES NOT work in code generation, when the code to reflect does not exist yet.
+-->
+    <many-to-one name="Person" class="Person"
+      unique="true"
+      column="Person"/>
+  </class>
+
+  <class name="Person"
+      table="People">
+
+    <id name="Id">
+      <generator class="native"/>
+    </id>
+    <property name="Name" />
+    <one-to-one name="Employee"
+        class="Employee"/>
+  </class>
+
+</hibernate-mapping>

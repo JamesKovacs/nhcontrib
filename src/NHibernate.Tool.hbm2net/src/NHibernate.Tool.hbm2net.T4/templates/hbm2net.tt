@@ -58,7 +58,7 @@ using <#=import#>;
 		/// <summary>
 <#=ToNetDoc(field.GetMetaAsString("field-description"),2).Trim('\n','\r')#>		
 		/// </summary>
-		<#=field.PropertyGetScope#> virtual <#=GetType(field)#> <#=field.Propcase#>
+		<#=field.PropertyGetScope#> virtual <#=GetType(field)#> <#=field.AccessorName#>
 		{
 			get{ return <#=GetPrivateFieldName(field)#>; }
 <#if( HasSetter(field) ){#>
@@ -68,5 +68,21 @@ using <#=import#>;
 		}
 <#}#>
 #endregion
+<#if( clazz.MustImplementEquals() ){#>
+		public override bool Equals(object other)
+		{
+			if (this == other)
+				return true;
+			<#=clazz.Name#> rhs = other as <#=clazz.Name#>;
+			if (rhs == null) 
+				return false; // null or not a <#=clazz.Name#>
+			return <#=string.Join(" && ",GetEqualityList(clazz,"rhs"))#>;
+		}
+		
+		public override int GetHashCode()
+		{
+			return <#=string.Join(" ^ ",GetHashFieldList(clazz).Select(f=>f+".GetHashCode()").ToArray())#>;
+		}
+<#}#>
 	}
 }

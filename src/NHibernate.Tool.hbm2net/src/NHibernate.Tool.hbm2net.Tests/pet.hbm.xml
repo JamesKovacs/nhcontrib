@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- example from http://www.fincher.org/tips/Languages/NHibernate.shtml -->
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="NHibernatePets">
+  <class name="NHibernatePets.Pet" lazy="false">
+    <id name="id" access="field">
+      <generator class="native" />
+    </id>
+    <property name="PetName" />
+    <property name="Species" />
+    <property name="Birthday" />
+    <component name="SleepingPlace" class="NHibernatePets.Place" >
+      <property name="Room"
+      type="String"
+      column="SleepingRoom"
+      not-null="false"/>
+      <property name="Area"
+      type="String"
+      column="SleepingArea"
+      not-null="false"/>
+    </component>
+    <component name="HappyPlace" class="NHibernatePets.Place" >
+      <property name="Room"
+      type="String"
+      column="HappyRoom"
+      not-null="false"/>
+      <property name="Area"
+      type="String"
+      column="HappyArea"
+      not-null="false"/>
+    </component>
+  </class>
+</hibernate-mapping>

@@ -12,6 +12,26 @@
 			return ": "+chunk;
 		return  string.Empty;
 	}
+	string[] GetEqualityList(ClassMapping clazz,string rhsName)
+	{
+		var list = new List<string>();
+		foreach( FieldProperty f in clazz.Fields )
+		{
+			if( clazz.IsComponent || f.XMLElement.Name=="key-property" )
+				list.Add(string.Format("{0}.Equals({1}.{0})",GetPrivateFieldName(f),rhsName));
+		}
+		return list.ToArray();
+	}
+	string[] GetHashFieldList(ClassMapping clazz)
+	{
+		var list = new List<string>();
+		foreach( FieldProperty f in clazz.Fields )
+		{
+			if( clazz.IsComponent || f.XMLElement.Name=="key-property" )
+				list.Add(GetPrivateFieldName(f));
+		}
+		return list.ToArray();
+	}
 	bool IsCollection(FieldProperty field)
 	{
 		string[] coll = new string[]{"idbag","set","list","bag","map"};
@@ -24,7 +44,8 @@
 			string access=field.XMLElement.Attributes["access"].Value;
 			string strategy=access.Split('.')[0];
 			string naming = access.Substring(strategy.Length).TrimStart('.');
-			
+			if( access == "field" && string.IsNullOrEmpty(naming.Trim()) ) // field access must preserve the field name
+				return field.fieldcase;
 			switch(naming)
 			{
 				case "camelcase":
@@ -53,11 +74,12 @@
 				return false;
 			
 		}
+		/*
 		if (field.XMLElement.Name == "id")
         {
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(new System.Xml.NameTable());
             nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
-            string[] nosetters = new string[] { "increment","identity","sequence","hilo","seqhilo","native" };
+            string[] nosetters = new string[] { "increment","identity","native" };
             XmlNode generator = field.XMLElement.SelectSingleNode("urn:generator", nsmgr);
             if (generator.Attributes["class"] != null)
             {
@@ -65,7 +87,7 @@
                     return false;
             }
 
-         }
+         }*/
 		return true;
 	}
 	string ToNetDoc(string s,int ident)

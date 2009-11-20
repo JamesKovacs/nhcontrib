@@ -156,6 +156,7 @@ namespace NHibernate.Tool.hbm2net.T4
                     "System"
                     ,"System.IO"
                     ,"System.Collections"
+                    ,"System.Collections.Generic"
                     ,"System.Linq"
                     ,"System.Text"
                     ,"System.Xml"

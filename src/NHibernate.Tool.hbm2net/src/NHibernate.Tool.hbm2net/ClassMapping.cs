@@ -36,7 +36,7 @@ namespace NHibernate.Tool.hbm2net
 		private SupportClass.TreeSetSupport imports;
         
 		private SupportClass.ListCollectionSupport subclasses;
-		private static readonly IDictionary components = new Hashtable();
+		private static IDictionary components = new Hashtable();
 		private bool mustImplementEquals_Renamed_Field = false;
 
 		private bool shouldBeAbstract_Renamed_Field = false;
@@ -283,7 +283,10 @@ namespace NHibernate.Tool.hbm2net
 				return result;
 			}
 		}
-
+        public static void ResetComponents()
+        {
+            components = new Hashtable();
+        }
 		public static IEnumerator Components
 		{
 			get { return components.Values.GetEnumerator(); }
@@ -791,12 +794,13 @@ namespace NHibernate.Tool.hbm2net
 		}
 
 		#endregion
-
+        public bool IsComponent { get; set; }
 		#region Protected methods
 
 		protected internal virtual void InitWith(string classPackage, ClassName mySuperClass, Element classElement,
 		                                         bool component, MultiMap inheritedMeta)
 		{
+            IsComponent = component;
 			string fullyQualifiedName = (classElement.Attributes[component ? "class" : "name"] == null
 			                             	? string.Empty : classElement.Attributes[component ? "class" : "name"].Value);
 
@@ -862,15 +866,16 @@ namespace NHibernate.Tool.hbm2net
 			Element cmpid = classElement["composite-id"];
 			if (cmpid != null)
 			{
-				ImplementEquals();
 				string cmpname = (cmpid.Attributes["name"] == null ? null : cmpid.Attributes["name"].Value);
 				string cmpclass = (cmpid.Attributes["class"] == null ? null : cmpid.Attributes["class"].Value);
+                
 				if ((Object) cmpclass == null || cmpclass.Equals(string.Empty))
 				{
 					//Embedded composite id
 					//implementEquals();
 					propertyList.AddAll(0, cmpid.SelectNodes("urn:key-property", CodeGenerator.nsmgr));
 					manyToOneList.AddAll(0, cmpid.SelectNodes("urn:key-many-to-one", CodeGenerator.nsmgr));
+                    ImplementEquals();
 				}
 				else
 				{

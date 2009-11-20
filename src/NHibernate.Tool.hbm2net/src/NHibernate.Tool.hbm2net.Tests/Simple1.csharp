@@ -67,6 +67,7 @@ namespace SimpleNS
 		public virtual Int64 Id
 		{
 			get{ return _id; }
+			set{ _id = value; }
 		}
 		/// <summary>
 		

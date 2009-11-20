@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="InvoiceEntities"
+    namespace="Entities">
+
+  <class name="Invoice" table="Invoices">
+    <composite-id name="Id" class="InvoiceId">
+      <key-property name="Number" />
+      <key-property name="Year" />
+    </composite-id>
+    <property name="Description"/>
+    <property name="TotalAmount" type="Double"/>
+
+    <bag name="Details"  inverse="true" cascade="none" >
+      <key>
+        <column name="Number" />
+        <column name="Year" />
+      </key>
+      <one-to-many class="InvoiceDetail" />
+    </bag>
+  </class>
+
+  <class name="InvoiceDetail" table="InvoiceDetails">
+    <composite-id name="Id" class="DetailId">
+      <key-many-to-one class="Invoice" name="Invoice">
+        <column name="Number"/>
+        <column name="Year"/>
+      </key-many-to-one>
+      <key-property name="Progressive" type="Int32" />
+    </composite-id>
+    <property name="Description" type="String"/>
+  </class>
+  
+</hibernate-mapping>

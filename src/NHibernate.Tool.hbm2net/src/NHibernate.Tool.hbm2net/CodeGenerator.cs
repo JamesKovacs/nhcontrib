@@ -30,12 +30,15 @@ namespace NHibernate.Tool.hbm2net
         }
 		public static void Generate(String[] args,IFileCreationObserver fileCreationObserver)
 		{
-			nsmgr = new XmlNamespaceManager(new NameTable());
+            //this has to change... dirty things during porting
+            ClassMapping.ResetComponents();
+
+            nsmgr = new XmlNamespaceManager(new NameTable());
 			nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
 
 			children = new ArrayList();
 			allMaps = new MultiMap();
-
+            
 			File.Delete("error-log.txt");
 
 			// DOMConfigurator is deprecated in the latest log4net, but we are using an earlier
