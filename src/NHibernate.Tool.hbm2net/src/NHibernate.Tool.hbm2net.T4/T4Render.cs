@@ -25,7 +25,7 @@ namespace NHibernate.Tool.hbm2net.T4
         const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt";
         const string DefaultTemplateForFileName = "clazz.GeneratedName+\".generated.cs\"";
         string templateForFileName;
-        string fileName = "";
+        
         public override void Render(string savedToPackage, string savedToClass, ClassMapping classMapping, IDictionary class2classmap, StreamWriter writer)
         {
             Engine T4; 
@@ -41,10 +41,12 @@ namespace NHibernate.Tool.hbm2net.T4
                                             }
                                             );
             log.Debug("Generated File:\n"+res);
-            
-            
             writer.Write(res);
             writer.Flush();
+            if (writer.BaseStream is FileStream)
+            {
+                log.Info("Flushed file:"+(writer.BaseStream as FileStream).Name);
+            }
         }
 
         private string GetTemplateForOutputName()

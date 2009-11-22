@@ -12,7 +12,7 @@ namespace NHibernate.Tool.hbm2net
 		public static void Main(String[] args)
 		{
             XmlConfigurator.Configure();
-			CodeGenerator.Generate(args);
+            CodeGenerator.Generate(args);
 		}
 	}
 }
