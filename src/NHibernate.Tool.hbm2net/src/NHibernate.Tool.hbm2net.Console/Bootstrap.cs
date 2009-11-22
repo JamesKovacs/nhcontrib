@@ -1,4 +1,5 @@
 using System;
+using log4net.Config;
 
 namespace NHibernate.Tool.hbm2net
 {
@@ -10,6 +11,7 @@ namespace NHibernate.Tool.hbm2net
 		[STAThread]
 		public static void Main(String[] args)
 		{
+            XmlConfigurator.Configure();
 			CodeGenerator.Generate(args);
 		}
 	}
