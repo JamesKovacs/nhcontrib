@@ -1062,7 +1062,17 @@ namespace NHibernate.Tool.hbm2net
 			DoArrays(classElement, "array", MetaAttribs);
 			DoArrays(classElement, "primitive-array", MetaAttribs);
 
-
+            //dynamic-component
+            foreach (Element dync in classElement.SelectNodes("urn:dynamic-component", CodeGenerator.nsmgr))
+            { 
+                MultiMap metaForDync = MetaAttributeHelper.LoadAndMergeMetaMap(dync, MetaAttribs);
+                string propertyName = (dync.Attributes["name"] == null ? string.Empty : dync.Attributes["name"].Value);
+                FieldProperty dynfield = new FieldProperty(dync, this, propertyName, new ClassName("System.Collections.Generic.IDictionary"), false, metaForDync);
+                dynfield.AddGenericArgument(new ClassName("System.String"));
+                dynfield.AddGenericArgument(new ClassName("System.Object"));
+                AddImport("System.Collections.Generic.IDictionary");
+                AddFieldProperty(dynfield);
+            }
 			//components
 			for (IEnumerator iter = classElement.SelectNodes("urn:component", CodeGenerator.nsmgr).GetEnumerator();
 			     iter.MoveNext();)

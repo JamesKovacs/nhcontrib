@@ -12,6 +12,10 @@
 			return ": "+chunk;
 		return  string.Empty;
 	}
+	bool IsDynamic(FieldProperty field)
+	{
+		return field.XMLElement.Name == "dynamic-component";
+	}
 	string[] GetEqualityList(ClassMapping clazz,string rhsName)
 	{
 		var list = new List<string>();

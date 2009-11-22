@@ -13,6 +13,7 @@ namespace NHibernate.Tool.hbm2net
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private List<ClassName> genericArguments = new List<ClassName>();
+        
 		public string fieldcase
 		{
 			get

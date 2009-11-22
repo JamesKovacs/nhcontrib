@@ -34,7 +34,11 @@ using <#=import#>;
 <#if(IsCollection(field))
 {#>
 			<#=GetPrivateFieldName(field)#> = new <#=GetGenericCollectionImplementation(field)#>();
-<#}#><#}#>
+<#}#>
+<#if(IsDynamic(field)){#>
+			<#=GetPrivateFieldName(field)#> = new Dictionary<String,Object>();
+<#}#>
+<#}#>
 		}
 #endregion
 

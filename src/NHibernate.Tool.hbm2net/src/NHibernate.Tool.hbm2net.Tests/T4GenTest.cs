@@ -42,36 +42,7 @@ namespace NHibernate.Tool.hbm2net.Tests
         private static string ExpectedFileName = Path.Combine(TestHelper.DefaultOutputDirectory.FullName, @"Simple.generated.cs");
 
 
-        /*
-        [Test]
-        public void TestWithADomainModel()
-        {
-
-            FileInfo configFile = new FileInfo(Path.GetTempFileName());
-            List<string> domainMappings = new List<string>();	
-            foreach (var hbmFile in Assembly.GetExecutingAssembly().GetManifestResourceNames())
-            {
-                if (Regex.IsMatch(hbmFile, @".*NHDomainModel\..*\.hbm\.xml"))
-                {
-                    FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbmFile));
-                    if (mappingFile.Exists)
-                        mappingFile.Delete();
-                    ResourceHelper.WriteToFileFromResource(mappingFile, hbmFile.Replace("NHibernate.Tool.hbm2net.Tests.",""));
-                    domainMappings.Add(mappingFile.FullName);
-                }
-            }
-
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused");
-
-            // ensure that test is setup correctly
-            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
-
-            List<string> args = new List<string>() { "--config=" + configFile.FullName };
-            args.AddRange(domainMappings);
-            CodeGenerator.Generate(args.ToArray());
-            Assert.Fail("useless test");
-        }
-        */
+       
         [Test]
         public void TestDefaultTemplate()
         {
@@ -160,6 +131,37 @@ namespace NHibernate.Tool.hbm2net.Tests
             CheckMappingAgainstCode(asm, mappingFile.FullName);
 
         }
+
+        [Test(Description = "mapping example from:http://ayende.com/Blog/archive/2009/04/11/nhibernate-mapping-ltdynamic-componentgt.aspx")]
+        public void DynamicComponent()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "Dynamiccomponent.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+
+            Assembly asm = AssertedCompileGeneratedFiles("DynamicEntity");
+            CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+
         [Test()]
         public void RawCompositeKey()
         {
