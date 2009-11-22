@@ -181,7 +181,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)"..\stub</PostBuildEvent>
   </PropertyGroup>
 </Project>
