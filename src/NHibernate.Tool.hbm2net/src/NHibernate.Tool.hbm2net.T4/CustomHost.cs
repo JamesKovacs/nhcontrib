@@ -184,6 +184,10 @@ namespace NHibernate.Tool.hbm2net.T4
             }
             else
             {
+                if (template.StartsWith("~"))
+                {
+                    template = Path.Combine(Assembly.GetExecutingAssembly().Location,template.Substring(1));
+                }
                 templateStream = new FileStream(template, FileMode.Open);
             }
             string code = new StreamReader(templateStream).ReadToEnd();

@@ -57,6 +57,7 @@ namespace NHibernate.Tool.hbm2net.T4
         public override void Configure(DirectoryInfo workingDirectory, NameValueCollection props)
         {
             template = props["template"] ?? T4DefaultTemplate;
+            template = template.Trim();
             templateForFileName = props["output"] ?? DefaultTemplateForFileName;
             base.Configure(workingDirectory, props);
         }
