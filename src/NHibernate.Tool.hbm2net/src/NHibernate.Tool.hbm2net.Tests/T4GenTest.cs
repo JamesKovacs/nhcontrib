@@ -74,7 +74,7 @@ namespace NHibernate.Tool.hbm2net.Tests
             
         }
         [Test]
-        public void TestPet()
+        public void EntityWithComponents()
         {
 
             FileInfo configFile = new FileInfo(Path.GetTempFileName());
@@ -128,6 +128,65 @@ namespace NHibernate.Tool.hbm2net.Tests
 
 
             Assembly asm = AssertedCompileGeneratedFiles("QuickStart");
+            CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+
+        [Test(Description = "mapping example from:http://ayende.com/Blog/archive/2009/06/03/nhibernate-mapping-ndash-ltmapgt.aspx")]
+        public void Map()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "map.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+
+            Assembly asm = AssertedCompileGeneratedFiles("Map");
+            CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+        [Test(Description = "mapping example from:http://ayende.com/Blog/archive/2009/06/03/nhibernate-mapping-ndash-ltmapgt.aspx")]
+        public void ComplexMap()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "complexmap.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+
+            Assembly asm = AssertedCompileGeneratedFiles("ComplexMap");
             CheckMappingAgainstCode(asm, mappingFile.FullName);
 
         }

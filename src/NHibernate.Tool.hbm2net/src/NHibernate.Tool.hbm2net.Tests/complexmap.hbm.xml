@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ComplexMap"
+    namespace="MyUsers">
+  <class name="User" table="Users">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+    <map name="ComplexFavoritePlaces" table="UsersComplexFavoritePlaces" >
+      <key column="UserId"/>
+      <composite-index class="FavPlaceKey">
+        <key-property  name="Name"/>
+        <key-property name="Why"/>
+      </composite-index>
+      <composite-element class="Position">
+        <property name="Lang"/>
+        <property name="Lat"/>
+      </composite-element>
+    </map>
+  </class>
+</hibernate-mapping>

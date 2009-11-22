@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="DynamicEntity"
+    namespace="Entities">
+  <class name="Person"
+      table="People">
+
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="Name" />
+
+    <dynamic-component name="Attributes">
+      <property name="SSN"
+        type="System.String"/>
+    </dynamic-component>
+  </class>
+</hibernate-mapping>

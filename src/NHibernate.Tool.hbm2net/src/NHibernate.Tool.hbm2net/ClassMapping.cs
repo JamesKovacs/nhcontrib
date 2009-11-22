@@ -493,6 +493,7 @@ namespace NHibernate.Tool.hbm2net
                         try
                         {
                             ClassMapping mapping = new ClassMapping(classPackage, compositeElement, this, true, MetaAttribs);
+                            mapping.ImplementEquals();
                             ClassName classType = new ClassName(compClass);
                             // add an import and field for this property
                             AddImport(classType);

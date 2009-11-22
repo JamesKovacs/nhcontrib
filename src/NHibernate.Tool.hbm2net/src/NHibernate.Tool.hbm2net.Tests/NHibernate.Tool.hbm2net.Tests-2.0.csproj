@@ -208,6 +208,8 @@
     <EmbeddedResource Include="compositekey.hbm.xml" />
     <EmbeddedResource Include="UUIDCat.hbm.xml" />
     <EmbeddedResource Include="Dynamiccomponent.hbm.xml" />
+    <EmbeddedResource Include="map.hbm.xml" />
+    <EmbeddedResource Include="complexmap.hbm.xml" />
     <Content Include="t4config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
