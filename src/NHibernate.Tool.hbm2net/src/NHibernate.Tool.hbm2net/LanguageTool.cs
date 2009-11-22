@@ -21,7 +21,7 @@ namespace NHibernate.Tool.hbm2net
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		public virtual string GetPackageDeclaration(ClassMapping cm)
+		public virtual string GetNamespaceDeclaration(ClassMapping cm)
 		{
 			if ((object) cm.GeneratedPackageName != null)
 			{

@@ -15,7 +15,7 @@
 using <#=import#>;
 <#}#>
 
-<#= languageTool.GetPackageDeclaration(clazz) #>
+<#= languageTool.GetNamespaceDeclaration(clazz) #>
 {
 	/// <summary>
 <#=GetCommentForClass(clazz,1).TrimEnd()#>
