@@ -124,7 +124,7 @@ namespace NHibernate.Tool.hbm2net
 		public virtual void Generate(IDictionary classMappingsCol,IFileCreationObserver fileObserver)
 		{
             this.fileObserver = fileObserver;
-			log.Info("Generating " + classMappingsCol.Count + " in " + BaseDirName);
+			log.Info("Working on " + classMappingsCol.Count + " classes/component, output generated in:" + BaseDirName);
 			IRenderer renderer = (IRenderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
 
 			//Configure renderer
