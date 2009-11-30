@@ -82,6 +82,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)"..\stub</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)"..\stub
+copy "$(ProjectDir)\templates\hbm2net.tt" "$(SolutionDir)"..\stub</PostBuildEvent>
   </PropertyGroup>
 </Project>

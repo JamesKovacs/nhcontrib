@@ -47,7 +47,7 @@ namespace NHibernate.Tool.hbm2net
 
 			if (args.Length == 0)
 			{
-				Console.Error.WriteLine("No arguments provided. Nothing to do. Exit.");
+                DumpHelp();
 				Environment.Exit(- 1);
 			}
 
@@ -59,7 +59,7 @@ namespace NHibernate.Tool.hbm2net
 			// parse command line parameters
 			for (int i = 0; i < args.Length; i++)
 			{
-				if (args[i].StartsWith("--"))
+                if (args[i].StartsWith("--"))
 				{
 					if (args[i].StartsWith("--config="))
 					{
@@ -95,7 +95,8 @@ namespace NHibernate.Tool.hbm2net
 			// if no config xml file, add a default generator
 			if (generators.Count == 0)
 			{
-				generators.Add(new Generator(new DirectoryInfo(Environment.CurrentDirectory)));
+                DumpHelp();
+                Environment.Exit(-1);
 			}
 
 			Hashtable classMappings = new Hashtable();
@@ -151,6 +152,20 @@ namespace NHibernate.Tool.hbm2net
                 g.Generate(classMappings,fileCreationObserver);
             }
 		}
+
+        private static void DumpHelp()
+        {
+            Console.Error.WriteLine("Use: hbm2net --config=configfile.xml [--output=outdir]");
+            Console.Error.WriteLine("*** Config file example: ****");
+            Console.Error.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            Console.Error.WriteLine("<codegen>");
+            Console.Error.WriteLine("\t<generate renderer=\"NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net.T4\" package=\"\">");
+            Console.Error.WriteLine("\t\t<param name=\"template\">res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt</param>");
+            Console.Error.WriteLine("\t\t<param name=\"output\">clazz.GeneratedName+\".generated.cs\"</param>");
+            Console.Error.WriteLine("\t</generate>");
+            Console.Error.WriteLine("</codegen>");
+            Console.Error.WriteLine("\nMultiple generation steps is achieved by multiple <codegen> nodes.");
+        }
 
 		private static ICollection GetFiles(string fileSpec)
 		{
