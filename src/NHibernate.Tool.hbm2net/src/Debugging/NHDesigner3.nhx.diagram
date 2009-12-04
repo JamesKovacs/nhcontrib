@@ -20,17 +20,47 @@
         <elementListCompartment Id="d0c9c53f-4ba3-4463-8dc9-f170d94db5e2" absoluteBounds="2.89, 2.81, 1.4700000000000002, 0.20745849609375006" name="Properties" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </entityShape>
-    <subclassConnector edgePoints="[(3.25 : 2.5); (3.25 : 1.74245849609375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="1c21cd18-96bd-48eb-9864-b03e0f73bc5d">
+    <subclassConnector edgePoints="[(3.25 : 2.5); (3.25 : 1.74245849609375)]" fixedFrom="NotFixed" fixedTo="NotFixed" TargetRelationshipDomainClassId="1c21cd18-96bd-48eb-9864-b03e0f73bc5d">
       <nodes>
         <entityShapeMoniker Id="31ce6578-760c-491b-ab30-d4bd0397abd6" />
         <entityShapeMoniker Id="3bcc0e61-0070-42c2-9339-588b855b3a0d" />
       </nodes>
     </subclassConnector>
-    <subclassConnector edgePoints="[(2.3125 : 2.5); (2.3125 : 1.74245849609375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="1c21cd18-96bd-48eb-9864-b03e0f73bc5d">
+    <subclassConnector edgePoints="[(2.3125 : 2.5); (2.3125 : 1.74245849609375)]" fixedFrom="NotFixed" fixedTo="NotFixed" TargetRelationshipDomainClassId="1c21cd18-96bd-48eb-9864-b03e0f73bc5d">
       <nodes>
         <entityShapeMoniker Id="6c16a0cf-2de7-4bbd-81e7-f740e9e14379" />
         <entityShapeMoniker Id="3bcc0e61-0070-42c2-9339-588b855b3a0d" />
       </nodes>
     </subclassConnector>
+    <entityShape Id="b908c1fa-6882-4f45-8b5b-7d6efda66a0f" absoluteBounds="2.625, 4.125, 1.5, 0.61745849609374925">
+      <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Lion" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a202ae06-c994-4682-b908-ed3f917b3bb6" absoluteBounds="2.64, 4.435, 1.4700000000000002, 0.20745849609375006" name="Properties" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </entityShape>
+    <subclassConnector edgePoints="[(2.71875 : 4.125); (2.71875 : 1.74245849609375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="1c21cd18-96bd-48eb-9864-b03e0f73bc5d">
+      <nodes>
+        <entityShapeMoniker Id="b908c1fa-6882-4f45-8b5b-7d6efda66a0f" />
+        <entityShapeMoniker Id="3bcc0e61-0070-42c2-9339-588b855b3a0d" />
+      </nodes>
+    </subclassConnector>
+    <entityShape Id="d5955b06-8734-4999-a741-ee746d933a99" absoluteBounds="5.75, 1.25, 1.5, 0.61745849609375014">
+      <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Fruit" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1a6668ec-45f1-4319-a28f-201a872212d3" absoluteBounds="5.765, 1.56, 1.4700000000000002, 0.20745849609375006" name="Properties" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </entityShape>
+    <entityShape Id="d6235569-a3df-4b05-b165-0849246f61e9" absoluteBounds="5.75, 2.75, 1.5, 0.61745849609375014">
+      <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Apple" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d291d92f-da4c-47ba-a16b-1f4e0c46a4cf" absoluteBounds="5.765, 3.06, 1.4700000000000002, 0.20745849609375006" name="Properties" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </entityShape>
+    <joinedSubclassConnector edgePoints="[(6.5 : 2.75); (6.5 : 1.86745849609375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="2dfeebfb-e935-45bf-a165-d676771d4c87">
+      <nodes>
+        <entityShapeMoniker Id="d6235569-a3df-4b05-b165-0849246f61e9" />
+        <entityShapeMoniker Id="d5955b06-8734-4999-a741-ee746d933a99" />
+      </nodes>
+    </joinedSubclassConnector>
   </nestedChildShapes>
 </minimalLanguageDiagram>

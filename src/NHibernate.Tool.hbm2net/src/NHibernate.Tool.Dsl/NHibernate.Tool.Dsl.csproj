@@ -128,6 +128,9 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="nhibernate-mapping.cs">
+      <DependentUpon>nhibernate-mapping.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeneratedCode\DomainModel.cs">
       <AutoGen>True</AutoGen>
@@ -214,6 +217,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ToolboxHelper.cs</LastGenOutput>
     </None>
+    <None Include="nhibernate-mapping.xsd" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -230,6 +234,7 @@
     <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
     <StartAction>Program</StartAction>
     <StartArguments>/ranu /rootsuffix Exp /DesignTimeRun "..\..\..\Debugging\Debugging.sln"</StartArguments>
+    <PreBuildEvent>xsd /c  "$(ProjectDir)\nhibernate-mapping.xsd"  -o:..\..\</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">

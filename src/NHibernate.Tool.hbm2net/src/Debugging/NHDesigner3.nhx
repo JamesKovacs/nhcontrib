@@ -12,5 +12,16 @@
         <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />
       </subclass>
     </entity>
+    <entity name="Lion">
+      <subclass>
+        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />
+      </subclass>
+    </entity>
+    <entity name="Fruit" />
+    <entity name="Apple">
+      <joinedSubclass>
+        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Fruit" />
+      </joinedSubclass>
+    </entity>
   </entities>
 </nHibernateModel>
