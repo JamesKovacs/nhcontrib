@@ -1,0 +1,16 @@
+﻿<!--DSL Tools Language Template-->
+<VSTemplate Version="2.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TemplateData>
+		<Name Package="{7eccb11c-fa71-4885-b37d-7b522c76c608}" ID="103"/>
+		<Description Package="{7eccb11c-fa71-4885-b37d-7b522c76c608}" ID="102"/>
+		<Icon Package="{7eccb11c-fa71-4885-b37d-7b522c76c608}" ID="201" />
+		<ProjectType>CSharp</ProjectType>
+		<SortOrder>360</SortOrder>
+		<DefaultName>NHDesigner.nhx</DefaultName>
+	</TemplateData>
+	<TemplateContent>
+		<ProjectItem TargetFileName="$fileinputname$.nhx">nhx.nhx</ProjectItem>
+		<ProjectItem TargetFileName="$fileinputname$.nhx.diagram">nhx.diagram</ProjectItem>
+	</TemplateContent>
+</VSTemplate>
+

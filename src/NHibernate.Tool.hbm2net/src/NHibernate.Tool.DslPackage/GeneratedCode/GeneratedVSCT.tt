@@ -1,0 +1,7 @@
+<#@ Dsl processor="DslDirectiveProcessor" requires="fileName='..\..\NHibernate.Tool.Dsl\DslDefinition.dsl'" #>
+<#
+	// CmdSet Guid must be defined before master template is included
+	// This Guid must be kept synchronized with the CommandSetId Guid in Constants.tt
+	Guid guidCmdSet = new Guid ("4f82f8fb-816f-4716-bac9-346bb96161d1");
+#>
+<#@ include file="DslPackage\GeneratedVSCT.tt" #>
