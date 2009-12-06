@@ -31,6 +31,22 @@
             <DomainPath>EntityHasProperties.Properties</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
+        <ElementMergeDirective>
+          <Index>
+            <DomainClassMoniker Name="Meta" />
+          </Index>
+          <LinkCreationPaths>
+            <DomainPath>EntityHasMeta.Meta</DomainPath>
+          </LinkCreationPaths>
+        </ElementMergeDirective>
+        <ElementMergeDirective>
+          <Index>
+            <DomainClassMoniker Name="Identifier" />
+          </Index>
+          <LinkCreationPaths>
+            <DomainPath>EntityHasIdentifier.Identifiers</DomainPath>
+          </LinkCreationPaths>
+        </ElementMergeDirective>
       </ElementMergeDirectives>
     </DomainClass>
     <DomainClass Id="84d9eca0-bfd1-49ca-8797-57df3abd8810" Description="Description for NHibernate.NHDesigner.Property" Name="Property" DisplayName="Property" Namespace="NHibernate.NHDesigner">
@@ -41,6 +57,39 @@
           </Type>
         </DomainProperty>
       </Properties>
+    </DomainClass>
+    <DomainClass Id="f7cd1ec2-cc38-44ce-a3cd-f26d7c404b8d" Description="Description for NHibernate.NHDesigner.Meta" Name="Meta" DisplayName="Meta" Namespace="NHibernate.NHDesigner">
+      <Properties>
+        <DomainProperty Id="b785b307-aa66-4dff-93a6-628a1781c09f" Description="Description for NHibernate.NHDesigner.Meta.Attribute" Name="Attribute" DisplayName="Attribute">
+          <Type>
+            <ExternalTypeMoniker Name="/System/String" />
+          </Type>
+        </DomainProperty>
+        <DomainProperty Id="b2015e9d-dd3d-402c-916b-0e819b95f486" Description="Description for NHibernate.NHDesigner.Meta.Text" Name="Text" DisplayName="Text">
+          <Type>
+            <ExternalTypeMoniker Name="/System/String" />
+          </Type>
+        </DomainProperty>
+      </Properties>
+    </DomainClass>
+    <DomainClass Id="a1f1186b-51d6-45a3-a54b-9c60b5ca6aa9" Description="Description for NHibernate.NHDesigner.Identifier" Name="Identifier" DisplayName="Identifier" InheritanceModifier="Abstract" Namespace="NHibernate.NHDesigner">
+      <Properties>
+        <DomainProperty Id="7b9df757-d1cd-4b7d-b573-e7d8dfe2e7e3" Description="Description for NHibernate.NHDesigner.Identifier.Name" Name="Name" DisplayName="Name">
+          <Type>
+            <ExternalTypeMoniker Name="/System/String" />
+          </Type>
+        </DomainProperty>
+      </Properties>
+    </DomainClass>
+    <DomainClass Id="5ebd821c-3e2b-4ed8-8196-48310e808112" Description="Description for NHibernate.NHDesigner.Id" Name="Id" DisplayName="Id" Namespace="NHibernate.NHDesigner">
+      <BaseClass>
+        <DomainClassMoniker Name="Identifier" />
+      </BaseClass>
+    </DomainClass>
+    <DomainClass Id="6e5b336c-32fd-4dfe-afb5-e775f561feac" Description="Description for NHibernate.NHDesigner.CompositeId" Name="CompositeId" DisplayName="Composite Id" Namespace="NHibernate.NHDesigner">
+      <BaseClass>
+        <DomainClassMoniker Name="Identifier" />
+      </BaseClass>
     </DomainClass>
   </Classes>
   <Relationships>
@@ -62,7 +111,7 @@
     </DomainRelationship>
     <DomainRelationship Id="1c21cd18-96bd-48eb-9864-b03e0f73bc5d" Description="Reference relationship between Elements." Name="EntityReferencesBase" DisplayName="Entity References Base" Namespace="NHibernate.NHDesigner">
       <Source>
-        <DomainRole Id="17253bdc-ea79-4183-b076-8d4130296844" Description="Description for NHibernate.NHDesigner.ExampleRelationship.Target" Name="Source" DisplayName="Source" PropertyName="Subclass" PropertyDisplayName="Subclass">
+        <DomainRole Id="17253bdc-ea79-4183-b076-8d4130296844" Description="Description for NHibernate.NHDesigner.ExampleRelationship.Target" Name="Source" DisplayName="Source" PropertyName="Subclass" Multiplicity="ZeroOne" PropertyDisplayName="Subclass">
           <RolePlayer>
             <DomainClassMoniker Name="Entity" />
           </RolePlayer>
@@ -85,7 +134,7 @@
         </DomainRole>
       </Source>
       <Target>
-        <DomainRole Id="7313b038-718b-40b5-bb02-16f70402aff6" Description="Description for NHibernate.NHDesigner.EntityHasProperties.Property" Name="Property" DisplayName="Property" PropertyName="Entity" Multiplicity="ZeroOne" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
+        <DomainRole Id="7313b038-718b-40b5-bb02-16f70402aff6" Description="Description for NHibernate.NHDesigner.EntityHasProperties.Property" Name="Property" DisplayName="Property" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
           <RolePlayer>
             <DomainClassMoniker Name="Property" />
           </RolePlayer>
@@ -94,7 +143,7 @@
     </DomainRelationship>
     <DomainRelationship Id="2dfeebfb-e935-45bf-a165-d676771d4c87" Description="Description for NHibernate.NHDesigner.EntityReferencesBaseWithJoin" Name="EntityReferencesBaseWithJoin" DisplayName="Entity References Base With Join" Namespace="NHibernate.NHDesigner">
       <Source>
-        <DomainRole Id="01fa9e6d-e9e8-41c9-9c4a-5410be0a9fb0" Description="Description for NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntity" Name="SourceEntity" DisplayName="Source Entity" PropertyName="JoinedSubclass" PropertyDisplayName="Joined Subclass">
+        <DomainRole Id="01fa9e6d-e9e8-41c9-9c4a-5410be0a9fb0" Description="Description for NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntity" Name="SourceEntity" DisplayName="Source Entity" PropertyName="JoinedSubclass" Multiplicity="ZeroOne" PropertyDisplayName="Joined Subclass">
           <RolePlayer>
             <DomainClassMoniker Name="Entity" />
           </RolePlayer>
@@ -104,6 +153,38 @@
         <DomainRole Id="eb2df7d6-7835-4cd8-8c27-b4f2e7865a1a" Description="Description for NHibernate.NHDesigner.EntityReferencesBaseWithJoin.TargetEntity" Name="TargetEntity" DisplayName="Target Entity" PropertyName="BaseclassWJoin" PropertyDisplayName="Baseclass WJoin">
           <RolePlayer>
             <DomainClassMoniker Name="Entity" />
+          </RolePlayer>
+        </DomainRole>
+      </Target>
+    </DomainRelationship>
+    <DomainRelationship Id="2cfb427c-4fe2-42c1-b51f-d8893497702b" Description="Description for NHibernate.NHDesigner.EntityHasMeta" Name="EntityHasMeta" DisplayName="Entity Has Meta" Namespace="NHibernate.NHDesigner" IsEmbedding="true">
+      <Source>
+        <DomainRole Id="fda4138f-d30e-4d69-9fc4-4b1b2f1e5b83" Description="Description for NHibernate.NHDesigner.EntityHasMeta.Entity" Name="Entity" DisplayName="Entity" PropertyName="Meta" PropertyDisplayName="Meta">
+          <RolePlayer>
+            <DomainClassMoniker Name="Entity" />
+          </RolePlayer>
+        </DomainRole>
+      </Source>
+      <Target>
+        <DomainRole Id="fe451048-0379-43d6-a4ad-6dc6b502f8c4" Description="Description for NHibernate.NHDesigner.EntityHasMeta.Meta" Name="Meta" DisplayName="Meta" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
+          <RolePlayer>
+            <DomainClassMoniker Name="Meta" />
+          </RolePlayer>
+        </DomainRole>
+      </Target>
+    </DomainRelationship>
+    <DomainRelationship Id="3f87704d-b926-4c0f-90f8-be7a330fc221" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier" Name="EntityHasIdentifier" DisplayName="Entity Has Identifier" Namespace="NHibernate.NHDesigner" IsEmbedding="true">
+      <Source>
+        <DomainRole Id="5d8a2842-8555-42f7-aaaf-3cfd0b97a4d1" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity" Name="Entity" DisplayName="Entity" PropertyName="Identifiers" Multiplicity="OneMany" PropertyDisplayName="Identifiers">
+          <RolePlayer>
+            <DomainClassMoniker Name="Entity" />
+          </RolePlayer>
+        </DomainRole>
+      </Source>
+      <Target>
+        <DomainRole Id="97fcb37b-4bfd-4b34-ac8e-1fe72284fec0" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier" Name="Identifier" DisplayName="Identifier" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
+          <RolePlayer>
+            <DomainClassMoniker Name="Identifier" />
           </RolePlayer>
         </DomainRole>
       </Target>
@@ -138,6 +219,8 @@
         <TextDecorator Name="Type" DisplayName="Type" DefaultText="&lt;&lt;entity&gt;&gt;" />
       </ShapeHasDecorators>
       <Compartment Name="Properties" Title="Properties" />
+      <Compartment FillColor="PaleGreen" Name="Metas" Title="Meta attributes" />
+      <Compartment Name="Id" />
     </CompartmentShape>
   </Shapes>
   <Connectors>
@@ -168,6 +251,12 @@
           </XmlRelationshipData>
           <XmlRelationshipData RoleElementName="joinedSubclass">
             <DomainRelationshipMoniker Name="EntityReferencesBaseWithJoin" />
+          </XmlRelationshipData>
+          <XmlRelationshipData RoleElementName="meta">
+            <DomainRelationshipMoniker Name="EntityHasMeta" />
+          </XmlRelationshipData>
+          <XmlRelationshipData RoleElementName="identifiers">
+            <DomainRelationshipMoniker Name="EntityHasIdentifier" />
           </XmlRelationshipData>
         </ElementData>
       </XmlClassData>
@@ -202,6 +291,37 @@
       </XmlClassData>
       <XmlClassData TypeName="JoinedSubclassConnector" MonikerAttributeName="" MonikerElementName="joinedSubclassConnectorMoniker" ElementName="joinedSubclassConnector" MonikerTypeName="JoinedSubclassConnectorMoniker">
         <ConnectorMoniker Name="JoinedSubclassConnector" />
+      </XmlClassData>
+      <XmlClassData TypeName="Meta" MonikerAttributeName="" MonikerElementName="metaMoniker" ElementName="meta" MonikerTypeName="MetaMoniker">
+        <DomainClassMoniker Name="Meta" />
+        <ElementData>
+          <XmlPropertyData XmlName="attribute">
+            <DomainPropertyMoniker Name="Meta/Attribute" />
+          </XmlPropertyData>
+          <XmlPropertyData XmlName="text">
+            <DomainPropertyMoniker Name="Meta/Text" />
+          </XmlPropertyData>
+        </ElementData>
+      </XmlClassData>
+      <XmlClassData TypeName="EntityHasMeta" MonikerAttributeName="" MonikerElementName="entityHasMetaMoniker" ElementName="entityHasMeta" MonikerTypeName="EntityHasMetaMoniker">
+        <DomainRelationshipMoniker Name="EntityHasMeta" />
+      </XmlClassData>
+      <XmlClassData TypeName="Identifier" MonikerAttributeName="" MonikerElementName="identifierMoniker" ElementName="identifier" MonikerTypeName="IdentifierMoniker">
+        <DomainClassMoniker Name="Identifier" />
+        <ElementData>
+          <XmlPropertyData XmlName="name">
+            <DomainPropertyMoniker Name="Identifier/Name" />
+          </XmlPropertyData>
+        </ElementData>
+      </XmlClassData>
+      <XmlClassData TypeName="Id" MonikerAttributeName="" MonikerElementName="idMoniker" ElementName="id" MonikerTypeName="IdMoniker">
+        <DomainClassMoniker Name="Id" />
+      </XmlClassData>
+      <XmlClassData TypeName="CompositeId" MonikerAttributeName="" MonikerElementName="compositeIdMoniker" ElementName="compositeId" MonikerTypeName="CompositeIdMoniker">
+        <DomainClassMoniker Name="CompositeId" />
+      </XmlClassData>
+      <XmlClassData TypeName="EntityHasIdentifier" MonikerAttributeName="" MonikerElementName="entityHasIdentifierMoniker" ElementName="entityHasIdentifier" MonikerTypeName="EntityHasIdentifierMoniker">
+        <DomainRelationshipMoniker Name="EntityHasIdentifier" />
       </XmlClassData>
     </ClassData>
   </XmlSerializationBehavior>
@@ -274,6 +394,28 @@
           <PropertyDisplayed>
             <PropertyPath>
               <DomainPropertyMoniker Name="Property/Name" />
+            </PropertyPath>
+          </PropertyDisplayed>
+        </CompartmentMap>
+        <CompartmentMap>
+          <CompartmentMoniker Name="EntityShape/Metas" />
+          <ElementsDisplayed>
+            <DomainPath>EntityHasMeta.Meta/!Meta</DomainPath>
+          </ElementsDisplayed>
+          <PropertyDisplayed>
+            <PropertyPath>
+              <DomainPropertyMoniker Name="Meta/Attribute" />
+            </PropertyPath>
+          </PropertyDisplayed>
+        </CompartmentMap>
+        <CompartmentMap>
+          <CompartmentMoniker Name="EntityShape/Id" />
+          <ElementsDisplayed>
+            <DomainPath>EntityHasIdentifier.Identifiers/!Identifier</DomainPath>
+          </ElementsDisplayed>
+          <PropertyDisplayed>
+            <PropertyPath>
+              <DomainPropertyMoniker Name="Identifier/Name" />
             </PropertyPath>
           </PropertyDisplayed>
         </CompartmentMap>

@@ -165,6 +165,62 @@
     <value>Name</value>
     <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;Property&apos;</comment>
   </data>
+  <data name="NHibernate.NHDesigner.Meta.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Meta</value>
+    <comment>Description for DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Meta.DisplayName" xml:space="preserve">
+    <value>Meta</value>
+    <comment>DisplayName for DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Meta/Attribute.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Meta.Attribute</value>
+    <comment>Description for DomainProperty &apos;Attribute&apos; on DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Meta/Attribute.DisplayName" xml:space="preserve">
+    <value>Attribute</value>
+    <comment>DisplayName for DomainProperty &apos;Attribute&apos; on DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Meta/Text.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Meta.Text</value>
+    <comment>Description for DomainProperty &apos;Text&apos; on DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Meta/Text.DisplayName" xml:space="preserve">
+    <value>Text</value>
+    <comment>DisplayName for DomainProperty &apos;Text&apos; on DomainClass &apos;Meta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Identifier.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Identifier</value>
+    <comment>Description for DomainClass &apos;Identifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Identifier.DisplayName" xml:space="preserve">
+    <value>Identifier</value>
+    <comment>DisplayName for DomainClass &apos;Identifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Identifier/Name.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Identifier.Name</value>
+    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;Identifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Identifier/Name.DisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;Identifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Id.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.Id</value>
+    <comment>Description for DomainClass &apos;Id&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.Id.DisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>DisplayName for DomainClass &apos;Id&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.CompositeId.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.CompositeId</value>
+    <comment>Description for DomainClass &apos;CompositeId&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.CompositeId.DisplayName" xml:space="preserve">
+    <value>Composite Id</value>
+    <comment>DisplayName for DomainClass &apos;CompositeId&apos;</comment>
+  </data>
   <data name="NHibernate.NHDesigner.NHibernateModelHasEntities.Description" xml:space="preserve">
     <value>Embedding relationship between the Model and Elements</value>
     <comment>Description for DomainClass &apos;NHibernateModelHasEntities&apos;</comment>
@@ -293,6 +349,70 @@
     <value>Baseclass WJoin</value>
     <comment>PropertyDisplayName for DomainRole &apos;TargetEntity&apos; on DomainRelationship &apos;EntityReferencesBaseWithJoin&apos;</comment>
   </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasMeta</value>
+    <comment>Description for DomainClass &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta.DisplayName" xml:space="preserve">
+    <value>Entity Has Meta</value>
+    <comment>DisplayName for DomainClass &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Entity.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasMeta.Entity</value>
+    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Entity.DisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Entity.PropertyDisplayName" xml:space="preserve">
+    <value>Meta</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Meta.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasMeta.Meta</value>
+    <comment>Description for DomainRole &apos;Meta&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Meta.DisplayName" xml:space="preserve">
+    <value>Meta</value>
+    <comment>DisplayName for DomainRole &apos;Meta&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasMeta/Meta.PropertyDisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Meta&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier</value>
+    <comment>Description for DomainClass &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier.DisplayName" xml:space="preserve">
+    <value>Entity Has Identifier</value>
+    <comment>DisplayName for DomainClass &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity</value>
+    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.DisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.PropertyDisplayName" xml:space="preserve">
+    <value>Identifiers</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier</value>
+    <comment>Description for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.DisplayName" xml:space="preserve">
+    <value>Identifier</value>
+    <comment>DisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.PropertyDisplayName" xml:space="preserve">
+    <value>Entity</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  </data>
   <data name="NHibernate.NHDesigner.EntityShape.Description" xml:space="preserve">
     <value>Description for NHibernate.NHDesigner.EntityShape</value>
     <comment>Description for DomainClass &apos;EntityShape&apos;</comment>
@@ -303,6 +423,14 @@
   </data>
   <data name="EntityShapePropertiesTitle" xml:space="preserve">
     <value>Properties</value>
+    <comment>Compartment title</comment>
+  </data>
+  <data name="EntityShapeMetasTitle" xml:space="preserve">
+    <value>Meta attributes</value>
+    <comment>Compartment title</comment>
+  </data>
+  <data name="EntityShapeIdTitle" xml:space="preserve">
+    <value></value>
     <comment>Compartment title</comment>
   </data>
   <data name="EntityShapeNameDecoratorDefaultText" xml:space="preserve">

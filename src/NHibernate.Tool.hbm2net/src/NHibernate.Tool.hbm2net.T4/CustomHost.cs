@@ -151,7 +151,7 @@ namespace NHibernate.Tool.hbm2net.T4
         {
             get 
             {
-                return new string[]
+                string[] imports = new string[]
                 {
                     "System"
                     ,"System.IO"
@@ -163,6 +163,8 @@ namespace NHibernate.Tool.hbm2net.T4
                     ,"NHibernate.Tool.hbm2net"
                     
                 };
+                
+                return imports;
             }
  
         }

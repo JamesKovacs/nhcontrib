@@ -298,15 +298,20 @@ namespace NHibernate.NHDesigner
 		#endregion
 		#region Subclass opposite domain role accessor
 		/// <summary>
-		/// Gets a list of Subclass.
+		/// Gets or sets Subclass.
 		/// Description for NHibernate.NHDesigner.ExampleRelationship.Target
 		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<Entity> Subclass
+		public virtual Entity Subclass
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
 			get
 			{
-				return new DslModeling::LinkedElementCollection<Entity>(this, global::NHibernate.NHDesigner.EntityReferencesBase.SourceDomainRoleId);
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesBase.SourceDomainRoleId) as Entity;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesBase.SourceDomainRoleId, value);
 			}
 		}
 		#endregion
@@ -340,15 +345,20 @@ namespace NHibernate.NHDesigner
 		#endregion
 		#region JoinedSubclass opposite domain role accessor
 		/// <summary>
-		/// Gets a list of JoinedSubclass.
+		/// Gets or sets JoinedSubclass.
 		/// Description for NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntity
 		/// </summary>
-		public virtual DslModeling::LinkedElementCollection<Entity> JoinedSubclass
+		public virtual Entity JoinedSubclass
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
 			get
 			{
-				return new DslModeling::LinkedElementCollection<Entity>(this, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntityDomainRoleId);
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntityDomainRoleId) as Entity;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntityDomainRoleId, value);
 			}
 		}
 		#endregion
@@ -363,6 +373,34 @@ namespace NHibernate.NHDesigner
 			get
 			{
 				return new DslModeling::LinkedElementCollection<Entity>(this, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.TargetEntityDomainRoleId);
+			}
+		}
+		#endregion
+		#region Meta opposite domain role accessor
+		/// <summary>
+		/// Gets a list of Meta.
+		/// Description for NHibernate.NHDesigner.EntityHasMeta.Entity
+		/// </summary>
+		public virtual DslModeling::LinkedElementCollection<Meta> Meta
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return new DslModeling::LinkedElementCollection<Meta>(this, global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId);
+			}
+		}
+		#endregion
+		#region Identifiers opposite domain role accessor
+		/// <summary>
+		/// Gets a list of Identifiers.
+		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity
+		/// </summary>
+		public virtual DslModeling::LinkedElementCollection<Identifier> Identifiers
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return new DslModeling::LinkedElementCollection<Identifier>(this, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
 			}
 		}
 		#endregion
@@ -385,6 +423,16 @@ namespace NHibernate.NHDesigner
 			if (rootElement != null)
 			{
 				DslModeling::DomainClassInfo rootElementDomainInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootElement.DomainClassId);
+				
+				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Identifier.DomainClassId)) 
+				{
+					return true;
+				}
+				
+				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Meta.DomainClassId)) 
+				{
+					return true;
+				}
 				
 				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Property.DomainClassId)) 
 				{
@@ -415,11 +463,29 @@ namespace NHibernate.NHDesigner
 			if ( sourceElement == null ) throw new global::System.ArgumentNullException("sourceElement");
 		
 				
-			global::NHibernate.NHDesigner.Property sourceProperty1 = sourceElement as global::NHibernate.NHDesigner.Property;
-			if (sourceProperty1 != null)
+			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
+			if (sourceIdentifier1 != null)
+			{
+				// Create link for path EntityHasIdentifier.Identifiers
+				this.Identifiers.Add(sourceIdentifier1);
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Meta sourceMeta2 = sourceElement as global::NHibernate.NHDesigner.Meta;
+			if (sourceMeta2 != null)
+			{
+				// Create link for path EntityHasMeta.Meta
+				this.Meta.Add(sourceMeta2);
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Property sourceProperty3 = sourceElement as global::NHibernate.NHDesigner.Property;
+			if (sourceProperty3 != null)
 			{
 				// Create link for path EntityHasProperties.Properties
-				this.Properties.Add(sourceProperty1);
+				this.Properties.Add(sourceProperty3);
 
 				return;
 			}
@@ -437,12 +503,40 @@ namespace NHibernate.NHDesigner
 		{
 			if (sourceElement == null) throw new global::System.ArgumentNullException("sourceElement");
 				
-			global::NHibernate.NHDesigner.Property sourceProperty1 = sourceElement as global::NHibernate.NHDesigner.Property;
-			if (sourceProperty1 != null)
+			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
+			if (sourceIdentifier1 != null)
+			{
+				// Delete link for path EntityHasIdentifier.Identifiers
+				
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasIdentifier.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceIdentifier1))
+				{
+					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
+					link.Delete(global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId);
+				}
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Meta sourceMeta2 = sourceElement as global::NHibernate.NHDesigner.Meta;
+			if (sourceMeta2 != null)
+			{
+				// Delete link for path EntityHasMeta.Meta
+				
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasMeta.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceMeta2))
+				{
+					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
+					link.Delete(global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId);
+				}
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Property sourceProperty3 = sourceElement as global::NHibernate.NHDesigner.Property;
+			if (sourceProperty3 != null)
 			{
 				// Delete link for path EntityHasProperties.Properties
 				
-				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasProperties.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceProperty1))
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasProperties.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceProperty3))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::NHibernate.NHDesigner.EntityHasProperties.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasProperties.PropertyDomainRoleId);
@@ -602,21 +696,273 @@ namespace NHibernate.NHDesigner
 		#endregion
 	}
 }
-
 namespace NHibernate.NHDesigner
 {
-	//Autogenerated domain classes
-	public partial class Entity : DslModeling::ModelElement
+	/// <summary>
+	/// DomainClass Meta
+	/// Description for NHibernate.NHDesigner.Meta
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Meta.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.Meta.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainObjectId("f7cd1ec2-cc38-44ce-a3cd-f26d7c404b8d")]
+	public partial class Meta : DslModeling::ModelElement
 	{
-		private @class modelObject = new @class();
-		/*
-
+		#region Constructors, domain class Id
+	
+		/// <summary>
+		/// Meta domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xf7cd1ec2, 0xcc38, 0x44ce, 0xa3, 0xcd, 0xf2, 0x6d, 0x7c, 0x40, 0x4b, 0x8d);
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public Meta(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: this(store != null ? store.DefaultPartition : null, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public Meta(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, propertyAssignments)
+		{
+		}
+		#endregion
+		#region Attribute domain property code
+		
+		/// <summary>
+		/// Attribute domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid AttributeDomainPropertyId = new global::System.Guid(0xb785b307, 0xaa66, 0x4dff, 0x93, 0xa6, 0x62, 0x8a, 0x17, 0x81, 0xc0, 0x9f);
+		
+		/// <summary>
+		/// Storage for Attribute
+		/// </summary>
+		private global::System.String attributePropertyStorage = string.Empty;
+		
+		/// <summary>
+		/// Gets or sets the value of Attribute domain property.
+		/// Description for NHibernate.NHDesigner.Meta.Attribute
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Meta/Attribute.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.Meta/Attribute.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainObjectId("b785b307-aa66-4dff-93a6-628a1781c09f")]
+		public global::System.String Attribute
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return attributePropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				AttributePropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the Meta.Attribute domain property.
+		/// </summary>
+		internal sealed partial class AttributePropertyHandler : DslModeling::DomainPropertyValueHandler<Meta, global::System.String>
+		{
+			private AttributePropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the Meta.Attribute domain property value handler.
+			/// </summary>
+			public static readonly AttributePropertyHandler Instance = new AttributePropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the Meta.Attribute domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return AttributeDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.String GetValue(Meta element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.attributePropertyStorage;
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(Meta element, global::System.String newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.String oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.attributePropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+				}
+			}
+		}
+		
+		#endregion
+		#region Text domain property code
+		
+		/// <summary>
+		/// Text domain property Id.
+		/// </summary>
+		public static readonly global::System.Guid TextDomainPropertyId = new global::System.Guid(0xb2015e9d, 0xdd3d, 0x402c, 0x91, 0x6b, 0x0e, 0x81, 0x9b, 0x95, 0xf4, 0x86);
+		
+		/// <summary>
+		/// Storage for Text
+		/// </summary>
+		private global::System.String textPropertyStorage = string.Empty;
+		
+		/// <summary>
+		/// Gets or sets the value of Text domain property.
+		/// Description for NHibernate.NHDesigner.Meta.Text
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Meta/Text.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.Meta/Text.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainObjectId("b2015e9d-dd3d-402c-916b-0e819b95f486")]
+		public global::System.String Text
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return textPropertyStorage;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				TextPropertyHandler.Instance.SetValue(this, value);
+			}
+		}
+		/// <summary>
+		/// Value handler for the Meta.Text domain property.
+		/// </summary>
+		internal sealed partial class TextPropertyHandler : DslModeling::DomainPropertyValueHandler<Meta, global::System.String>
+		{
+			private TextPropertyHandler() { }
+		
+			/// <summary>
+			/// Gets the singleton instance of the Meta.Text domain property value handler.
+			/// </summary>
+			public static readonly TextPropertyHandler Instance = new TextPropertyHandler();
+		
+			/// <summary>
+			/// Gets the Id of the Meta.Text domain property.
+			/// </summary>
+			public sealed override global::System.Guid DomainPropertyId
+			{
+				[global::System.Diagnostics.DebuggerStepThrough]
+				get
+				{
+					return TextDomainPropertyId;
+				}
+			}
+			
+			/// <summary>
+			/// Gets a strongly-typed value of the property on specified element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <returns>Property value.</returns>
+			public override sealed global::System.String GetValue(Meta element)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+				return element.textPropertyStorage;
+			}
+		
+			/// <summary>
+			/// Sets property value on an element.
+			/// </summary>
+			/// <param name="element">Element which owns the property.</param>
+			/// <param name="newValue">New property value.</param>
+			public override sealed void SetValue(Meta element, global::System.String newValue)
+			{
+				if (element == null) throw new global::System.ArgumentNullException("element");
+		
+				global::System.String oldValue = GetValue(element);
+				if (newValue != oldValue)
+				{
+					ValueChanging(element, oldValue, newValue);
+					element.textPropertyStorage = newValue;
+					ValueChanged(element, oldValue, newValue);
+				}
+			}
+		}
+		
+		#endregion
+		#region Entity opposite domain role accessor
+		/// <summary>
+		/// Gets or sets Entity.
+		/// Description for NHibernate.NHDesigner.EntityHasMeta.Meta
+		/// </summary>
+		public virtual Entity Entity
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId) as Entity;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId, value);
+			}
+		}
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainClass Identifier
+	/// Description for NHibernate.NHDesigner.Identifier
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Identifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.Identifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainObjectId("a1f1186b-51d6-45a3-a54b-9c60b5ca6aa9")]
+	public abstract partial class Identifier : DslModeling::ModelElement
+	{
+		#region Constructors, domain class Id
+	
+		/// <summary>
+		/// Identifier domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xa1f1186b, 0x51d6, 0x45a3, 0xa5, 0x4b, 0x9c, 0x60, 0xb5, 0xca, 0x6a, 0xa9);
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="partition">Partition where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		protected Identifier(DslModeling::Partition partition, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, propertyAssignments)
+		{
+		}
+		#endregion
 		#region Name domain property code
 		
 		/// <summary>
 		/// Name domain property Id.
 		/// </summary>
-		public static readonly global::System.Guid NameDomainPropertyId = new global::System.Guid(0x16ed2d83, 0xca54, 0x4fe2, 0x93, 0xba, 0x72, 0xa7, 0xf2, 0xe9, 0x43, 0x84);
+		public static readonly global::System.Guid NameDomainPropertyId = new global::System.Guid(0x7b9df757, 0xd1cd, 0x4b7d, 0xb5, 0x73, 0xe7, 0xd8, 0xdf, 0xe2, 0xe7, 0xe3);
 		
 		/// <summary>
 		/// Storage for Name
@@ -625,13 +971,11 @@ namespace NHibernate.NHDesigner
 		
 		/// <summary>
 		/// Gets or sets the value of Name domain property.
-		/// Description for NHibernate.NHDesigner.Entity.Name
+		/// Description for NHibernate.NHDesigner.Identifier.Name
 		/// </summary>
-		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Entity/Name.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("NHibernate.NHDesigner.Entity/Name.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[global::System.ComponentModel.DefaultValue("")]
-		[DslModeling::ElementName]
-		[DslModeling::DomainObjectId("16ed2d83-ca54-4fe2-93ba-72a7f2e94384")]
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Identifier/Name.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.Identifier/Name.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainObjectId("7b9df757-d1cd-4b7d-b573-e7d8dfe2e7e3")]
 		public global::System.String Name
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
@@ -646,19 +990,19 @@ namespace NHibernate.NHDesigner
 			}
 		}
 		/// <summary>
-		/// Value handler for the Entity.Name domain property.
+		/// Value handler for the Identifier.Name domain property.
 		/// </summary>
-		internal sealed partial class NamePropertyHandler : DslModeling::DomainPropertyValueHandler<Entity, global::System.String>
+		internal sealed partial class NamePropertyHandler : DslModeling::DomainPropertyValueHandler<Identifier, global::System.String>
 		{
 			private NamePropertyHandler() { }
 		
 			/// <summary>
-			/// Gets the singleton instance of the Entity.Name domain property value handler.
+			/// Gets the singleton instance of the Identifier.Name domain property value handler.
 			/// </summary>
 			public static readonly NamePropertyHandler Instance = new NamePropertyHandler();
 		
 			/// <summary>
-			/// Gets the Id of the Entity.Name domain property.
+			/// Gets the Id of the Identifier.Name domain property.
 			/// </summary>
 			public sealed override global::System.Guid DomainPropertyId
 			{
@@ -674,7 +1018,7 @@ namespace NHibernate.NHDesigner
 			/// </summary>
 			/// <param name="element">Element which owns the property.</param>
 			/// <returns>Property value.</returns>
-			public override sealed global::System.String GetValue(Entity element)
+			public override sealed global::System.String GetValue(Identifier element)
 			{
 				if (element == null) throw new global::System.ArgumentNullException("element");
 				return element.namePropertyStorage;
@@ -685,7 +1029,7 @@ namespace NHibernate.NHDesigner
 			/// </summary>
 			/// <param name="element">Element which owns the property.</param>
 			/// <param name="newValue">New property value.</param>
-			public override sealed void SetValue(Entity element, global::System.String newValue)
+			public override sealed void SetValue(Identifier element, global::System.String newValue)
 			{
 				if (element == null) throw new global::System.ArgumentNullException("element");
 		
@@ -698,65 +1042,106 @@ namespace NHibernate.NHDesigner
 				}
 			}
 		}
-
-		#endregion
-		*/
-		#region Guid Pool
-		//a set of permanet gui for the generated propeties...
-		global::System.String[] guidPool = new global::System.String[]
-		{
-			"5de743c2-299d-48b0-8e7e-d642637eff27"
-			,"d9614a48-4051-4f55-b382-5ea8c21e94f4"
-			,"846da30b-3a1b-4a15-9640-ad84cd9a5d32"
-			,"0dd20cd2-3feb-4d51-9b1c-416fc56628f3"
-			,"92a2004e-4dca-4b91-a102-808801a20e0f"
-			,"8af3c39c-233a-4680-9608-c62966df49e6"
-			,"cb484275-c27e-46e2-90f8-e1b9ec8f41a5"
-			,"85ab9c91-59d3-43a0-a00d-5478db7bcf6f"
-			,"69901388-fa20-44dd-924f-32a922c2c7d8"
-			,"ac90c79e-ad37-47ab-9f8e-1602190f9e97"
-			,"be867085-7b8c-4351-a248-2fc836e10bd5"
-			,"c7dbf9d5-6777-497d-b057-d1448675d16e"
-			,"b560195e-889b-4f21-bfa2-8f00df319d41"
-			,"8954c51a-7426-41b3-bbbf-3e68e6852394"
-			,"8ea18e78-5298-4b15-baac-71244470a134"
-			,"aa7ee529-d90a-4575-b80a-71eec9b1ff7b"
-			,"baa290c8-d651-4f89-b283-a1b41be3d886"
-			,"18ab21c1-e7f7-46bb-b09a-2e4a571590b2"
-			,"d4f78445-9a4b-4a6e-b31e-c4d46c6eb5d9"
-			,"aeafe82d-f26d-4a9a-83f9-adeb7e5a9425"
-			,"c4271ab2-da44-44b6-8e35-4c3519476e86"
-			,"e9dd697f-4325-477a-9fb0-8a2e60e058e3"
-			,"4d5f47b8-981b-4986-9d52-846911231f5b"
-			,"a7e0a9fc-24e7-419d-83ef-d58dff9f3ff9"
-			,"95825a6e-2e86-490a-816a-ec62fbea8e62"
-			,"b487977f-7af1-4acf-a96a-3a33a3a76b06"
-			,"32421f81-f9d6-4f80-9781-83e7de1449fe"
-			,"df2e9ca3-abd3-4b44-b5b0-09f5b3166c8f"
-			,"f9a52a18-dfa6-4593-8085-a2bc58ee5f00"
-			,"cafa02db-38dc-4e24-b79b-029863dca453"
-			,"3eac839d-a6ec-4953-94ab-cb2bc80c98bb"
-			,"a70ce7df-0c59-4f2a-8673-e0ce33ed955f"
-			,"4af7edc1-b6ce-40c1-a25e-ff6cfef1cdeb"
-			,"b1a32ded-33a8-4c71-9c04-05fd97c7bba0"
-			,"2aa4e881-a4f3-44e2-82f9-a9aa86a0a04a"
-			,"5255e374-6fdb-4637-a6b7-7360d95fea54"
-			,"64bb0a3a-b594-48a7-afe8-c3bd61bf78d7"
-			,"4c0c9e1e-c71f-4a13-b1b1-d656c141024d"
-			,"19604858-5a53-468f-88e8-52851aea2b8b"
-			,"b1074606-1e36-426a-8cd3-96838c46ac7c"
-			,"72f12b63-9351-4b34-bbb8-10f100d87c97"
-			,"21349c45-1099-4bca-b95c-09ddb1947bea"
-			,"3c28cf5f-df26-4a15-a1eb-fd0fbc5b8c41"
-			,"c99a47fb-89a8-4e4f-8821-b4f29671caca"
-			,"9d0f3f44-5650-4ef5-abab-1b5ecee046c4"
-			,"3c70b8e5-610c-448a-acdc-cb5ffb341361"
-			,"fd3886d4-1918-4172-9b44-78a61b080c12"
-			,"d9cbbaf8-0164-4ba5-8e38-1d3cc30138c9"
-			,"7f165939-271a-4616-be2f-008098c66f7c"
-			,"070ce99b-674a-4364-9b7f-512b53ed6f2a"
-		};
-		#endregion
 		
+		#endregion
+		#region Entity opposite domain role accessor
+		/// <summary>
+		/// Gets or sets Entity.
+		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier
+		/// </summary>
+		public virtual Entity Entity
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId) as Entity;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId, value);
+			}
+		}
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainClass Id
+	/// Description for NHibernate.NHDesigner.Id
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.Id.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.Id.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainObjectId("5ebd821c-3e2b-4ed8-8196-48310e808112")]
+	public partial class Id : Identifier
+	{
+		#region Constructors, domain class Id
+	
+		/// <summary>
+		/// Id domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x5ebd821c, 0x3e2b, 0x4ed8, 0x81, 0x96, 0x48, 0x31, 0x0e, 0x80, 0x81, 0x12);
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public Id(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: this(store != null ? store.DefaultPartition : null, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public Id(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, propertyAssignments)
+		{
+		}
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainClass CompositeId
+	/// Description for NHibernate.NHDesigner.CompositeId
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.CompositeId.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.CompositeId.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainObjectId("6e5b336c-32fd-4dfe-afb5-e775f561feac")]
+	public partial class CompositeId : Identifier
+	{
+		#region Constructors, domain class Id
+	
+		/// <summary>
+		/// CompositeId domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x6e5b336c, 0x32fd, 0x4dfe, 0xaf, 0xb5, 0xe7, 0x75, 0xf5, 0x61, 0xfe, 0xac);
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public CompositeId(DslModeling::Store store, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: this(store != null ? store.DefaultPartition : null, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new element is to be created.</param>
+		/// <param name="propertyAssignments">List of domain property id/value pairs to set once the element is created.</param>
+		public CompositeId(DslModeling::Partition partition, params DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, propertyAssignments)
+		{
+		}
+		#endregion
 	}
 }

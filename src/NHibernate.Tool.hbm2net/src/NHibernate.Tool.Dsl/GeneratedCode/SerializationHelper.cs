@@ -1378,6 +1378,13 @@ namespace NHibernate.NHDesigner
 		[DslValidation::ValidationMethod(DslValidation::ValidationCategories.Load | DslValidation::ValidationCategories.Menu)]
 		private void ValidateMonikerAmbiguity(DslValidation::ValidationContext context)
 		{
+			// Don't run this rule when deserializing - any ambiguous monikers will 
+			// already have stopped the file from loading.
+			if (this.Store.TransactionActive && this.Store.TransactionManager.CurrentTransaction.TopLevelTransaction.IsSerializing)
+			{
+				return;
+			}
+	
 			global::System.Collections.Generic.IDictionary<global::System.Guid, DslModeling::IMonikerResolver> monikerResolvers = NHDesignerSerializationHelper.Instance.GetMonikerResolvers(this.Store);
 			foreach (DslModeling::ModelElement element in this.Store.ElementDirectory.AllElements)
 			{
@@ -1413,7 +1420,7 @@ namespace NHibernate.NHDesigner
 			// Clean up the created moniker resolvers after the check.
 			foreach (DslModeling::IMonikerResolver monikerResolver in monikerResolvers.Values)
 			{
-				DslModeling::SimpleMonikerResolver simpleMonikerResolver = monikerResolvers as DslModeling::SimpleMonikerResolver;
+				DslModeling::SimpleMonikerResolver simpleMonikerResolver = monikerResolver as DslModeling::SimpleMonikerResolver;
 				if (simpleMonikerResolver != null)
 					simpleMonikerResolver.Dispose();
 			}

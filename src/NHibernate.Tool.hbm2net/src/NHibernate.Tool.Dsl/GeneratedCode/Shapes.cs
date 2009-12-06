@@ -289,7 +289,7 @@ namespace NHibernate.NHDesigner
 				{
 					localCompartmentsOffset = baseCompartmentDescriptions.Length;
 				}
-				compartmentDescriptions = new DslDiagrams::ElementListCompartmentDescription[1+localCompartmentsOffset];
+				compartmentDescriptions = new DslDiagrams::ElementListCompartmentDescription[3+localCompartmentsOffset];
 				
 				if(baseCompartmentDescriptions!=null)
 				{
@@ -303,6 +303,24 @@ namespace NHibernate.NHDesigner
 						null, null,
 						false);
 					compartmentDescriptions[localCompartmentsOffset+0] = descriptor;
+				}
+				{
+					string title = global::NHibernate.NHDesigner.NHDesignerDomainModel.SingletonResourceManager.GetString("EntityShapeMetasTitle");
+					DslDiagrams::ElementListCompartmentDescription descriptor = new DslDiagrams::ElementListCompartmentDescription("Metas", title, 
+						global::System.Drawing.Color.FromKnownColor(global::System.Drawing.KnownColor.LightGray), false, 
+						global::System.Drawing.Color.FromKnownColor(global::System.Drawing.KnownColor.PaleGreen), false,
+						null, null,
+						false);
+					compartmentDescriptions[localCompartmentsOffset+1] = descriptor;
+				}
+				{
+					string title = global::NHibernate.NHDesigner.NHDesignerDomainModel.SingletonResourceManager.GetString("EntityShapeIdTitle");
+					DslDiagrams::ElementListCompartmentDescription descriptor = new DslDiagrams::ElementListCompartmentDescription("Id", title, 
+						global::System.Drawing.Color.FromKnownColor(global::System.Drawing.KnownColor.LightGray), false, 
+						global::System.Drawing.Color.FromKnownColor(global::System.Drawing.KnownColor.White), false,
+						null, null,
+						false);
+					compartmentDescriptions[localCompartmentsOffset+2] = descriptor;
 				}
 			}
 			
@@ -336,7 +354,7 @@ namespace NHibernate.NHDesigner
 					{
 						localCompartmentMappingsOffset = baseMappings.Length;
 					}
-					DslDiagrams::CompartmentMapping[] mappings = new DslDiagrams::CompartmentMapping[1+localCompartmentMappingsOffset];
+					DslDiagrams::CompartmentMapping[] mappings = new DslDiagrams::CompartmentMapping[3+localCompartmentMappingsOffset];
 					
 					if(baseMappings!=null)
 					{
@@ -347,6 +365,22 @@ namespace NHibernate.NHDesigner
 																				global::NHibernate.NHDesigner.Property.NameDomainPropertyId, 
 																				global::NHibernate.NHDesigner.Property.DomainClassId, 
 																				GetElementsFromEntityForProperties,
+																				null,
+																				null,
+																				null);
+					mappings[localCompartmentMappingsOffset+1] = new DslDiagrams::ElementListCompartmentMapping(
+																				"Metas", 
+																				global::NHibernate.NHDesigner.Meta.AttributeDomainPropertyId, 
+																				global::NHibernate.NHDesigner.Meta.DomainClassId, 
+																				GetElementsFromEntityForMetas,
+																				null,
+																				null,
+																				null);
+					mappings[localCompartmentMappingsOffset+2] = new DslDiagrams::ElementListCompartmentMapping(
+																				"Id", 
+																				global::NHibernate.NHDesigner.Identifier.NameDomainPropertyId, 
+																				global::NHibernate.NHDesigner.Identifier.DomainClassId, 
+																				GetElementsFromEntityForId,
 																				null,
 																				null,
 																				null);
@@ -384,6 +418,20 @@ namespace NHibernate.NHDesigner
 				global::NHibernate.NHDesigner.Entity root = (global::NHibernate.NHDesigner.Entity)element;
 					// Segments 0 and 1
 					DslModeling::LinkedElementCollection<global::NHibernate.NHDesigner.Property> result = root.Properties;
+				return result;
+			}
+			internal static global::System.Collections.IList GetElementsFromEntityForMetas(DslModeling::ModelElement element)
+			{
+				global::NHibernate.NHDesigner.Entity root = (global::NHibernate.NHDesigner.Entity)element;
+					// Segments 0 and 1
+					DslModeling::LinkedElementCollection<global::NHibernate.NHDesigner.Meta> result = root.Meta;
+				return result;
+			}
+			internal static global::System.Collections.IList GetElementsFromEntityForId(DslModeling::ModelElement element)
+			{
+				global::NHibernate.NHDesigner.Entity root = (global::NHibernate.NHDesigner.Entity)element;
+					// Segments 0 and 1
+					DslModeling::LinkedElementCollection<global::NHibernate.NHDesigner.Identifier> result = root.Identifiers;
 				return result;
 			}
 			#endregion

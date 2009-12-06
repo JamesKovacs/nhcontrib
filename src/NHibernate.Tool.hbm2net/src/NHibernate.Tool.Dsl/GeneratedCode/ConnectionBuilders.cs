@@ -89,6 +89,7 @@ namespace NHibernate.NHDesigner
 					{
 						global::NHibernate.NHDesigner.Entity sourceEntity = (global::NHibernate.NHDesigner.Entity)candidateSource;
 						global::NHibernate.NHDesigner.Entity targetEntity = (global::NHibernate.NHDesigner.Entity)candidateTarget;
+						if(sourceEntity == null || global::NHibernate.NHDesigner.EntityReferencesBase.GetLinkToSubclass(sourceEntity) != null) return false;
 						if(targetEntity == null || sourceEntity == null || global::NHibernate.NHDesigner.EntityReferencesBase.GetLinks(sourceEntity, targetEntity).Count > 0) return false;
 						return true;
 					}
@@ -219,6 +220,7 @@ namespace NHibernate.NHDesigner
 					{
 						global::NHibernate.NHDesigner.Entity sourceEntity = (global::NHibernate.NHDesigner.Entity)candidateSource;
 						global::NHibernate.NHDesigner.Entity targetEntity = (global::NHibernate.NHDesigner.Entity)candidateTarget;
+						if(sourceEntity == null || global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.GetLinkToJoinedSubclass(sourceEntity) != null) return false;
 						if(targetEntity == null || sourceEntity == null || global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.GetLinks(sourceEntity, targetEntity).Count > 0) return false;
 						return true;
 					}

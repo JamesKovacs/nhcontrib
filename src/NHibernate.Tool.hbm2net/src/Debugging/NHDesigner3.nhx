@@ -1,7 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nHibernateModel dslVersion="1.1.0.1" Id="c2e868b4-ed03-41cc-875c-0c83cd3bc2c6" xmlns="http://schemas.microsoft.com/dsltools/NHDesigner">
   <entities>
-    <entity name="Animal" />
+    <entity name="Animal">
+      <properties>
+        <property name="ScientificName" />
+        <property name="CommonName" />
+      </properties>
+      <meta>
+        <meta attribute="class-description" text="Test" />
+      </meta>
+      <identifiers>
+        <id name="Pippo" />
+        <compositeId />
+      </identifiers>
+    </entity>
     <entity name="Dog">
       <subclass>
         <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />

@@ -67,11 +67,11 @@
       <!-- Relationship: EntityReferencesBase -->
       <xsd:element name="subclass" minOccurs="0" maxOccurs="1">
         <xsd:annotation>
-          <xsd:documentation>Instances of EntityReferencesBase</xsd:documentation>
+          <xsd:documentation>Instance of EntityReferencesBase</xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:choice minOccurs="0" maxOccurs="unbounded" >
+            <xsd:choice minOccurs="0" maxOccurs="1" >
               <xsd:element ref="entityReferencesBase">
                 <xsd:annotation>
                   <xsd:documentation>[Relationship deriving from EntityReferencesBase needs to be serialized in full-form]</xsd:documentation>
@@ -111,17 +111,61 @@
       <!-- Relationship: EntityReferencesBaseWithJoin -->
       <xsd:element name="joinedSubclass" minOccurs="0" maxOccurs="1">
         <xsd:annotation>
-          <xsd:documentation>Instances of EntityReferencesBaseWithJoin</xsd:documentation>
+          <xsd:documentation>Instance of EntityReferencesBaseWithJoin</xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:choice minOccurs="0" maxOccurs="unbounded" >
+            <xsd:choice minOccurs="0" maxOccurs="1" >
               <xsd:element ref="entityReferencesBaseWithJoin">
                 <xsd:annotation>
                   <xsd:documentation>[Relationship deriving from EntityReferencesBaseWithJoin needs to be serialized in full-form]</xsd:documentation>
                 </xsd:annotation>
               </xsd:element>
               <xsd:element ref="entityMoniker" >
+                <xsd:annotation>
+                  <xsd:documentation>[Target role-player]</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <!-- Relationship: EntityHasMeta -->
+      <xsd:element name="meta" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>Instances of EntityHasMeta</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded" >
+              <xsd:element ref="entityHasMeta">
+                <xsd:annotation>
+                  <xsd:documentation>[Relationship deriving from EntityHasMeta needs to be serialized in full-form]</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element ref="meta" >
+                <xsd:annotation>
+                  <xsd:documentation>[Target role-player]</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <!-- Relationship: EntityHasIdentifier -->
+      <xsd:element name="identifiers" minOccurs="1" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>Instances of EntityHasIdentifier</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:choice minOccurs="1" maxOccurs="unbounded" >
+              <xsd:element ref="entityHasIdentifier">
+                <xsd:annotation>
+                  <xsd:documentation>[Relationship deriving from EntityHasIdentifier needs to be serialized in full-form]</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element ref="identifier" >
                 <xsd:annotation>
                   <xsd:documentation>[Target role-player]</xsd:documentation>
                 </xsd:annotation>
@@ -161,6 +205,80 @@
     <xsd:annotation>
       <xsd:documentation>Moniker for Property instance.</xsd:documentation>
     </xsd:annotation>
+  </xsd:complexType>
+  
+  <!-- Meta -->
+  <xsd:element name="meta" type="Meta" />
+  <xsd:complexType name="Meta">
+    <!-- Property: Attribute -->
+    <xsd:attribute name="attribute" type="xsd:string" />
+    <!-- Property: Text -->
+    <xsd:attribute name="text" type="xsd:string" />
+  </xsd:complexType>
+  
+  <!-- Meta Moniker -->
+  <xsd:element name="metaMoniker" abstract="true" type="MetaMoniker" />
+  <xsd:complexType name="MetaMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for Meta instance.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  
+  <!-- Identifier -->
+  <xsd:element name="identifier" abstract="true" type="Identifier" />
+  <xsd:complexType name="Identifier" abstract="true" >
+    <!-- Property: Name -->
+    <xsd:attribute name="name" type="xsd:string" />
+  </xsd:complexType>
+  
+  <!-- Identifier Moniker -->
+  <xsd:element name="identifierMoniker" abstract="true" type="IdentifierMoniker" />
+  <xsd:complexType name="IdentifierMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for Identifier instance.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  
+  <!-- Id -->
+  <xsd:element name="id" type="Id" substitutionGroup="identifier" />
+  <xsd:complexType name="Id">
+    <xsd:complexContent>
+      <xsd:extension base="Identifier">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- Id Moniker -->
+  <xsd:element name="idMoniker" abstract="true" type="IdMoniker" substitutionGroup="identifierMoniker" />
+  <xsd:complexType name="IdMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for Id instance.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="IdentifierMoniker">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- CompositeId -->
+  <xsd:element name="compositeId" type="CompositeId" substitutionGroup="identifier" />
+  <xsd:complexType name="CompositeId">
+    <xsd:complexContent>
+      <xsd:extension base="Identifier">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- CompositeId Moniker -->
+  <xsd:element name="compositeIdMoniker" abstract="true" type="CompositeIdMoniker" substitutionGroup="identifierMoniker" />
+  <xsd:complexType name="CompositeIdMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for CompositeId instance.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="IdentifierMoniker">
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
   
   <!-- NHibernateModelHasEntities -->
@@ -250,6 +368,48 @@
   <xsd:complexType name="EntityReferencesBaseWithJoinMoniker">
     <xsd:annotation>
       <xsd:documentation>Moniker for EntityReferencesBaseWithJoin instance.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  
+  <!-- EntityHasMeta -->
+  <xsd:element name="entityHasMeta" abstract="true" type="EntityHasMeta" />
+  <xsd:complexType name="EntityHasMeta" abstract="true" >
+    <xsd:sequence minOccurs="0" maxOccurs="1">
+      <!-- Target end Meta -->
+      <xsd:element ref="meta" minOccurs="1" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>[Target role-player]</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <!-- EntityHasMeta Moniker -->
+  <xsd:element name="entityHasMetaMoniker" abstract="true" type="EntityHasMetaMoniker" />
+  <xsd:complexType name="EntityHasMetaMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for EntityHasMeta instance.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  
+  <!-- EntityHasIdentifier -->
+  <xsd:element name="entityHasIdentifier" abstract="true" type="EntityHasIdentifier" />
+  <xsd:complexType name="EntityHasIdentifier" abstract="true" >
+    <xsd:sequence minOccurs="0" maxOccurs="1">
+      <!-- Target end Identifier -->
+      <xsd:element ref="identifier" minOccurs="1" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>[Target role-player]</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <!-- EntityHasIdentifier Moniker -->
+  <xsd:element name="entityHasIdentifierMoniker" abstract="true" type="EntityHasIdentifierMoniker" />
+  <xsd:complexType name="EntityHasIdentifierMoniker">
+    <xsd:annotation>
+      <xsd:documentation>Moniker for EntityHasIdentifier instance.</xsd:documentation>
     </xsd:annotation>
   </xsd:complexType>
   

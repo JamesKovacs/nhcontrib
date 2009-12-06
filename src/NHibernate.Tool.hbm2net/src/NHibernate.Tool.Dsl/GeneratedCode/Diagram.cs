@@ -562,6 +562,8 @@ namespace NHibernate.NHDesigner
 		/// Rule to update compartments when an item is added to the list
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemAddRule : DslModeling::AddRule
 		{
 			/// <summary>
@@ -583,6 +585,16 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.IEnumerable elements = GetEntityForEntityShapePropertiesFromLastLink((global::NHibernate.NHDesigner.EntityHasProperties)e.ModelElement);
 					UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Properties", repaintOnly);
 				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasMeta)
+				{
+					global::System.Collections.IEnumerable elements = GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.EntityHasMeta)e.ModelElement);
+					UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasIdentifier)
+				{
+					global::System.Collections.IEnumerable elements = GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ModelElement);
+					UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
+				}
 			}
 			
 			#region static DomainPath traversal methods to get the list of compartments to update
@@ -594,6 +606,34 @@ namespace NHibernate.NHDesigner
 				return new DslModeling::ModelElement[] {result};
 			}
 			internal static global::System.Collections.ICollection GetEntityForEntityShapeProperties(global::NHibernate.NHDesigner.Property root)
+			{
+				// Segments 1 and 0
+				global::NHibernate.NHDesigner.Entity result = root.Entity;
+				if ( result == null ) return new DslModeling::ModelElement[0];
+				return new DslModeling::ModelElement[] {result};
+			}
+			internal static global::System.Collections.ICollection GetEntityForEntityShapeMetasFromLastLink(global::NHibernate.NHDesigner.EntityHasMeta root)
+			{
+				// Segment 0
+				global::NHibernate.NHDesigner.Entity result = root.Entity;
+				if ( result == null ) return new DslModeling::ModelElement[0];
+				return new DslModeling::ModelElement[] {result};
+			}
+			internal static global::System.Collections.ICollection GetEntityForEntityShapeMetas(global::NHibernate.NHDesigner.Meta root)
+			{
+				// Segments 1 and 0
+				global::NHibernate.NHDesigner.Entity result = root.Entity;
+				if ( result == null ) return new DslModeling::ModelElement[0];
+				return new DslModeling::ModelElement[] {result};
+			}
+			internal static global::System.Collections.ICollection GetEntityForEntityShapeIdFromLastLink(global::NHibernate.NHDesigner.EntityHasIdentifier root)
+			{
+				// Segment 0
+				global::NHibernate.NHDesigner.Entity result = root.Entity;
+				if ( result == null ) return new DslModeling::ModelElement[0];
+				return new DslModeling::ModelElement[] {result};
+			}
+			internal static global::System.Collections.ICollection GetEntityForEntityShapeId(global::NHibernate.NHDesigner.Identifier root)
 			{
 				// Segments 1 and 0
 				global::NHibernate.NHDesigner.Entity result = root.Entity;
@@ -646,6 +686,8 @@ namespace NHibernate.NHDesigner
 		/// Rule to update compartments when an items is removed from the list
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemDeleteRule : DslModeling::DeleteRule
 		{
 			/// <summary>
@@ -665,6 +707,16 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetEntityForEntityShapePropertiesFromLastLink((global::NHibernate.NHDesigner.EntityHasProperties)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Properties", repaintOnly);
 				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasMeta)
+				{
+					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.EntityHasMeta)e.ModelElement);
+					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasIdentifier)
+				{
+					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ModelElement);
+					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
+				}
 			}
 		}
 		
@@ -672,6 +724,8 @@ namespace NHibernate.NHDesigner
 		/// Rule to update compartments when the property on an item being displayed changes.
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Property), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Meta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Identifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemChangeRule : DslModeling::ChangeRule 
 		{
 			/// <summary>
@@ -691,6 +745,16 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeProperties((global::NHibernate.NHDesigner.Property)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Properties", repaintOnly);
 				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.Meta && e.DomainProperty.Id == global::NHibernate.NHDesigner.Meta.AttributeDomainPropertyId)
+				{
+					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeMetas((global::NHibernate.NHDesigner.Meta)e.ModelElement);
+					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+				}
+				if(e.ModelElement is global::NHibernate.NHDesigner.Identifier && e.DomainProperty.Id == global::NHibernate.NHDesigner.Identifier.NameDomainPropertyId)
+				{
+					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.ModelElement);
+					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
+				}
 			}
 		}
 		
@@ -698,6 +762,8 @@ namespace NHibernate.NHDesigner
 		/// Rule to update compartments when a roleplayer change happens
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerChangeRule : DslModeling::RolePlayerChangeRule 
 		{
 			/// <summary>
@@ -739,6 +805,60 @@ namespace NHibernate.NHDesigner
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Properties", repaintOnly);
 					}
 				}
+				if(typeof(global::NHibernate.NHDesigner.EntityHasMeta).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
+				{
+					if(e.DomainRole.IsSource)
+					{
+						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.Meta)e.OldRolePlayer);
+						//foreach(DslModeling::ModelElement element in oldElements)
+						//{
+						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
+						//	foreach(DslDiagrams::PresentationElement pel in pels)
+						//	{
+						//		global::NHibernate.NHDesigner.EntityShape compartmentShape = pel as global::NHibernate.NHDesigner.EntityShape;
+						//		if(compartmentShape != null)
+						//		{
+						//			compartmentShape.GetCompartmentMappings()[1].InitializeCompartmentShape(compartmentShape);
+						//		}
+						//	}
+						//}
+						
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.EntityHasMeta)e.ElementLink);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+					}
+					else 
+					{
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeMetas((global::NHibernate.NHDesigner.Meta)e.NewRolePlayer);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+					}
+				}
+				if(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
+				{
+					if(e.DomainRole.IsSource)
+					{
+						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.Identifier)e.OldRolePlayer);
+						//foreach(DslModeling::ModelElement element in oldElements)
+						//{
+						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
+						//	foreach(DslDiagrams::PresentationElement pel in pels)
+						//	{
+						//		global::NHibernate.NHDesigner.EntityShape compartmentShape = pel as global::NHibernate.NHDesigner.EntityShape;
+						//		if(compartmentShape != null)
+						//		{
+						//			compartmentShape.GetCompartmentMappings()[2].InitializeCompartmentShape(compartmentShape);
+						//		}
+						//	}
+						//}
+						
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ElementLink);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
+					}
+					else 
+					{
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.NewRolePlayer);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
+					}
+				}
 			}
 		}
 	
@@ -746,6 +866,8 @@ namespace NHibernate.NHDesigner
 		/// Rule to update compartments when the order of items in the list changes.
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerPositionChangeRule : DslModeling::RolePlayerPositionChangeRule 
 		{
 			/// <summary>
@@ -766,6 +888,22 @@ namespace NHibernate.NHDesigner
 					{
 						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeProperties((global::NHibernate.NHDesigner.Property)e.CounterpartRolePlayer);
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Properties", repaintOnly);
+					}
+				}
+				if(typeof(global::NHibernate.NHDesigner.EntityHasMeta).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
+				{
+					if(!e.CounterpartDomainRole.IsSource)
+					{
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeMetas((global::NHibernate.NHDesigner.Meta)e.CounterpartRolePlayer);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
+					}
+				}
+				if(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
+				{
+					if(!e.CounterpartDomainRole.IsSource)
+					{
+						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.CounterpartRolePlayer);
+						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
 					}
 				}
 			}

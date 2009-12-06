@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Xml.Schema;
 
 namespace NHibernate.Tool.hbm2net.Tests
 {
@@ -11,6 +12,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 	{
 		private static string GetNamespace()
 		{
+            
 			return MethodBase.GetCurrentMethod().DeclaringType.Namespace;
 		}
 

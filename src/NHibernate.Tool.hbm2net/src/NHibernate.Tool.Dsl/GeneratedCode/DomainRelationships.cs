@@ -332,7 +332,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityReferencesBase/Source.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityReferencesBase/Source.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Subclass", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesBase/Source.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Subclass", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesBase/Source.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroOne)]
 		[DslModeling::DomainObjectId("17253bdc-ea79-4183-b076-8d4130296844")]
 		public virtual Entity Source
 		{
@@ -392,24 +392,43 @@ namespace NHibernate.NHDesigner
 		#endregion
 		#region Static methods to access Subclass of a Entity
 		/// <summary>
-		/// Gets a list of Subclass.
+		/// Gets Subclass.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static DslModeling::LinkedElementCollection<Entity> GetSubclass(Entity element)
+		public static Entity GetSubclass(Entity element)
 		{
-			return new DslModeling::LinkedElementCollection<Entity>(element, SourceDomainRoleId);
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, SourceDomainRoleId) as Entity;
+		}
+		
+		/// <summary>
+		/// Sets Subclass.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetSubclass(Entity element, Entity newTarget)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, SourceDomainRoleId, newTarget);
 		}
 		#endregion
 		#region Source link accessor
 		/// <summary>
-		/// Get the list of EntityReferencesBase links to a Entity.
+		/// Get the EntityReferencesBase link to a Entity.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityReferencesBase> GetLinksToSubclass ( global::NHibernate.NHDesigner.Entity sourceInstance )
+		public static global::NHibernate.NHDesigner.EntityReferencesBase GetLinkToSubclass (global::NHibernate.NHDesigner.Entity sourceInstance)
 		{
-			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesBase>(sourceInstance, global::NHibernate.NHDesigner.EntityReferencesBase.SourceDomainRoleId);
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityReferencesBase> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesBase>(sourceInstance, global::NHibernate.NHDesigner.EntityReferencesBase.SourceDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Source not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
 		}
 		#endregion
 		#region Target link accessor
@@ -602,7 +621,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasProperties/Property.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasProperties/Property.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasProperties/Property.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.ZeroOne)]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasProperties/Property.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
 		[DslModeling::DomainObjectId("7313b038-718b-40b5-bb02-16f70402aff6")]
 		public virtual Property Property
 		{
@@ -789,7 +808,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityReferencesBaseWithJoin/SourceEntity.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityReferencesBaseWithJoin/SourceEntity.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "JoinedSubclass", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesBaseWithJoin/SourceEntity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "JoinedSubclass", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesBaseWithJoin/SourceEntity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroOne)]
 		[DslModeling::DomainObjectId("01fa9e6d-e9e8-41c9-9c4a-5410be0a9fb0")]
 		public virtual Entity SourceEntity
 		{
@@ -849,24 +868,43 @@ namespace NHibernate.NHDesigner
 		#endregion
 		#region Static methods to access JoinedSubclass of a Entity
 		/// <summary>
-		/// Gets a list of JoinedSubclass.
+		/// Gets JoinedSubclass.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static DslModeling::LinkedElementCollection<Entity> GetJoinedSubclass(Entity element)
+		public static Entity GetJoinedSubclass(Entity element)
 		{
-			return new DslModeling::LinkedElementCollection<Entity>(element, SourceEntityDomainRoleId);
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, SourceEntityDomainRoleId) as Entity;
+		}
+		
+		/// <summary>
+		/// Sets JoinedSubclass.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetJoinedSubclass(Entity element, Entity newTargetEntity)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, SourceEntityDomainRoleId, newTargetEntity);
 		}
 		#endregion
 		#region SourceEntity link accessor
 		/// <summary>
-		/// Get the list of EntityReferencesBaseWithJoin links to a Entity.
+		/// Get the EntityReferencesBaseWithJoin link to a Entity.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin> GetLinksToJoinedSubclass ( global::NHibernate.NHDesigner.Entity sourceEntityInstance )
+		public static global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin GetLinkToJoinedSubclass (global::NHibernate.NHDesigner.Entity sourceEntityInstance)
 		{
-			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin>(sourceEntityInstance, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntityDomainRoleId);
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin>(sourceEntityInstance, global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin.SourceEntityDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of SourceEntity not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
 		}
 		#endregion
 		#region TargetEntity link accessor
@@ -911,6 +949,482 @@ namespace NHibernate.NHDesigner
 			foreach ( global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin link in links )
 			{
 				if ( target.Equals(link.TargetEntity) )
+				{
+					return link;
+				}
+			}
+			return null;
+		}
+		
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainRelationship EntityHasMeta
+	/// Description for NHibernate.NHDesigner.EntityHasMeta
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasMeta.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasMeta.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainRelationship(IsEmbedding=true)]
+	[DslModeling::DomainObjectId("2cfb427c-4fe2-42c1-b51f-d8893497702b")]
+	public partial class EntityHasMeta : DslModeling::ElementLink
+	{
+		#region Constructors, domain class Id
+		
+		/// <summary>
+		/// EntityHasMeta domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x2cfb427c, 0x4fe2, 0x42c1, 0xb5, 0x1f, 0xd8, 0x89, 0x34, 0x97, 0x70, 0x2b);
+	
+				
+		/// <summary>
+		/// Constructor
+		/// Creates a EntityHasMeta link in the same Partition as the given Entity
+		/// </summary>
+		/// <param name="source">Entity to use as the source of the relationship.</param>
+		/// <param name="target">Meta to use as the target of the relationship.</param>
+		public EntityHasMeta(Entity source, Meta target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(EntityHasMeta.EntityDomainRoleId, source), new DslModeling::RoleAssignment(EntityHasMeta.MetaDomainRoleId, target)}, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasMeta(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasMeta(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasMeta(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(partition, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasMeta(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, roleAssignments, propertyAssignments)
+		{
+		}
+		#endregion
+		#region Entity domain role code
+		
+		/// <summary>
+		/// Entity domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid EntityDomainRoleId = new global::System.Guid(0xfda4138f, 0xd30e, 0x4d69, 0x9f, 0xc4, 0x4b, 0x1b, 0x2f, 0x1e, 0x5b, 0x83);
+		
+		/// <summary>
+		/// DomainRole Entity
+		/// Description for NHibernate.NHDesigner.EntityHasMeta.Entity
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasMeta/Entity.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasMeta/Entity.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Meta", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasMeta/Entity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainObjectId("fda4138f-d30e-4d69-9fc4-4b1b2f1e5b83")]
+		public virtual Entity Entity
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Entity)DslModeling::DomainRoleInfo.GetRolePlayer(this, EntityDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, EntityDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Entity of a Meta
+		/// <summary>
+		/// Gets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static Entity GetEntity(Meta element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, MetaDomainRoleId) as Entity;
+		}
+		
+		/// <summary>
+		/// Sets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetEntity(Meta element, Entity newEntity)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, MetaDomainRoleId, newEntity);
+		}
+		#endregion
+		#region Meta domain role code
+		
+		/// <summary>
+		/// Meta domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid MetaDomainRoleId = new global::System.Guid(0xfe451048, 0x0379, 0x43d6, 0xa4, 0xad, 0x6d, 0xc6, 0xb5, 0x02, 0xf8, 0xc4);
+		
+		/// <summary>
+		/// DomainRole Meta
+		/// Description for NHibernate.NHDesigner.EntityHasMeta.Meta
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasMeta/Meta.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasMeta/Meta.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasMeta/Meta.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("fe451048-0379-43d6-a4ad-6dc6b502f8c4")]
+		public virtual Meta Meta
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Meta)DslModeling::DomainRoleInfo.GetRolePlayer(this, MetaDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, MetaDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Meta of a Entity
+		/// <summary>
+		/// Gets a list of Meta.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static DslModeling::LinkedElementCollection<Meta> GetMeta(Entity element)
+		{
+			return new DslModeling::LinkedElementCollection<Meta>(element, EntityDomainRoleId);
+		}
+		#endregion
+		#region Entity link accessor
+		/// <summary>
+		/// Get the list of EntityHasMeta links to a Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasMeta> GetLinksToMeta ( global::NHibernate.NHDesigner.Entity entityInstance )
+		{
+			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasMeta>(entityInstance, global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId);
+		}
+		#endregion
+		#region Meta link accessor
+		/// <summary>
+		/// Get the EntityHasMeta link to a Meta.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.EntityHasMeta GetLinkToEntity (global::NHibernate.NHDesigner.Meta metaInstance)
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasMeta> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasMeta>(metaInstance, global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Meta not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region EntityHasMeta instance accessors
+		
+		/// <summary>
+		/// Get any EntityHasMeta links between a given Entity and a Meta.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasMeta> GetLinks( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Meta target )
+		{
+			global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasMeta> outLinks = new global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasMeta>();
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasMeta> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasMeta>(source, global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityHasMeta link in links )
+			{
+				if ( target.Equals(link.Meta) )
+				{
+					outLinks.Add(link);
+				}
+			}
+			return outLinks.AsReadOnly();
+		}
+		/// <summary>
+		/// Get the one EntityHasMeta link between a given Entityand a Meta.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.EntityHasMeta GetLink( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Meta target )
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasMeta> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasMeta>(source, global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityHasMeta link in links )
+			{
+				if ( target.Equals(link.Meta) )
+				{
+					return link;
+				}
+			}
+			return null;
+		}
+		
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainRelationship EntityHasIdentifier
+	/// Description for NHibernate.NHDesigner.EntityHasIdentifier
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainRelationship(IsEmbedding=true)]
+	[DslModeling::DomainObjectId("3f87704d-b926-4c0f-90f8-be7a330fc221")]
+	public partial class EntityHasIdentifier : DslModeling::ElementLink
+	{
+		#region Constructors, domain class Id
+		
+		/// <summary>
+		/// EntityHasIdentifier domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x3f87704d, 0xb926, 0x4c0f, 0x90, 0xf8, 0xbe, 0x7a, 0x33, 0x0f, 0xc2, 0x21);
+	
+				
+		/// <summary>
+		/// Constructor
+		/// Creates a EntityHasIdentifier link in the same Partition as the given Entity
+		/// </summary>
+		/// <param name="source">Entity to use as the source of the relationship.</param>
+		/// <param name="target">Identifier to use as the target of the relationship.</param>
+		public EntityHasIdentifier(Entity source, Identifier target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(EntityHasIdentifier.EntityDomainRoleId, source), new DslModeling::RoleAssignment(EntityHasIdentifier.IdentifierDomainRoleId, target)}, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasIdentifier(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasIdentifier(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public EntityHasIdentifier(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(partition, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public EntityHasIdentifier(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, roleAssignments, propertyAssignments)
+		{
+		}
+		#endregion
+		#region Entity domain role code
+		
+		/// <summary>
+		/// Entity domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid EntityDomainRoleId = new global::System.Guid(0x5d8a2842, 0x8555, 0x42f7, 0xaa, 0xaf, 0x3c, 0xfd, 0x0b, 0x97, 0xa4, 0xd1);
+		
+		/// <summary>
+		/// DomainRole Entity
+		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier/Entity.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier/Entity.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Identifiers", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasIdentifier/Entity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.OneMany)]
+		[DslModeling::DomainObjectId("5d8a2842-8555-42f7-aaaf-3cfd0b97a4d1")]
+		public virtual Entity Entity
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Entity)DslModeling::DomainRoleInfo.GetRolePlayer(this, EntityDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, EntityDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Entity of a Identifier
+		/// <summary>
+		/// Gets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static Entity GetEntity(Identifier element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, IdentifierDomainRoleId) as Entity;
+		}
+		
+		/// <summary>
+		/// Sets Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetEntity(Identifier element, Entity newEntity)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, IdentifierDomainRoleId, newEntity);
+		}
+		#endregion
+		#region Identifier domain role code
+		
+		/// <summary>
+		/// Identifier domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid IdentifierDomainRoleId = new global::System.Guid(0x97fcb37b, 0x4bfd, 0x4b34, 0xac, 0x8e, 0x1f, 0xe7, 0x22, 0x84, 0xfe, 0xc0);
+		
+		/// <summary>
+		/// DomainRole Identifier
+		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier/Identifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier/Identifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("97fcb37b-4bfd-4b34-ac8e-1fe72284fec0")]
+		public virtual Identifier Identifier
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Identifier)DslModeling::DomainRoleInfo.GetRolePlayer(this, IdentifierDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, IdentifierDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Identifiers of a Entity
+		/// <summary>
+		/// Gets a list of Identifiers.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static DslModeling::LinkedElementCollection<Identifier> GetIdentifiers(Entity element)
+		{
+			return new DslModeling::LinkedElementCollection<Identifier>(element, EntityDomainRoleId);
+		}
+		#endregion
+		#region Entity link accessor
+		/// <summary>
+		/// Get the list of EntityHasIdentifier links to a Entity.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasIdentifier> GetLinksToIdentifiers ( global::NHibernate.NHDesigner.Entity entityInstance )
+		{
+			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(entityInstance, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
+		}
+		#endregion
+		#region Identifier link accessor
+		/// <summary>
+		/// Get the EntityHasIdentifier link to a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.EntityHasIdentifier GetLinkToEntity (global::NHibernate.NHDesigner.Identifier identifierInstance)
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(identifierInstance, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Identifier not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region EntityHasIdentifier instance accessors
+		
+		/// <summary>
+		/// Get any EntityHasIdentifier links between a given Entity and a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasIdentifier> GetLinks( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
+		{
+			global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasIdentifier> outLinks = new global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasIdentifier>();
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(source, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityHasIdentifier link in links )
+			{
+				if ( target.Equals(link.Identifier) )
+				{
+					outLinks.Add(link);
+				}
+			}
+			return outLinks.AsReadOnly();
+		}
+		/// <summary>
+		/// Get the one EntityHasIdentifier link between a given Entityand a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.EntityHasIdentifier GetLink( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(source, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityHasIdentifier link in links )
+			{
+				if ( target.Equals(link.Identifier) )
 				{
 					return link;
 				}
