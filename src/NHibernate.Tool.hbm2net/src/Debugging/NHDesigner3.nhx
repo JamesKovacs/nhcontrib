@@ -1,39 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nHibernateModel dslVersion="1.1.0.1" Id="c2e868b4-ed03-41cc-875c-0c83cd3bc2c6" xmlns="http://schemas.microsoft.com/dsltools/NHDesigner">
   <entities>
-    <entity name="Animal">
-      <properties>
-        <property name="ScientificName" />
-        <property name="CommonName" />
-      </properties>
-      <meta>
-        <meta attribute="class-description" text="Test" />
-      </meta>
+    <entity name="Entity1">
       <identifiers>
-        <id name="Pippo" />
-        <compositeId />
+        <idMoniker Id="36a782d5-3796-49d4-8287-5a1803f8dae4" />
       </identifiers>
     </entity>
-    <entity name="Dog">
-      <subclass>
-        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />
-      </subclass>
-    </entity>
-    <entity name="Cat">
-      <subclass>
-        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />
-      </subclass>
-    </entity>
-    <entity name="Lion">
-      <subclass>
-        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Animal" />
-      </subclass>
-    </entity>
-    <entity name="Fruit" />
-    <entity name="Apple">
-      <joinedSubclass>
-        <entityMoniker name="/c2e868b4-ed03-41cc-875c-0c83cd3bc2c6/Fruit" />
-      </joinedSubclass>
+    <entity name="Entity2">
+      <identifiers>
+        <compositeIdMoniker Id="766e665e-d90d-409e-aa56-f8fa6a9e96b6" />
+      </identifiers>
     </entity>
   </entities>
+  <identifiers>
+    <id Id="36a782d5-3796-49d4-8287-5a1803f8dae4" name="Id2" />
+    <compositeId Id="766e665e-d90d-409e-aa56-f8fa6a9e96b6" name="Pippo" />
+  </identifiers>
 </nHibernateModel>

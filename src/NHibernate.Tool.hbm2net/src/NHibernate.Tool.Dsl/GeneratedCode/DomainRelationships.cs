@@ -1097,7 +1097,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasMeta/Meta.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
 		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasMeta/Meta.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasMeta/Meta.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasMeta/Meta.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.ZeroOne)]
 		[DslModeling::DomainObjectId("fe451048-0379-43d6-a4ad-6dc6b502f8c4")]
 		public virtual Meta Meta
 		{
@@ -1200,32 +1200,32 @@ namespace NHibernate.NHDesigner
 namespace NHibernate.NHDesigner
 {
 	/// <summary>
-	/// DomainRelationship EntityHasIdentifier
-	/// Description for NHibernate.NHDesigner.EntityHasIdentifier
+	/// DomainRelationship EntityReferencesIdentifiers
+	/// Description for NHibernate.NHDesigner.EntityReferencesIdentifiers
 	/// </summary>
-	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-	[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityReferencesIdentifiers.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityReferencesIdentifiers.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
 	[global::System.CLSCompliant(true)]
-	[DslModeling::DomainRelationship(IsEmbedding=true)]
-	[DslModeling::DomainObjectId("3f87704d-b926-4c0f-90f8-be7a330fc221")]
-	public partial class EntityHasIdentifier : DslModeling::ElementLink
+	[DslModeling::DomainRelationship()]
+	[DslModeling::DomainObjectId("11e74581-3bb0-4532-91f8-b3a7f7624601")]
+	public partial class EntityReferencesIdentifiers : DslModeling::ElementLink
 	{
 		#region Constructors, domain class Id
 		
 		/// <summary>
-		/// EntityHasIdentifier domain class Id.
+		/// EntityReferencesIdentifiers domain class Id.
 		/// </summary>
-		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x3f87704d, 0xb926, 0x4c0f, 0x90, 0xf8, 0xbe, 0x7a, 0x33, 0x0f, 0xc2, 0x21);
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0x11e74581, 0x3bb0, 0x4532, 0x91, 0xf8, 0xb3, 0xa7, 0xf7, 0x62, 0x46, 0x01);
 	
 				
 		/// <summary>
 		/// Constructor
-		/// Creates a EntityHasIdentifier link in the same Partition as the given Entity
+		/// Creates a EntityReferencesIdentifiers link in the same Partition as the given Entity
 		/// </summary>
 		/// <param name="source">Entity to use as the source of the relationship.</param>
 		/// <param name="target">Identifier to use as the target of the relationship.</param>
-		public EntityHasIdentifier(Entity source, Identifier target)
-			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(EntityHasIdentifier.EntityDomainRoleId, source), new DslModeling::RoleAssignment(EntityHasIdentifier.IdentifierDomainRoleId, target)}, null)
+		public EntityReferencesIdentifiers(Entity source, Identifier target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(EntityReferencesIdentifiers.EntityDomainRoleId, source), new DslModeling::RoleAssignment(EntityReferencesIdentifiers.IdentifierDomainRoleId, target)}, null)
 		{
 		}
 		
@@ -1234,7 +1234,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		/// <param name="store">Store where new link is to be created.</param>
 		/// <param name="roleAssignments">List of relationship role assignments.</param>
-		public EntityHasIdentifier(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+		public EntityReferencesIdentifiers(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
 			: base(store != null ? store.DefaultPartition : null, roleAssignments, null)
 		{
 		}
@@ -1245,7 +1245,7 @@ namespace NHibernate.NHDesigner
 		/// <param name="store">Store where new link is to be created.</param>
 		/// <param name="roleAssignments">List of relationship role assignments.</param>
 		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
-		public EntityHasIdentifier(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+		public EntityReferencesIdentifiers(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
 			: base(store != null ? store.DefaultPartition : null, roleAssignments, propertyAssignments)
 		{
 		}
@@ -1255,7 +1255,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		/// <param name="partition">Partition where new link is to be created.</param>
 		/// <param name="roleAssignments">List of relationship role assignments.</param>
-		public EntityHasIdentifier(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+		public EntityReferencesIdentifiers(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
 			: base(partition, roleAssignments, null)
 		{
 		}
@@ -1266,7 +1266,7 @@ namespace NHibernate.NHDesigner
 		/// <param name="partition">Partition where new link is to be created.</param>
 		/// <param name="roleAssignments">List of relationship role assignments.</param>
 		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
-		public EntityHasIdentifier(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+		public EntityReferencesIdentifiers(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
 			: base(partition, roleAssignments, propertyAssignments)
 		{
 		}
@@ -1276,16 +1276,16 @@ namespace NHibernate.NHDesigner
 		/// <summary>
 		/// Entity domain role Id.
 		/// </summary>
-		public static readonly global::System.Guid EntityDomainRoleId = new global::System.Guid(0x5d8a2842, 0x8555, 0x42f7, 0xaa, 0xaf, 0x3c, 0xfd, 0x0b, 0x97, 0xa4, 0xd1);
+		public static readonly global::System.Guid EntityDomainRoleId = new global::System.Guid(0x854ef780, 0xf1eb, 0x4507, 0x97, 0xd9, 0xdf, 0x39, 0x35, 0x61, 0x5b, 0xc4);
 		
 		/// <summary>
 		/// DomainRole Entity
-		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity
+		/// Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Entity
 		/// </summary>
-		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier/Entity.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier/Entity.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Identifiers", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasIdentifier/Entity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.OneMany)]
-		[DslModeling::DomainObjectId("5d8a2842-8555-42f7-aaaf-3cfd0b97a4d1")]
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Identifiers", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainObjectId("854ef780-f1eb-4507-97d9-df3935615bc4")]
 		public virtual Entity Entity
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
@@ -1327,16 +1327,16 @@ namespace NHibernate.NHDesigner
 		/// <summary>
 		/// Identifier domain role Id.
 		/// </summary>
-		public static readonly global::System.Guid IdentifierDomainRoleId = new global::System.Guid(0x97fcb37b, 0x4bfd, 0x4b34, 0xac, 0x8e, 0x1f, 0xe7, 0x22, 0x84, 0xfe, 0xc0);
+		public static readonly global::System.Guid IdentifierDomainRoleId = new global::System.Guid(0xb05267ef, 0x688a, 0x4bc9, 0x92, 0x88, 0xfa, 0xf3, 0xf9, 0x54, 0x8b, 0xe9);
 		
 		/// <summary>
 		/// DomainRole Identifier
-		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier
+		/// Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Identifier
 		/// </summary>
-		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityHasIdentifier/Identifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityHasIdentifier/Identifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
-		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
-		[DslModeling::DomainObjectId("97fcb37b-4bfd-4b34-ac8e-1fe72284fec0")]
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "Entity", PropertyDisplayNameKey="NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("b05267ef-688a-4bc9-9288-faf3f9548be9")]
 		public virtual Identifier Identifier
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
@@ -1365,24 +1365,24 @@ namespace NHibernate.NHDesigner
 		#endregion
 		#region Entity link accessor
 		/// <summary>
-		/// Get the list of EntityHasIdentifier links to a Entity.
+		/// Get the list of EntityReferencesIdentifiers links to a Entity.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasIdentifier> GetLinksToIdentifiers ( global::NHibernate.NHDesigner.Entity entityInstance )
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> GetLinksToIdentifiers ( global::NHibernate.NHDesigner.Entity entityInstance )
 		{
-			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(entityInstance, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
+			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesIdentifiers>(entityInstance, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.EntityDomainRoleId);
 		}
 		#endregion
 		#region Identifier link accessor
 		/// <summary>
-		/// Get the EntityHasIdentifier link to a Identifier.
+		/// Get the EntityReferencesIdentifiers link to a Identifier.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::NHibernate.NHDesigner.EntityHasIdentifier GetLinkToEntity (global::NHibernate.NHDesigner.Identifier identifierInstance)
+		public static global::NHibernate.NHDesigner.EntityReferencesIdentifiers GetLinkToEntity (global::NHibernate.NHDesigner.Identifier identifierInstance)
 		{
-			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(identifierInstance, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId);
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesIdentifiers>(identifierInstance, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.IdentifierDomainRoleId);
 			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Identifier not obeyed.");
 			if ( links.Count == 0 )
 			{
@@ -1394,18 +1394,18 @@ namespace NHibernate.NHDesigner
 			}
 		}
 		#endregion
-		#region EntityHasIdentifier instance accessors
+		#region EntityReferencesIdentifiers instance accessors
 		
 		/// <summary>
-		/// Get any EntityHasIdentifier links between a given Entity and a Identifier.
+		/// Get any EntityReferencesIdentifiers links between a given Entity and a Identifier.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityHasIdentifier> GetLinks( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> GetLinks( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
 		{
-			global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasIdentifier> outLinks = new global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityHasIdentifier>();
-			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(source, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
-			foreach ( global::NHibernate.NHDesigner.EntityHasIdentifier link in links )
+			global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> outLinks = new global::System.Collections.Generic.List<global::NHibernate.NHDesigner.EntityReferencesIdentifiers>();
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesIdentifiers>(source, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityReferencesIdentifiers link in links )
 			{
 				if ( target.Equals(link.Identifier) )
 				{
@@ -1415,14 +1415,253 @@ namespace NHibernate.NHDesigner
 			return outLinks.AsReadOnly();
 		}
 		/// <summary>
-		/// Get the one EntityHasIdentifier link between a given Entityand a Identifier.
+		/// Get the one EntityReferencesIdentifiers link between a given Entityand a Identifier.
 		/// </summary>
 		[global::System.Diagnostics.DebuggerStepThrough]
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
-		public static global::NHibernate.NHDesigner.EntityHasIdentifier GetLink( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
+		public static global::NHibernate.NHDesigner.EntityReferencesIdentifiers GetLink( global::NHibernate.NHDesigner.Entity source, global::NHibernate.NHDesigner.Identifier target )
 		{
-			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityHasIdentifier> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityHasIdentifier>(source, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
-			foreach ( global::NHibernate.NHDesigner.EntityHasIdentifier link in links )
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.EntityReferencesIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.EntityReferencesIdentifiers>(source, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.EntityDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.EntityReferencesIdentifiers link in links )
+			{
+				if ( target.Equals(link.Identifier) )
+				{
+					return link;
+				}
+			}
+			return null;
+		}
+		
+		#endregion
+	}
+}
+namespace NHibernate.NHDesigner
+{
+	/// <summary>
+	/// DomainRelationship NHibernateModelHasIdentifiers
+	/// Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers
+	/// </summary>
+	[DslDesign::DisplayNameResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[DslDesign::DescriptionResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+	[global::System.CLSCompliant(true)]
+	[DslModeling::DomainRelationship(IsEmbedding=true)]
+	[DslModeling::DomainObjectId("fc322fcc-3e42-47f8-817a-14d3911618c5")]
+	public partial class NHibernateModelHasIdentifiers : DslModeling::ElementLink
+	{
+		#region Constructors, domain class Id
+		
+		/// <summary>
+		/// NHibernateModelHasIdentifiers domain class Id.
+		/// </summary>
+		public static readonly new global::System.Guid DomainClassId = new global::System.Guid(0xfc322fcc, 0x3e42, 0x47f8, 0x81, 0x7a, 0x14, 0xd3, 0x91, 0x16, 0x18, 0xc5);
+	
+				
+		/// <summary>
+		/// Constructor
+		/// Creates a NHibernateModelHasIdentifiers link in the same Partition as the given NHibernateModel
+		/// </summary>
+		/// <param name="source">NHibernateModel to use as the source of the relationship.</param>
+		/// <param name="target">Identifier to use as the target of the relationship.</param>
+		public NHibernateModelHasIdentifiers(NHibernateModel source, Identifier target)
+			: base((source != null ? source.Partition : null), new DslModeling::RoleAssignment[]{new DslModeling::RoleAssignment(NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId, source), new DslModeling::RoleAssignment(NHibernateModelHasIdentifiers.IdentifierDomainRoleId, target)}, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public NHibernateModelHasIdentifiers(DslModeling::Store store, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="store">Store where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public NHibernateModelHasIdentifiers(DslModeling::Store store, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(store != null ? store.DefaultPartition : null, roleAssignments, propertyAssignments)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		public NHibernateModelHasIdentifiers(DslModeling::Partition partition, params DslModeling::RoleAssignment[] roleAssignments)
+			: base(partition, roleAssignments, null)
+		{
+		}
+		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="partition">Partition where new link is to be created.</param>
+		/// <param name="roleAssignments">List of relationship role assignments.</param>
+		/// <param name="propertyAssignments">List of properties assignments to set on the new link.</param>
+		public NHibernateModelHasIdentifiers(DslModeling::Partition partition, DslModeling::RoleAssignment[] roleAssignments, DslModeling::PropertyAssignment[] propertyAssignments)
+			: base(partition, roleAssignments, propertyAssignments)
+		{
+		}
+		#endregion
+		#region NHibernateModel domain role code
+		
+		/// <summary>
+		/// NHibernateModel domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid NHibernateModelDomainRoleId = new global::System.Guid(0x80369a74, 0x1546, 0x4ada, 0x83, 0x7a, 0x94, 0x69, 0xa6, 0xa2, 0x4c, 0x41);
+		
+		/// <summary>
+		/// DomainRole NHibernateModel
+		/// Description for
+		/// NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModel
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Source, PropertyName = "Identifiers", PropertyDisplayNameKey="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.PropertyDisplayName", Multiplicity = DslModeling::Multiplicity.ZeroMany)]
+		[DslModeling::DomainObjectId("80369a74-1546-4ada-837a-9469a6a24c41")]
+		public virtual NHibernateModel NHibernateModel
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (NHibernateModel)DslModeling::DomainRoleInfo.GetRolePlayer(this, NHibernateModelDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, NHibernateModelDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access NHibernateModel of a Identifier
+		/// <summary>
+		/// Gets NHibernateModel.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static NHibernateModel GetNHibernateModel(Identifier element)
+		{
+			return DslModeling::DomainRoleInfo.GetLinkedElement(element, IdentifierDomainRoleId) as NHibernateModel;
+		}
+		
+		/// <summary>
+		/// Sets NHibernateModel.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static void SetNHibernateModel(Identifier element, NHibernateModel newNHibernateModel)
+		{
+			DslModeling::DomainRoleInfo.SetLinkedElement(element, IdentifierDomainRoleId, newNHibernateModel);
+		}
+		#endregion
+		#region Identifier domain role code
+		
+		/// <summary>
+		/// Identifier domain role Id.
+		/// </summary>
+		public static readonly global::System.Guid IdentifierDomainRoleId = new global::System.Guid(0xbbcc39ab, 0x6cb0, 0x4261, 0xa0, 0x2f, 0x13, 0x2e, 0xcc, 0x54, 0xb6, 0xb6);
+		
+		/// <summary>
+		/// DomainRole Identifier
+		/// Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Identifier
+		/// </summary>
+		[DslDesign::DisplayNameResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.DisplayName", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslDesign::DescriptionResource("NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.Description", typeof(global::NHibernate.NHDesigner.NHDesignerDomainModel), "NHibernate.NHDesigner.GeneratedCode.DomainModelResx")]
+		[DslModeling::DomainRole(DslModeling::DomainRoleOrder.Target, PropertyName = "NHibernateModel", PropertyDisplayNameKey="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.PropertyDisplayName", PropagatesDelete = true, PropagatesCopy = true, Multiplicity = DslModeling::Multiplicity.One)]
+		[DslModeling::DomainObjectId("bbcc39ab-6cb0-4261-a02f-132ecc54b6b6")]
+		public virtual Identifier Identifier
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return (Identifier)DslModeling::DomainRoleInfo.GetRolePlayer(this, IdentifierDomainRoleId);
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetRolePlayer(this, IdentifierDomainRoleId, value);
+			}
+		}
+				
+		#endregion
+		#region Static methods to access Identifiers of a NHibernateModel
+		/// <summary>
+		/// Gets a list of Identifiers.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static DslModeling::LinkedElementCollection<Identifier> GetIdentifiers(NHibernateModel element)
+		{
+			return new DslModeling::LinkedElementCollection<Identifier>(element, NHibernateModelDomainRoleId);
+		}
+		#endregion
+		#region NHibernateModel link accessor
+		/// <summary>
+		/// Get the list of NHibernateModelHasIdentifiers links to a NHibernateModel.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> GetLinksToIdentifiers ( global::NHibernate.NHDesigner.NHibernateModel nHibernateModelInstance )
+		{
+			return DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers>(nHibernateModelInstance, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId);
+		}
+		#endregion
+		#region Identifier link accessor
+		/// <summary>
+		/// Get the NHibernateModelHasIdentifiers link to a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers GetLinkToNHibernateModel (global::NHibernate.NHDesigner.Identifier identifierInstance)
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers>(identifierInstance, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId);
+			global::System.Diagnostics.Debug.Assert(links.Count <= 1, "Multiplicity of Identifier not obeyed.");
+			if ( links.Count == 0 )
+			{
+				return null;
+			}
+			else
+			{
+				return links[0];
+			}
+		}
+		#endregion
+		#region NHibernateModelHasIdentifiers instance accessors
+		
+		/// <summary>
+		/// Get any NHibernateModelHasIdentifiers links between a given NHibernateModel and a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::System.Collections.ObjectModel.ReadOnlyCollection<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> GetLinks( global::NHibernate.NHDesigner.NHibernateModel source, global::NHibernate.NHDesigner.Identifier target )
+		{
+			global::System.Collections.Generic.List<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> outLinks = new global::System.Collections.Generic.List<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers>();
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers>(source, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers link in links )
+			{
+				if ( target.Equals(link.Identifier) )
+				{
+					outLinks.Add(link);
+				}
+			}
+			return outLinks.AsReadOnly();
+		}
+		/// <summary>
+		/// Get the one NHibernateModelHasIdentifiers link between a given NHibernateModeland a Identifier.
+		/// </summary>
+		[global::System.Diagnostics.DebuggerStepThrough]
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011")]
+		public static global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers GetLink( global::NHibernate.NHDesigner.NHibernateModel source, global::NHibernate.NHDesigner.Identifier target )
+		{
+			global::System.Collections.Generic.IList<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers> links = DslModeling::DomainRoleInfo.GetElementLinks<global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers>(source, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId);
+			foreach ( global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers link in links )
 			{
 				if ( target.Equals(link.Identifier) )
 				{

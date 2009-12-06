@@ -381,37 +381,69 @@
     <value>Entity</value>
     <comment>PropertyDisplayName for DomainRole &apos;Meta&apos; on DomainRelationship &apos;EntityHasMeta&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier.Description" xml:space="preserve">
-    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier</value>
-    <comment>Description for DomainClass &apos;EntityHasIdentifier&apos;</comment>
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityReferencesIdentifiers</value>
+    <comment>Description for DomainClass &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier.DisplayName" xml:space="preserve">
-    <value>Entity Has Identifier</value>
-    <comment>DisplayName for DomainClass &apos;EntityHasIdentifier&apos;</comment>
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers.DisplayName" xml:space="preserve">
+    <value>Entity References Identifiers</value>
+    <comment>DisplayName for DomainClass &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.Description" xml:space="preserve">
-    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity</value>
-    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Entity</value>
+    <comment>Description for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.DisplayName" xml:space="preserve">
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.DisplayName" xml:space="preserve">
     <value>Entity</value>
-    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+    <comment>DisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Entity.PropertyDisplayName" xml:space="preserve">
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Entity.PropertyDisplayName" xml:space="preserve">
     <value>Identifiers</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+    <comment>PropertyDisplayName for DomainRole &apos;Entity&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.Description" xml:space="preserve">
-    <value>Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier</value>
-    <comment>Description for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Identifier</value>
+    <comment>Description for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.DisplayName" xml:space="preserve">
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.DisplayName" xml:space="preserve">
     <value>Identifier</value>
-    <comment>DisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+    <comment>DisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
   </data>
-  <data name="NHibernate.NHDesigner.EntityHasIdentifier/Identifier.PropertyDisplayName" xml:space="preserve">
+  <data name="NHibernate.NHDesigner.EntityReferencesIdentifiers/Identifier.PropertyDisplayName" xml:space="preserve">
     <value>Entity</value>
-    <comment>PropertyDisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityHasIdentifier&apos;</comment>
+    <comment>PropertyDisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;EntityReferencesIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers</value>
+    <comment>Description for DomainClass &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers.DisplayName" xml:space="preserve">
+    <value>NHibernate Model Has Identifiers</value>
+    <comment>DisplayName for DomainClass &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModel</value>
+    <comment>Description for DomainRole &apos;NHibernateModel&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.DisplayName" xml:space="preserve">
+    <value>NHibernate Model</value>
+    <comment>DisplayName for DomainRole &apos;NHibernateModel&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/NHibernateModel.PropertyDisplayName" xml:space="preserve">
+    <value>Identifiers</value>
+    <comment>PropertyDisplayName for DomainRole &apos;NHibernateModel&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Identifier</value>
+    <comment>Description for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.DisplayName" xml:space="preserve">
+    <value>Identifier</value>
+    <comment>DisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.NHibernateModelHasIdentifiers/Identifier.PropertyDisplayName" xml:space="preserve">
+    <value>NHibernate Model</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Identifier&apos; on DomainRelationship &apos;NHibernateModelHasIdentifiers&apos;</comment>
   </data>
   <data name="NHibernate.NHDesigner.EntityShape.Description" xml:space="preserve">
     <value>Description for NHibernate.NHDesigner.EntityShape</value>
@@ -429,10 +461,6 @@
     <value>Meta attributes</value>
     <comment>Compartment title</comment>
   </data>
-  <data name="EntityShapeIdTitle" xml:space="preserve">
-    <value></value>
-    <comment>Compartment title</comment>
-  </data>
   <data name="EntityShapeNameDecoratorDefaultText" xml:space="preserve">
     <value>NameDecorator</value>
     <comment>Text decorator default text</comment>
@@ -440,6 +468,26 @@
   <data name="EntityShapeTypeDefaultText" xml:space="preserve">
     <value>&lt;&lt;entity&gt;&gt;</value>
     <comment>Text decorator default text</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.IdCompartementShape.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.IdCompartementShape</value>
+    <comment>Description for DomainClass &apos;IdCompartementShape&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.IdCompartementShape.DisplayName" xml:space="preserve">
+    <value>Id Compartement Shape</value>
+    <comment>DisplayName for DomainClass &apos;IdCompartementShape&apos;</comment>
+  </data>
+  <data name="IdCompartementShapeNameDefaultText" xml:space="preserve">
+    <value>Name</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.CompositeIdCompartementShape.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.CompositeIdCompartementShape</value>
+    <comment>Description for DomainClass &apos;CompositeIdCompartementShape&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.CompositeIdCompartementShape.DisplayName" xml:space="preserve">
+    <value>Composite Id Compartement Shape</value>
+    <comment>DisplayName for DomainClass &apos;CompositeIdCompartementShape&apos;</comment>
   </data>
   <data name="NHibernate.NHDesigner.SubclassConnector.Description" xml:space="preserve">
     <value>Subclass derivation</value>
@@ -456,6 +504,14 @@
   <data name="NHibernate.NHDesigner.JoinedSubclassConnector.DisplayName" xml:space="preserve">
     <value>Joined Subclass Connector</value>
     <comment>DisplayName for DomainClass &apos;JoinedSubclassConnector&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.IdConnector.Description" xml:space="preserve">
+    <value>Description for NHibernate.NHDesigner.IdConnector</value>
+    <comment>Description for DomainClass &apos;IdConnector&apos;</comment>
+  </data>
+  <data name="NHibernate.NHDesigner.IdConnector.DisplayName" xml:space="preserve">
+    <value>Id Connector</value>
+    <comment>DisplayName for DomainClass &apos;IdConnector&apos;</comment>
   </data>
   <data name="FormatList" xml:space="preserve">
     <value>NHDesigner (*.nhx)|*.nhx</value>
@@ -499,6 +555,30 @@
   </data>
   <data name="JoinedSUbclassRelationshipToolboxTooltip" xml:space="preserve">
     <value>Joined SUbclass Relationship</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="CompositeIDToolboxItem" xml:space="preserve">
+    <value>CompositeID</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="CompositeIDToolboxTooltip" xml:space="preserve">
+    <value>Composite ID</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="IDToolboxItem" xml:space="preserve">
+    <value>ID</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="IDToolboxTooltip" xml:space="preserve">
+    <value>ID</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="IDConnectorToolboxItem" xml:space="preserve">
+    <value>IDConnector</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="IDConnectorToolboxTooltip" xml:space="preserve">
+    <value>IDConnector</value>
     <comment>Toolbox tooltip text</comment>
   </data>
   <data name="UnrecognizedElementType" xml:space="preserve">
@@ -609,6 +689,10 @@ A DomainClass can be serialized as a moniker only if
     <value>..\Resources\nhicon.png;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Icon decorator default image</comment>
   </data>
+  <data name="IdCompartementShapeIconDefaultImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\key.png;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Icon decorator default image</comment>
+  </data>
   <data name="EntityToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\resources\exampleshapetoolbitmap.bmp;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Toolbox item image</comment>
@@ -618,6 +702,18 @@ A DomainClass can be serialized as a moniker only if
     <comment>Toolbox item image</comment>
   </data>
   <data name="JoinedSUbclassRelationshipToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\ExampleConnectorToolBitmap.bmp;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="CompositeIDToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\ExampleShapeToolBitmap.bmp;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="IDToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\ExampleShapeToolBitmap.bmp;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="IDConnectorToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
     <value>..\Resources\ExampleConnectorToolBitmap.bmp;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Toolbox item image</comment>
   </data>

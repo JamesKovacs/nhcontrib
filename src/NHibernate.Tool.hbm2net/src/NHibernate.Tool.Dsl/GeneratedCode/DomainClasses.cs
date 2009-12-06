@@ -60,6 +60,21 @@ namespace NHibernate.NHDesigner
 			}
 		}
 		#endregion
+		#region Identifiers opposite domain role accessor
+		/// <summary>
+		/// Gets a list of Identifiers.
+		/// Description for
+		/// NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModel
+		/// </summary>
+		public virtual DslModeling::LinkedElementCollection<Identifier> Identifiers
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return new DslModeling::LinkedElementCollection<Identifier>(this, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId);
+			}
+		}
+		#endregion
 		#region ElementGroupPrototype Merge methods
 		/// <summary>
 		/// Returns a value indicating whether the source element represented by the
@@ -79,6 +94,11 @@ namespace NHibernate.NHDesigner
 			if (rootElement != null)
 			{
 				DslModeling::DomainClassInfo rootElementDomainInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootElement.DomainClassId);
+				
+				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Identifier.DomainClassId)) 
+				{
+					return true;
+				}
 				
 				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Entity.DomainClassId)) 
 				{
@@ -109,11 +129,20 @@ namespace NHibernate.NHDesigner
 			if ( sourceElement == null ) throw new global::System.ArgumentNullException("sourceElement");
 		
 				
-			global::NHibernate.NHDesigner.Entity sourceEntity1 = sourceElement as global::NHibernate.NHDesigner.Entity;
-			if (sourceEntity1 != null)
+			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
+			if (sourceIdentifier1 != null)
+			{
+				// Create link for path NHibernateModelHasIdentifiers.Identifiers
+				this.Identifiers.Add(sourceIdentifier1);
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Entity sourceEntity2 = sourceElement as global::NHibernate.NHDesigner.Entity;
+			if (sourceEntity2 != null)
 			{
 				// Create link for path NHibernateModelHasEntities.Entities
-				this.Entities.Add(sourceEntity1);
+				this.Entities.Add(sourceEntity2);
 
 				return;
 			}
@@ -131,12 +160,26 @@ namespace NHibernate.NHDesigner
 		{
 			if (sourceElement == null) throw new global::System.ArgumentNullException("sourceElement");
 				
-			global::NHibernate.NHDesigner.Entity sourceEntity1 = sourceElement as global::NHibernate.NHDesigner.Entity;
-			if (sourceEntity1 != null)
+			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
+			if (sourceIdentifier1 != null)
+			{
+				// Delete link for path NHibernateModelHasIdentifiers.Identifiers
+				
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.GetLinks((global::NHibernate.NHDesigner.NHibernateModel)this, sourceIdentifier1))
+				{
+					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
+					link.Delete(global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId);
+				}
+
+				return;
+			}
+				
+			global::NHibernate.NHDesigner.Entity sourceEntity2 = sourceElement as global::NHibernate.NHDesigner.Entity;
+			if (sourceEntity2 != null)
 			{
 				// Delete link for path NHibernateModelHasEntities.Entities
 				
-				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.NHibernateModelHasEntities.GetLinks((global::NHibernate.NHDesigner.NHibernateModel)this, sourceEntity1))
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.NHibernateModelHasEntities.GetLinks((global::NHibernate.NHDesigner.NHibernateModel)this, sourceEntity2))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::NHibernate.NHDesigner.NHibernateModelHasEntities.NHibernateModelDomainRoleId, global::NHibernate.NHDesigner.NHibernateModelHasEntities.ElementDomainRoleId);
@@ -393,14 +436,14 @@ namespace NHibernate.NHDesigner
 		#region Identifiers opposite domain role accessor
 		/// <summary>
 		/// Gets a list of Identifiers.
-		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity
+		/// Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Entity
 		/// </summary>
 		public virtual DslModeling::LinkedElementCollection<Identifier> Identifiers
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
 			get
 			{
-				return new DslModeling::LinkedElementCollection<Identifier>(this, global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId);
+				return new DslModeling::LinkedElementCollection<Identifier>(this, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.EntityDomainRoleId);
 			}
 		}
 		#endregion
@@ -423,11 +466,6 @@ namespace NHibernate.NHDesigner
 			if (rootElement != null)
 			{
 				DslModeling::DomainClassInfo rootElementDomainInfo = this.Partition.DomainDataDirectory.GetDomainClass(rootElement.DomainClassId);
-				
-				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Identifier.DomainClassId)) 
-				{
-					return true;
-				}
 				
 				if (rootElementDomainInfo.IsDerivedFrom(global::NHibernate.NHDesigner.Meta.DomainClassId)) 
 				{
@@ -463,29 +501,20 @@ namespace NHibernate.NHDesigner
 			if ( sourceElement == null ) throw new global::System.ArgumentNullException("sourceElement");
 		
 				
-			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
-			if (sourceIdentifier1 != null)
-			{
-				// Create link for path EntityHasIdentifier.Identifiers
-				this.Identifiers.Add(sourceIdentifier1);
-
-				return;
-			}
-				
-			global::NHibernate.NHDesigner.Meta sourceMeta2 = sourceElement as global::NHibernate.NHDesigner.Meta;
-			if (sourceMeta2 != null)
+			global::NHibernate.NHDesigner.Meta sourceMeta1 = sourceElement as global::NHibernate.NHDesigner.Meta;
+			if (sourceMeta1 != null)
 			{
 				// Create link for path EntityHasMeta.Meta
-				this.Meta.Add(sourceMeta2);
+				this.Meta.Add(sourceMeta1);
 
 				return;
 			}
 				
-			global::NHibernate.NHDesigner.Property sourceProperty3 = sourceElement as global::NHibernate.NHDesigner.Property;
-			if (sourceProperty3 != null)
+			global::NHibernate.NHDesigner.Property sourceProperty2 = sourceElement as global::NHibernate.NHDesigner.Property;
+			if (sourceProperty2 != null)
 			{
 				// Create link for path EntityHasProperties.Properties
-				this.Properties.Add(sourceProperty3);
+				this.Properties.Add(sourceProperty2);
 
 				return;
 			}
@@ -503,26 +532,12 @@ namespace NHibernate.NHDesigner
 		{
 			if (sourceElement == null) throw new global::System.ArgumentNullException("sourceElement");
 				
-			global::NHibernate.NHDesigner.Identifier sourceIdentifier1 = sourceElement as global::NHibernate.NHDesigner.Identifier;
-			if (sourceIdentifier1 != null)
-			{
-				// Delete link for path EntityHasIdentifier.Identifiers
-				
-				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasIdentifier.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceIdentifier1))
-				{
-					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
-					link.Delete(global::NHibernate.NHDesigner.EntityHasIdentifier.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId);
-				}
-
-				return;
-			}
-				
-			global::NHibernate.NHDesigner.Meta sourceMeta2 = sourceElement as global::NHibernate.NHDesigner.Meta;
-			if (sourceMeta2 != null)
+			global::NHibernate.NHDesigner.Meta sourceMeta1 = sourceElement as global::NHibernate.NHDesigner.Meta;
+			if (sourceMeta1 != null)
 			{
 				// Delete link for path EntityHasMeta.Meta
 				
-				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasMeta.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceMeta2))
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasMeta.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceMeta1))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::NHibernate.NHDesigner.EntityHasMeta.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId);
@@ -531,12 +546,12 @@ namespace NHibernate.NHDesigner
 				return;
 			}
 				
-			global::NHibernate.NHDesigner.Property sourceProperty3 = sourceElement as global::NHibernate.NHDesigner.Property;
-			if (sourceProperty3 != null)
+			global::NHibernate.NHDesigner.Property sourceProperty2 = sourceElement as global::NHibernate.NHDesigner.Property;
+			if (sourceProperty2 != null)
 			{
 				// Delete link for path EntityHasProperties.Properties
 				
-				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasProperties.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceProperty3))
+				foreach (DslModeling::ElementLink link in global::NHibernate.NHDesigner.EntityHasProperties.GetLinks((global::NHibernate.NHDesigner.Entity)this, sourceProperty2))
 				{
 					// Delete the link, but without possible delete propagation to the element since it's moving to a new location.
 					link.Delete(global::NHibernate.NHDesigner.EntityHasProperties.EntityDomainRoleId, global::NHibernate.NHDesigner.EntityHasProperties.PropertyDomainRoleId);
@@ -1047,19 +1062,38 @@ namespace NHibernate.NHDesigner
 		#region Entity opposite domain role accessor
 		/// <summary>
 		/// Gets or sets Entity.
-		/// Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier
+		/// Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Identifier
 		/// </summary>
 		public virtual Entity Entity
 		{
 			[global::System.Diagnostics.DebuggerStepThrough]
 			get
 			{
-				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId) as Entity;
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.IdentifierDomainRoleId) as Entity;
 			}
 			[global::System.Diagnostics.DebuggerStepThrough]
 			set
 			{
-				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId, value);
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.EntityReferencesIdentifiers.IdentifierDomainRoleId, value);
+			}
+		}
+		#endregion
+		#region NHibernateModel opposite domain role accessor
+		/// <summary>
+		/// Gets or sets NHibernateModel.
+		/// Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Identifier
+		/// </summary>
+		public virtual NHibernateModel NHibernateModel
+		{
+			[global::System.Diagnostics.DebuggerStepThrough]
+			get
+			{
+				return DslModeling::DomainRoleInfo.GetLinkedElement(this, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId) as NHibernateModel;
+			}
+			[global::System.Diagnostics.DebuggerStepThrough]
+			set
+			{
+				DslModeling::DomainRoleInfo.SetLinkedElement(this, global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId, value);
 			}
 		}
 		#endregion

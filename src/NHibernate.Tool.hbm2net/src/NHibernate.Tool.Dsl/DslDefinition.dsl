@@ -12,6 +12,14 @@
             <DomainPath>NHibernateModelHasEntities.Entities</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
+        <ElementMergeDirective>
+          <Index>
+            <DomainClassMoniker Name="Identifier" />
+          </Index>
+          <LinkCreationPaths>
+            <DomainPath>NHibernateModelHasIdentifiers.Identifiers</DomainPath>
+          </LinkCreationPaths>
+        </ElementMergeDirective>
       </ElementMergeDirectives>
     </DomainClass>
     <DomainClass Id="db43c997-4966-46ac-9802-01c040526317" Description="Elements embedded in the model. Appear as boxes on the diagram." Name="Entity" DisplayName="Entity" Namespace="NHibernate.NHDesigner">
@@ -37,14 +45,6 @@
           </Index>
           <LinkCreationPaths>
             <DomainPath>EntityHasMeta.Meta</DomainPath>
-          </LinkCreationPaths>
-        </ElementMergeDirective>
-        <ElementMergeDirective>
-          <Index>
-            <DomainClassMoniker Name="Identifier" />
-          </Index>
-          <LinkCreationPaths>
-            <DomainPath>EntityHasIdentifier.Identifiers</DomainPath>
           </LinkCreationPaths>
         </ElementMergeDirective>
       </ElementMergeDirectives>
@@ -166,23 +166,39 @@
         </DomainRole>
       </Source>
       <Target>
-        <DomainRole Id="fe451048-0379-43d6-a4ad-6dc6b502f8c4" Description="Description for NHibernate.NHDesigner.EntityHasMeta.Meta" Name="Meta" DisplayName="Meta" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
+        <DomainRole Id="fe451048-0379-43d6-a4ad-6dc6b502f8c4" Description="Description for NHibernate.NHDesigner.EntityHasMeta.Meta" Name="Meta" DisplayName="Meta" PropertyName="Entity" Multiplicity="ZeroOne" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
           <RolePlayer>
             <DomainClassMoniker Name="Meta" />
           </RolePlayer>
         </DomainRole>
       </Target>
     </DomainRelationship>
-    <DomainRelationship Id="3f87704d-b926-4c0f-90f8-be7a330fc221" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier" Name="EntityHasIdentifier" DisplayName="Entity Has Identifier" Namespace="NHibernate.NHDesigner" IsEmbedding="true">
+    <DomainRelationship Id="11e74581-3bb0-4532-91f8-b3a7f7624601" Description="Description for NHibernate.NHDesigner.EntityReferencesIdentifiers" Name="EntityReferencesIdentifiers" DisplayName="Entity References Identifiers" Namespace="NHibernate.NHDesigner">
       <Source>
-        <DomainRole Id="5d8a2842-8555-42f7-aaaf-3cfd0b97a4d1" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier.Entity" Name="Entity" DisplayName="Entity" PropertyName="Identifiers" Multiplicity="OneMany" PropertyDisplayName="Identifiers">
+        <DomainRole Id="854ef780-f1eb-4507-97d9-df3935615bc4" Description="Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Entity" Name="Entity" DisplayName="Entity" PropertyName="Identifiers" PropertyDisplayName="Identifiers">
           <RolePlayer>
             <DomainClassMoniker Name="Entity" />
           </RolePlayer>
         </DomainRole>
       </Source>
       <Target>
-        <DomainRole Id="97fcb37b-4bfd-4b34-ac8e-1fe72284fec0" Description="Description for NHibernate.NHDesigner.EntityHasIdentifier.Identifier" Name="Identifier" DisplayName="Identifier" PropertyName="Entity" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="Entity">
+        <DomainRole Id="b05267ef-688a-4bc9-9288-faf3f9548be9" Description="Description for NHibernate.NHDesigner.EntityReferencesIdentifiers.Identifier" Name="Identifier" DisplayName="Identifier" PropertyName="Entity" Multiplicity="One" PropertyDisplayName="Entity">
+          <RolePlayer>
+            <DomainClassMoniker Name="Identifier" />
+          </RolePlayer>
+        </DomainRole>
+      </Target>
+    </DomainRelationship>
+    <DomainRelationship Id="fc322fcc-3e42-47f8-817a-14d3911618c5" Description="Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers" Name="NHibernateModelHasIdentifiers" DisplayName="NHibernate Model Has Identifiers" Namespace="NHibernate.NHDesigner" IsEmbedding="true">
+      <Source>
+        <DomainRole Id="80369a74-1546-4ada-837a-9469a6a24c41" Description="Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.NHibernateModel" Name="NHibernateModel" DisplayName="NHibernate Model" PropertyName="Identifiers" PropertyDisplayName="Identifiers">
+          <RolePlayer>
+            <DomainClassMoniker Name="NHibernateModel" />
+          </RolePlayer>
+        </DomainRole>
+      </Source>
+      <Target>
+        <DomainRole Id="bbcc39ab-6cb0-4261-a02f-132ecc54b6b6" Description="Description for NHibernate.NHDesigner.NHibernateModelHasIdentifiers.Identifier" Name="Identifier" DisplayName="Identifier" PropertyName="NHibernateModel" Multiplicity="One" PropagatesDelete="true" PropagatesCopy="true" PropertyDisplayName="NHibernate Model">
           <RolePlayer>
             <DomainClassMoniker Name="Identifier" />
           </RolePlayer>
@@ -220,12 +236,21 @@
       </ShapeHasDecorators>
       <Compartment Name="Properties" Title="Properties" />
       <Compartment FillColor="PaleGreen" Name="Metas" Title="Meta attributes" />
-      <Compartment Name="Id" />
     </CompartmentShape>
+    <CompartmentShape Id="08d7d646-4483-4756-adc2-41efbc2e0cac" Description="Description for NHibernate.NHDesigner.IdCompartementShape" Name="IdCompartementShape" DisplayName="Id Compartement Shape" Namespace="NHibernate.NHDesigner" FixedTooltipText="Id Compartement Shape" InitialHeight="1" Geometry="Rectangle">
+      <ShapeHasDecorators Position="InnerTopCenter" HorizontalOffset="0" VerticalOffset="0">
+        <TextDecorator Name="Name" DisplayName="Name" DefaultText="Name" />
+      </ShapeHasDecorators>
+      <ShapeHasDecorators Position="InnerTopLeft" HorizontalOffset="0" VerticalOffset="0">
+        <IconDecorator Name="Icon" DisplayName="Icon" DefaultIcon="Resources\key.png" />
+      </ShapeHasDecorators>
+    </CompartmentShape>
+    <CompartmentShape Id="2786fcd8-d429-445c-b480-a8f51f667368" Description="Description for NHibernate.NHDesigner.CompositeIdCompartementShape" Name="CompositeIdCompartementShape" DisplayName="Composite Id Compartement Shape" Namespace="NHibernate.NHDesigner" FixedTooltipText="Composite Id Compartement Shape" InitialHeight="1" Geometry="Rectangle" />
   </Shapes>
   <Connectors>
     <Connector Id="816f028b-9043-4af0-a84f-0835c81b0245" Description="Subclass derivation" Name="SubclassConnector" DisplayName="Subclass Connector" Namespace="NHibernate.NHDesigner" FixedTooltipText="Subclass Connector" Color="113, 111, 110" TargetEndStyle="EmptyArrow" Thickness="0.01" />
     <Connector Id="6059470f-1da5-474d-a4bc-33833bdc9932" Description="Joined Subclass" Name="JoinedSubclassConnector" DisplayName="Joined Subclass Connector" Namespace="NHibernate.NHDesigner" FixedTooltipText="Joined Subclass Connector" Color="Brown" DashStyle="Dash" TargetEndStyle="EmptyArrow" Thickness="0.01" />
+    <Connector Id="a2abe5bf-49d2-4c5f-8f63-4d0a6e8461c8" Description="Description for NHibernate.NHDesigner.IdConnector" Name="IdConnector" DisplayName="Id Connector" Namespace="NHibernate.NHDesigner" FixedTooltipText="Id Connector" TextColor="Gold" Color="Gold" Thickness="0.001" RoutingStyle="Straight" />
   </Connectors>
   <XmlSerializationBehavior Name="NHDesignerSerializationBehavior" Namespace="NHibernate.NHDesigner">
     <ClassData>
@@ -234,6 +259,9 @@
         <ElementData>
           <XmlRelationshipData RoleElementName="entities">
             <DomainRelationshipMoniker Name="NHibernateModelHasEntities" />
+          </XmlRelationshipData>
+          <XmlRelationshipData RoleElementName="identifiers">
+            <DomainRelationshipMoniker Name="NHibernateModelHasIdentifiers" />
           </XmlRelationshipData>
         </ElementData>
       </XmlClassData>
@@ -256,7 +284,7 @@
             <DomainRelationshipMoniker Name="EntityHasMeta" />
           </XmlRelationshipData>
           <XmlRelationshipData RoleElementName="identifiers">
-            <DomainRelationshipMoniker Name="EntityHasIdentifier" />
+            <DomainRelationshipMoniker Name="EntityReferencesIdentifiers" />
           </XmlRelationshipData>
         </ElementData>
       </XmlClassData>
@@ -314,14 +342,26 @@
           </XmlPropertyData>
         </ElementData>
       </XmlClassData>
-      <XmlClassData TypeName="Id" MonikerAttributeName="" MonikerElementName="idMoniker" ElementName="id" MonikerTypeName="IdMoniker">
+      <XmlClassData TypeName="Id" MonikerAttributeName="" SerializeId="true" MonikerElementName="idMoniker" ElementName="id" MonikerTypeName="IdMoniker">
         <DomainClassMoniker Name="Id" />
       </XmlClassData>
-      <XmlClassData TypeName="CompositeId" MonikerAttributeName="" MonikerElementName="compositeIdMoniker" ElementName="compositeId" MonikerTypeName="CompositeIdMoniker">
+      <XmlClassData TypeName="CompositeId" MonikerAttributeName="" SerializeId="true" MonikerElementName="compositeIdMoniker" ElementName="compositeId" MonikerTypeName="CompositeIdMoniker">
         <DomainClassMoniker Name="CompositeId" />
       </XmlClassData>
-      <XmlClassData TypeName="EntityHasIdentifier" MonikerAttributeName="" MonikerElementName="entityHasIdentifierMoniker" ElementName="entityHasIdentifier" MonikerTypeName="EntityHasIdentifierMoniker">
-        <DomainRelationshipMoniker Name="EntityHasIdentifier" />
+      <XmlClassData TypeName="IdConnector" MonikerAttributeName="" MonikerElementName="idConnectorMoniker" ElementName="idConnector" MonikerTypeName="IdConnectorMoniker">
+        <ConnectorMoniker Name="IdConnector" />
+      </XmlClassData>
+      <XmlClassData TypeName="EntityReferencesIdentifiers" MonikerAttributeName="" MonikerElementName="entityReferencesIdentifiersMoniker" ElementName="entityReferencesIdentifiers" MonikerTypeName="EntityReferencesIdentifiersMoniker">
+        <DomainRelationshipMoniker Name="EntityReferencesIdentifiers" />
+      </XmlClassData>
+      <XmlClassData TypeName="NHibernateModelHasIdentifiers" MonikerAttributeName="" MonikerElementName="nHibernateModelHasIdentifiersMoniker" ElementName="nHibernateModelHasIdentifiers" MonikerTypeName="NHibernateModelHasIdentifiersMoniker">
+        <DomainRelationshipMoniker Name="NHibernateModelHasIdentifiers" />
+      </XmlClassData>
+      <XmlClassData TypeName="IdCompartementShape" MonikerAttributeName="" MonikerElementName="idCompartementShapeMoniker" ElementName="idCompartementShape" MonikerTypeName="IdCompartementShapeMoniker">
+        <CompartmentShapeMoniker Name="IdCompartementShape" />
+      </XmlClassData>
+      <XmlClassData TypeName="CompositeIdCompartementShape" MonikerAttributeName="" MonikerElementName="compositeIdCompartementShapeMoniker" ElementName="compositeIdCompartementShape" MonikerTypeName="CompositeIdCompartementShapeMoniker">
+        <CompartmentShapeMoniker Name="CompositeIdCompartementShape" />
       </XmlClassData>
     </ClassData>
   </XmlSerializationBehavior>
@@ -361,6 +401,25 @@
           <RolePlayerConnectDirective>
             <AcceptingClass>
               <DomainClassMoniker Name="Entity" />
+            </AcceptingClass>
+          </RolePlayerConnectDirective>
+        </TargetDirectives>
+      </LinkConnectDirective>
+    </ConnectionBuilder>
+    <ConnectionBuilder Name="EntityReferencesIdentifiersBuilder">
+      <LinkConnectDirective>
+        <DomainRelationshipMoniker Name="EntityReferencesIdentifiers" />
+        <SourceDirectives>
+          <RolePlayerConnectDirective>
+            <AcceptingClass>
+              <DomainClassMoniker Name="Entity" />
+            </AcceptingClass>
+          </RolePlayerConnectDirective>
+        </SourceDirectives>
+        <TargetDirectives>
+          <RolePlayerConnectDirective>
+            <AcceptingClass>
+              <DomainClassMoniker Name="Identifier" />
             </AcceptingClass>
           </RolePlayerConnectDirective>
         </TargetDirectives>
@@ -408,17 +467,20 @@
             </PropertyPath>
           </PropertyDisplayed>
         </CompartmentMap>
-        <CompartmentMap>
-          <CompartmentMoniker Name="EntityShape/Id" />
-          <ElementsDisplayed>
-            <DomainPath>EntityHasIdentifier.Identifiers/!Identifier</DomainPath>
-          </ElementsDisplayed>
-          <PropertyDisplayed>
-            <PropertyPath>
-              <DomainPropertyMoniker Name="Identifier/Name" />
-            </PropertyPath>
-          </PropertyDisplayed>
-        </CompartmentMap>
+      </CompartmentShapeMap>
+      <CompartmentShapeMap>
+        <DomainClassMoniker Name="CompositeId" />
+        <ParentElementPath>
+          <DomainPath>NHibernateModelHasIdentifiers.NHibernateModel/!NHibernateModel</DomainPath>
+        </ParentElementPath>
+        <CompartmentShapeMoniker Name="CompositeIdCompartementShape" />
+      </CompartmentShapeMap>
+      <CompartmentShapeMap>
+        <DomainClassMoniker Name="Id" />
+        <ParentElementPath>
+          <DomainPath>NHibernateModelHasIdentifiers.NHibernateModel/!NHibernateModel</DomainPath>
+        </ParentElementPath>
+        <CompartmentShapeMoniker Name="IdCompartementShape" />
       </CompartmentShapeMap>
     </ShapeMaps>
     <ConnectorMaps>
@@ -429,6 +491,10 @@
       <ConnectorMap>
         <ConnectorMoniker Name="JoinedSubclassConnector" />
         <DomainRelationshipMoniker Name="EntityReferencesBaseWithJoin" />
+      </ConnectorMap>
+      <ConnectorMap>
+        <ConnectorMoniker Name="IdConnector" />
+        <DomainRelationshipMoniker Name="EntityReferencesIdentifiers" />
       </ConnectorMap>
     </ConnectorMaps>
   </Diagram>
@@ -448,6 +514,15 @@
       </ConnectionTool>
       <ConnectionTool Name="JoinedSUbclassRelationship" ToolboxIcon="Resources\ExampleConnectorToolBitmap.bmp" Caption="JoinedSUbclassRelationship" Tooltip="Joined SUbclass Relationship" HelpKeyword="JoinedSUbclassRelationship">
         <ConnectionBuilderMoniker Name="NHDesigner/EntityReferencesBaseWithJoinBuilder" />
+      </ConnectionTool>
+      <ElementTool Name="CompositeID" ToolboxIcon="Resources\ExampleShapeToolBitmap.bmp" Caption="CompositeID" Tooltip="Composite ID" HelpKeyword="CompositeID">
+        <DomainClassMoniker Name="CompositeId" />
+      </ElementTool>
+      <ElementTool Name="ID" ToolboxIcon="Resources\ExampleShapeToolBitmap.bmp" Caption="ID" Tooltip="ID" HelpKeyword="ID">
+        <DomainClassMoniker Name="Id" />
+      </ElementTool>
+      <ConnectionTool Name="IDConnector" ToolboxIcon="Resources\ExampleConnectorToolBitmap.bmp" Caption="IDConnector" Tooltip="IDConnector" HelpKeyword="IDConnector">
+        <ConnectionBuilderMoniker Name="NHDesigner/EntityReferencesIdentifiersBuilder" />
       </ConnectionTool>
     </ToolboxTab>
     <Validation UsesMenu="false" UsesOpen="false" UsesSave="false" UsesLoad="false" />

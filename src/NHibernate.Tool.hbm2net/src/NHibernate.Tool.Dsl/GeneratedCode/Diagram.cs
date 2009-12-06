@@ -266,6 +266,18 @@ namespace NHibernate.NHDesigner
 		[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Generated code.")]
 		protected override DslDiagrams::ShapeElement CreateChildShape(DslModeling::ModelElement element)
 		{
+			if(element is global::NHibernate.NHDesigner.Id)
+			{
+				global::NHibernate.NHDesigner.IdCompartementShape newShape = new global::NHibernate.NHDesigner.IdCompartementShape(this.Partition);
+				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
+				return newShape;
+			}
+			if(element is global::NHibernate.NHDesigner.CompositeId)
+			{
+				global::NHibernate.NHDesigner.CompositeIdCompartementShape newShape = new global::NHibernate.NHDesigner.CompositeIdCompartementShape(this.Partition);
+				if(newShape != null) newShape.Size = newShape.DefaultSize; // set default shape size
+				return newShape;
+			}
 			if(element is global::NHibernate.NHDesigner.Entity)
 			{
 				global::NHibernate.NHDesigner.EntityShape newShape = new global::NHibernate.NHDesigner.EntityShape(this.Partition);
@@ -280,6 +292,11 @@ namespace NHibernate.NHDesigner
 			if(element is global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin)
 			{
 				global::NHibernate.NHDesigner.JoinedSubclassConnector newShape = new global::NHibernate.NHDesigner.JoinedSubclassConnector(this.Partition);
+				return newShape;
+			}
+			if(element is global::NHibernate.NHDesigner.EntityReferencesIdentifiers)
+			{
+				global::NHibernate.NHDesigner.IdConnector newShape = new global::NHibernate.NHDesigner.IdConnector(this.Partition);
 				return newShape;
 			}
 			return base.CreateChildShape(element);
@@ -318,6 +335,7 @@ namespace NHibernate.NHDesigner
 		#region Connect actions
 		private global::NHibernate.NHDesigner.SubclassRelationshipConnectAction subclassRelationshipConnectAction;
 		private global::NHibernate.NHDesigner.JoinedSUbclassRelationshipConnectAction joinedSUbclassRelationshipConnectAction;
+		private global::NHibernate.NHDesigner.IDConnectorConnectAction iDConnectorConnectAction;
 		/// <summary>
 		/// Override to provide the right mouse action when trying
 		/// to create links on the diagram
@@ -348,6 +366,15 @@ namespace NHibernate.NHDesigner
 						this.joinedSUbclassRelationshipConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
 					}
 					action = this.joinedSUbclassRelationshipConnectAction;
+				} 
+				else if (activeView.SelectedToolboxItemSupportsFilterString(global::NHibernate.NHDesigner.NHDesignerToolboxHelper.IDConnectorFilterString))
+				{
+					if (this.iDConnectorConnectAction == null)
+					{
+						this.iDConnectorConnectAction = new global::NHibernate.NHDesigner.IDConnectorConnectAction(this);
+						this.iDConnectorConnectAction.MouseActionDeactivated += new DslDiagrams::MouseAction.MouseActionDeactivatedEventHandler(OnConnectActionDeactivated);
+					}
+					action = this.iDConnectorConnectAction;
 				} 
 				else
 				{
@@ -393,6 +420,11 @@ namespace NHibernate.NHDesigner
 						this.joinedSUbclassRelationshipConnectAction.Dispose();
 						this.joinedSUbclassRelationshipConnectAction = null;
 					}
+					if(this.iDConnectorConnectAction != null)
+					{
+						this.iDConnectorConnectAction.Dispose();
+						this.iDConnectorConnectAction = null;
+					}
 					this.UnsubscribeCompartmentItemsEvents();
 				}
 			}
@@ -435,9 +467,12 @@ namespace NHibernate.NHDesigner
 		/// <summary>
 		/// Rule that initiates view fixup when an element that has an associated shape is added to the model. 
 		/// </summary>
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.CompositeId), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Id), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesBase), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesIdentifiers), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Entity), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddShapeParentExistRulePriority, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesBase), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed partial class FixUpDiagram : DslModeling::AddRule
 		{
 			[global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
@@ -453,6 +488,14 @@ namespace NHibernate.NHDesigner
 				{
 					parentElement = GetParentForRelationship((DslModeling::ElementLink)childElement);
 				} else
+				if(childElement is global::NHibernate.NHDesigner.CompositeId)
+				{
+					parentElement = GetParentForCompositeId((global::NHibernate.NHDesigner.CompositeId)childElement);
+				} else
+				if(childElement is global::NHibernate.NHDesigner.Id)
+				{
+					parentElement = GetParentForId((global::NHibernate.NHDesigner.Id)childElement);
+				} else
 				if(childElement is global::NHibernate.NHDesigner.Entity)
 				{
 					parentElement = GetParentForEntity((global::NHibernate.NHDesigner.Entity)childElement);
@@ -467,6 +510,20 @@ namespace NHibernate.NHDesigner
 				}
 			}
 			public static global::NHibernate.NHDesigner.NHibernateModel GetParentForEntity( global::NHibernate.NHDesigner.Entity root )
+			{
+				// Segments 0 and 1
+				global::NHibernate.NHDesigner.NHibernateModel result = root.NHibernateModel;
+				if ( result == null ) return null;
+				return result;
+			}
+			public static global::NHibernate.NHDesigner.NHibernateModel GetParentForCompositeId( global::NHibernate.NHDesigner.Identifier root )
+			{
+				// Segments 0 and 1
+				global::NHibernate.NHDesigner.NHibernateModel result = root.NHibernateModel;
+				if ( result == null ) return null;
+				return result;
+			}
+			public static global::NHibernate.NHDesigner.NHibernateModel GetParentForId( global::NHibernate.NHDesigner.Identifier root )
 			{
 				// Segments 0 and 1
 				global::NHibernate.NHDesigner.NHibernateModel result = root.NHibernateModel;
@@ -563,7 +620,6 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemAddRule : DslModeling::AddRule
 		{
 			/// <summary>
@@ -590,11 +646,6 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.IEnumerable elements = GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.EntityHasMeta)e.ModelElement);
 					UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
 				}
-				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasIdentifier)
-				{
-					global::System.Collections.IEnumerable elements = GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ModelElement);
-					UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-				}
 			}
 			
 			#region static DomainPath traversal methods to get the list of compartments to update
@@ -620,20 +671,6 @@ namespace NHibernate.NHDesigner
 				return new DslModeling::ModelElement[] {result};
 			}
 			internal static global::System.Collections.ICollection GetEntityForEntityShapeMetas(global::NHibernate.NHDesigner.Meta root)
-			{
-				// Segments 1 and 0
-				global::NHibernate.NHDesigner.Entity result = root.Entity;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetEntityForEntityShapeIdFromLastLink(global::NHibernate.NHDesigner.EntityHasIdentifier root)
-			{
-				// Segment 0
-				global::NHibernate.NHDesigner.Entity result = root.Entity;
-				if ( result == null ) return new DslModeling::ModelElement[0];
-				return new DslModeling::ModelElement[] {result};
-			}
-			internal static global::System.Collections.ICollection GetEntityForEntityShapeId(global::NHibernate.NHDesigner.Identifier root)
 			{
 				// Segments 1 and 0
 				global::NHibernate.NHDesigner.Entity result = root.Entity;
@@ -687,7 +724,6 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemDeleteRule : DslModeling::DeleteRule
 		{
 			/// <summary>
@@ -712,11 +748,6 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetEntityForEntityShapeMetasFromLastLink((global::NHibernate.NHDesigner.EntityHasMeta)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
 				}
-				if(e.ModelElement is global::NHibernate.NHDesigner.EntityHasIdentifier)
-				{
-					global::System.Collections.ICollection elements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-				}
 			}
 		}
 		
@@ -725,7 +756,6 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Property), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Meta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.Identifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemChangeRule : DslModeling::ChangeRule 
 		{
 			/// <summary>
@@ -750,11 +780,6 @@ namespace NHibernate.NHDesigner
 					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeMetas((global::NHibernate.NHDesigner.Meta)e.ModelElement);
 					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
 				}
-				if(e.ModelElement is global::NHibernate.NHDesigner.Identifier && e.DomainProperty.Id == global::NHibernate.NHDesigner.Identifier.NameDomainPropertyId)
-				{
-					global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.ModelElement);
-					CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-				}
 			}
 		}
 		
@@ -763,7 +788,6 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerChangeRule : DslModeling::RolePlayerChangeRule 
 		{
 			/// <summary>
@@ -832,33 +856,6 @@ namespace NHibernate.NHDesigner
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
 					}
 				}
-				if(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(e.DomainRole.IsSource)
-					{
-						//global::System.Collections.IEnumerable oldElements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.Identifier)e.OldRolePlayer);
-						//foreach(DslModeling::ModelElement element in oldElements)
-						//{
-						//	DslModeling::LinkedElementCollection<DslDiagrams::PresentationElement> pels = DslDiagrams::PresentationViewsSubject.GetPresentation(element);
-						//	foreach(DslDiagrams::PresentationElement pel in pels)
-						//	{
-						//		global::NHibernate.NHDesigner.EntityShape compartmentShape = pel as global::NHibernate.NHDesigner.EntityShape;
-						//		if(compartmentShape != null)
-						//		{
-						//			compartmentShape.GetCompartmentMappings()[2].InitializeCompartmentShape(compartmentShape);
-						//		}
-						//	}
-						//}
-						
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeIdFromLastLink((global::NHibernate.NHDesigner.EntityHasIdentifier)e.ElementLink);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-					}
-					else 
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.NewRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-					}
-				}
 			}
 		}
 	
@@ -867,7 +864,6 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasProperties), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasMeta), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
-		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier), FireTime=DslModeling::TimeToFire.TopLevelCommit, InitiallyDisabled=true)]
 		internal sealed class CompartmentItemRolePlayerPositionChangeRule : DslModeling::RolePlayerPositionChangeRule 
 		{
 			/// <summary>
@@ -898,14 +894,6 @@ namespace NHibernate.NHDesigner
 						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Metas", repaintOnly);
 					}
 				}
-				if(typeof(global::NHibernate.NHDesigner.EntityHasIdentifier).IsAssignableFrom(e.DomainRelationship.ImplementationClass))
-				{
-					if(!e.CounterpartDomainRole.IsSource)
-					{
-						global::System.Collections.IEnumerable elements = CompartmentItemAddRule.GetEntityForEntityShapeId((global::NHibernate.NHDesigner.Identifier)e.CounterpartRolePlayer);
-						CompartmentItemAddRule.UpdateCompartments(elements, typeof(global::NHibernate.NHDesigner.EntityShape), "Id", repaintOnly);
-					}
-				}
 			}
 		}
 	
@@ -914,6 +902,7 @@ namespace NHibernate.NHDesigner
 		/// </summary>
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesBase), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesBaseWithJoin), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
+		[DslModeling::RuleOn(typeof(global::NHibernate.NHDesigner.EntityReferencesIdentifiers), FireTime = DslModeling::TimeToFire.TopLevelCommit, Priority = DslDiagrams::DiagramFixupConstants.AddConnectionRulePriority, InitiallyDisabled=true)]
 		internal sealed class ConnectorRolePlayerChanged : DslModeling::RolePlayerChangeRule
 		{
 			/// <summary>

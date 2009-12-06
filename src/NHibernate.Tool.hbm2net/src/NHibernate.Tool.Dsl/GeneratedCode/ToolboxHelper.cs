@@ -49,6 +49,10 @@ namespace NHibernate.NHDesigner
 		/// Toolbox item filter string used to identify JoinedSUbclassRelationship connector tool.
 		/// </summary>
 		public const string JoinedSUbclassRelationshipFilterString = "JoinedSUbclassRelationship.1.1";
+		/// <summary>
+		/// Toolbox item filter string used to identify IDConnector connector tool.
+		/// </summary>
+		public const string IDConnectorFilterString = "IDConnector.1.1";
 
 		private global::System.IServiceProvider sp;
 		
@@ -92,7 +96,7 @@ namespace NHibernate.NHDesigner
 		{
 			get
 			{
-				return 3;
+				return 6;
 			}
 		}
 		
@@ -161,6 +165,52 @@ namespace NHibernate.NHDesigner
 						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
 							new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require), 
 							new global::System.ComponentModel.ToolboxItemFilterAttribute(JoinedSUbclassRelationshipFilterString)
+						}));
+
+					// Add CompositeID shape tool.
+					toolboxItems.Add(new DslDesign::ModelingToolboxItem(
+						"CompositeIDToolboxItem", // Unique identifier (non-localized) for the toolbox item.
+						4, // Position relative to other items in the same toolbox tab.
+						resourceManager.GetString("CompositeIDToolboxItem", resourceCulture), // Localized display name for the item.
+						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("CompositeIDToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
+						"NHDesignerToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
+						resourceManager.GetString("NHDesignerToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
+						"CompositeID", // F1 help keyword for the toolbox item.
+						resourceManager.GetString("CompositeIDToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
+						CreateElementToolPrototype(store, global::NHibernate.NHDesigner.CompositeId.DomainClassId), // ElementGroupPrototype (data object) representing model element on the toolbox.
+						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
+							new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require) 
+						}));
+
+					// Add ID shape tool.
+					toolboxItems.Add(new DslDesign::ModelingToolboxItem(
+						"IDToolboxItem", // Unique identifier (non-localized) for the toolbox item.
+						5, // Position relative to other items in the same toolbox tab.
+						resourceManager.GetString("IDToolboxItem", resourceCulture), // Localized display name for the item.
+						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("IDToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.
+						"NHDesignerToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
+						resourceManager.GetString("NHDesignerToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
+						"ID", // F1 help keyword for the toolbox item.
+						resourceManager.GetString("IDToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
+						CreateElementToolPrototype(store, global::NHibernate.NHDesigner.Id.DomainClassId), // ElementGroupPrototype (data object) representing model element on the toolbox.
+						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
+							new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require) 
+						}));
+
+					// Add IDConnector connector tool.
+					toolboxItems.Add(new DslDesign::ModelingToolboxItem(
+						"IDConnectorToolboxItem", // Unique identifier (non-localized) for the toolbox item.
+						6, // Position relative to other items in the same toolbox tab.
+						resourceManager.GetString("IDConnectorToolboxItem", resourceCulture), // Localized display name for the item.
+						(global::System.Drawing.Bitmap)DslDiagrams::ImageHelper.GetImage(resourceManager.GetObject("IDConnectorToolboxBitmap", resourceCulture)), // Image displayed next to the toolbox item.				
+						"NHDesignerToolboxTab", // Unique identifier (non-localized) for the toolbox item tab.
+						resourceManager.GetString("NHDesignerToolboxTab", resourceCulture), // Localized display name for the toolbox tab.
+						"IDConnector", // F1 help keyword for the toolbox item.
+						resourceManager.GetString("IDConnectorToolboxTooltip", resourceCulture), // Localized tooltip text for the toolbox item.
+						null, // Connector toolbox items do not have an underlying data object.
+						new global::System.ComponentModel.ToolboxItemFilterAttribute[] { // Collection of ToolboxItemFilterAttribute objects that determine visibility of the toolbox item.
+							new global::System.ComponentModel.ToolboxItemFilterAttribute(ToolboxFilterString, global::System.ComponentModel.ToolboxItemFilterType.Require), 
+							new global::System.ComponentModel.ToolboxItemFilterAttribute(IDConnectorFilterString)
 						}));
 
 					t.Rollback();

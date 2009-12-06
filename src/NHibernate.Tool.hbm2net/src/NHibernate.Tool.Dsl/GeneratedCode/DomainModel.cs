@@ -65,11 +65,15 @@ namespace NHibernate.NHDesigner
 				typeof(EntityHasProperties),
 				typeof(EntityReferencesBaseWithJoin),
 				typeof(EntityHasMeta),
-				typeof(EntityHasIdentifier),
+				typeof(EntityReferencesIdentifiers),
+				typeof(NHibernateModelHasIdentifiers),
 				typeof(NHDesignerDiagram),
 				typeof(SubclassConnector),
 				typeof(JoinedSubclassConnector),
+				typeof(IdConnector),
 				typeof(EntityShape),
+				typeof(IdCompartementShape),
+				typeof(CompositeIdCompartementShape),
 				typeof(global::NHibernate.NHDesigner.FixUpDiagram),
 				typeof(global::NHibernate.NHDesigner.ConnectorRolePlayerChanged),
 				typeof(global::NHibernate.NHDesigner.CompartmentItemAddRule),
@@ -113,8 +117,10 @@ namespace NHibernate.NHDesigner
 				new DomainRolePlayerInfo(typeof(EntityReferencesBaseWithJoin), "TargetEntity", EntityReferencesBaseWithJoin.TargetEntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasMeta), "Entity", EntityHasMeta.EntityDomainRoleId),
 				new DomainRolePlayerInfo(typeof(EntityHasMeta), "Meta", EntityHasMeta.MetaDomainRoleId),
-				new DomainRolePlayerInfo(typeof(EntityHasIdentifier), "Entity", EntityHasIdentifier.EntityDomainRoleId),
-				new DomainRolePlayerInfo(typeof(EntityHasIdentifier), "Identifier", EntityHasIdentifier.IdentifierDomainRoleId),
+				new DomainRolePlayerInfo(typeof(EntityReferencesIdentifiers), "Entity", EntityReferencesIdentifiers.EntityDomainRoleId),
+				new DomainRolePlayerInfo(typeof(EntityReferencesIdentifiers), "Identifier", EntityReferencesIdentifiers.IdentifierDomainRoleId),
+				new DomainRolePlayerInfo(typeof(NHibernateModelHasIdentifiers), "NHibernateModel", NHibernateModelHasIdentifiers.NHibernateModelDomainRoleId),
+				new DomainRolePlayerInfo(typeof(NHibernateModelHasIdentifiers), "Identifier", NHibernateModelHasIdentifiers.IdentifierDomainRoleId),
 			};
 		}
 		#endregion
@@ -136,7 +142,7 @@ namespace NHibernate.NHDesigner
 	
 			if (createElementMap == null)
 			{
-				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(11);
+				createElementMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(14);
 				createElementMap.Add(typeof(NHibernateModel), 0);
 				createElementMap.Add(typeof(Entity), 1);
 				createElementMap.Add(typeof(Property), 2);
@@ -146,7 +152,10 @@ namespace NHibernate.NHDesigner
 				createElementMap.Add(typeof(NHDesignerDiagram), 6);
 				createElementMap.Add(typeof(SubclassConnector), 7);
 				createElementMap.Add(typeof(JoinedSubclassConnector), 8);
-				createElementMap.Add(typeof(EntityShape), 9);
+				createElementMap.Add(typeof(IdConnector), 9);
+				createElementMap.Add(typeof(EntityShape), 10);
+				createElementMap.Add(typeof(IdCompartementShape), 11);
+				createElementMap.Add(typeof(CompositeIdCompartementShape), 12);
 			}
 			int index;
 			if (!createElementMap.TryGetValue(elementType, out index))
@@ -169,7 +178,10 @@ namespace NHibernate.NHDesigner
 				case 6: return new NHDesignerDiagram(partition, propertyAssignments);
 				case 7: return new SubclassConnector(partition, propertyAssignments);
 				case 8: return new JoinedSubclassConnector(partition, propertyAssignments);
-				case 9: return new EntityShape(partition, propertyAssignments);
+				case 9: return new IdConnector(partition, propertyAssignments);
+				case 10: return new EntityShape(partition, propertyAssignments);
+				case 11: return new IdCompartementShape(partition, propertyAssignments);
+				case 12: return new CompositeIdCompartementShape(partition, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -192,13 +204,14 @@ namespace NHibernate.NHDesigner
 	
 			if (createElementLinkMap == null)
 			{
-				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(6);
+				createElementLinkMap = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(7);
 				createElementLinkMap.Add(typeof(NHibernateModelHasEntities), 0);
 				createElementLinkMap.Add(typeof(EntityReferencesBase), 1);
 				createElementLinkMap.Add(typeof(EntityHasProperties), 2);
 				createElementLinkMap.Add(typeof(EntityReferencesBaseWithJoin), 3);
 				createElementLinkMap.Add(typeof(EntityHasMeta), 4);
-				createElementLinkMap.Add(typeof(EntityHasIdentifier), 5);
+				createElementLinkMap.Add(typeof(EntityReferencesIdentifiers), 5);
+				createElementLinkMap.Add(typeof(NHibernateModelHasIdentifiers), 6);
 			}
 			int index;
 			if (!createElementLinkMap.TryGetValue(elementLinkType, out index))
@@ -218,7 +231,8 @@ namespace NHibernate.NHDesigner
 				case 2: return new EntityHasProperties(partition, roleAssignments, propertyAssignments);
 				case 3: return new EntityReferencesBaseWithJoin(partition, roleAssignments, propertyAssignments);
 				case 4: return new EntityHasMeta(partition, roleAssignments, propertyAssignments);
-				case 5: return new EntityHasIdentifier(partition, roleAssignments, propertyAssignments);
+				case 5: return new EntityReferencesIdentifiers(partition, roleAssignments, propertyAssignments);
+				case 6: return new NHibernateModelHasIdentifiers(partition, roleAssignments, propertyAssignments);
 				default: return null;
 			}
 		}
@@ -397,7 +411,7 @@ namespace NHibernate.NHDesigner
 			DomainRoles.Add(global::NHibernate.NHDesigner.NHibernateModelHasEntities.ElementDomainRoleId, true);
 			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasProperties.PropertyDomainRoleId, true);
 			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId, true);
-			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId, true);
+			DomainRoles.Add(global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId, true);
 			#endregion
 		}
 		/// <summary>
@@ -473,7 +487,7 @@ namespace NHibernate.NHDesigner
 			#region Initialize DomainData Table
 			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasProperties.PropertyDomainRoleId, true);
 			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasMeta.MetaDomainRoleId, true);
-			DomainRoles.Add(global::NHibernate.NHDesigner.EntityHasIdentifier.IdentifierDomainRoleId, true);
+			DomainRoles.Add(global::NHibernate.NHDesigner.NHibernateModelHasIdentifiers.IdentifierDomainRoleId, true);
 			#endregion
 		}
 		/// <summary>
