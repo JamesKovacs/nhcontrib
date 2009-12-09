@@ -118,6 +118,10 @@
     </PreBuildEvent>
     <PostBuildEvent>copy /Y "$(ProjectDir)App.config" "$(TargetPath).config"
 copy "$(TargetPath)" "$(SolutionDir)"..\stub\hbm2net.exe
-copy "$(SolutionDir)"..\lib\net\*.* "$(SolutionDir)"..\stub</PostBuildEvent>
+copy "$(SolutionDir)"..\lib\net\NHibernate.dll "$(SolutionDir)"..\stub
+copy "$(SolutionDir)"..\lib\net\Iesi.Collections.dll "$(SolutionDir)"..\stub
+copy "$(SolutionDir)"..\lib\net\log4net.dll "$(SolutionDir)"..\stub
+copy /Y "$(ProjectDir)App.config" "$(SolutionDir)"..\stub\"hbm2net.exe.config"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

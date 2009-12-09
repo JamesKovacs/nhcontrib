@@ -22,39 +22,13 @@ using <#=import#>;
 	/// </summary>
 	<#=clazz.Scope#> <#=clazz.Modifiers#> partial <#=clazz.DeclarationType#> <#=clazz.GeneratedName#> <#=GetInheritance(clazz)#>
 	{
-	
-		/*----------------*/
-		/*   constructor  */
-		/*----------------*/
-#region CTOR
-		public <#=clazz.GeneratedName#>()
-		{
-<#foreach( FieldProperty field in clazz.Fields)
-{#>
-<#if(IsCollection(field))
-{#>
-			<#=GetPrivateFieldName(field)#> = new <#=GetGenericCollectionImplementation(field)#>();
-<#}#>
-<#if(IsDynamic(field)){#>
-			<#=GetPrivateFieldName(field)#> = new Dictionary<String,Object>();
-<#}#>
-<#}#>
-		}
-#endregion
 
-		/*----------------*/
-		/* private fields */
-		/*----------------*/
-#region Private fields declarations		
-<#foreach( FieldProperty field in clazz.Fields)
-{#>
-<#=ToNetDoc(field.GetMetaAsString("field-description"),2)#>
-		<#=GetType(field)#> <#=GetPrivateFieldName(field)#>;	<#=GetCommentForColumn(field)#><#}#>
-
+#region Private fields
+<#foreach( FieldProperty field in clazz.Fields){#>
+		<#=GetType(field)#> <#=GetPrivateFieldName(field)#><#=InitializeIfNeeded(field)#>;	<#=GetCommentForColumn(field)#>
+<#}#>
 #endregion
-		/*----------------*/
-		/*    properties  */
-		/*----------------*/
+		
 #region getter/setters		
 <#foreach( FieldProperty field in clazz.Fields)
 {

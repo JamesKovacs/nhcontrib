@@ -12,6 +12,19 @@
 			return ": "+chunk;
 		return  string.Empty;
 	}
+	string InitializeIfNeeded(FieldProperty field)
+	{
+		if( IsCollection(field) )
+		{
+			return " = new "+GetGenericCollectionImplementation(field)+"()";
+		}
+		else
+		if( IsDynamic(field) )
+		{
+			return " = new Dictionary<String,Object>()";
+		}
+		return "";
+	}
 	bool IsDynamic(FieldProperty field)
 	{
 		return field.XMLElement.Name == "dynamic-component";
@@ -110,7 +123,7 @@
 		if( !string.IsNullOrEmpty(res) )
 			return Environment.NewLine+Environment.NewLine+sb.ToString().TrimEnd();	
 		else
-			return string.Empty;
+			return sident+"///";
 	}
 	string GetCommentForClass(ClassMapping clazz,int ident)
 	{

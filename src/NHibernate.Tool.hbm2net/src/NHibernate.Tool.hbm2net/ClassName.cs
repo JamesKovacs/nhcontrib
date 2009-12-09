@@ -62,7 +62,7 @@ namespace NHibernate.Tool.hbm2net
 
 		public ClassName(string fqn)
 		{
-			InitFullyQualifiedName(fqn);
+			InitFullyQualifiedName(fqn.Replace("`",""));
 		}
 
 		private string fullyQualifiedName = null;

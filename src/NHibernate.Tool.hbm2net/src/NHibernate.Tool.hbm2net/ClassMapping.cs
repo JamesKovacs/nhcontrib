@@ -827,7 +827,11 @@ namespace NHibernate.Tool.hbm2net
 			{
 				generatedName = name;
 			}
-
+            XmlAttribute @abstract = classElement.Attributes["abstract"];
+            if (null != @abstract)
+            {
+                bool.TryParse(@abstract.Value, out shouldBeAbstract_Renamed_Field);
+            }
 			if (mySuperClass != null)
 			{
 				this.superClass = mySuperClass.Name;

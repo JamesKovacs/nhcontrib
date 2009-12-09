@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<minimalLanguageDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="NHDesigner2">
-  <exampleModelMoniker Id="64560e54-8123-444e-9d4f-800177b64b28" />
-  <nestedChildShapes>
-    <exampleShape Id="d4f1a9af-eda6-4976-b48b-794ff0a2d4ab" absoluteBounds="4, 1.25, 2, 0.75">
-      <exampleElementMoniker name="/64560e54-8123-444e-9d4f-800177b64b28/ExampleElement1" />
-    </exampleShape>
-  </nestedChildShapes>
-</minimalLanguageDiagram>

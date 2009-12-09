@@ -63,7 +63,7 @@ namespace NHibernate.Tool.hbm2net.T4
             templateForFileName = props["output"] ?? DefaultTemplateForFileName;
             base.Configure(workingDirectory, props);
         }
-
+        public int MyProperty { get; set; }
         #region ICanProvideStream Members
 
         public Stream GetStream(ClassMapping clazz,string directory,out string fileName)

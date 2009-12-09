@@ -22,47 +22,26 @@ namespace SimpleNS
 	/// </summary>
 	public  partial class Simple 
 	{
-	
-		/*----------------*/
-		/*   constructor  */
-		/*----------------*/
-#region CTOR
-		public Simple()
-		{
-			_holidays = new Dictionary<String,DateTime>();
-			_children = new HashedSet<Child>();
-			_lovers = new List<Person>();
-		}
-#endregion
 
-		/*----------------*/
-		/* private fields */
-		/*----------------*/
-#region Private fields declarations		
-
+#region Private fields
 		Int64 _id;	/* id_ */
 		String _name;	
 		String m_Address;	/* address */
 		String _count;	/* count_ */
-
-		/// This is a date,
-		/// or a string?
 		String _date;	/* date_ */
 		DateTime? _NullableDate;	/* nd */
 		Int32? nullableInt;	/* ni */
 		String _pay;	
 		OtherClass other;	
-		IDictionary<String,DateTime> _holidays;	
-		ISet<Child> _children;	
-		IList<Person> _lovers;	
+		IDictionary<String,DateTime> _holidays = new Dictionary<String,DateTime>();	
+		ISet<Child> _children = new HashedSet<Child>();	
+		IList<Person> _lovers = new List<Person>();	
 		Foo[] _foos;	
 #endregion
-		/*----------------*/
-		/*    properties  */
-		/*----------------*/
+		
 #region getter/setters		
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual Int64 Id
 		{
@@ -70,7 +49,7 @@ namespace SimpleNS
 			set{ _id = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual String Name
 		{
@@ -78,14 +57,14 @@ namespace SimpleNS
 			set{ _name = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual String Address
 		{
 			get{ return m_Address; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual String Count
 		{
@@ -102,7 +81,7 @@ namespace SimpleNS
 			set{ _date = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual DateTime? NullableDate
 		{
@@ -110,7 +89,7 @@ namespace SimpleNS
 			set{ _NullableDate = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual Int32? NullableInt
 		{
@@ -118,7 +97,7 @@ namespace SimpleNS
 			set{ nullableInt = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual String Pay
 		{
@@ -126,7 +105,7 @@ namespace SimpleNS
 			set{ _pay = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual OtherClass Other
 		{
@@ -134,7 +113,7 @@ namespace SimpleNS
 			set{ other = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual IDictionary<String,DateTime> Holidays
 		{
@@ -142,7 +121,7 @@ namespace SimpleNS
 			set{ _holidays = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual ISet<Child> Children
 		{
@@ -150,7 +129,7 @@ namespace SimpleNS
 			set{ _children = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual IList<Person> Lovers
 		{
@@ -158,7 +137,7 @@ namespace SimpleNS
 			set{ _lovers = value; }
 		}
 		/// <summary>
-		
+		///		
 		/// </summary>
 		public virtual Foo[] Foos
 		{

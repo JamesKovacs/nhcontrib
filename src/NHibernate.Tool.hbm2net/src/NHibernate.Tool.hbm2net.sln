@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.T4", "NHibernate.Tool.hbm2net.T4\NHibernate.Tool.hbm2net.T4.csproj", "{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.Dsl", "NHibernate.Tool.Dsl\NHibernate.Tool.Dsl.csproj", "{7CFE8FEC-9FAC-45C5-97CF-DBAB62662276}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.DslPackage", "NHibernate.Tool.DslPackage\NHibernate.Tool.DslPackage.csproj", "{61A63FCA-C3A9-4283-930C-E40C3B3CB24B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,14 +31,6 @@ Global
 		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CFE8FEC-9FAC-45C5-97CF-DBAB62662276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CFE8FEC-9FAC-45C5-97CF-DBAB62662276}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CFE8FEC-9FAC-45C5-97CF-DBAB62662276}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CFE8FEC-9FAC-45C5-97CF-DBAB62662276}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61A63FCA-C3A9-4283-930C-E40C3B3CB24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61A63FCA-C3A9-4283-930C-E40C3B3CB24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61A63FCA-C3A9-4283-930C-E40C3B3CB24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61A63FCA-C3A9-4283-930C-E40C3B3CB24B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

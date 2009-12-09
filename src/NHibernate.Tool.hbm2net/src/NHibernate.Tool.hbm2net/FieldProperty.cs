@@ -184,13 +184,13 @@ namespace NHibernate.Tool.hbm2net
 		                                         bool id, bool generated, ClassName foreignClass,
 		                                         SupportClass.SetSupport foreignKeys, MultiMap metaattribs)
 		{
-			this.fieldName = name;
+			this.fieldName = name.Replace("`","");
 			Type = type;
 			this.nullable = nullable;
 			this.id = id;
 			this.generated = generated;
 			this.implementationClassName = implementationClassName;
-			this.accessorName = BeanCapitalize(name);
+			this.accessorName = BeanCapitalize(fieldName);
 			this.foreignClass = foreignClass;
 			this.foreignKeys = foreignKeys;
 			MetaAttribs = metaattribs;

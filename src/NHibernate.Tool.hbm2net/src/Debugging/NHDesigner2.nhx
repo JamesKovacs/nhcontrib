@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<exampleModel dslVersion="1.0.0.0" Id="64560e54-8123-444e-9d4f-800177b64b28" xmlns="http://schemas.microsoft.com/dsltools/NHDesigner">
-  <elements>
-    <exampleElement name="ExampleElement1" />
-  </elements>
-</exampleModel>

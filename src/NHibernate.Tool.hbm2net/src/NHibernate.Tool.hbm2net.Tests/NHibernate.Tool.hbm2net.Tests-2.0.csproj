@@ -210,12 +210,17 @@
     <EmbeddedResource Include="Dynamiccomponent.hbm.xml" />
     <EmbeddedResource Include="map.hbm.xml" />
     <EmbeddedResource Include="complexmap.hbm.xml" />
+    <EmbeddedResource Include="set.hbm.xml" />
+    <EmbeddedResource Include="escapes.hbm.xml" />
+    <EmbeddedResource Include="abstractbaseaclasswithsubclass.hbm.xml" />
     <Content Include="t4config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(ProjectDir)\app.config" "$(TargetDir)\$(TargetFileName).config"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)\app.config" "$(TargetDir)\$(TargetFileName).config"
+copy "$(ProjectDir)\map.hbm.xml" "$(SolutionDir)"..\stub
+copy "$(ProjectDir)\t4config.xml" "$(SolutionDir)"..\stub</PostBuildEvent>
   </PropertyGroup>
 </Project>
