@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" default-lazy="false" assembly="AbstractBase" namespace="AbstractBase">
+  <class name="Base"  abstract="true">
+
+    <id name="ID" column="id" type="Int64">
+      <generator class="native" />
+    </id>
+
+    <discriminator column="dd" type="String"/>
+
+    <subclass name="Sub1" discriminator-value="20">
+      <property name="A" type="String"></property>
+    </subclass>
+    <subclass name="Sub2" discriminator-value="30">
+      <property name="B" type="String"></property>
+    </subclass>
+  </class>
+</hibernate-mapping>

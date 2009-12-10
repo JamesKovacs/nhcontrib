@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Set" namespace="TheParents" >
+  <class name="Parent" table="Parents">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+    <set name="Children">
+      <key column="parent_id" />
+      <one-to-many class="Child" />
+    </set>
+  </class>
+  <class name="Child" table="Children">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+    <property name="Name" type="String"/>
+    <many-to-one name="Parent" class="Parent" column="parent_id" not-null="true"/>
+  </class>
+</hibernate-mapping>
