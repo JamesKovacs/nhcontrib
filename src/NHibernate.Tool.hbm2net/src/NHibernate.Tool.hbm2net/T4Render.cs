@@ -28,11 +28,11 @@ namespace NHibernate.Tool.hbm2net.T4
         
         public override void Render(string savedToPackage, string savedToClass, ClassMapping classMapping, IDictionary class2classmap, StreamWriter writer)
         {
-            Engine T4; 
+            Microsoft.VisualStudio.TextTemplating.Engine T4; 
             CallContext.LogicalSetData("clazz", classMapping);
             CallContext.LogicalSetData("savedToClass", savedToClass);
             CallContext.LogicalSetData("class2classmap", class2classmap);
-            T4 = new Engine();
+            T4 = new Microsoft.VisualStudio.TextTemplating.Engine();
             string res = T4.ProcessTemplate(CustomHost.GetTemplateCode(template)
                                             , new CustomHost() 
                                             { 
@@ -77,7 +77,7 @@ namespace NHibernate.Tool.hbm2net.T4
 
             try
             {
-                var T4 = new Engine();
+                var T4 = new Microsoft.VisualStudio.TextTemplating.Engine();
                 var host = new CustomHost()
                 {
                     TemplateFile = "config"

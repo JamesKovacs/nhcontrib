@@ -2,6 +2,8 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Map"
     namespace="MyUsers">
   <class name="User" table="Users">
+    <meta attribute="class-description">mapping example from:
+    http://ayende.com/Blog/archive/2009/06/03/nhibernate-mapping-ndash-ltmapgt.aspx</meta>
     <id name="Id">
       <generator class="hilo"/>
     </id>

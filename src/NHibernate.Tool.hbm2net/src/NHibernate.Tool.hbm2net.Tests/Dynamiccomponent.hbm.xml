@@ -3,7 +3,8 @@
     namespace="Entities">
   <class name="Person"
       table="People">
-
+    <meta attribute="class-description">mapping example from:
+    http://ayende.com/Blog/archive/2009/04/11/nhibernate-mapping-ltdynamic-componentgt.aspx</meta>
     <id name="Id">
       <generator class="identity"/>
     </id>

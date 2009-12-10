@@ -949,13 +949,19 @@ namespace NHibernate.Tool.hbm2net
                     {
                         Element generator = property["generator"];
                         string generatorClass = generator.Attributes["class"] == null ? string.Empty : generator.Attributes["class"].Value;
-                        if (generatorClass == "uuid.hex" )
-                        {
-                            type = "String";
-                        }
-                        else
-                        {
-                            type = "Int32";
+                        switch (generatorClass)
+                        { 
+                            case "uuid.hex":
+                                type = "String";
+                                break;
+                            case "guid":
+                            case "guid.native":
+                            case "guid.comb":
+                                type = "Guid";
+                                break;
+                            default:
+                                type = "Int32";
+                                break;
                         }
                     }
                     else

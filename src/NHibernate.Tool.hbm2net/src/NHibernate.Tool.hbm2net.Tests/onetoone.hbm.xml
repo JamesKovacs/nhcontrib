@@ -4,7 +4,8 @@
 
   <class name="Employee"
       table="Employees">
-
+    <meta attribute="class-description">mapping example from 
+    http://ayende.com/Blog/archive/2009/04/19/nhibernate-mapping-ltone-to-onegt.aspx</meta>
     <id name="Id">
       <generator class="native"/>
     </id>

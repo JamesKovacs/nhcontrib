@@ -3,9 +3,11 @@
     namespace="Eg">
 
   <class name="Cat" table="CATS" discriminator-value="C">
+    <meta attribute="class-description">mapping example from chapter 5.1 nh doc</meta>
     <id name="Id" column="uid" type="Int64">
       <generator class="hilo"/>
     </id>
+    
     <discriminator column="subclass" type="Char"/>
     <property name="BirthDate" type="Date"/>
     <property name="Color" not-null="true"/>

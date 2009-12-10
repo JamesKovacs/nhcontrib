@@ -35,8 +35,8 @@ namespace NHibernate.Tool.hbm2net.Tests
             generatedFiles = new List<string>();
         }
 
-        const string T4Renderer = "NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net.T4";
-        const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt";
+        const string T4Renderer = "NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net";
+        const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.templates.hbm2net.tt";
         private const string MappingFileResourceName = "Simple1.hbm.xml";
         private const string ExpectedFileResourceName = "Simple1.csharp";
         private static string ExpectedFileName = Path.Combine(TestHelper.DefaultOutputDirectory.FullName, @"Simple.generated.cs");
@@ -187,6 +187,35 @@ namespace NHibernate.Tool.hbm2net.Tests
 
 
             Assembly asm = AssertedCompileGeneratedFiles("Set");
+            CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+        [Test]
+        public void GettingStarted()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "product.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+
+            Assembly asm = AssertedCompileGeneratedFiles("FirstSolution");
             CheckMappingAgainstCode(asm, mappingFile.FullName);
 
         }

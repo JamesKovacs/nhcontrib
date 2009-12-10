@@ -14,7 +14,7 @@ namespace NHibernate.Tool.hbm2net.T4
 {
     public class CustomHost : ITextTemplatingEngineHost
     {
-        static Dictionary<string, Type> directiveProcessors = new Dictionary<string, Type>();
+        static Dictionary<string, System.Type> directiveProcessors = new Dictionary<string, System.Type>();
         public bool HasError { get; internal set; }
         public IList<CompilerError> Errors { get; internal set; }
         public ILog Logger { get; set; }
@@ -29,7 +29,7 @@ namespace NHibernate.Tool.hbm2net.T4
         }
         private static void InitializeProcessors()
         {
-            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (System.Type t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (typeof(DirectiveProcessor).IsAssignableFrom(t))
                 {
@@ -105,7 +105,7 @@ namespace NHibernate.Tool.hbm2net.T4
             return "";
         }
 
-        public Type ResolveDirectiveProcessor(string processorName)
+        public System.Type ResolveDirectiveProcessor(string processorName)
         {
             if (directiveProcessors.ContainsKey(processorName))
                 return directiveProcessors[processorName];

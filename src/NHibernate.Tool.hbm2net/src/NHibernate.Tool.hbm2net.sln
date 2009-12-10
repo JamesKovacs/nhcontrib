@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.Tests-2.0", "NHibernate.Tool.hbm2net.Tests\NHibernate.Tool.hbm2net.Tests-2.0.csproj", "{F2FBD35E-28C4-461F-804D-0E43BED01185}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.T4", "NHibernate.Tool.hbm2net.T4\NHibernate.Tool.hbm2net.T4.csproj", "{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{F2FBD35E-28C4-461F-804D-0E43BED01185}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2FBD35E-28C4-461F-804D-0E43BED01185}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2FBD35E-28C4-461F-804D-0E43BED01185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="FirstSolution"
+                   namespace="FirstSolution.Domain">
+
+  <class name="Product">
+    <meta attribute="class-description">
+      From The "getting started" example:
+      http://nhforge.org/wikis/howtonh/your-first-nhibernate-based-application.aspx
+    </meta>
+    <id name="Id">
+      <generator class="guid" />
+    </id>
+    <property name="Name" />
+    <property name="Category" />
+    <property name="Discontinued" />
+  </class>
+
+</hibernate-mapping>

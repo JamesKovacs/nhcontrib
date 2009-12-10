@@ -84,6 +84,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextTemplating, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net\NHibernate.dll</HintPath>
@@ -127,6 +128,7 @@
     <Compile Include="CodeGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomHost.cs" />
     <Compile Include="DOMRenderer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -153,6 +155,7 @@
     <Compile Include="MethodSignatureBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PropertyProcessor.cs" />
     <Compile Include="QueryBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -168,11 +171,14 @@
     <Compile Include="SupportClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="T4Render.cs" />
     <Compile Include="VelocityRenderer.cs">
       <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="convert.vm" />
     <None Include="NHibernate.Tool.hbm2net.build" />
+    <EmbeddedResource Include="templates\common.tt" />
+    <EmbeddedResource Include="templates\hbm2net.tt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

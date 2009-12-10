@@ -23,7 +23,7 @@ namespace SimpleNS
 	public  partial class Simple 
 	{
 
-#region Private fields
+	#region private fields
 		Int64 _id;	/* id_ */
 		String _name;	
 		String m_Address;	/* address */
@@ -37,9 +37,9 @@ namespace SimpleNS
 		ISet<Child> _children = new HashedSet<Child>();	
 		IList<Person> _lovers = new List<Person>();	
 		Foo[] _foos;	
-#endregion
+	#endregion
 		
-#region getter/setters		
+	#region getter/setters		
 		/// <summary>
 		///		
 		/// </summary>
@@ -144,6 +144,6 @@ namespace SimpleNS
 			get{ return _foos; }
 			set{ _foos = value; }
 		}
-#endregion
+	#endregion
 	}
 }

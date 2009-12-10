@@ -149,10 +149,6 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Tool.hbm2net.T4\NHibernate.Tool.hbm2net.T4.csproj">
-      <Project>{CD0674CD-4E3C-43EB-AE8C-AF65E531667C}</Project>
-      <Name>NHibernate.Tool.hbm2net.T4</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Tool.hbm2net\NHibernate.Tool.hbm2net-2.0.csproj">
       <Project>{136FFE16-EE3B-4556-90FB-E265113CB13F}</Project>
       <Name>NHibernate.Tool.hbm2net-2.0</Name>
@@ -213,6 +209,7 @@
     <EmbeddedResource Include="set.hbm.xml" />
     <EmbeddedResource Include="escapes.hbm.xml" />
     <EmbeddedResource Include="abstractbaseaclasswithsubclass.hbm.xml" />
+    <EmbeddedResource Include="product.hbm.xml" />
     <Content Include="t4config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
