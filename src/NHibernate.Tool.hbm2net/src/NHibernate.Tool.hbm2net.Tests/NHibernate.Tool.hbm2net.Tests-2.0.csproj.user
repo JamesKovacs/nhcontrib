@@ -3,4 +3,8 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\NUnit 2.5\bin\net-2.0\nunit.exe</StartProgram>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartAction>Project</StartAction>
+    <StartProgram>C:\Program Files\NUnit 2.5\bin\net-2.0\nunit.exe</StartProgram>
+  </PropertyGroup>
 </Project>
