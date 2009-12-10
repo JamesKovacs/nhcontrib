@@ -46,6 +46,12 @@ namespace NHibernate.Tool.hbm2net
 			this.suffix = string.Empty;
 			this.prefix = string.Empty;
 		}
+        IRenderer renderer;
+        public Generator(IRenderer renderer)
+        {
+            this.renderer = renderer;
+            this.packageName = "";
+        }
 
 		/// <summary> Constructs a new Generator, configured from XML.</summary>
 		public Generator(DirectoryInfo workingDirectory, Element generateElement) : this(workingDirectory)
@@ -125,10 +131,12 @@ namespace NHibernate.Tool.hbm2net
 		{
             this.fileObserver = fileObserver;
 			log.Info("Working on " + classMappingsCol.Count + " classes/component, output generated in:" + BaseDirName);
-			IRenderer renderer = (IRenderer) SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
-
-			//Configure renderer
-			renderer.Configure(workingDirectory, params_Renamed);
+            if (null == renderer)
+            {
+                renderer = (IRenderer)SupportClass.CreateNewInstance(System.Type.GetType(this.rendererClass));
+                //Configure renderer
+                renderer.Configure(workingDirectory, params_Renamed);
+            }
 
 			//Running through actual classes
 			for (IEnumerator classMappings = classMappingsCol.Values.GetEnumerator(); classMappings.MoveNext();)

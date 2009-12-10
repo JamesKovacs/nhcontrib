@@ -22,7 +22,7 @@ namespace NHibernate.Tool.hbm2net.T4
         string template;
        
         string directoryForOutput=string.Empty;
-        const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt";
+        const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.templates.hbm2net.tt";
         const string DefaultTemplateForFileName = "clazz.GeneratedName+\".generated.cs\"";
         string templateForFileName;
         

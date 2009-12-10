@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-
+using System.Linq;
 using log4net;
 using log4net.Config;
 
@@ -11,6 +11,8 @@ using MultiHashMap = System.Collections.Hashtable;
 using MultiMap = System.Collections.Hashtable;
 using Document = System.Xml.XmlDocument;
 using Element = System.Xml.XmlElement;
+using NHibernate.Tool.hbm2net.T4;
+using System.Collections.Specialized;
 
 namespace NHibernate.Tool.hbm2net
 {
@@ -28,77 +30,80 @@ namespace NHibernate.Tool.hbm2net
         {
             Generate(args, null);
         }
+        static Hbm2NetParameters cmdLine;
 		public static void Generate(String[] args,IFileCreationObserver fileCreationObserver)
 		{
             //this has to change... dirty things during porting
             ClassMapping.ResetComponents();
-
             nsmgr = new XmlNamespaceManager(new NameTable());
 			nsmgr.AddNamespace("urn", "urn:nhibernate-mapping-2.2");
-
 			children = new ArrayList();
 			allMaps = new MultiMap();
-            
-			File.Delete("error-log.txt");
-
-			// DOMConfigurator is deprecated in the latest log4net, but we are using an earlier
-			// version that comes with NVelocity.
-			XmlConfigurator.Configure(new FileInfo("NHibernate.Tool.hbm2net.exe.config"));
-
-			if (args.Length == 0)
-			{
-                DumpHelp();
-				Environment.Exit(- 1);
-			}
-
 			ArrayList mappingFiles = new ArrayList();
 			string outputDir = null;
 			SupportClass.ListCollectionSupport generators = new SupportClass.ListCollectionSupport();
-
 			MultiMap globalMetas = new MultiHashMap();
 			// parse command line parameters
-			for (int i = 0; i < args.Length; i++)
-			{
-                if (args[i].StartsWith("--"))
-				{
-					if (args[i].StartsWith("--config="))
-					{
-						FileInfo configFile = new FileInfo(args[i].Substring(9));
-
-						// parse config xml file
-						Document document = new XmlDocument();
-						document.Load(configFile.FullName);
-						globalMetas = MetaAttributeHelper.LoadAndMergeMetaMap((document["codegen"]), null);
-						IEnumerator generateElements = document["codegen"].SelectNodes("generate").GetEnumerator();
-
-						while (generateElements.MoveNext())
-						{
-							generators.Add(new Generator(configFile.Directory, (Element) generateElements.Current));
-						}
-					}
-					else if (args[i].StartsWith("--output="))
-					{
-						outputDir = args[i].Substring(9);
-					}
-				}
-				else if (args[i].IndexOf("*") > -1)
-				{
-					// Handle wildcards
-					mappingFiles.AddRange(GetFiles(args[i]));
-				}
-				else
-				{
-					mappingFiles.Add(args[i]);
-				}
-			}
-
-			// if no config xml file, add a default generator
-			if (generators.Count == 0)
-			{
-                DumpHelp();
+            cmdLine = new Hbm2NetParameters(args);
+            try
+            {
+                cmdLine.Parse();
+                if (0 == cmdLine.FileNames.Count())
+                {
+                    Console.Error.WriteLine("No input file(s) specified");
+                    throw new NotEnougthParametersException();
+                }
+            }
+            catch (NotEnougthParametersException)
+            {
+                Console.Error.WriteLine(string.Format("Use:hbm2net {0} files.hbm.xml ( wildcards allowed )",cmdLine.GetShortHelp()));
+                Console.Error.WriteLine(cmdLine.GetHelp());
                 Environment.Exit(-1);
-			}
-
+            }
+            if (!string.IsNullOrEmpty(cmdLine.ConfigFile))
+            {
+                if (File.Exists(cmdLine.ConfigFile))
+                {
+                    FileInfo configFile = new FileInfo(cmdLine.ConfigFile);
+                    // parse config xml file
+                    Document document = new XmlDocument();
+                    document.Load(configFile.FullName);
+                    globalMetas = MetaAttributeHelper.LoadAndMergeMetaMap((document["codegen"]), null);
+                    IEnumerator generateElements = document["codegen"].SelectNodes("generate").GetEnumerator();
+                    while (generateElements.MoveNext())
+                    {
+                        generators.Add(new Generator(configFile.Directory, (Element)generateElements.Current));
+                    }
+                }
+                else
+                {
+                    log.Error("Configuration file:" + cmdLine.ConfigFile + " does not exist");
+                    Environment.Exit(-1);
+                }
+            }
+            if (generators.Count == 0)
+            {
+                log.Info("No configuration file specified: using T4 generator with default template.");
+                T4Render t4 = new T4Render();
+                t4.Configure(new DirectoryInfo(Directory.GetCurrentDirectory()), new NameValueCollection());
+                generators.Add(new Generator(t4));
+            }
+            if (!string.IsNullOrEmpty(cmdLine.OutputDir))
+            {
+                outputDir = cmdLine.OutputDir;
+            }
+            foreach (string inFile in cmdLine.FileNames)
+            {
+                if (inFile.IndexOf("*") > -1)
+                {
+                    mappingFiles.AddRange(GetFiles(inFile));
+                }
+                else
+                {
+                    mappingFiles.Add(inFile);
+                }
+            }
+			
 			Hashtable classMappings = new Hashtable();
             for (IEnumerator iter = mappingFiles.GetEnumerator(); iter.MoveNext(); )
             {
@@ -148,24 +153,10 @@ namespace NHibernate.Tool.hbm2net
             for (IEnumerator iterator = generators.GetEnumerator(); iterator.MoveNext(); )
             {
                 Generator g = (Generator)iterator.Current;
-                g.BaseDirName = outputDir;
+                g.BaseDirName = outputDir ?? ".\\";
                 g.Generate(classMappings,fileCreationObserver);
             }
 		}
-
-        private static void DumpHelp()
-        {
-            Console.Error.WriteLine("Use: hbm2net --config=configfile.xml [--output=outdir]");
-            Console.Error.WriteLine("*** Config file example: ****");
-            Console.Error.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            Console.Error.WriteLine("<codegen>");
-            Console.Error.WriteLine("\t<generate renderer=\"NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net.T4\" package=\"\">");
-            Console.Error.WriteLine("\t\t<param name=\"template\">res://NHibernate.Tool.hbm2net.T4.templates.hbm2net.tt</param>");
-            Console.Error.WriteLine("\t\t<param name=\"output\">clazz.GeneratedName+\".generated.cs\"</param>");
-            Console.Error.WriteLine("\t</generate>");
-            Console.Error.WriteLine("</codegen>");
-            Console.Error.WriteLine("\nMultiple generation steps is achieved by multiple <codegen> nodes.");
-        }
 
 		private static ICollection GetFiles(string fileSpec)
 		{

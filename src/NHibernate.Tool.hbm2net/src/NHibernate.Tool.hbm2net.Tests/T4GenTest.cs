@@ -220,6 +220,35 @@ namespace NHibernate.Tool.hbm2net.Tests
 
         }
         [Test]
+        public void ShouldUseDefaultConfig()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "product.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+
+            Assembly asm = AssertedCompileGeneratedFiles("FirstSolution");
+            CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+        [Test]
         public void AbstractBaseClass()
         {
 

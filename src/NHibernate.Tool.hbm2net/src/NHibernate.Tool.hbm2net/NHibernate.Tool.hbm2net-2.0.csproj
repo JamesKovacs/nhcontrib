@@ -89,10 +89,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NVelocity, Version=0.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\NVelocity.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -125,9 +121,11 @@
     <Compile Include="ClassName.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CmdLineOption.cs" />
     <Compile Include="CodeGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CommandLineParser.cs" />
     <Compile Include="CustomHost.cs" />
     <Compile Include="DOMRenderer.cs">
       <SubType>Code</SubType>
@@ -155,14 +153,13 @@
     <Compile Include="MethodSignatureBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Hbm2netParameters.cs" />
+    <Compile Include="NotEnougthParametersException.cs" />
     <Compile Include="PropertyProcessor.cs" />
     <Compile Include="QueryBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IRenderer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="StringResourceLoader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SubclassMapping.cs">
@@ -172,10 +169,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="T4Render.cs" />
-    <Compile Include="VelocityRenderer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="convert.vm" />
     <None Include="NHibernate.Tool.hbm2net.build" />
     <EmbeddedResource Include="templates\common.tt" />
     <EmbeddedResource Include="templates\hbm2net.tt" />
@@ -187,6 +180,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)"..\stub</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)"..\stub
+copy "$(ProjectDir)\templates\hbm2net.tt" "$(SolutionDir)"..\stub</PostBuildEvent>
   </PropertyGroup>
 </Project>
