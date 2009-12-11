@@ -15,6 +15,8 @@ using NHibernate.Driver;
 using NHibernate.Connection;
 using NHibernate.ByteCode.LinFu;
 using NHibernate.Tool.hbm2ddl;
+using System.Xml.Schema;
+using System.Xml;
 
 namespace NHibernate.Tool.hbm2net.Tests
 {
@@ -191,6 +193,45 @@ namespace NHibernate.Tool.hbm2net.Tests
 
         }
         [Test]
+        public void DoesNotOverwriteNewerTargetIfRequired()
+        {
+
+            FileInfo configFile = new FileInfo(Path.GetTempFileName());
+
+            // the mapping file needs to be written to the same 
+            // directory as the config file for this test			
+            string hbm = "product.hbm.xml";
+            FileInfo mappingFile = new FileInfo(Path.Combine(configFile.DirectoryName, hbm));
+            if (mappingFile.Exists)
+                mappingFile.Delete();
+            ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
+
+            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+
+            // ensure that test is setup correctly
+            Assert.IsTrue(configFile.Exists && configFile.Length != 0);
+            Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
+            Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
+
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+
+            FileInfo gen = new FileInfo(generatedFiles[0]);
+            DateTime prev = gen.LastWriteTimeUtc;
+
+            generatedFiles.Clear();
+            args = new string[] { "-ct","--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+            Assert.AreEqual(0, generatedFiles.Count);
+            
+            generatedFiles.Clear();
+            args = new string[] {  "--config=" + configFile.FullName, mappingFile.FullName };
+            CodeGenerator.Generate(args, this);
+            gen = new FileInfo(generatedFiles[0]);
+            Assert.AreNotEqual(prev, gen.LastWriteTimeUtc);
+
+        }
+        [Test]
         public void GettingStarted()
         {
 
@@ -246,6 +287,18 @@ namespace NHibernate.Tool.hbm2net.Tests
 
             Assembly asm = AssertedCompileGeneratedFiles("FirstSolution");
             CheckMappingAgainstCode(asm, mappingFile.FullName);
+
+        }
+        [Test, Explicit]
+        public void InferConfigSchema()
+        {
+            XmlSchemaInference infer = new XmlSchemaInference();
+            var schemaSet = infer.InferSchema(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.t4config.xml")));
+            Assert.AreEqual(1, schemaSet.Schemas().Count);
+            foreach (XmlSchema schema in schemaSet.Schemas())
+            {
+                schema.Write(Console.Out);
+            }
 
         }
         [Test]

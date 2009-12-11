@@ -50,7 +50,7 @@ namespace NHibernate.Tool.hbm2net
         public Generator(IRenderer renderer)
         {
             this.renderer = renderer;
-            this.packageName = "";
+            this.packageName = string.Empty;
         }
 
 		/// <summary> Constructs a new Generator, configured from XML.</summary>
@@ -78,7 +78,7 @@ namespace NHibernate.Tool.hbm2net
 
 			// set packageName field
 			this.packageName = (generateElement.Attributes["package"] == null
-			                    	? null : generateElement.Attributes["package"].Value);
+                                    ? string.Empty : generateElement.Attributes["package"].Value);
 
 			// set prefix
 			if (
@@ -127,7 +127,7 @@ namespace NHibernate.Tool.hbm2net
 		}
         IFileCreationObserver fileObserver;
 		/// <summary> </summary>
-		public virtual void Generate(IDictionary classMappingsCol,IFileCreationObserver fileObserver)
+		public virtual void Generate(IDictionary classMappingsCol,IFileCreationObserver fileObserver,bool checkIfNewer)
 		{
             this.fileObserver = fileObserver;
 			log.Info("Working on " + classMappingsCol.Count + " classes/component, output generated in:" + BaseDirName);
@@ -142,33 +142,33 @@ namespace NHibernate.Tool.hbm2net
 			for (IEnumerator classMappings = classMappingsCol.Values.GetEnumerator(); classMappings.MoveNext();)
 			{
 				ClassMapping classMapping = (ClassMapping) classMappings.Current;
-				WriteRecursive(classMapping, classMappingsCol, renderer);
+                WriteRecursive(classMapping, classMappingsCol, renderer, checkIfNewer);
 			}
 			//Running through components
 			for (IEnumerator cmpMappings = ClassMapping.Components; cmpMappings.MoveNext();)
 			{
 				ClassMapping mapping = (ClassMapping) cmpMappings.Current;
-				Write(mapping, classMappingsCol, renderer);
+                Write(mapping, classMappingsCol, renderer, checkIfNewer);
 			}
 		}
 
-		private void WriteRecursive(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer)
+		private void WriteRecursive(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer,bool checkIfNewer)
 		{
-			Write(classMapping, class2classmap, renderer);
+			Write(classMapping, class2classmap, renderer,checkIfNewer);
 
 			if (!(classMapping.Subclasses.Count == 0))
 			{
 				IEnumerator it = classMapping.Subclasses.GetEnumerator();
 				while (it.MoveNext())
 				{
-					WriteRecursive((ClassMapping) it.Current, class2classmap, renderer);
+					WriteRecursive((ClassMapping) it.Current, class2classmap, renderer,checkIfNewer);
 				}
 			}
 		}
 
 
 		/// <summary> </summary>
-		private void Write(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer)
+		private void Write(ClassMapping classMapping, IDictionary class2classmap, IRenderer renderer,bool checkIfNewer)
 		{
 			string saveToPackage = renderer.GetSaveToPackage(classMapping);
 			string saveToClassName = renderer.GetSaveToClassName(classMapping);
@@ -178,27 +178,59 @@ namespace NHibernate.Tool.hbm2net
             // decide a stream for output, so a directive in the 
             // generation code can drive the output naming...
             ICanProvideStream streamProvider = renderer as ICanProvideStream;
-            string fileName;
+            string fileName=null;
+            bool performGeneration = true;
             if (null == streamProvider)
             {
                 fileName = Path.Combine(dir.FullName, this.GetFileName(saveToClassName));
                 FileInfo file = new FileInfo(fileName);
-                log.Debug("Writing " + file);
-                writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
+                if (checkIfNewer)
+                {
+                    FileInfo sourceFileinfo = SourceFileInfoMap.Instance.LookupByMapping(classMapping);
+                    performGeneration = sourceFileinfo.LastWriteTimeUtc >= file.LastWriteTimeUtc;
+                    if (false == performGeneration)
+                        LogFileSkipped(sourceFileinfo, file);
+                }
+                if (performGeneration)
+                {
+                    log.Debug("Writing " + file);
+                    writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
+                }
             }
             else
             {
-                writer = new StreamWriter(streamProvider.GetStream(classMapping,dir.FullName,out fileName));
-                log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
+                if (performGeneration)
+                {
+                    if (checkIfNewer)
+                    {
+                        FileInfo sourceFileinfo = SourceFileInfoMap.Instance.LookupByMapping(classMapping);
+                        FileInfo target;
+                        performGeneration = streamProvider.CheckIfSourceIsNewer(sourceFileinfo.LastWriteTimeUtc,dir.FullName,classMapping,out target);
+                        if (false == performGeneration)
+                            LogFileSkipped(sourceFileinfo, target);
+
+                    }
+                    if (performGeneration)
+                        writer = new StreamWriter(streamProvider.GetStream(classMapping, dir.FullName, out fileName));
+                    log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
+                }
             }
 
-			renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
-			writer.Close();
-            if (null != fileObserver)
+            if (performGeneration)
             {
-                fileObserver.FileCreated(fileName);
+                renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
+                writer.Close();
+                if (null != fileObserver)
+                {
+                    fileObserver.FileCreated(fileName);
+                }
             }
 		}
+
+        private void LogFileSkipped(FileInfo sourceFileinfo, FileInfo file)
+        {
+            log.Warn(string.Format("Skipping:{1} - target file {0} is newer than source hbm:{1}",file.FullName,sourceFileinfo.Name));
+        }
 
 		/// <summary> </summary>
 		private string GetFileName(string className)

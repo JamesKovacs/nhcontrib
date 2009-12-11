@@ -43,7 +43,7 @@ namespace NHibernate.Tool.hbm2net
                     }
                     else
                     {
-                        throw new Exception(string.Format("Invalid option: {0}. Must be in the form --x:xxxxx"));
+                        ParseOption(s.Substring(sub),"");
                     }
                 }
                 else

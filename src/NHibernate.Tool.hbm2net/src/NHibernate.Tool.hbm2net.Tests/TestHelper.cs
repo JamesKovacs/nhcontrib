@@ -43,7 +43,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 			xmlDoc.LoadXml(configXml);
 			if (package != null)
 			{
-                xmlDoc.SelectSingleNode("/codegen/generate").Attributes["package"].InnerText = "";
+                xmlDoc.SelectSingleNode("/codegen/generate").Attributes["package"].InnerText = string.Empty;
 			}
 			if (renderer != null)
 			{

@@ -64,15 +64,34 @@ namespace NHibernate.Tool.hbm2net
             {
                 if (File.Exists(cmdLine.ConfigFile))
                 {
-                    FileInfo configFile = new FileInfo(cmdLine.ConfigFile);
-                    // parse config xml file
-                    Document document = new XmlDocument();
-                    document.Load(configFile.FullName);
-                    globalMetas = MetaAttributeHelper.LoadAndMergeMetaMap((document["codegen"]), null);
-                    IEnumerator generateElements = document["codegen"].SelectNodes("generate").GetEnumerator();
-                    while (generateElements.MoveNext())
+                    try
                     {
-                        generators.Add(new Generator(configFile.Directory, (Element)generateElements.Current));
+                        FileInfo configFile = new FileInfo(cmdLine.ConfigFile);
+                        // parse config xml file
+                        Document document = new XmlDocument();
+                        document.Load(configFile.FullName);
+                        var cfgValidator = new ConfigurationValidator();
+                        cfgValidator.Validate(document);
+                        if (!string.IsNullOrEmpty(cfgValidator.WarningMessage))
+                        {
+                            log.Warn("Configuration:" + cfgValidator.WarningMessage);
+                        }
+                        globalMetas = MetaAttributeHelper.LoadAndMergeMetaMap((document["codegen"]), null);
+                        IEnumerator generateElements = document["codegen"].SelectNodes("generate").GetEnumerator();
+                        while (generateElements.MoveNext())
+                        {
+                            generators.Add(new Generator(configFile.Directory, (Element)generateElements.Current));
+                        }
+                    }
+                    catch (ConfigurationValidationException validationException)
+                    {
+                        Console.Error.WriteLine("Error validating configuration file:" + validationException.Message);
+                        Environment.Exit(-1);
+                    }
+                    catch (Exception genericException)
+                    {
+                        Console.Error.WriteLine("Error reading configuration file:" + genericException.Message);
+                        Environment.Exit(-1);
                     }
                 }
                 else
@@ -116,13 +135,14 @@ namespace NHibernate.Tool.hbm2net
                 }
                 if (!File.Exists(mappingFile))
                     throw new FileNotFoundException("Mapping file does not exist.", mappingFile);
-
+                
                 // parse the mapping file
                 NameTable nt = new NameTable();
                 nt.Add("urn:nhibernate-mapping-2.2");
                 Document document = new XmlDocument(nt);
                 document.Load(mappingFile);
-
+                FileInfo mappingFileInfo = new FileInfo(mappingFile);
+                SourceFileInfoMap.Instance.Add(document, mappingFileInfo);
                 Element rootElement = document["hibernate-mapping"];
 
                 if (rootElement == null)
@@ -154,7 +174,7 @@ namespace NHibernate.Tool.hbm2net
             {
                 Generator g = (Generator)iterator.Current;
                 g.BaseDirName = outputDir ?? ".\\";
-                g.Generate(classMappings,fileCreationObserver);
+                g.Generate(classMappings,fileCreationObserver,cmdLine.CheckTime!=null);
             }
 		}
 
@@ -187,7 +207,7 @@ namespace NHibernate.Tool.hbm2net
 			while (classElements.MoveNext())
 			{
 				Element clazz = (Element) classElements.Current;
-
+                
 				if (!extendz)
 				{
 					ClassMapping cmap = new ClassMapping(classPackage, clazz, me, mm);

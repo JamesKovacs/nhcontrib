@@ -10,6 +10,7 @@ namespace NHibernate.Tool.hbm2net.Tests
 	///  arguments specified.</para>
 	/// </summary>
 	[TestFixture, Category("Functional Tests")]
+    [Ignore]
 	public class SimpleMappingFileConfigFileNoOutputArgsTests
 	{
 		private const string VelocityRenderer = "NHibernate.Tool.hbm2net.VelocityRenderer";

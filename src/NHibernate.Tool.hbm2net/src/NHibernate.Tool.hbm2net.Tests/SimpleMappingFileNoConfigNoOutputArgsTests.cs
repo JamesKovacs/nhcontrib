@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace NHibernate.Tool.hbm2net.Tests
 {
 	[TestFixture, Category("Functional Tests")]
+    [Ignore]
 	public class SimpleMappingFileNoConfigNoOutputArgsTests
 	{
 		private FileInfo mappingFile;

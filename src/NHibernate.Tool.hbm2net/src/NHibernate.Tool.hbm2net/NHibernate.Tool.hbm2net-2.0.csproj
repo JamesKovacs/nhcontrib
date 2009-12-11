@@ -126,6 +126,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CommandLineParser.cs" />
+    <Compile Include="ConfigurationValidationException.cs" />
+    <Compile Include="ConfigurationValidator.cs" />
     <Compile Include="CustomHost.cs" />
     <Compile Include="DOMRenderer.cs">
       <SubType>Code</SubType>
@@ -162,6 +164,7 @@
     <Compile Include="IRenderer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SourceFileInfoMap.cs" />
     <Compile Include="SubclassMapping.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +172,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="T4Render.cs" />
+    <EmbeddedResource Include="nhibernate-tool-hbm2net-configuration.xsd" />
     <None Include="NHibernate.Tool.hbm2net.build" />
     <EmbeddedResource Include="templates\common.tt" />
     <EmbeddedResource Include="templates\hbm2net.tt" />

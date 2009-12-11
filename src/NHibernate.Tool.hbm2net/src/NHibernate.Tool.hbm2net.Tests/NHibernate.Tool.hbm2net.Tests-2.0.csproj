@@ -129,6 +129,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClassNameTests.cs" />
+    <Compile Include="ConfigurationValidation.cs" />
     <Compile Include="ResourceHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -210,14 +211,14 @@
     <EmbeddedResource Include="escapes.hbm.xml" />
     <EmbeddedResource Include="abstractbaseaclasswithsubclass.hbm.xml" />
     <EmbeddedResource Include="product.hbm.xml" />
-    <Content Include="t4config.xml" />
+    <EmbeddedResource Include="t4config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>copy "$(ProjectDir)\app.config" "$(TargetDir)\$(TargetFileName).config"
-copy "$(ProjectDir)\map.hbm.xml" "$(SolutionDir)"..\stub
+copy "$(ProjectDir)\product.hbm.xml" "$(SolutionDir)"..\stub
 copy "$(ProjectDir)\t4config.xml" "$(SolutionDir)"..\stub</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -64,8 +64,39 @@ namespace NHibernate.Tool.hbm2net.T4
             base.Configure(workingDirectory, props);
         }
         public int MyProperty { get; set; }
+        string GetFileName(ClassMapping clazz)
+        {
+            var T4 = new Microsoft.VisualStudio.TextTemplating.Engine();
+            var host = new CustomHost()
+            {
+                TemplateFile = "config"
+                ,
+                Logger = log
+            };
+            CallContext.LogicalSetData("clazz", clazz);
+            string fileName = T4.ProcessTemplate(GetTemplateForOutputName()
+                                        , host
+                                        ).Trim();
+            if (host.HasError)
+                throw new Exception(); // errors are logged by the engine
+            return fileName;
+        }
         #region ICanProvideStream Members
-
+        public bool CheckIfSourceIsNewer(DateTime source,string directory, ClassMapping clazz,out FileInfo target)
+        {
+            target = null;
+            string filename = GetFileName(clazz);
+            filename = Path.Combine(directory, filename);
+            if (File.Exists(filename))
+            {
+                target = new FileInfo(filename);
+                return source>=target.LastWriteTimeUtc;
+            }
+            else
+            {
+                return true;
+            }
+        }
         public Stream GetStream(ClassMapping clazz,string directory,out string fileName)
         {
             directoryForOutput = directory;
@@ -77,20 +108,7 @@ namespace NHibernate.Tool.hbm2net.T4
 
             try
             {
-                var T4 = new Microsoft.VisualStudio.TextTemplating.Engine();
-                var host = new CustomHost()
-                {
-                    TemplateFile = "config"
-                    ,
-                    Logger = log
-                };
-                CallContext.LogicalSetData("clazz", clazz);
-                fileName = T4.ProcessTemplate(GetTemplateForOutputName()
-                                            , host
-                                            ).Trim();
-                if (host.HasError)
-                    throw new Exception(); // errors are logged by the engine
-
+                fileName = GetFileName(clazz);
             }
             catch
             {
