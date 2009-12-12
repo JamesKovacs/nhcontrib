@@ -66,7 +66,7 @@ namespace NHibernate.Tool.hbm2net.Tests
             Assert.IsTrue(mappingFile.Exists && mappingFile.Length != 0);
             Assert.AreEqual(mappingFile.DirectoryName, configFile.DirectoryName);
 
-            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName };
+            string[] args = new string[] { "--config=" + configFile.FullName, mappingFile.FullName,"--output=generated" };
             CodeGenerator.Generate(args,this);
             //this is just cheating...
             AssertFile();
