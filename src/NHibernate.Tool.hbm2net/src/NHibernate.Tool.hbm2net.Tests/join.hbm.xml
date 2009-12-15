@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Join"
+    namespace="JoinTest">
+
+
+  <class name="Person"
+     table="People">
+
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="Name" />
+
+    <join table="Addresses">
+      <key column="PersonId"/>
+      <property name="Line1"/>
+      <property name="Line2"/>
+      <property name="City"/>
+      <property name="Country"/>
+      <property name="ZipCode"/>
+    </join>
+  </class>
+
+
+</hibernate-mapping>

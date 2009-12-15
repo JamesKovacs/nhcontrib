@@ -9,7 +9,7 @@
     </id>
     <property name="Name"/>
 
-    <map name="Attributes" table="UserAttributesAreBoring">
+    <map name="Attributes" table="UserAttributesAreBoring" >
       <meta attribute="field-description" >attributes are boring ...</meta>
       <key column="UserId"/>
       <index column="AttributeName" type="System.String"/>

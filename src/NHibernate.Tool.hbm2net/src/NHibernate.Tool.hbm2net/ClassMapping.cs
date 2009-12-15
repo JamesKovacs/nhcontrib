@@ -846,6 +846,14 @@ namespace NHibernate.Tool.hbm2net
 			propertyList.AddAll(classElement.SelectNodes("urn:key-property", CodeGenerator.nsmgr));
 			propertyList.AddAll(classElement.SelectNodes("urn:any", CodeGenerator.nsmgr));
 
+            // get the properties inside a <join/> mapping...
+            var joins = classElement.SelectNodes("urn:join",CodeGenerator.nsmgr);
+            foreach (XmlNode join in joins)
+            {
+                propertyList.AddAll( join.SelectNodes("urn:property", CodeGenerator.nsmgr));
+            }
+
+
 			// get all many-to-one associations defined for the class
 			SupportClass.ListCollectionSupport manyToOneList = new SupportClass.ListCollectionSupport();
 			manyToOneList.AddAll(classElement.SelectNodes("urn:many-to-one", CodeGenerator.nsmgr));

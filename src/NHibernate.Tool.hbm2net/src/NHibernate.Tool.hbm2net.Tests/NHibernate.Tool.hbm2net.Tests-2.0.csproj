@@ -213,6 +213,9 @@
     <EmbeddedResource Include="product.hbm.xml" />
     <EmbeddedResource Include="t4config.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="join.hbm.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
