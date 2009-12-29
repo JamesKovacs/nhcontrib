@@ -118,6 +118,10 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="xmldiffpatch, Version=1.0.8.28, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net\xmldiffpatch.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -130,6 +134,8 @@
     </Compile>
     <Compile Include="ClassNameTests.cs" />
     <Compile Include="ConfigurationValidation.cs" />
+    <Compile Include="Db2hbmTest.cs" />
+    <Compile Include="Experiments.cs" />
     <Compile Include="ResourceHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -150,6 +156,10 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NHibernate.Tool.Db2hbm\NHibernate.Tool.Db2hbm.csproj">
+      <Project>{66CA9291-80EA-428D-945A-8A9AEDB739D2}</Project>
+      <Name>NHibernate.Tool.Db2hbm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NHibernate.Tool.hbm2net\NHibernate.Tool.hbm2net-2.0.csproj">
       <Project>{136FFE16-EE3B-4556-90FB-E265113CB13F}</Project>
       <Name>NHibernate.Tool.hbm2net-2.0</Name>
@@ -215,6 +225,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="join.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmConfigTemplate.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="JustProperties.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<db2hbm-conf xmlns="urn:nhibernate-codegen-2.2">
+  <metadata-strategies>
+    <strategy>s1</strategy>
+    <strategy>s2</strategy>
+    <strategy>s3</strategy>
+  </metadata-strategies>
+  <naming-strategy>ns</naming-strategy>
+  <connection-info>
+    <dialect>NHibernate.Dialect.SQLiteDialect, NHibernate</dialect>
+    <connection-string>data source=:memory:</connection-string>
+    <connection-driver>NHibernate.Driver.SQLite20Driver, NHibernate</connection-driver>
+  </connection-info>
+  <tables>
+    <table schema="s1" catalog="c1">t1</table>
+    <table schema="s2" catalog="c2">t2</table>
+    <table schema="s3" catalog="c3">t3</table>
+  </tables>
+  <entities-namespace>nsp</entities-namespace>
+  <output-folder></output-folder>
+  <additional-properties>
+    <property name="p1">v1</property>
+    <property name="p2">v2</property>
+    <property name="p3">v3</property>
+  </additional-properties>
+</db2hbm-conf>
