@@ -46,16 +46,20 @@ namespace NHibernate.Tool.hbm2net.Tests
         [Test]
         public void SimpleEntityWithJustProperties()
         {
+            string hbm = "JustProperties.hbm.xml";
+            TestHelper.BuildAssemblyFromHbm("NHibernate.DomainModel", hbm);
             MappingGenerator gen = new MappingGenerator();
             gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.Db2hbmConfigTemplate.xml")));
-            string schema = GetSchemaForSQLite("JustProperties.hbm.xml");
+            string schema = GetSchemaForMSSql(hbm);
+            Console.WriteLine("Generated Schema:");
+            Console.Write(schema);
             gen.Generate(new StdoutStreamProvider());
             
         }
 
         private string GetSchemaForSQLite(params string[] streams)
         {
-            var cfg = GetAWorkingConfiguration();
+            var cfg = TestHelper.GetAWorkingConfiguration();
             foreach (string s in streams)
                 cfg.AddXmlString(ResourceHelper.GetResource(s));
             SchemaExport se = new SchemaExport(cfg);
@@ -63,21 +67,16 @@ namespace NHibernate.Tool.hbm2net.Tests
             se.Execute((string q) => sb.AppendLine(q), true, false);
             return sb.ToString();
         }
-
-        // <summary>
-        /// Obtain a working configuration with SQLite
-        /// from: http://ayende.com/Blog/archive/2009/04/28/nhibernate-unit-testing.aspx
-        /// </summary>
-        /// <returns>An nh configuration</returns>
-        private Configuration GetAWorkingConfiguration()
+        private string GetSchemaForMSSql(params string[] streams)
         {
-            return new Configuration()
-                                    .SetProperty(NHibernate.Cfg.Environment.ReleaseConnections, "on_close")
-                                    .SetProperty(NHibernate.Cfg.Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
-                                    .SetProperty(NHibernate.Cfg.Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-                                    .SetProperty(NHibernate.Cfg.Environment.ConnectionString, "data source=:memory:")
-                                    .SetProperty(NHibernate.Cfg.Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
-                                    ;
+            var cfg = TestHelper.GetASqlExpressConfiguration();
+            foreach (string s in streams)
+                cfg.AddXmlString(ResourceHelper.GetResource(s));
+            SchemaExport se = new SchemaExport(cfg);
+            StringBuilder sb = new StringBuilder();
+            se.Execute((string q) => sb.AppendLine(q), true, false);
+            return sb.ToString();
         }
+        
     }
 }

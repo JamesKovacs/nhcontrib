@@ -37,8 +37,7 @@ namespace NHibernate.Tool.hbm2net.Tests
             generatedFiles = new List<string>();
         }
 
-        const string T4Renderer = "NHibernate.Tool.hbm2net.T4.T4Render, NHibernate.Tool.hbm2net";
-        const string T4DefaultTemplate = "res://NHibernate.Tool.hbm2net.templates.hbm2net.tt";
+        
         private const string MappingFileResourceName = "Simple1.hbm.xml";
         private const string ExpectedFileResourceName = "Simple1.csharp";
         private static string ExpectedFileName = Path.Combine(TestHelper.DefaultOutputDirectory.FullName, @"Simple.generated.cs");
@@ -59,7 +58,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, MappingFileResourceName);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused","clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -89,7 +88,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -118,7 +117,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -148,7 +147,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -177,7 +176,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -206,7 +205,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -233,7 +232,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -272,7 +271,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -301,7 +300,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -342,7 +341,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -371,7 +370,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -400,7 +399,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -430,7 +429,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -460,7 +459,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -489,7 +488,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -518,7 +517,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -547,7 +546,7 @@ namespace NHibernate.Tool.hbm2net.Tests
                 mappingFile.Delete();
             ResourceHelper.WriteToFileFromResource(mappingFile, hbm);
 
-            TestHelper.CreateConfigFile(configFile, T4DefaultTemplate, T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
+            TestHelper.CreateConfigFile(configFile, TestHelper.T4DefaultTemplate, TestHelper.T4Renderer, "unused", "clazz.GeneratedName+\".generated.cs\"");
 
             // ensure that test is setup correctly
             Assert.IsTrue(configFile.Exists && configFile.Length != 0);
@@ -562,24 +561,10 @@ namespace NHibernate.Tool.hbm2net.Tests
             CheckMappingAgainstCode(asm, mappingFile.FullName);
 
         }
-        /// <summary>
-        /// Obtain a working configuration with SQLite
-        /// from: http://ayende.com/Blog/archive/2009/04/28/nhibernate-unit-testing.aspx
-        /// </summary>
-        /// <returns>An nh configuration</returns>
-        private Configuration GetAWorkingConfiguration()
-        {
-            return new Configuration()
-                                    .SetProperty(NHibernate.Cfg.Environment.ReleaseConnections, "on_close")
-                                    .SetProperty(NHibernate.Cfg.Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
-                                    .SetProperty(NHibernate.Cfg.Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-                                    .SetProperty(NHibernate.Cfg.Environment.ConnectionString, "data source=:memory:")
-                                    .SetProperty(NHibernate.Cfg.Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
-                                    ;
-        }
+        
         private void CheckMappingAgainstCode(Assembly asm, string mappingFile)
         {
-            Configuration cfg = GetAWorkingConfiguration();
+            Configuration cfg = TestHelper.GetAWorkingConfiguration();
             cfg.AddFile(new FileInfo(mappingFile));
             //cfg.AddAssembly(asm);
             //new SchemaExport(cfg).Create(true, true);

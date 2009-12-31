@@ -7,9 +7,9 @@
   </metadata-strategies>
   <naming-strategy>ns</naming-strategy>
   <connection-info>
-    <dialect>NHibernate.Dialect.SQLiteDialect, NHibernate</dialect>
-    <connection-string>data source=:memory:</connection-string>
-    <connection-driver>NHibernate.Driver.SQLite20Driver, NHibernate</connection-driver>
+    <dialect>NHibernate.Dialect.MsSql2005Dialect, NHibernate</dialect>
+    <connection-string>Server=localhost\SQLEXPRESS;initial catalog=db2hbm;Integrated Security=True</connection-string>
+    <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <tables>
     <table schema="s1" catalog="c1">t1</table>
