@@ -74,7 +74,7 @@
         </xs:element>
 
         <xs:element name="entities-namespace" type="xs:string" maxOccurs="1" minOccurs="1"/>
-
+        <xs:element name="entities-assembly" type="xs:string" maxOccurs="1" minOccurs="1"/>
         <xs:element name="output-folder" maxOccurs="1" minOccurs="0" />
 
         <xs:element name="additional-properties" maxOccurs="1" minOccurs="0">

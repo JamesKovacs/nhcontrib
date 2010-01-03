@@ -18,7 +18,7 @@ namespace NHibernate.Tool.Db2hbm
             foreach( DataRow t in context.Schema.GetTables(null,null,null,new string[0]).Rows  )
             {
                 var tableMetaData = context.Schema.GetTableMetadata(t, true);
-                context.Model.AddClassForTable(tableMetaData.Name, tableMetaData.Name);
+                var clazz = context.Model.AddClassForTable(tableMetaData.Name, tableMetaData.Name);
             }
         }
 

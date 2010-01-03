@@ -13,6 +13,7 @@ using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.ByteCode.LinFu;
 using NHibernate.Tool.hbm2ddl;
+using XmlUnit;
 
 namespace NHibernate.Tool.hbm2net.Tests
 {
@@ -53,8 +54,26 @@ namespace NHibernate.Tool.hbm2net.Tests
             string schema = GetSchemaForMSSql(hbm);
             Console.WriteLine("Generated Schema:");
             Console.Write(schema);
+            internalStreams.Clear(); // clear all generated files...
             gen.Generate(this);
-            
+            Assert.IsTrue(internalStreams.ContainsKey("Simple"));
+            CheckXmlMapping(hbm,"Simple");
+        }
+
+        private void CheckXmlMapping(string hbm,string stream)
+        {
+            XmlDiff diff = new XmlDiff(new XmlInput(internalStreams[stream].ToString())
+                                       , new XmlInput(ResourceHelper.GetResource(hbm)));
+
+            var res = diff.Compare();
+            if (!res.Equal)
+            {
+                Console.WriteLine("Expected xml was:");
+                Console.WriteLine(ResourceHelper.GetResource(hbm));
+                Console.WriteLine("But was:");
+                Console.WriteLine(internalStreams[stream].ToString());
+            }
+            Assert.IsTrue(res.Equal);
         }
 
         private string GetSchemaForSQLite(params string[] streams)
@@ -80,10 +99,11 @@ namespace NHibernate.Tool.hbm2net.Tests
 
 
         #region IStreamProvider Members
-
-        public TextWriter GetTextWriter(string entityTable, string entitySchema, string entityCatalog)
+        Dictionary<string, StringBuilder> internalStreams = new Dictionary<string,StringBuilder>();
+        public TextWriter GetTextWriter(string entityName )
         {
-            throw new NotImplementedException();
+            internalStreams[entityName] = new StringBuilder();
+            return new StringWriter(internalStreams[entityName]);
         }
 
         #endregion

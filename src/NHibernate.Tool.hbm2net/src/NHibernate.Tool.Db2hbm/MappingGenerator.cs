@@ -54,13 +54,19 @@ namespace NHibernate.Tool.Db2hbm
                 
                 foreach (var clazz in ctx.Model.GetEntities())
                 {
+                    TextWriter target = streamProvider.GetTextWriter(clazz.name);
                     hibernatemapping mapping = new hibernatemapping();
                     mapping.Items = new object[] { clazz };
+                    if (!string.IsNullOrEmpty(cfg.entitiesnamespace))
+                        mapping.@namespace = cfg.entitiesnamespace;
+                    if (!string.IsNullOrEmpty(cfg.entitiesassembly))
+                        mapping.assembly = cfg.entitiesassembly;
                     XmlSerializer ser = new XmlSerializer(typeof(hibernatemapping));
                     XmlSerializerNamespaces empty = new XmlSerializerNamespaces();
-                    empty.Add("", "urn:nhibernate-mapping-2.2");
-                    ser.Serialize(Console.Out, mapping,empty);
-                    
+                    empty.Add(string.Empty, "urn:nhibernate-mapping-2.2");
+                    ser.Serialize(target, mapping,empty);
+                    target.Flush();
+                    target.Close();
                 }
             }
             catch (Exception e)

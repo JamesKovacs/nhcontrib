@@ -8,6 +8,6 @@ namespace NHibernate.Tool.Db2hbm
 {
     public interface IStreamProvider
     {
-        TextWriter GetTextWriter(string entityTable, string entitySchema, string entityCatalog);
+        TextWriter GetTextWriter(string entityName);
     }
 }

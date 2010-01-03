@@ -9,7 +9,7 @@ namespace NHibernate.Tool.Db2hbm
     {
         #region IStreamProvider Members
 
-        public System.IO.TextWriter GetTextWriter(string entityTable, string entitySchema, string entityCatalog)
+        public System.IO.TextWriter GetTextWriter(string entityTable)
         {
             return Console.Out;
         }
