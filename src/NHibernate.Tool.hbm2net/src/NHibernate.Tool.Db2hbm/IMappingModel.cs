@@ -7,6 +7,7 @@ namespace NHibernate.Tool.Db2hbm
 {
     public interface IMappingModel
     {
-
+        @class AddClassForTable(string tableName,string entityName);
+        IList<@class> GetEntities();
     }
 }

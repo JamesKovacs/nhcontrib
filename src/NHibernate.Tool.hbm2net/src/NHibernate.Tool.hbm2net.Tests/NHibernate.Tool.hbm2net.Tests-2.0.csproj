@@ -118,9 +118,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="xmldiffpatch, Version=1.0.8.28, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Reference Include="xmlunit, Version=0.4.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\xmldiffpatch.dll</HintPath>
+      <HintPath>..\..\lib\net\xmlunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

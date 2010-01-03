@@ -17,7 +17,7 @@ using NHibernate.Tool.hbm2ddl;
 namespace NHibernate.Tool.hbm2net.Tests
 {
     [TestFixture]
-    public class Db2hbmTest
+    public class Db2hbmTest:IStreamProvider
     {
         [Test, Explicit]
         public void InferConfigSchema()
@@ -53,7 +53,7 @@ namespace NHibernate.Tool.hbm2net.Tests
             string schema = GetSchemaForMSSql(hbm);
             Console.WriteLine("Generated Schema:");
             Console.Write(schema);
-            gen.Generate(new StdoutStreamProvider());
+            gen.Generate(this);
             
         }
 
@@ -77,6 +77,15 @@ namespace NHibernate.Tool.hbm2net.Tests
             se.Execute((string q) => sb.AppendLine(q), true, false);
             return sb.ToString();
         }
-        
+
+
+        #region IStreamProvider Members
+
+        public TextWriter GetTextWriter(string entityTable, string entitySchema, string entityCatalog)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

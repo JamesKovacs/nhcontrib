@@ -64,12 +64,19 @@
     <Compile Include="IMetadataStrategy.cs" />
     <Compile Include="IStreamProvider.cs" />
     <Compile Include="MappingGenerator.cs" />
+    <Compile Include="MappingModelImpl.cs" />
+    <Compile Include="nhibernate-mapping.cs">
+      <DependentUpon>nhibernate-mapping.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StdoutStreamProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="config.xsd">
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nhibernate-mapping.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

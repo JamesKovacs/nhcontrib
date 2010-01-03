@@ -36,6 +36,7 @@ namespace NHibernate.Tool.Db2hbm
         {
             GenerationContext ctx = new GenerationContext();
             ctx.Dialect = GetDialect();
+            ctx.Model = new MappingModelImpl();
             IDriver driver = GetDriver();
             try
             {
@@ -49,6 +50,17 @@ namespace NHibernate.Tool.Db2hbm
                     ctx.Schema = ctx.Dialect.GetDataBaseSchema(dbConn);
                     foreach (IMetadataStrategy strategy in metaStrategies)
                         strategy.Process(ctx);
+                }
+                
+                foreach (var clazz in ctx.Model.GetEntities())
+                {
+                    hibernatemapping mapping = new hibernatemapping();
+                    mapping.Items = new object[] { clazz };
+                    XmlSerializer ser = new XmlSerializer(typeof(hibernatemapping));
+                    XmlSerializerNamespaces empty = new XmlSerializerNamespaces();
+                    empty.Add("", "urn:nhibernate-mapping-2.2");
+                    ser.Serialize(Console.Out, mapping,empty);
+                    
                 }
             }
             catch (Exception e)
