@@ -48,6 +48,8 @@ namespace NHibernate.Tool.Db2hbm
                     connection.ConnectionString = cfg.connectioninfo.connectionstring;
                     connection.Open();
                     ctx.Schema = ctx.Dialect.GetDataBaseSchema(dbConn);
+                    ctx.Configuration = cfg;
+                    ctx.Connection = dbConn;
                     foreach (IMetadataStrategy strategy in metaStrategies)
                         strategy.Process(ctx);
                 }

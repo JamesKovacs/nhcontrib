@@ -12,9 +12,35 @@
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <tables>
-    <table schema="s1" catalog="c1">t1</table>
-    <table schema="s2" catalog="c2">t2</table>
-    <table schema="s3" catalog="c3">t3</table>
+    <table schema="s1" catalog="c1">
+      <primary-key>
+        <generator class="generatorname">
+          <param name="param_name">parameter value</param>
+          <param name="param_name1">parameter value</param>
+        </generator>
+        <key-column name="name" dbtype="dbtype"/>
+        <key-column name="name1" dbtype="dbtype"/>
+      </primary-key>
+      <foreign-key
+            constraint-name="foreignKeyName"
+            foreign-catalog="catalogName"
+            foreign-schema="schemaName"
+            foreign-table="tableName"
+      >
+          <column-ref local-column="columnName" foreign-column="foreignColumnName"/>
+          <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
+      </foreign-key>
+      <foreign-key
+            constraint-name="foreignKey2Name"
+            foreign-catalog="catalogName"
+            foreign-schema="schemaName"
+            foreign-table="tableName"
+      >
+        <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
+      </foreign-key>
+      </table>
+    <table schema="s2" catalog="c2"></table>
+    <table schema="s3" catalog="c3"></table>
   </tables>
   <entities-namespace>NHibernate.DomainModel</entities-namespace>
   <entities-assembly>NHibernate.DomainModel</entities-assembly>

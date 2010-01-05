@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="ConfigurationValidationException.cs" />
     <Compile Include="ConfigurationValidator.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="FirstPassEntityCollector.cs" />
     <Compile Include="GenerationContext.cs" />
     <Compile Include="IMappingModel.cs" />
