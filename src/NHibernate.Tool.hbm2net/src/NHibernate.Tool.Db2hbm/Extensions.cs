@@ -15,7 +15,7 @@ namespace NHibernate.Tool.Db2hbm
             return data == "yes" || data == "true" || data == "1";
         }
 
-        public static DataTable GetPrimaryKey(this NHibernate.Dialect.Dialect dialect, DbConnection connection, string schema, string table)
+        public static DataTable GetCompleteColumnSchema(this NHibernate.Dialect.Dialect dialect, DbConnection connection, string schema, string table)
         {
             DbCommand command = connection.CreateCommand();
             command.CommandText = "select * from " + GetTableName(schema,table,dialect);

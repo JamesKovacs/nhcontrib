@@ -11,26 +11,43 @@ using NHibernate.Driver;
 using System.Data;
 using System.Data.Common;
 using System.IO;
+using cfg;
 
 namespace NHibernate.Tool.Db2hbm
 {
     public class MappingGenerator
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger("db2hbm");
         db2hbmconf cfg;
         IList<IMetadataStrategy> metaStrategies;
         public MappingGenerator()
         {
             metaStrategies = new List<IMetadataStrategy>();
-            metaStrategies.Add(new FirstPassEntityCollector());
+            
         }
         public void Configure(XmlReader reader)
         {
-            XmlDocument cfgdoc = new XmlDocument();
-            cfgdoc.Load(reader);
-            Validate(cfgdoc);
-            XmlSerializer ser = new XmlSerializer(typeof(db2hbmconf));
-            this.cfg = ser.Deserialize(XmlReader.Create(new StringReader(cfgdoc.InnerXml))) as db2hbmconf;
+            try
+            {
+                XmlDocument cfgdoc = new XmlDocument();
+                cfgdoc.Load(reader);
+                Validate(cfgdoc);
+                XmlSerializer ser = new XmlSerializer(typeof(db2hbmconf));
+                this.cfg = ser.Deserialize(XmlReader.Create(new StringReader(cfgdoc.InnerXml))) as db2hbmconf;
+                ConfigureMetaStrategies();
+            }
+            catch (Exception e)
+            {
+                log.Error("Fatal error during configuration", e);
+            }
+        }
+
+        private void ConfigureMetaStrategies()
+        {
+            foreach (var v in cfg.metadatastrategies)
+            {
+                metaStrategies.Add(TypeFactory.Create<IMetadataStrategy>(v.@class));
+            }
         }
         public void Generate(IStreamProvider streamProvider)
         {
@@ -50,6 +67,8 @@ namespace NHibernate.Tool.Db2hbm
                     ctx.Schema = ctx.Dialect.GetDataBaseSchema(dbConn);
                     ctx.Configuration = cfg;
                     ctx.Connection = dbConn;
+                    ctx.TableExceptions = new TableExceptions(cfg);
+                    ctx.NamingStrategy = TypeFactory.Create<INamingStrategy>(cfg.namingstrategy.@class);
                     foreach (IMetadataStrategy strategy in metaStrategies)
                         strategy.Process(ctx);
                 }

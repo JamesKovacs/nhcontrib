@@ -27,16 +27,17 @@ namespace NHibernate.Tool.Db2hbm
             foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
             {
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
-                var clazz = currentContext.Model.AddClassForTable(tableMetaData.Name, tableMetaData.Name);
+                string entityName = currentContext.NamingStrategy.EntityNameFromTableName(tableMetaData.Name);
+                var clazz = currentContext.Model.AddClassForTable(tableMetaData.Name, entityName);
                 if( !string.IsNullOrEmpty(tableMetaData.Schema) )
                     clazz.schema = tableMetaData.Schema;
-                AddProperties(clazz, tableMetaData);
+                AddProperties(clazz,entityName, tableMetaData);
             }
         }
 
-        private void AddProperties(@class clazz, ITableMetadata tableMetaData)
+        private void AddProperties(@class clazz,string entity, ITableMetadata tableMetaData)
         {
-            Dictionary<string, bool> columExclusionList = new Dictionary<string,bool>();
+            //Dictionary<string, bool> columExclusionList = new Dictionary<string,bool>();
             /*
             var dt = currentContext.Dialect.GetPrimaryKey(currentContext.Connection, tableMetaData.Schema, tableMetaData.Name);
             
@@ -49,14 +50,13 @@ namespace NHibernate.Tool.Db2hbm
             }*/
             var columnSet = currentContext.Schema.GetColumns(tableMetaData.Catalog, tableMetaData.Schema, tableMetaData.Name, null);
             int nameOrdinal = columnSet.Columns.IndexOf(COLUMN_NAME);
-            List<property> properties = new List<property>();
+            
             foreach (DataRow row in columnSet.Rows)
             {
                 var cInfo = tableMetaData.GetColumnMetadata(row.ItemArray[nameOrdinal].ToString());
-                property p = new property();
-                p.name = cInfo.Name;
+                property p = currentContext.Model.AddPropertyToEntity(entity,cInfo.Name);
                 p.notnull = !true.ParseFromDb(cInfo.Nullable);
-                p.column = cInfo.Name;
+                p.column = currentContext.NamingStrategy.PropertyNameFromColumnName(cInfo.Name);
                 if (cInfo.ColumnSize != 0)
                 {
                     p.length = cInfo.ColumnSize.ToString();
@@ -65,9 +65,8 @@ namespace NHibernate.Tool.Db2hbm
                 {
                     p.precision = cInfo.NumericalPrecision.ToString();
                 }
-                properties.Add(p);
             }
-            clazz.Items = properties.ToArray();
+            
         }
         #endregion
     }

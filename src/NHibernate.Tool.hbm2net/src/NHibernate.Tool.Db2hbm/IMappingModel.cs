@@ -9,5 +9,8 @@ namespace NHibernate.Tool.Db2hbm
     {
         @class AddClassForTable(string tableName,string entityName);
         IList<@class> GetEntities();
+        property AddPropertyToEntity(string entityName,string propertyName);
+        void RemovePropertyByColumn(string entityName, string p);
+        @class GetClassFromEntityName(string entityName);
     }
 }

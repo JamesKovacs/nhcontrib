@@ -50,7 +50,7 @@ namespace NHibernate.Tool.hbm2net.Tests
             string hbm = "JustProperties.hbm.xml";
             TestHelper.BuildAssemblyFromHbm("NHibernate.DomainModel", hbm);
             MappingGenerator gen = new MappingGenerator();
-            gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.Db2hbmConfigTemplate.xml")));
+            gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.Db2hbmTest1.xml")));
             string schema = GetSchemaForMSSql(hbm);
             Console.WriteLine("Generated Schema:");
             Console.Write(schema);

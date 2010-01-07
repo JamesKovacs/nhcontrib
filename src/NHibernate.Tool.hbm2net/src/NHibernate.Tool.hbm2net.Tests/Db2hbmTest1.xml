@@ -2,6 +2,7 @@
 <db2hbm-conf xmlns="urn:nhibernate-codegen-2.2">
   <metadata-strategies>
     <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
   <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm"></naming-strategy>
   <connection-info>
@@ -10,15 +11,8 @@
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <tables>
-    <table schema="s1" catalog="c1" name="Simple" >
-      <primary-key>
-        <generator class="generatorname">
-          <param name="param_name">parameter value</param>
-          <param name="param_name1">parameter value</param>
-        </generator>
-        <key-column name="name" dbtype="dbtype"/>
-        <key-column name="name1" dbtype="dbtype"/>
-      </primary-key>
+    <table schema="dbo" catalog="db2hbm" name="Simple">
+      
       <foreign-key
             constraint-name="foreignKeyName"
             foreign-catalog="catalogName"
@@ -37,8 +31,6 @@
         <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
       </foreign-key>
       </table>
-    <table schema="s2" catalog="c2" name="s2"></table>
-    <table schema="s3" catalog="c3" name="s3"></table>
   </tables>
   <entities-namespace>NHibernate.DomainModel</entities-namespace>
   <entities-assembly>NHibernate.DomainModel</entities-assembly>

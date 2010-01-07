@@ -232,6 +232,9 @@
   <ItemGroup>
     <EmbeddedResource Include="JustProperties.hbm.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest1.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
