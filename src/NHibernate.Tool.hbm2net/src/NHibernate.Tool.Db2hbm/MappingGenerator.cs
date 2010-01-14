@@ -68,7 +68,7 @@ namespace NHibernate.Tool.Db2hbm
                     ctx.Configuration = cfg;
                     ctx.Connection = dbConn;
                     ctx.TableExceptions = new TableExceptions(cfg);
-                    ctx.NamingStrategy = TypeFactory.Create<INamingStrategy>(cfg.namingstrategy.@class);
+                    ctx.NamingStrategy = TypeFactory.Create<INamingStrategy>(cfg.namingstrategy);
                     foreach (IMetadataStrategy strategy in metaStrategies)
                         strategy.Process(ctx);
                 }

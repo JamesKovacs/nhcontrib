@@ -77,6 +77,21 @@
     <Compile Include="StdoutStreamProvider.cs" />
     <Compile Include="TableExceptions.cs" />
     <Compile Include="TypeFactory.cs" />
+    <Compile Include="UnhAddinInflector\AbstractInflector.cs" />
+    <Compile Include="UnhAddinInflector\AbstractRule.cs" />
+    <Compile Include="UnhAddinInflector\CaseSensitiveRule.cs" />
+    <Compile Include="UnhAddinInflector\DataDictionaryRuleApplier.cs" />
+    <Compile Include="UnhAddinInflector\DefaultTableizeRuleApplier.cs" />
+    <Compile Include="UnhAddinInflector\EnglishInflector.cs" />
+    <Compile Include="UnhAddinInflector\IInflector.cs" />
+    <Compile Include="UnhAddinInflector\InflectorExtensions.cs" />
+    <Compile Include="UnhAddinInflector\InflectorNamingStrategy.cs" />
+    <Compile Include="UnhAddinInflector\IReplacementRule.cs" />
+    <Compile Include="UnhAddinInflector\IRuleApplier.cs" />
+    <Compile Include="UnhAddinInflector\ItalianInflector.cs" />
+    <Compile Include="UnhAddinInflector\NounsRule.cs" />
+    <Compile Include="UnhAddinInflector\SpanishInflector.cs" />
+    <Compile Include="UnhAddinInflector\SpanishNamingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="config.xsd">

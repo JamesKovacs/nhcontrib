@@ -32,5 +32,17 @@ namespace NHibernate.Tool.Db2hbm
             }
             return ret;
         }
+        public static T Create<T>(cfg.classref config) where T : class
+        {
+            T instance = Create<T>(config.@class);
+            foreach (var v in config.property)
+            {
+                PropertyInfo pi = instance.GetType().GetProperty(v.name);
+                if (pi == null || !pi.CanWrite)
+                    throw new Exception(string.Format("Can't configure type {0}: property {1} does not exists or is read-only", typeof(T).Name, v.name));
+                pi.SetValue(instance, Convert.ChangeType(v.Value, pi.PropertyType), null);
+            }
+            return instance;
+        }
     }
 }

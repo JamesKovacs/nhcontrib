@@ -49,6 +49,7 @@
                           <xs:element maxOccurs="unbounded" name="key-column" minOccurs="0">
                             <xs:complexType>
                               <xs:attribute name="name" type="xs:string" use="required" />
+                              <xs:attribute name="type" type="xs:string" use="required" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -102,9 +103,13 @@
   </xs:element>
   <xs:complexType name ="class-ref" >
     <xs:sequence>
-      <xs:element maxOccurs="unbounded" name="property" minOccurs="0">
-        <xs:complexType>
-          <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:element maxOccurs="unbounded" name="property" minOccurs="0" >
+        <xs:complexType >
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+            <xs:attribute name="name" type="xs:string" use="required" />
+            </xs:extension>
+          </xs:simpleContent>
         </xs:complexType>
       </xs:element>
     </xs:sequence>

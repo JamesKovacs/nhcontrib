@@ -16,8 +16,8 @@
           <param name="param_name">parameter value</param>
           <param name="param_name1">parameter value</param>
         </generator>
-        <key-column name="name" dbtype="dbtype"/>
-        <key-column name="name1" dbtype="dbtype"/>
+        <key-column name="name" type="dbtype"/>
+        <key-column name="name1" type="dbtype"/>
       </primary-key>
       <foreign-key
             constraint-name="foreignKeyName"

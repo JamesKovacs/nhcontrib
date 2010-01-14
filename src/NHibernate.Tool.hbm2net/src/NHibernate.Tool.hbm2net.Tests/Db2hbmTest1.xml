@@ -4,7 +4,9 @@
     <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
-  <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm"></naming-strategy>
+  <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
+    <property name="Language">English</property>
+  </naming-strategy>
   <connection-info>
     <dialect>NHibernate.Dialect.MsSql2005Dialect, NHibernate</dialect>
     <connection-string>Server=localhost\SQLEXPRESS;initial catalog=db2hbm;Integrated Security=True</connection-string>

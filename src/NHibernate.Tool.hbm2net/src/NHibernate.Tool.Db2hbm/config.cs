@@ -176,6 +176,8 @@ namespace cfg {
         
         private string nameField;
         
+        private string valueField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string name {
@@ -184,6 +186,17 @@ namespace cfg {
             }
             set {
                 this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
             }
         }
     }
@@ -423,6 +436,8 @@ namespace cfg {
         
         private string nameField;
         
+        private string typeField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string name {
@@ -431,6 +446,17 @@ namespace cfg {
             }
             set {
                 this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
             }
         }
     }
