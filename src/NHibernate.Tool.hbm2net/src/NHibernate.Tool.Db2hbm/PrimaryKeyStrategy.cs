@@ -14,10 +14,10 @@ namespace NHibernate.Tool.Db2hbm
         const string ISIDENTITY = "IsIdentity";
         const string COLNAME = "ColumnName";
         public ILog logger { private get; set; }
-
+        public TypeConverter typeConverter { set; protected get; }
         GenerationContext currentContext;
         #region IMetadataStrategy Members
-        public void Process(GenerationContext context)
+        public virtual void Process(GenerationContext context)
         {
             currentContext = context;
             foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
@@ -40,15 +40,15 @@ namespace NHibernate.Tool.Db2hbm
             }
         }
 
-        private object CreateId(IColumnMetadata[] keyColumns,ITableMetadata tableMetadata)
+        protected virtual object CreateId(IColumnMetadata[] keyColumns,ITableMetadata tableMetadata)
         {
             if (keyColumns.Length == 1)
             {
                 var id = new id();
                 id.generator = GetGenerator(keyColumns[0],tableMetadata);
                 id.column1 = keyColumns[0].Name;
-                id.type1 =  keyColumns[0].TypeName;
-                
+                id.type1 =  typeConverter.GetNHType(keyColumns[0]);
+                id.name = currentContext.NamingStrategy.PropertyIdNameFromColumnName(keyColumns[0].Name);
                 return id;
             }
             else
@@ -65,7 +65,7 @@ namespace NHibernate.Tool.Db2hbm
                     kp.name = currentContext.NamingStrategy.PropertyNameFromColumnName(meta.Name);
                     kp.column1 = meta.Name;
                     kp.length = meta.ColumnSize != 0 ? meta.ColumnSize.ToString() : null;
-                    kp.type1 = meta.TypeName;
+                    kp.type1 = typeConverter.GetNHType(meta);
                     keyps.Add(kp);
                 }
                 cid.Items = keyps.ToArray();
@@ -75,7 +75,7 @@ namespace NHibernate.Tool.Db2hbm
             
         }
 
-        private generator GetGenerator(IColumnMetadata iColumnMetadata, ITableMetadata tableMetaData)
+        protected virtual generator GetGenerator(IColumnMetadata iColumnMetadata, ITableMetadata tableMetaData)
         {
             if (currentContext.TableExceptions.HasException(tableMetaData.Name, tableMetaData.Catalog, tableMetaData.Schema))
             {

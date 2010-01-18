@@ -9,6 +9,7 @@ namespace NHibernate.Tool.Db2hbm
     {
         string EntityNameFromTableName(string tableName);
         string PropertyNameFromColumnName(string columnName);
+        string PropertyIdNameFromColumnName(string columnName);
         string ClassNameForComponentKey(string entityName);
         string PropertyNameForComponentKey(string entityName,string componentClass);
     }

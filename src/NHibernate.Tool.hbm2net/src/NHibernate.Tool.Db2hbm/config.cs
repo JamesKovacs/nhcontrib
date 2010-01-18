@@ -26,6 +26,8 @@ namespace cfg {
         
         private classref[] metadatastrategiesField;
         
+        private db2hbmconfSqltype[] typemappingField;
+        
         private classref namingstrategyField;
         
         private db2hbmconfConnectioninfo connectioninfoField;
@@ -49,6 +51,18 @@ namespace cfg {
             }
             set {
                 this.metadatastrategiesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute("type-mapping")]
+        [System.Xml.Serialization.XmlArrayItemAttribute("sql-type", IsNullable=false)]
+        public db2hbmconfSqltype[] typemapping {
+            get {
+                return this.typemappingField;
+            }
+            set {
+                this.typemappingField = value;
             }
         }
         
@@ -197,6 +211,67 @@ namespace cfg {
             }
             set {
                 this.valueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
+    public partial class db2hbmconfSqltype {
+        
+        private string dbtypeField;
+        
+        private string nhtypeField;
+        
+        private int lengthField;
+        
+        private bool lengthFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string dbtype {
+            get {
+                return this.dbtypeField;
+            }
+            set {
+                this.dbtypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string nhtype {
+            get {
+                return this.nhtypeField;
+            }
+            set {
+                this.nhtypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int length {
+            get {
+                return this.lengthField;
+            }
+            set {
+                this.lengthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool lengthSpecified {
+            get {
+                return this.lengthFieldSpecified;
+            }
+            set {
+                this.lengthFieldSpecified = value;
             }
         }
     }

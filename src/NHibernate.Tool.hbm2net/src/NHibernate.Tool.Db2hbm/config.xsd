@@ -4,10 +4,24 @@
   <xs:element name="db2hbm-conf">
     <xs:complexType>
       <xs:sequence>
+        
         <xs:element name="metadata-strategies">
          <xs:complexType> 
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="strategy" type="q:class-ref" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="type-mapping" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="sql-type" maxOccurs="unbounded"  minOccurs="0">
+                <xs:complexType>
+                  <xs:attribute name="dbtype" type="xs:string" use="required"></xs:attribute>
+                  <xs:attribute name="nhtype" type="xs:string" use="required"></xs:attribute>
+                  <xs:attribute name="length" type="xs:int" use="optional"></xs:attribute>
+                </xs:complexType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>

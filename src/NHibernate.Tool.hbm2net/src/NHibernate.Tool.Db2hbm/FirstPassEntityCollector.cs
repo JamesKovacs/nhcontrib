@@ -6,6 +6,7 @@ using NHibernate.Dialect.Schema;
 using NHibernate.Tool.hbm2ddl;
 using System.Data;
 using System.Data.Common;
+using log4net;
 
 namespace NHibernate.Tool.Db2hbm
 {
@@ -14,12 +15,16 @@ namespace NHibernate.Tool.Db2hbm
         GenerationContext currentContext;
         const string COLUMN_NAME = "COLUMN_NAME";
         const string INDEX_NAME = "INDEX_NAME";
+        const string DATA_TYPE = "DATA_TYPE";
+        public ILog logger { set; protected get; }
+        public TypeConverter typeConverter { set; protected get; }
         #region IMetadataStrategy Members
 
         public void Process(GenerationContext context)
         {
             currentContext = context;
             GenerateEntities();
+            
         }
 
         private void GenerateEntities()
@@ -50,13 +55,20 @@ namespace NHibernate.Tool.Db2hbm
             }*/
             var columnSet = currentContext.Schema.GetColumns(tableMetaData.Catalog, tableMetaData.Schema, tableMetaData.Name, null);
             int nameOrdinal = columnSet.Columns.IndexOf(COLUMN_NAME);
-            
+            int typeOrdinal = columnSet.Columns.IndexOf(DATA_TYPE);
             foreach (DataRow row in columnSet.Rows)
             {
                 var cInfo = tableMetaData.GetColumnMetadata(row.ItemArray[nameOrdinal].ToString());
-                property p = currentContext.Model.AddPropertyToEntity(entity,cInfo.Name);
+                property p = currentContext.Model.AddPropertyToEntity(entity
+                                                                    ,currentContext.NamingStrategy.PropertyNameFromColumnName(cInfo.Name));
                 p.notnull = !true.ParseFromDb(cInfo.Nullable);
-                p.column = currentContext.NamingStrategy.PropertyNameFromColumnName(cInfo.Name);
+                p.notnullSpecified = !true.ParseFromDb(cInfo.Nullable);
+                p.column = cInfo.Name;
+                p.type1 = typeConverter.GetNHType(cInfo);
+                if (p.type1 == null)
+                {
+                    logger.Warn(string.Format("No NHibernate type defined for dbtype:{0} len:{1}", cInfo.TypeName, cInfo.ColumnSize));
+                }
                 if (cInfo.ColumnSize != 0)
                 {
                     p.length = cInfo.ColumnSize.ToString();
@@ -68,6 +80,8 @@ namespace NHibernate.Tool.Db2hbm
             }
             
         }
+
+       
         #endregion
     }
 }

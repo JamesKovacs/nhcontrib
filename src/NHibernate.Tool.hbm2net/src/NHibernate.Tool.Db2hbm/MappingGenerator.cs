@@ -34,12 +34,18 @@ namespace NHibernate.Tool.Db2hbm
                 Validate(cfgdoc);
                 XmlSerializer ser = new XmlSerializer(typeof(db2hbmconf));
                 this.cfg = ser.Deserialize(XmlReader.Create(new StringReader(cfgdoc.InnerXml))) as db2hbmconf;
+                PrepareServices();
                 ConfigureMetaStrategies();
             }
             catch (Exception e)
             {
                 log.Error("Fatal error during configuration", e);
             }
+        }
+
+        private void PrepareServices()
+        {
+            TypeFactory.RegisterServiceInstance(new TypeConverter(this.cfg));
         }
 
         private void ConfigureMetaStrategies()
@@ -83,6 +89,7 @@ namespace NHibernate.Tool.Db2hbm
                     if (!string.IsNullOrEmpty(cfg.entitiesassembly))
                         mapping.assembly = cfg.entitiesassembly;
                     XmlSerializer ser = new XmlSerializer(typeof(hibernatemapping));
+                    
                     XmlSerializerNamespaces empty = new XmlSerializerNamespaces();
                     empty.Add(string.Empty, "urn:nhibernate-mapping-2.2");
                     ser.Serialize(target, mapping,empty);

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="DynamicEntity"
     namespace="Entities">
+  
   <class name="Person"
       table="People">
     <meta attribute="class-description">mapping example from:

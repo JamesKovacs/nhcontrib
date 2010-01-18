@@ -53,7 +53,7 @@ namespace NHibernate.Tool.Db2hbm
         {
             if (propertiesMapByEntity.ContainsKey(entityName))
             {
-                propertiesMapByEntity[entityName].RemoveAll(q => string.Compare(q.name, p, true) == 0);
+                propertiesMapByEntity[entityName].RemoveAll(q => string.Compare(q.column, p, true) == 0);
             }
         }
 

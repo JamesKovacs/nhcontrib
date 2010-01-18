@@ -28,7 +28,7 @@ namespace NHibernate.Tool.hbm2net.Tests
     [TestFixture]
     public class Experiments
     {
-        [Test]
+        [Test,Ignore]
         public void InquireSchema()
         {
             Dialect.MsSql2005Dialect dialect = new MsSql2005Dialect();
