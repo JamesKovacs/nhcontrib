@@ -5,6 +5,9 @@
     <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
+  <foreign-key-crawlers>
+    <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
+  </foreign-key-crawlers>
   <type-mapping>
     <sql-type dbtype="varchar" nhtype="String"/>
     <sql-type dbtype="nvarchar" nhtype="String"/>
@@ -36,6 +39,7 @@ class MyNaming(DefaultNamingStrategy):
             foreign-catalog="catalogName"
             foreign-schema="schemaName"
             foreign-table="tableName"
+            
       >
           <column-ref local-column="columnName" foreign-column="foreignColumnName"/>
           <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>

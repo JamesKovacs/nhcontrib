@@ -12,6 +12,13 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="foreign-key-crawlers" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="factory" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="type-mapping" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>

@@ -24,7 +24,6 @@ namespace NHibernate.Tool.Db2hbm
         {
             currentContext = context;
             GenerateEntities();
-            
         }
 
         private void GenerateEntities()
@@ -63,7 +62,7 @@ namespace NHibernate.Tool.Db2hbm
                                                                     ,currentContext.NamingStrategy.PropertyNameFromColumnName(cInfo.Name));
                 p.notnull = !true.ParseFromDb(cInfo.Nullable);
                 p.notnullSpecified = !true.ParseFromDb(cInfo.Nullable);
-                p.column = cInfo.Name;
+                p.column = 0 == string.Compare(p.name,cInfo.Name,true)?null:cInfo.Name;
                 p.type1 = typeConverter.GetNHType(cInfo);
                 if (p.type1 == null)
                 {

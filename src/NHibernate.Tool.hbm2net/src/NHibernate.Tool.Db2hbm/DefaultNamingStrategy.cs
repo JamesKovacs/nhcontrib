@@ -70,6 +70,11 @@ namespace NHibernate.Tool.Db2hbm
         {
             return "Id";
         }
+        public string PropertyNameForManyToOne(string referredEntity, string[] columnNames)
+        {
+            return referredEntity;
+        }
+
         #endregion
     }
 }

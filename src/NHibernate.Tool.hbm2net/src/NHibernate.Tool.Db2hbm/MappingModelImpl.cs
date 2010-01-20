@@ -31,10 +31,16 @@ namespace NHibernate.Tool.Db2hbm
 
         private @class Wire(@class q)
         {
+            List<object> items = new List<object>();
             if (propertiesMapByEntity.ContainsKey(q.name))
             {
-                q.Items = propertiesMapByEntity[q.name].ToArray();
+                propertiesMapByEntity[q.name].ForEach(i => items.Add(i));
             }
+            if (manyToOnesByEntity.ContainsKey(q.name))
+            {
+                manyToOnesByEntity[q.name].ForEach(i => items.Add(i)); ;
+            }
+            q.Items = items.ToArray();
             return q;
         }
 
@@ -53,7 +59,7 @@ namespace NHibernate.Tool.Db2hbm
         {
             if (propertiesMapByEntity.ContainsKey(entityName))
             {
-                propertiesMapByEntity[entityName].RemoveAll(q => string.Compare(q.column, p, true) == 0);
+                propertiesMapByEntity[entityName].RemoveAll(q => string.Compare(q.column==null?q.name:q.column, p, true) == 0);
             }
         }
 
@@ -62,6 +68,27 @@ namespace NHibernate.Tool.Db2hbm
             @class ret = null;
             entityMapByEntity.TryGetValue(entityName, out ret);
             return ret;
+        }
+
+        public @class GetClassFromTableName(string tableName)
+        {
+            @class ret = null;
+            this.entityMapByTable.TryGetValue(tableName, out ret);
+            return ret;
+        }
+        #endregion
+
+        #region IMappingModel Members
+
+        Dictionary<string, List<manytoone>> manyToOnesByEntity = new Dictionary<string, List<manytoone>>();
+        public manytoone AddManyToOneToEntity(string entity,manytoone mto)
+        {
+            if (!manyToOnesByEntity.ContainsKey(entity))
+            {
+                manyToOnesByEntity[entity] = new List<manytoone>();
+            }
+            manyToOnesByEntity[entity].Add(mto);
+            return mto;
         }
 
         #endregion

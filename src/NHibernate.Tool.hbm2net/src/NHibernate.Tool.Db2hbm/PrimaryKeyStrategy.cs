@@ -46,9 +46,9 @@ namespace NHibernate.Tool.Db2hbm
             {
                 var id = new id();
                 id.generator = GetGenerator(keyColumns[0],tableMetadata);
-                id.column1 = keyColumns[0].Name;
                 id.type1 =  typeConverter.GetNHType(keyColumns[0]);
                 id.name = currentContext.NamingStrategy.PropertyIdNameFromColumnName(keyColumns[0].Name);
+                id.column1 = 0 == string.Compare(id.name, keyColumns[0].Name, true) ? null : keyColumns[0].Name;// keyColumns[0].Name;
                 return id;
             }
             else
@@ -63,7 +63,7 @@ namespace NHibernate.Tool.Db2hbm
                 {
                     keyproperty kp = new keyproperty();
                     kp.name = currentContext.NamingStrategy.PropertyNameFromColumnName(meta.Name);
-                    kp.column1 = meta.Name;
+                    kp.column1 = 0 == string.Compare(kp.name, meta.Name, true) ? null : meta.Name;  
                     kp.length = meta.ColumnSize != 0 ? meta.ColumnSize.ToString() : null;
                     kp.type1 = typeConverter.GetNHType(meta);
                     keyps.Add(kp);

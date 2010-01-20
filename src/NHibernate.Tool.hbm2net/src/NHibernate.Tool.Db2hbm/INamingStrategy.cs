@@ -12,5 +12,6 @@ namespace NHibernate.Tool.Db2hbm
         string PropertyIdNameFromColumnName(string columnName);
         string ClassNameForComponentKey(string entityName);
         string PropertyNameForComponentKey(string entityName,string componentClass);
+        string PropertyNameForManyToOne(string referredEntity, string[] columnNames);
     }
 }

@@ -36,10 +36,26 @@ namespace NHibernate.Tool.Db2hbm
                 this.cfg = ser.Deserialize(XmlReader.Create(new StringReader(cfgdoc.InnerXml))) as db2hbmconf;
                 PrepareServices();
                 ConfigureMetaStrategies();
+                RegisterForeignKeyCrawlers();
             }
             catch (Exception e)
             {
                 log.Error("Fatal error during configuration", e);
+            }
+        }
+
+        private void RegisterForeignKeyCrawlers()
+        {
+            foreach (var v in cfg.foreignkeycrawlers)
+            {
+                System.Type t = System.Type.GetType(v);
+                if (null == t)
+                    throw new Exception("Can't find ForeignKeyCrawlerFactory:" + v);
+                var factory = Activator.CreateInstance(t) as IForeignKeyCrawlerFactory;
+                if (null != factory)
+                    factory.Register();
+                else
+                    throw new Exception("Type:" + t.Name + " cannot be created, or does not implement IForeignKeyCrawlerFactory");
             }
         }
 

@@ -3,6 +3,9 @@
   <metadata-strategies>
     <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
+  <foreign-key-crawlers>
+    <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
+  </foreign-key-crawlers>
   <type-mapping>
     <sql-type dbtype="varchar" nhtype="string"/>
     

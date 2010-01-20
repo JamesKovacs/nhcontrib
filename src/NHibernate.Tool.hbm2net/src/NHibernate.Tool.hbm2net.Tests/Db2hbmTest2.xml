@@ -6,6 +6,9 @@
     <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
+  <foreign-key-crawlers>
+    <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
+  </foreign-key-crawlers>
   <type-mapping>
     <sql-type dbtype="varchar" nhtype="String"/>
     <sql-type dbtype="nvarchar" nhtype="String"/>
@@ -33,7 +36,7 @@ class MyNaming(DefaultNamingStrategy):
     <table schema="dbo" catalog="db2hbm" name="Simple">
       
       <foreign-key
-            constraint-name="foreignKeyName"
+            constraint-name="FKXXXXX"
             foreign-catalog="catalogName"
             foreign-schema="schemaName"
             foreign-table="tableName"
@@ -42,7 +45,7 @@ class MyNaming(DefaultNamingStrategy):
           <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
       </foreign-key>
       <foreign-key
-            constraint-name="foreignKey2Name"
+            constraint-name="FKYYYY"
             foreign-catalog="catalogName"
             foreign-schema="schemaName"
             foreign-table="tableName"
@@ -51,8 +54,8 @@ class MyNaming(DefaultNamingStrategy):
       </foreign-key>
       </table>
   </tables>
-  <entities-namespace>NHibernate.DomainModel</entities-namespace>
-  <entities-assembly>NHibernate.DomainModel</entities-assembly>
+  <entities-namespace>NHibernate.DomainModel2</entities-namespace>
+  <entities-assembly>NHibernate.DomainModel2</entities-assembly>
   <output-folder></output-folder>
   <additional-properties>
     <property name="p1">v1</property>

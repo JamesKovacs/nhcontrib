@@ -75,7 +75,11 @@
     <Compile Include="DefaultNamingStrategy.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FirstPassEntityCollector.cs" />
+    <Compile Include="ForeignKeyCrawlersRegistar.cs" />
+    <Compile Include="ForeignKeyCrawlers\MSSQLForeignKeyCrawler.cs" />
     <Compile Include="GenerationContext.cs" />
+    <Compile Include="IForeignKeyColumnInfo.cs" />
+    <Compile Include="IForeignKeyCrawler.cs" />
     <Compile Include="IMappingModel.cs" />
     <Compile Include="IMetadataStrategy.cs" />
     <Compile Include="INamingStrategy.cs" />

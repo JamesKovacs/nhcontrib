@@ -26,6 +26,8 @@ namespace cfg {
         
         private classref[] metadatastrategiesField;
         
+        private string[] foreignkeycrawlersField;
+        
         private db2hbmconfSqltype[] typemappingField;
         
         private classref namingstrategyField;
@@ -51,6 +53,18 @@ namespace cfg {
             }
             set {
                 this.metadatastrategiesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute("foreign-key-crawlers")]
+        [System.Xml.Serialization.XmlArrayItemAttribute("factory", IsNullable=false)]
+        public string[] foreignkeycrawlers {
+            get {
+                return this.foreignkeycrawlersField;
+            }
+            set {
+                this.foreignkeycrawlersField = value;
             }
         }
         
