@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<db2hbm-conf xmlns="urn:nhibernate-codegen-2.2">
+  
+  <metadata-strategies>
+    <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
+  </metadata-strategies>
+  <foreign-key-crawlers>
+    <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
+  </foreign-key-crawlers>
+  <type-mapping>
+    <sql-type dbtype="varchar" nhtype="String"/>
+    <sql-type dbtype="nvarchar" nhtype="String"/>
+    <sql-type dbtype="int" nhtype="Int32"/>
+    <sql-type dbtype="bigint" nhtype="Int64"/>
+    <sql-type dbtype="datetime" nhtype="DateTime"/>
+  </type-mapping>
+  <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
+    <property name="Language">English</property>
+    <property name="Customization">
+      import NHibernate.Tool.Db2hbm
+class MyNaming(DefaultNamingStrategy):
+       public override def EntityNameFromTableName( name as string ):
+        return super.EntityNameFromTableName(name)
+       public override def PropertyNameFromColumnName( name as string ):
+        return super.PropertyNameFromColumnName( name )
+    </property>
+  </naming-strategy>
+  <connection-info>
+    <dialect>NHibernate.Dialect.MsSql2005Dialect, NHibernate</dialect>
+    <connection-string>Server=localhost\SQLEXPRESS;initial catalog=db2hbm;Integrated Security=True</connection-string>
+    <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
+  </connection-info>
+  <tables>
+    <table schema="dbo" catalog="db2hbm" name="Simple">
+      
+      <foreign-key
+            constraint-name="FKXXXXX"
+            foreign-catalog="catalogName"
+            foreign-schema="schemaName"
+            foreign-table="tableName"
+      >
+          <column-ref local-column="columnName" foreign-column="foreignColumnName"/>
+          <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
+      </foreign-key>
+      <foreign-key
+            constraint-name="FKYYYY"
+            foreign-catalog="catalogName"
+            foreign-schema="schemaName"
+            foreign-table="tableName"
+      >
+        <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
+      </foreign-key>
+      </table>
+  </tables>
+  <entities-namespace>NHibernate.DomainModel4</entities-namespace>
+  <entities-assembly>NHibernate.DomainModel4</entities-assembly>
+  <output-folder></output-folder>
+  <additional-properties>
+    <property name="p1">v1</property>
+    <property name="p2">v2</property>
+    <property name="p3">v3</property>
+  </additional-properties>
+</db2hbm-conf>

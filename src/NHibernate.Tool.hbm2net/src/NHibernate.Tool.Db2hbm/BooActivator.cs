@@ -35,6 +35,7 @@ namespace NHibernate.Tool.Db2hbm
             {
                 throw new Exception("Invalid decorator class for type:" + typeof(T).Name);
             }
+            
             return Activator.CreateInstance(decorated) as T;
             
         }

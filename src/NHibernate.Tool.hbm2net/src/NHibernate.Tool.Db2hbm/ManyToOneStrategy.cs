@@ -61,6 +61,19 @@ namespace NHibernate.Tool.Db2hbm
                                 currentContext.Model.AddManyToOneToEntity(containingClazz.name
                                                     ,CreateManyToOne(keyManyToOne[0],referredClass));   
                             }
+                            else if (keyManyToOne.Length > 1)
+                            {
+                                Array.ForEach(keyManyToOne,k=>currentContext.Model.RemovePropertyByColumn(
+                                                        containingClazz.name
+                                                        ,k.ForeignKeyColumnName)
+                                                        );
+                                currentContext.Model.AddManyToOneToEntity(containingClazz.name
+                                                    , CreateManyToOne(keyManyToOne, referredClass));   
+                            }
+                            else
+                            {
+                                logger.Warn("ForeignKey:" + manyToOne + " on table:" + tableToWire + " appear to have 0 columns");
+                            }
                         }
                     }
                     else
@@ -71,12 +84,45 @@ namespace NHibernate.Tool.Db2hbm
             }
         }
 
+        private manytoone CreateManyToOne(IForeignKeyColumnInfo[] keyManyToOne, @class referredClass)
+        {
+            manytoone mto = new manytoone();
+            mto.Items = keyManyToOne.Select(q => new column(){ name=q.ForeignKeyColumnName}).ToArray();
+            mto.@class = referredClass.name;
+            mto.name = currentContext.NamingStrategy.PropertyNameForManyToOne(referredClass.name
+                                        , keyManyToOne.Select(q=>q.ForeignKeyColumnName).ToArray() );
+            return SetIfNullable(mto,keyManyToOne);
+        }
+
         private manytoone CreateManyToOne(IForeignKeyColumnInfo iForeignKeyColumnInfo,@class referredClass)
         {
             manytoone mto = new manytoone();
             mto.column = iForeignKeyColumnInfo.ForeignKeyColumnName;
             mto.@class = referredClass.name;
             mto.name = currentContext.NamingStrategy.PropertyNameForManyToOne(referredClass.name, new string[] { iForeignKeyColumnInfo.ForeignKeyColumnName });
+            return SetIfNullable(mto,new IForeignKeyColumnInfo[]{iForeignKeyColumnInfo});
+        }
+
+        private manytoone SetIfNullable(manytoone mto, IForeignKeyColumnInfo[] iForeignKeyColumnInfo)
+        {
+            bool notnull = true;
+            foreach (var fk in iForeignKeyColumnInfo)
+            {
+                
+                var meta = currentContext.GetTableMetaData(fk.ForeignKeyTableCatalog, fk.ForeignKeyTableSchema, fk.ForeignKeyTableName);
+                if( null != meta )
+                {
+                    var cinfo = meta.GetColumnMetadata(fk.ForeignKeyColumnName);
+                    if (true.ParseFromDb(cinfo.Nullable) == true)
+                    {
+                        notnull = false;
+                        break;
+                    }
+                }
+                
+            }
+            mto.notnull = notnull;
+            mto.notnullSpecified = mto.notnull;
             return mto;
         }
 
@@ -127,7 +173,18 @@ namespace NHibernate.Tool.Db2hbm
         {
             if (!fkForTables.ContainsKey(tablename))
                 fkForTables[tablename] = new Dictionary<string, IForeignKeyColumnInfo[]>();
-            fkForTables[tablename][constraint] = keyColumns;
+            // need a merge...
+            if (!fkForTables[tablename].ContainsKey(constraint))
+            {
+                fkForTables[tablename][constraint] = keyColumns;
+            }
+            else
+            {
+                List<IForeignKeyColumnInfo> orig = new List<IForeignKeyColumnInfo>();
+                orig.AddRange(fkForTables[tablename][constraint]);
+                orig.AddRange(keyColumns);
+                fkForTables[tablename][constraint] = orig.ToArray();
+            }
         }
         #endregion
         class ConfiguredForeignKeyColumnInfo:IForeignKeyColumnInfo

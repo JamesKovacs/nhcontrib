@@ -87,6 +87,40 @@ namespace NHibernate.Tool.hbm2net.Tests
             Assert.IsTrue(internalStreams.ContainsKey("Producer"));
             CheckXmlMapping(hbm, "Widget","Producer");
         }
+        [Test]
+        public void EntityWithCompositeManyToOnes()
+        {
+
+            string hbm = "PropertiesAndCompositeManyToOne.hbm.xml";
+            TestHelper.BuildAssemblyFromHbm("NHibernate.DomainModel3", hbm);
+            MappingGenerator gen = new MappingGenerator();
+            gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.Db2hbmTest3.xml")));
+            string schema = GetSchemaForMSSql(hbm);
+            Console.WriteLine("Generated Schema:");
+            Console.Write(schema);
+            internalStreams.Clear(); // clear all generated files...
+            gen.Generate(this);
+            Assert.IsTrue(internalStreams.ContainsKey("Widget"));
+            Assert.IsTrue(internalStreams.ContainsKey("Producer"));
+            CheckXmlMapping(hbm, "Widget", "Producer");
+        }
+        [Test]
+        public void EntityWithSetCollection()
+        {
+
+            string hbm = "PropertiesAndSetCollection.hbm.xml";
+            TestHelper.BuildAssemblyFromHbm("NHibernate.DomainModel4", hbm);
+            MappingGenerator gen = new MappingGenerator();
+            gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.Db2hbmTest4.xml")));
+            string schema = GetSchemaForMSSql(hbm);
+            Console.WriteLine("Generated Schema:");
+            Console.Write(schema);
+            internalStreams.Clear(); // clear all generated files...
+            gen.Generate(this);
+            Assert.IsTrue(internalStreams.ContainsKey("Widget"));
+            Assert.IsTrue(internalStreams.ContainsKey("Child"));
+            CheckXmlMapping(hbm, "Widget", "Child");
+        }
 
         private void CheckXmlMapping(string hbm,params string[] stream)
         {
