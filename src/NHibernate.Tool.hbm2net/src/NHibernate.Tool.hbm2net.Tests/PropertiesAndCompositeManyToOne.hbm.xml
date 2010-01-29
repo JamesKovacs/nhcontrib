@@ -17,8 +17,9 @@
     </many-to-one>
   </class>
   <class table="Producers" name="Producer" schema="dbo">
+    
     <composite-id class="ProducerKey" name="Id">
-      <key-property name="Code" type="Int32"  />
+      <key-property name="Code" type="Int32"    />
       <key-property name="Subcode" type="Int32" />
     </composite-id>
     <property name="Address" type="String" length="200" />

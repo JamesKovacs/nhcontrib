@@ -14,5 +14,12 @@ namespace NHibernate.Tool.Db2hbm
         @class GetClassFromEntityName(string entityName);
         @class GetClassFromTableName(string tableName);
         manytoone AddManyToOneToEntity(string entityName,manytoone mto);
+        void AddCollectionToEntity(string entityName, object coll);
+        object[] GetCollectionsOfEntity(string entityName);
+        property[] GetPropertyOfEntity(string entityName);
+        manytoone[] GetManyToOnesOfEntity(string entityName);
+        void RemoveEntity(string entityName);
+
+        void RemoveCollectionFromEntity(string p, object rem);
     }
 }

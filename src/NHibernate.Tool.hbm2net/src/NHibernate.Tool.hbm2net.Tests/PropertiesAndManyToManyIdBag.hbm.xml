@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"  namespace="NHibernate.DomainModel10" assembly="NHibernate.DomainModel10">
+  
+  <class name="Widget" table="Widgets" schema="dbo">
+    <id type="Int64" column="id_" name="Id" >
+      <generator class="assigned"/>
+    </id>
+    
+    <property name="Address" type="String" length="200" />
+    <property name="Name" type="String"  length="255"/>
+    <property name="Pay" type="String"  length="255"/>
+    <idbag name="Children" table="WidgetChild"  schema="dbo">
+      <collection-id  column="kid" type="Int64">
+        <generator class="native"></generator>
+      </collection-id>
+      <key column="WidgetId"/>
+      <many-to-many class="Child">
+        <column name="childID"/>
+      </many-to-many>
+    </idbag>
+  </class>
+
+  <class name="Child" table="Children" schema="dbo">
+    <id type="Int64" column="id_" name="Id" >
+      <generator class="assigned"/>
+    </id>
+    <property name="Name" type="String" length="255"/>
+    <idbag name="Widgets" table="WidgetChild" schema="dbo">
+      <collection-id  column="kid" type="Int64">
+        <generator class="native"></generator>
+      </collection-id>
+      <key column="childID"/>
+      <many-to-many class="Widget">
+        <column name="WidgetId"/>
+      </many-to-many>
+    </idbag>
+  </class>
+  
+</hibernate-mapping>

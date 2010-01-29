@@ -85,6 +85,8 @@
     <Compile Include="INamingStrategy.cs" />
     <Compile Include="IStreamProvider.cs" />
     <Compile Include="ITableExceptions.cs" />
+    <Compile Include="KeyAwareMetadataStrategy.cs" />
+    <Compile Include="ManyToManyStrategy.cs" />
     <Compile Include="ManyToOneStrategy.cs" />
     <Compile Include="MappingGenerator.cs" />
     <Compile Include="MappingModelImpl.cs" />
@@ -93,6 +95,8 @@
     </Compile>
     <Compile Include="PrimaryKeyStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetStrategy.cs" />
+    <Compile Include="SetToMapStrategy.cs" />
     <Compile Include="StdoutStreamProvider.cs" />
     <Compile Include="TableExceptions.cs" />
     <Compile Include="TypeConverter.cs" />

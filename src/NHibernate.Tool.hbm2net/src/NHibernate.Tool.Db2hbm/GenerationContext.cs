@@ -10,6 +10,20 @@ namespace NHibernate.Tool.Db2hbm
 {
     public class GenerationContext
     {
+        Dictionary<string, object> items = new Dictionary<string,object>();
+        public object this[string itemname]
+        {
+            get {
+                object ret;
+                items.TryGetValue(itemname, out ret);
+                return ret;
+            }
+            set
+            {
+                items[itemname] = value;
+            }
+
+        }
         public db2hbmconf Configuration { get; set; }
         public IMappingModel Model { get; set; }
         public IDataBaseSchema Schema { get; set; }
@@ -18,9 +32,34 @@ namespace NHibernate.Tool.Db2hbm
         public INamingStrategy NamingStrategy { get; set; }
         public ITableExceptions TableExceptions { get; set; }
         Dictionary<string, ITableMetadata> tableMetaData = new Dictionary<string, ITableMetadata>();
+        Dictionary<string, List<ITableMetadata>> tableMetadataByName = new Dictionary<string, List<ITableMetadata>>();
         public void StoreTableMetaData(string catalog, string schema, string name, ITableMetadata metas)
         {
             tableMetaData[GetKey(catalog, schema, name)] = metas;
+            if (!tableMetadataByName.ContainsKey(name))
+                tableMetadataByName[name] = new List<ITableMetadata>();
+            tableMetadataByName[name].Add(metas);
+        }
+        public ITableMetadata GetTableMetaData(string schema,string name)
+        {
+            List<ITableMetadata> list;
+            if (tableMetadataByName.TryGetValue(name, out list))
+            {
+                if (list.Count == 1)
+                {
+                    return list[0];
+                }
+                else
+                {
+                    var candidates =  list.Where(q => string.Compare(q.Schema, schema, true) == 0);
+                    if (candidates.Count() > 1)
+                    {
+                        throw new Exception("Ambiguous table name:" + name + "." + schema);
+                    }
+                    return candidates.FirstOrDefault();
+                }
+            }
+            return null;
         }
         public ITableMetadata GetTableMetaData(string catalog, string schema, string name)
         {

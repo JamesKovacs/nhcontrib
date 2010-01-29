@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"  namespace="NHibernate.DomainModel7" assembly="NHibernate.DomainModel7">
+  <class name="Widget" table="Widgets" schema="dbo">
+    <id type="Int64" column="id_" name="Id" >
+      <generator class="assigned"/>
+    </id>
+    <property name="Address" type="String" length="200" />
+    <property name="Count" type="Int32" column="count_" not-null="true"  precision="10"/>
+    <property name="Date" type="DateTime" column="date_"/>
+    <property name="Name" type="String"  length="255"/>
+    <property name="Pay" type="String"  length="255"/>
+   
+    <map name="ComplexSamples" table="ComplexSamples" >
+      <key column="WidgetId" />
+      <composite-index class="ComplexSamplesKey">
+        <key-property  name="Name" type="String"  length="255"/>
+        <key-property name="Why" type="String"  length="255"/>
+      </composite-index>
+      <composite-element class="ComplexSample">
+        <property name="Lang" type="Int32" precision="10"/>
+        <property name="Lat" type="String"  length="255"/>
+      </composite-element>
+    </map>
+  </class>
+</hibernate-mapping>

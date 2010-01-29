@@ -253,6 +253,45 @@
   <ItemGroup>
     <EmbeddedResource Include="PropertiesAndSetCollection.hbm.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndCompositeKeySetCollection.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest5.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndMapCollection.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest6.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndComplexMapCollection.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest7.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndBag.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest8.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest9.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndManyToMany.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTest10.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertiesAndManyToManyIdBag.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Db2hbmTestAdventureWorks.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

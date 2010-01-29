@@ -11,35 +11,22 @@ using log4net;
 
 namespace NHibernate.Tool.Db2hbm
 {
-    public class ManyToOneStrategy:IMetadataStrategy
+    public class ManyToOneStrategy : KeyAwareMetadataStrategy
     {
-        public ILog logger { protected get; set; }
-
         GenerationContext currentContext;
-        Dictionary<string, Dictionary<string,IForeignKeyColumnInfo[]>> fkForTables;
-        const string CONSTRAINT_NAME = "CONSTRAINT_NAME";
+        
         #region IMetadataStrategy Members
-        public void Process(GenerationContext context)
+        protected override void OnProcess(GenerationContext context)
         {
             currentContext = context;
-            fkForTables =   new Dictionary<string, Dictionary<string,IForeignKeyColumnInfo[]>>();
-            try
-            {
-                CollectForeignKeysFromSchema();
-            }
-            catch (Exception e)
-            {
-                logger.Warn("Retrieving foreign keys info from schema failed.",e);
-            }
-            CollectForeignKeyFromConfig();
             WireManyToOnes();
         }
 
         private void WireManyToOnes()
         {
-            foreach (string tableToWire in fkForTables.Keys)
+            foreach (string tableToWire in FkForTables.Keys)
             {
-                var fks = fkForTables[tableToWire];
+                var fks = FkForTables[tableToWire];
                 foreach (var manyToOne in fks.Keys)
                 {
                     var keyManyToOne = fks[manyToOne];
@@ -89,7 +76,7 @@ namespace NHibernate.Tool.Db2hbm
             manytoone mto = new manytoone();
             mto.Items = keyManyToOne.Select(q => new column(){ name=q.ForeignKeyColumnName}).ToArray();
             mto.@class = referredClass.name;
-            mto.name = currentContext.NamingStrategy.PropertyNameForManyToOne(referredClass.name
+            mto.name = currentContext.NamingStrategy.GetNameForManyToOne(referredClass.name
                                         , keyManyToOne.Select(q=>q.ForeignKeyColumnName).ToArray() );
             return SetIfNullable(mto,keyManyToOne);
         }
@@ -99,7 +86,7 @@ namespace NHibernate.Tool.Db2hbm
             manytoone mto = new manytoone();
             mto.column = iForeignKeyColumnInfo.ForeignKeyColumnName;
             mto.@class = referredClass.name;
-            mto.name = currentContext.NamingStrategy.PropertyNameForManyToOne(referredClass.name, new string[] { iForeignKeyColumnInfo.ForeignKeyColumnName });
+            mto.name = currentContext.NamingStrategy.GetNameForManyToOne(referredClass.name, new string[] { iForeignKeyColumnInfo.ForeignKeyColumnName });
             return SetIfNullable(mto,new IForeignKeyColumnInfo[]{iForeignKeyColumnInfo});
         }
 
@@ -108,7 +95,6 @@ namespace NHibernate.Tool.Db2hbm
             bool notnull = true;
             foreach (var fk in iForeignKeyColumnInfo)
             {
-                
                 var meta = currentContext.GetTableMetaData(fk.ForeignKeyTableCatalog, fk.ForeignKeyTableSchema, fk.ForeignKeyTableName);
                 if( null != meta )
                 {
@@ -119,139 +105,11 @@ namespace NHibernate.Tool.Db2hbm
                         break;
                     }
                 }
-                
             }
             mto.notnull = notnull;
             mto.notnullSpecified = mto.notnull;
             return mto;
         }
-
-        private void CollectForeignKeyFromConfig()
-        {
-
-            foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
-            {
-                var tableMeta = currentContext.Schema.GetTableMetadata(t, true);
-                if (currentContext.TableExceptions.HasException(tableMeta.Name, tableMeta.Catalog, tableMeta.Schema))
-                {
-                    var tablecfg = currentContext.TableExceptions.GetTableException(tableMeta.Name, tableMeta.Catalog, tableMeta.Schema);
-                    foreach (var fk in tablecfg.foreignkey)
-                    {
-                        AddFKColumnInfo(tableMeta.Name, fk.constraintname, GetColumnInfoFromConfig(fk,tableMeta));
-                    }
-                }
-            }
-        }
-
-        private IForeignKeyColumnInfo[] GetColumnInfoFromConfig(cfg.db2hbmconfTableForeignkey fk,ITableMetadata metaData)
-        {
-            List<IForeignKeyColumnInfo> fks = new List<IForeignKeyColumnInfo>();
-            foreach (var ci in fk.columnref)
-            {
-                fks.Add(new ConfiguredForeignKeyColumnInfo(ci,fk,metaData));
-            }
-            return fks.ToArray();
-        }
-        protected virtual void CollectForeignKeysFromSchema()
-        {
-            IForeignKeyCrawler crawler = ForeignKeyCrawlersRegistar.GetForDialect(currentContext.Dialect.GetType());
-            foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
-            {
-                var tableMeta = currentContext.Schema.GetTableMetadata(t,true);
-                var keys = currentContext.Schema.GetForeignKeys(tableMeta.Catalog, tableMeta.Schema, tableMeta.Name);
-                int nameIndex = keys.Columns.IndexOf(CONSTRAINT_NAME);
-                foreach (DataRow key in keys.Rows)
-                {
-                    var keyMeta = tableMeta.GetForeignKeyMetadata(key.ItemArray[nameIndex].ToString());
-                    var keyColumns = crawler.GetForeignKeyColumns(currentContext.Connection, keyMeta.Name, tableMeta.Catalog, tableMeta.Schema);
-                    AddFKColumnInfo(tableMeta.Name,keyMeta.Name,keyColumns);
-                }
-            }
-        }
-
-        protected void AddFKColumnInfo(string tablename,string constraint, IForeignKeyColumnInfo[] keyColumns)
-        {
-            if (!fkForTables.ContainsKey(tablename))
-                fkForTables[tablename] = new Dictionary<string, IForeignKeyColumnInfo[]>();
-            // need a merge...
-            if (!fkForTables[tablename].ContainsKey(constraint))
-            {
-                fkForTables[tablename][constraint] = keyColumns;
-            }
-            else
-            {
-                List<IForeignKeyColumnInfo> orig = new List<IForeignKeyColumnInfo>();
-                orig.AddRange(fkForTables[tablename][constraint]);
-                orig.AddRange(keyColumns);
-                fkForTables[tablename][constraint] = orig.ToArray();
-            }
-        }
         #endregion
-        class ConfiguredForeignKeyColumnInfo:IForeignKeyColumnInfo
-        {
-            public ConfiguredForeignKeyColumnInfo(cfg.db2hbmconfTableForeignkeyColumnref cref,cfg.db2hbmconfTableForeignkey fk,ITableMetadata metaData)
-            {
-                PrimaryKeyTableName = fk.foreigntable;
-                PrimaryKeyTableCatalog = fk.foreigncatalog;
-                PrimaryKeyTableSchema = fk.foreignschema;
-                PrimaryKeyColumnName = cref.foreigncolumn;
-
-                ForeignKeyColumnName = cref.localcolumn;
-                ForeignKeyTableCatalog = metaData.Catalog;
-                ForeignKeyTableSchema = metaData.Schema;
-                ForeignKeyTableSchema = metaData.Name;
-            }
-            #region IForeignKeyColumnInfo Members
-
-            public string PrimaryKeyColumnName
-            {
-                get;
-                private set;
-            }
-
-            public string PrimaryKeyTableName
-            {
-                get;
-                private set;
-            }
-
-            public string PrimaryKeyTableSchema
-            {
-                get;
-                private set;
-            }
-
-            public string PrimaryKeyTableCatalog
-            {
-                get;
-                private set;
-            }
-
-            public string ForeignKeyColumnName
-            {
-                get;
-                private set;
-            }
-
-            public string ForeignKeyTableName
-            {
-                get;
-                private set;
-            }
-
-            public string ForeignKeyTableSchema
-            {
-                get;
-                private set;
-            }
-
-            public string ForeignKeyTableCatalog
-            {
-                get;
-                private set;
-            }
-
-            #endregion
-        }
     }
 }

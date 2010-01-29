@@ -32,7 +32,7 @@ namespace NHibernate.Tool.Db2hbm
             {
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
                 currentContext.StoreTableMetaData(tableMetaData.Catalog, tableMetaData.Schema, tableMetaData.Name, tableMetaData);
-                string entityName = currentContext.NamingStrategy.EntityNameFromTableName(tableMetaData.Name);
+                string entityName = currentContext.NamingStrategy.GetEntityNameFromTableName(tableMetaData.Name);
                 var clazz = currentContext.Model.AddClassForTable(tableMetaData.Name, entityName);
                 if( !string.IsNullOrEmpty(tableMetaData.Schema) )
                     clazz.schema = tableMetaData.Schema;
@@ -50,7 +50,7 @@ namespace NHibernate.Tool.Db2hbm
             {
                 var cInfo = tableMetaData.GetColumnMetadata(row.ItemArray[nameOrdinal].ToString());
                 property p = currentContext.Model.AddPropertyToEntity(entity
-                                                                    ,currentContext.NamingStrategy.PropertyNameFromColumnName(cInfo.Name));
+                                                                    ,currentContext.NamingStrategy.GetPropertyNameFromColumnName(cInfo.Name));
                 p.notnull = !true.ParseFromDb(cInfo.Nullable);
                 p.notnullSpecified = !true.ParseFromDb(cInfo.Nullable);
                 p.column = 0 == string.Compare(p.name,cInfo.Name,true)?null:cInfo.Name;

@@ -26,7 +26,9 @@
                 <xs:complexType>
                   <xs:attribute name="dbtype" type="xs:string" use="required"></xs:attribute>
                   <xs:attribute name="nhtype" type="xs:string" use="required"></xs:attribute>
-                  <xs:attribute name="length" type="xs:int" use="optional"></xs:attribute>
+                  <xs:attribute name="length" type="xs:string" use="optional"></xs:attribute>
+                  <xs:attribute name="precision" type="xs:string" use="optional"></xs:attribute>
+                  <xs:attribute name="scale" type="xs:string" use="optional"></xs:attribute>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

@@ -8,24 +8,24 @@ using log4net;
 
 namespace NHibernate.Tool.Db2hbm
 {
-    class PrimaryKeyStrategy:IMetadataStrategy
+    class PrimaryKeyStrategy:KeyAwareMetadataStrategy
     {
-        const string ISKEY = "IsKey";
         const string ISIDENTITY = "IsIdentity";
         const string COLNAME = "ColumnName";
-        public ILog logger { private get; set; }
+
         public TypeConverter typeConverter { set; protected get; }
         GenerationContext currentContext;
         #region IMetadataStrategy Members
-        public virtual void Process(GenerationContext context)
+        protected override void OnProcess(GenerationContext context)
         {
             currentContext = context;
             foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
             {
                 IColumnMetadata[] keyColumns = new IColumnMetadata[0];
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
-                string entityName = currentContext.NamingStrategy.EntityNameFromTableName(tableMetaData.Name);
+                string entityName = currentContext.NamingStrategy.GetEntityNameFromTableName(tableMetaData.Name);
                 keyColumns = GetKeyColumns(tableMetaData);
+                logger.Debug("PrimaryKeyStrategy working on:" + tableMetaData.Name);
                 // remove key colums for standard properties
                 Array.ForEach(keyColumns, q => currentContext.Model.RemovePropertyByColumn(entityName, q.Name));
                 @class clazz = currentContext.Model.GetClassFromEntityName(entityName);
@@ -47,7 +47,7 @@ namespace NHibernate.Tool.Db2hbm
                 var id = new id();
                 id.generator = GetGenerator(keyColumns[0],tableMetadata);
                 id.type1 =  typeConverter.GetNHType(keyColumns[0]);
-                id.name = currentContext.NamingStrategy.PropertyIdNameFromColumnName(keyColumns[0].Name);
+                id.name = currentContext.NamingStrategy.GetIdPropertyNameFromColumnName(keyColumns[0].Name);
                 id.column1 = 0 == string.Compare(id.name, keyColumns[0].Name, true) ? null : keyColumns[0].Name;// keyColumns[0].Name;
                 return id;
             }
@@ -55,14 +55,14 @@ namespace NHibernate.Tool.Db2hbm
             if (keyColumns.Length > 1)
             {
                 var cid = new compositeid();
-                string entityName = currentContext.NamingStrategy.EntityNameFromTableName(tableMetadata.Name);
-                cid.@class = currentContext.NamingStrategy.ClassNameForComponentKey(entityName);
+                string entityName = currentContext.NamingStrategy.GetEntityNameFromTableName(tableMetadata.Name);
+                cid.@class = currentContext.NamingStrategy.GetClassNameForComponentKey(entityName);
                 List<keyproperty> keyps = new List<keyproperty>();
-                cid.name = currentContext.NamingStrategy.PropertyNameForComponentKey(entityName,cid.@class);
+                cid.name = currentContext.NamingStrategy.GetNameForComponentKey(entityName,cid.@class);
                 foreach (IColumnMetadata meta in keyColumns)
                 {
                     keyproperty kp = new keyproperty();
-                    kp.name = currentContext.NamingStrategy.PropertyNameFromColumnName(meta.Name);
+                    kp.name = currentContext.NamingStrategy.GetPropertyNameFromColumnName(meta.Name);
                     kp.column1 = 0 == string.Compare(kp.name, meta.Name, true) ? null : meta.Name;  
                     kp.length = meta.ColumnSize != 0 ? meta.ColumnSize.ToString() : null;
                     kp.type1 = typeConverter.GetNHType(meta);
@@ -95,7 +95,7 @@ namespace NHibernate.Tool.Db2hbm
             }
             logger.Info(string.Format("Table {0}: trying to infer id generator from schema",tableMetaData.Name));
             try{
-                var dt = currentContext.Dialect.GetCompleteColumnSchema(currentContext.Connection, tableMetaData.Schema, tableMetaData.Name);
+                var dt = GetCompleteColumnSchema(tableMetaData);
                 int isIdentity = dt.Columns.IndexOf(ISIDENTITY);
                 int colName = dt.Columns.IndexOf(COLNAME);
                 List<IColumnMetadata> cols = new List<IColumnMetadata>();
@@ -117,50 +117,7 @@ namespace NHibernate.Tool.Db2hbm
             return null;
         }
 
-        private IColumnMetadata[] GetKeyColumns(NHibernate.Dialect.Schema.ITableMetadata tableMetaData)
-        {
-            if (currentContext.TableExceptions.HasException(tableMetaData.Name, tableMetaData.Catalog, tableMetaData.Schema))
-            {
-                cfg.db2hbmconfTable exc = currentContext.TableExceptions.GetTableException(tableMetaData.Name, tableMetaData.Catalog, tableMetaData.Schema);
-                if (exc.primarykey != null)
-                {
-                    if (exc.primarykey.keycolumn != null && exc.primarykey.keycolumn.Length > 0)
-                    {
-                        logger.Info(string.Format("table {0}: using configured primary key def", tableMetaData.Name));
-                        try
-                        {
-                            return exc.primarykey.keycolumn.Select(q => tableMetaData.GetColumnMetadata(q.name)).Where(q=>q!=null).ToArray();
-                        }
-                        catch (Exception e)
-                        {
-                            logger.Error("Can't obtain metadata for configured primary key columns.",e);
-                            throw e;
-                        }
-                    }
-                }
-            }
-            //try to found the primary key from the schema
-            try
-            {
-                var dt = currentContext.Dialect.GetCompleteColumnSchema(currentContext.Connection, tableMetaData.Schema, tableMetaData.Name);
-                int isKey = dt.Columns.IndexOf(ISKEY);
-                int colName = dt.Columns.IndexOf(COLNAME);
-                List<IColumnMetadata> cols = new List<IColumnMetadata>();
-                foreach (DataRow dr in dt.Rows)
-                {
-                    if ((bool)dr.ItemArray[isKey])
-                    {
-                        cols.Add(tableMetaData.GetColumnMetadata(dr.ItemArray[colName].ToString()));
-                    }
-                }
-                return cols.ToArray();
-            }
-            catch (Exception e)
-            {
-                logger.Error("Can't obtain primary key metadata from schema.If database does not support key schema information, please consider to use configuration in order to provide keys", e);
-                throw e;
-            }
-        }
+       
         #endregion
     }
 }

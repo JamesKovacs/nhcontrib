@@ -12,18 +12,32 @@
     <property name="Date" type="DateTime" column="date_"/>
     <property name="Name" type="String"  length="255"/>
     <property name="Pay" type="String"  length="255"/>
+
+    <set name="Items" table="Items">
+      <key column="ItemId"/>
+      <element column="Name" type="String" length="255"/>
+    </set>
+
+    <set name="CompositeItems" table="CompositeItems">
+      <key column="CompositeItemId"/>
+      <composite-element class="CompositeItem">
+        <property name="P1"  type="Int32" precision="10"/>
+        <property name="P2"  type="String"  length="255"/>
+      </composite-element>
+    </set>
     
-    <set name="Children" >
-      <key column="WidgetId"></key>
+    <set name="Children" table="Children">
+      <key column="WidgetId"/>
       <one-to-many class="Child"/>
     </set>
+   
   </class>
 
-  <class name="Child" table="Children">
+  <class name="Child" table="Children" schema="dbo">
     <id type="Int64" column="id_" name="Id" >
       <generator class="assigned"/>
     </id>
-    <property name="Name" type="String"></property>
+    <property name="Name" type="String" length="255"/>
     <many-to-one name="Widget" class="Widget" column="WidgetId" />
   </class>
   

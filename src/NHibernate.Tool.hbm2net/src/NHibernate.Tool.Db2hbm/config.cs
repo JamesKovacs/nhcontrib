@@ -241,9 +241,11 @@ namespace cfg {
         
         private string nhtypeField;
         
-        private int lengthField;
+        private string lengthField;
         
-        private bool lengthFieldSpecified;
+        private string precisionField;
+        
+        private string scaleField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -269,7 +271,7 @@ namespace cfg {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int length {
+        public string length {
             get {
                 return this.lengthField;
             }
@@ -279,13 +281,24 @@ namespace cfg {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool lengthSpecified {
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string precision {
             get {
-                return this.lengthFieldSpecified;
+                return this.precisionField;
             }
             set {
-                this.lengthFieldSpecified = value;
+                this.precisionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string scale {
+            get {
+                return this.scaleField;
+            }
+            set {
+                this.scaleField = value;
             }
         }
     }

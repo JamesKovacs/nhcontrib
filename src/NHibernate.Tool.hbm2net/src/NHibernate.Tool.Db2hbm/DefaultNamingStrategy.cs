@@ -47,32 +47,44 @@ namespace NHibernate.Tool.Db2hbm
         public string Customization { get; set; }
         public string Language { get; set; }
         #region INamingStrategy Members
-        public virtual string EntityNameFromTableName(string tableName)
+        public virtual string GetEntityNameFromTableName(string tableName)
         {
             return Inflector.Pascalize(
                 Inflector.Singularize(tableName.Trim('_'))
                 );
         }
-        public virtual string PropertyNameFromColumnName(string columnName)
+        public virtual string GetPropertyNameFromColumnName(string columnName)
         {
             return Inflector.Pascalize(columnName.Trim('_'));
         }
-        public virtual string PropertyIdNameFromColumnName(string columnName)
+        public virtual string GetIdPropertyNameFromColumnName(string columnName)
         {
             return Inflector.Pascalize(columnName.Trim('_'));
         }
        
-        public virtual string ClassNameForComponentKey(string entityName)
+        public virtual string GetClassNameForComponentKey(string entityName)
         {
             return entityName + "Key";
         }
-        public virtual string PropertyNameForComponentKey(string entityName, string componentClass)
+        public virtual string GetNameForComponentKey(string entityName, string componentClass)
         {
             return "Id";
         }
-        public string PropertyNameForManyToOne(string referredEntity, string[] columnNames)
+        public string GetNameForManyToOne(string referredEntity, string[] columnNames)
         {
             return referredEntity;
+        }
+        public string GetNameForCollection(string collectingClass, int progressive)
+        {
+            string cname = Inflector.Pluralize(collectingClass);
+            if (progressive > 0)
+                cname += progressive.ToString();
+            return cname;
+        }
+
+        public string GetClassNameForCollectionComponent(string collectionTableName)
+        {
+            return Inflector.Singularize(collectionTableName);
         }
 
         #endregion

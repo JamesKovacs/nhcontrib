@@ -40,6 +40,10 @@ namespace NHibernate.Tool.Db2hbm
             {
                 manyToOnesByEntity[q.name].ForEach(i => items.Add(i)); ;
             }
+            if (collectionsByEntity.ContainsKey(q.name))
+            {
+                collectionsByEntity[q.name].ForEach(i => items.Add(i)); ;
+            }
             q.Items = items.ToArray();
             return q;
         }
@@ -89,6 +93,63 @@ namespace NHibernate.Tool.Db2hbm
             }
             manyToOnesByEntity[entity].Add(mto);
             return mto;
+        }
+        Dictionary<string, List<object>> collectionsByEntity = new Dictionary<string, List<object>>();
+        public void AddCollectionToEntity(string entity, object coll)
+        {
+            if (!collectionsByEntity.ContainsKey(entity))
+            {
+                collectionsByEntity[entity] = new List<object>();
+            }
+            collectionsByEntity[entity].Add(coll);
+        }
+
+       
+        public property[] GetPropertyOfEntity(string entityName)
+        {
+            List<property> ret;
+            propertiesMapByEntity.TryGetValue(entityName, out ret);
+            if (null == ret)
+            {
+                return new property[0];
+            }
+            else
+            {
+                return ret.ToArray();
+            }
+        }
+        public void RemoveEntity(string entityName)
+        {
+            entityMapByEntity.Remove(entityName);
+            var key = entityMapByTable.Where(k => k.Value.name == entityName).FirstOrDefault();
+            entityMapByTable.Remove(key.Key);
+        }
+        public object[] GetCollectionsOfEntity(string entityName)
+        {
+            List<object> list;
+
+            if( collectionsByEntity.TryGetValue(entityName, out list) )
+                return list.ToArray();
+            return new object[0];
+        }
+
+        public void RemoveCollectionFromEntity(string entity, object rem)
+        {
+            collectionsByEntity[entity].Remove(rem);
+        }
+
+        #endregion
+
+        #region IMappingModel Members
+
+
+        public manytoone[] GetManyToOnesOfEntity(string entityName)
+        {
+            List<manytoone> list;
+            if (manyToOnesByEntity.TryGetValue(entityName, out list))
+                return list.ToArray();
+            else
+                return new manytoone[0];
         }
 
         #endregion

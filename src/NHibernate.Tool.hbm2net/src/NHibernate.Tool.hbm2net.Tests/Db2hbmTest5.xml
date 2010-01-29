@@ -5,7 +5,7 @@
     <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
-    
+    <strategy class="NHibernate.Tool.Db2hbm.SetStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
   <foreign-key-crawlers>
     <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
@@ -19,7 +19,6 @@
   </type-mapping>
   <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
     <property name="Language">English</property>
-    
   </naming-strategy>
   <connection-info>
     <dialect>NHibernate.Dialect.MsSql2005Dialect, NHibernate</dialect>
@@ -48,8 +47,8 @@
       </foreign-key>
       </table>
   </tables>
-  <entities-namespace>NHibernate.DomainModel2</entities-namespace>
-  <entities-assembly>NHibernate.DomainModel2</entities-assembly>
+  <entities-namespace>NHibernate.DomainModel5</entities-namespace>
+  <entities-assembly>NHibernate.DomainModel5</entities-assembly>
   <output-folder></output-folder>
   <additional-properties>
     <property name="p1">v1</property>
