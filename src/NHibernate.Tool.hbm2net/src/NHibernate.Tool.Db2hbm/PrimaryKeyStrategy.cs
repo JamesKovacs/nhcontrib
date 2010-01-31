@@ -19,13 +19,13 @@ namespace NHibernate.Tool.Db2hbm
         protected override void OnProcess(GenerationContext context)
         {
             currentContext = context;
-            foreach (DataRow t in currentContext.Schema.GetTables(null, null, null, new string[0]).Rows)
+            foreach (DataRow t in TableEnumerator.GetInstance(currentContext.Schema))
             {
                 IColumnMetadata[] keyColumns = new IColumnMetadata[0];
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
                 string entityName = currentContext.NamingStrategy.GetEntityNameFromTableName(tableMetaData.Name);
                 keyColumns = GetKeyColumns(tableMetaData);
-                logger.Debug("PrimaryKeyStrategy working on:" + tableMetaData.Name);
+                logger.Debug(string.Format("{0} working on:",GetType().Name )+ tableMetaData.Name);
                 // remove key colums for standard properties
                 Array.ForEach(keyColumns, q => currentContext.Model.RemovePropertyByColumn(entityName, q.Name));
                 @class clazz = currentContext.Model.GetClassFromEntityName(entityName);

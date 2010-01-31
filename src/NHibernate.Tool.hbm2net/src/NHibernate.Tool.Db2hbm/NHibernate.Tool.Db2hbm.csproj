@@ -98,6 +98,7 @@
     <Compile Include="SetStrategy.cs" />
     <Compile Include="SetToMapStrategy.cs" />
     <Compile Include="StdoutStreamProvider.cs" />
+    <Compile Include="TableEnumerator.cs" />
     <Compile Include="TableExceptions.cs" />
     <Compile Include="TypeConverter.cs" />
     <Compile Include="TypeFactory.cs" />

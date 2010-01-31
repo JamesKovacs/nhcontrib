@@ -19,6 +19,7 @@ namespace NHibernate.Tool.Db2hbm
         {
             foreach (string tableToWire in FkForTables.Keys)
             {
+                logger.Debug(string.Format("{0} working on:", GetType().Name) + tableToWire);
                 Dictionary<string,int> multicolls = new Dictionary<string,int>();
                 var kinfo = FkForTables[tableToWire];
                 foreach (var key in kinfo.Keys)
@@ -31,43 +32,51 @@ namespace NHibernate.Tool.Db2hbm
                     {
                         var collectingClass = context.Model.GetClassFromTableName(ptable.Name);
                         var collectedClass = context.Model.GetClassFromTableName(ctable.Name);
-                        if (!multicolls.ContainsKey(collectedClass.name))
-                            multicolls[collectedClass.name] = 0;
-                        set s = new set();
-                        context.Model.AddCollectionToEntity(collectingClass.name, s);
-                        s.table = collectedClass.table;
-                        s.name = context.NamingStrategy.GetNameForCollection(collectedClass.name, multicolls[collectedClass.name]);
-                        s.key = GenerateCollectionKey(kdef);
+                        if (null == collectedClass)
+                            logger.Warn(string.Format("Not included table {0} could not be used in a collection", ctable.Name));
+                        if (null == collectingClass)
+                            logger.Warn(string.Format("Target table for a collection of {0} is not included", ptable.Name));
+                        if (null != collectedClass && null != collectingClass)
+                        {
 
-                        var pkctable = GetKeyColumns(ctable);
-                        if (pkctable.Length > 0) // collected object is an entity
-                        {
-                            s.Item = new onetomany() { @class = context.Model.GetClassFromTableName(ctable.Name).name };
-                        }
-                        else
-                        {
-                            var notanentity = context.Model.GetClassFromTableName(ctable.Name);
-                            property[] props = context.Model.GetPropertyOfEntity(notanentity.name);
-                            if (props.Length == 1)
+                            if (!multicolls.ContainsKey(collectedClass.name))
+                                multicolls[collectedClass.name] = 0;
+                            set s = new set();
+                            context.Model.AddCollectionToEntity(collectingClass.name, s);
+                            s.table = collectedClass.table;
+                            s.name = context.NamingStrategy.GetNameForCollection(collectedClass.name, multicolls[collectedClass.name]);
+                            s.key = GenerateCollectionKey(kdef);
+
+                            var pkctable = GetKeyColumns(ctable);
+                            if (pkctable.Length > 0) // collected object is an entity
                             {
-                                //use an element
-                                element e = new element();
-                                e.column = props[0].column ?? props[0].name;
-                                e.type1 = props[0].type1;
-                                e.type = props[0].type;
-                                e.precision = props[0].precision;
-                                e.length = props[0].length;
-                                s.Item = e;
+                                s.Item = new onetomany() { @class = context.Model.GetClassFromTableName(ctable.Name).name };
                             }
                             else
                             {
-                                //use a composite element
-                                compositeelement ce = new compositeelement();
-                                ce.@class = context.NamingStrategy.GetClassNameForCollectionComponent(ctable.Name);
-                                ce.Items = context.Model.GetPropertyOfEntity(notanentity.name);
-                                s.Item = ce;
+                                var notanentity = context.Model.GetClassFromTableName(ctable.Name);
+                                property[] props = context.Model.GetPropertyOfEntity(notanentity.name);
+                                if (props.Length == 1)
+                                {
+                                    //use an element
+                                    element e = new element();
+                                    e.column = props[0].column ?? props[0].name;
+                                    e.type1 = props[0].type1;
+                                    e.type = props[0].type;
+                                    e.precision = props[0].precision;
+                                    e.length = props[0].length;
+                                    s.Item = e;
+                                }
+                                else
+                                {
+                                    //use a composite element
+                                    compositeelement ce = new compositeelement();
+                                    ce.@class = context.NamingStrategy.GetClassNameForCollectionComponent(ctable.Name);
+                                    ce.Items = context.Model.GetPropertyOfEntity(notanentity.name);
+                                    s.Item = ce;
+                                }
+                                context.Model.RemoveEntity(notanentity.name);
                             }
-                            context.Model.RemoveEntity(notanentity.name);
                         }
                     }
                 }

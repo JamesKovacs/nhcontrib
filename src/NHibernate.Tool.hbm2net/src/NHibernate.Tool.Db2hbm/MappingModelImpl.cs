@@ -122,7 +122,8 @@ namespace NHibernate.Tool.Db2hbm
         {
             entityMapByEntity.Remove(entityName);
             var key = entityMapByTable.Where(k => k.Value.name == entityName).FirstOrDefault();
-            entityMapByTable.Remove(key.Key);
+            if( key.Key != null )
+                entityMapByTable.Remove(key.Key);
         }
         public object[] GetCollectionsOfEntity(string entityName)
         {

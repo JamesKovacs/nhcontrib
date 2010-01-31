@@ -7,18 +7,29 @@
     <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.SetStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.ManyToManyStrategy, NHibernate.Tool.Db2hbm"/>
-    <strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/>
+    <!--strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/-->
   </metadata-strategies>
   <foreign-key-crawlers>
     <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
   </foreign-key-crawlers>
   <type-mapping>
+    <sql-type dbtype="xml" nhtype="String"/> <!--user type instead-->
+    <sql-type dbtype="bit" nhtype="Boolean"/>
+    <sql-type dbtype="varbinary" nhtype="Array"/>
     <sql-type dbtype="varchar" nhtype="String"/>
     <sql-type dbtype="nvarchar" nhtype="String"/>
+    <sql-type dbtype="nchar" nhtype="String"/>
+    <sql-type dbtype="char" nhtype="String"/>
+    <sql-type dbtype="numeric" nhtype="Decimal"/>
+    <sql-type dbtype="decimal" nhtype="Decimal"/>
+    <sql-type dbtype="tinyint" nhtype="Byte"/>
+    <sql-type dbtype="smallint" nhtype="Int16"/>
     <sql-type dbtype="int" nhtype="Int32"/>
     <sql-type dbtype="bigint" nhtype="Int64"/>
     <sql-type dbtype="datetime" nhtype="DateTime"/>
     <sql-type dbtype="uniqueidentifier" nhtype="Guid"/>
+    <sql-type dbtype="money" nhtype="Decimal"/>
+    <sql-type dbtype="smallmoney" nhtype="Decimal"/>
   </type-mapping>
   <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
     <property name="Language">English</property>
@@ -28,12 +39,16 @@
     <connection-string>Server=localhost\SQLEXPRESS;initial catalog=AdventureWorks;Integrated Security=True</connection-string>
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
+  <table-filter>
+    <include/> <!--Include all-->
+    
+  </table-filter>
   <tables>
     <table schema="dbo" catalog="db2hbm" name="Simple">
     </table>
   </tables>
-  <entities-namespace>NHibernate.DomainModel9</entities-namespace>
-  <entities-assembly>NHibernate.DomainModel9</entities-assembly>
+  <entities-namespace>AdventureWorks.Entities</entities-namespace>
+  <entities-assembly>AdventureWorks.Entities</entities-assembly>
   <output-folder></output-folder>
   <additional-properties>
     <property name="p1">v1</property>

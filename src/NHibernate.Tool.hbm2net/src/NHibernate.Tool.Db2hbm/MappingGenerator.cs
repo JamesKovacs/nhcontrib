@@ -20,6 +20,7 @@ namespace NHibernate.Tool.Db2hbm
         private static readonly ILog log = LogManager.GetLogger("db2hbm");
         db2hbmconf cfg;
         IList<IMetadataStrategy> metaStrategies;
+
         public MappingGenerator()
         {
             metaStrategies = new List<IMetadataStrategy>();
@@ -37,6 +38,7 @@ namespace NHibernate.Tool.Db2hbm
                 PrepareServices();
                 ConfigureMetaStrategies();
                 RegisterForeignKeyCrawlers();
+                TableEnumerator.Configuration = cfg;
             }
             catch (Exception e)
             {

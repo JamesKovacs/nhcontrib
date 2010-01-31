@@ -36,6 +36,7 @@ namespace NHibernate.Tool.Db2hbm
                     var containingClazz = currentContext.Model.GetClassFromTableName(tableToWire);
                     if( null != containingClazz )
                     {
+                        logger.Debug(string.Format("{0} working on:", GetType().Name) + containingClazz.table);
                         if (null == referredClass)
                         {
                             logger.Warn("Foreign key:" + manyToOne + " refer a non icluded table:"+referredTable+". many-to-one ignored ( this is usually a design error)");

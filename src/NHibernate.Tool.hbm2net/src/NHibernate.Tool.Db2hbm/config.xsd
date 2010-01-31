@@ -44,6 +44,28 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="table-filter" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+            
+              <xs:element name="include" minOccurs="0" maxOccurs="unbounded" >
+                <xs:complexType>
+                  <xs:attribute name="catalog" type="xs:string" use="optional"/>
+                  <xs:attribute name="schema" type="xs:string" use="optional"/>
+                  <xs:attribute name="table" type="xs:string" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="catalog" type="xs:string" use="optional"/>
+                  <xs:attribute name="schema" type="xs:string" use="optional"/>
+                  <xs:attribute name="table" type="xs:string" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="tables">
           <xs:complexType>
             <xs:sequence>

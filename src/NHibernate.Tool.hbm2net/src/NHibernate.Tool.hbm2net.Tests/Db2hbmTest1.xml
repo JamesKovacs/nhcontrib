@@ -25,6 +25,9 @@
     <connection-string>Server=localhost\SQLEXPRESS;initial catalog=db2hbm;Integrated Security=True</connection-string>
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
+  <table-filter>
+    <include table=".*"/>
+  </table-filter>
   <tables>
     <table schema="dbo" catalog="db2hbm" name="Simple">
       

@@ -16,6 +16,7 @@ namespace NHibernate.Tool.Db2hbm
             this.context = context;
             foreach (var entity in context.Model.GetEntities())
             {
+                logger.Debug(string.Format("{0} working on:", GetType().Name) + entity.table);
                 setToRemove = new List<set>();
                 var sets = context.Model.GetCollectionsOfEntity(entity.name).OfType<set>();
                 foreach( var set in sets )

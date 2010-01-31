@@ -17,6 +17,7 @@ namespace NHibernate.Tool.Db2hbm
             this.context = context;
             foreach (var e in context.Model.GetEntities())
             {
+                logger.Debug(string.Format("{0} working on:", GetType().Name) + e.table);
                 if (IsManyToManyJoin(e))
                 {
                     var kc = GetKeyColumns(context.GetTableMetaData(e.schema, e.name));
