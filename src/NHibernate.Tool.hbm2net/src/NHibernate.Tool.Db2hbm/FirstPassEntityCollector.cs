@@ -28,7 +28,7 @@ namespace NHibernate.Tool.Db2hbm
 
         private void GenerateEntities()
         {
-            foreach (DataRow t in TableEnumerator.GetInstance(currentContext.Schema))
+            foreach (DataRow t in currentContext.FilteredTables)
             {
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
                 currentContext.StoreTableMetaData(tableMetaData.Catalog, tableMetaData.Schema, tableMetaData.Name, tableMetaData);

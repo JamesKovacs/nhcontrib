@@ -66,7 +66,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="tables">
+        <xs:element name="tables" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="table">
@@ -125,24 +125,47 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="entities-namespace" type="xs:string" />
-        <xs:element name="entities-assembly" type="xs:string" />
-        <xs:element name="output-folder" />
-        <xs:element name="additional-properties">
+        
+        <xs:element name="entity-exceptions" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="property">
+              <xs:element name="entity" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:simpleContent>
-                    <xs:extension base="xs:string">
-                      <xs:attribute name="name" type="xs:string" use="required" />
-                    </xs:extension>
-                  </xs:simpleContent>
+                  <xs:sequence>
+                    <xs:element name="member" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="set" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              
+                              <xs:attribute name="name" use="required" type="xs:string"/>
+                              <xs:attribute name="value" use="required" type="xs:string"/>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="remove" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="match" use="required" type="xs:string"/>
+                        <xs:attribute name="exclude" use="optional" type="xs:boolean"/>
+                        <xs:attribute name="tag" use="optional" type="xs:string"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="match" use="required" type="xs:string"></xs:attribute>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        
+        
+        <xs:element name="entities-namespace" type="xs:string" />
+        <xs:element name="entities-assembly" type="xs:string" />
+        <xs:element name="output-folder" />
+        
       </xs:sequence>
     </xs:complexType>
   </xs:element>

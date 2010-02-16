@@ -53,9 +53,5 @@
   <entities-namespace>NHibernate.DomainModel4</entities-namespace>
   <entities-assembly>NHibernate.DomainModel4</entities-assembly>
   <output-folder></output-folder>
-  <additional-properties>
-    <property name="p1">v1</property>
-    <property name="p2">v2</property>
-    <property name="p3">v3</property>
-  </additional-properties>
+  
 </db2hbm-conf>

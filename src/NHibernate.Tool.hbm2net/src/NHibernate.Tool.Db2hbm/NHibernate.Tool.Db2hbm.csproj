@@ -65,10 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplyEntityExceptionsStrategy.cs" />
     <Compile Include="BooActivator.cs" />
     <Compile Include="BooDecoratorAttribute.cs" />
-    <Compile Include="config.cs">
-      <DependentUpon>config.xsd</DependentUpon>
+    <Compile Include="nhibernate-codegen.cs">
+      <DependentUpon>nhibernate-codegen.xsd</DependentUpon>
     </Compile>
     <Compile Include="ConfigurationValidationException.cs" />
     <Compile Include="ConfigurationValidator.cs" />
@@ -119,7 +120,7 @@
     <Compile Include="UnhAddinInflector\SpanishNamingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="config.xsd">
+    <EmbeddedResource Include="nhibernate-codegen.xsd">
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

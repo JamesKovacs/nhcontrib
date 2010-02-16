@@ -7,6 +7,7 @@
     <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.SetStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.ManyToManyStrategy, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.ApplyEntityExceptionsStrategy, NHibernate.Tool.Db2hbm"/>
     <!--strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/-->
   </metadata-strategies>
   <foreign-key-crawlers>
@@ -40,19 +41,25 @@
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <table-filter>
-    <include/> <!--Include all-->
+    <include  /> <!--Include all-->
     
   </table-filter>
   <tables>
     <table schema="dbo" catalog="db2hbm" name="Simple">
     </table>
   </tables>
+  <entity-exceptions>
+    <entity match="test">
+      <member match=".*" exclude="true">
+        <set name="" value=""/>
+      </member>
+      <member match=".*" tag="bag|set|idbag|bag" exclude="true">
+        <remove name=""/>
+      </member>
+    </entity>
+  </entity-exceptions>
   <entities-namespace>AdventureWorks.Entities</entities-namespace>
   <entities-assembly>AdventureWorks.Entities</entities-assembly>
   <output-folder></output-folder>
-  <additional-properties>
-    <property name="p1">v1</property>
-    <property name="p2">v2</property>
-    <property name="p3">v3</property>
-  </additional-properties>
+ 
 </db2hbm-conf>

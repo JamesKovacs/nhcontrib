@@ -40,7 +40,7 @@ namespace NHibernate.Tool.Db2hbm
         static XmlSchemaSet schemaset;
         static ConfigurationValidator()
         {
-            XmlSchema schema = XmlSchema.Read(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.Db2hbm.config.xsd"), null);
+            XmlSchema schema = XmlSchema.Read(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.Db2hbm.nhibernate-codegen-2.2.xsd"), null);
             schemaset = new XmlSchemaSet();
             schemaset.Add(schema);
         }

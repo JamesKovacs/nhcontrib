@@ -97,17 +97,18 @@ namespace NHibernate.Tool.Db2hbm
                 if (m.Match(meta))
                 {
                     included = true;
+                    foreach (Matcher me in Exclude)
+                    {
+                        if (me.Match(meta))
+                        {
+                            included = false;
+                            break;
+                        }
+                    }
                     break;
                 }
             }
-            foreach (Matcher m in Exclude)
-            {
-                if (m.Match(meta))
-                {
-                    included = false;
-                    break;
-                }
-            }
+            
             return included;
         }
 

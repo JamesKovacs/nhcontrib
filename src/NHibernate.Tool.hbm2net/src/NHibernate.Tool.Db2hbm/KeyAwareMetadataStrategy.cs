@@ -67,7 +67,7 @@ namespace NHibernate.Tool.Db2hbm
         protected virtual void CollectForeignKeysFromSchema()
         {
             IForeignKeyCrawler crawler = ForeignKeyCrawlersRegistar.GetForDialect(currentContext.Dialect.GetType());
-            foreach (DataRow t in TableEnumerator.GetInstance(currentContext.Schema))
+            foreach (DataRow t in currentContext.FilteredTables)
             {
                 var tableMeta = currentContext.Schema.GetTableMetadata(t, true);
                 var keys = currentContext.Schema.GetForeignKeys(tableMeta.Catalog, tableMeta.Schema, tableMeta.Name);
@@ -83,7 +83,7 @@ namespace NHibernate.Tool.Db2hbm
         private void CollectForeignKeyFromConfig()
         {
 
-            foreach (DataRow t in TableEnumerator.GetInstance(currentContext.Schema))
+            foreach (DataRow t in currentContext.FilteredTables)
             {
                 var tableMeta = currentContext.Schema.GetTableMetadata(t, true);
                 if (currentContext.TableExceptions.HasException(tableMeta.Name, tableMeta.Catalog, tableMeta.Schema))

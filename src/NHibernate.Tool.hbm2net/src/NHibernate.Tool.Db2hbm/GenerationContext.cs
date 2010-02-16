@@ -5,11 +5,16 @@ using System.Text;
 using NHibernate.Dialect.Schema;
 using System.Data.Common;
 using cfg;
+using System.Data;
 
 namespace NHibernate.Tool.Db2hbm
 {
     public class GenerationContext
     {
+        public GenerationContext()
+        {
+            FilteredTables = new List<DataRow>();
+        }
         Dictionary<string, object> items = new Dictionary<string,object>();
         public object this[string itemname]
         {
@@ -24,6 +29,7 @@ namespace NHibernate.Tool.Db2hbm
             }
 
         }
+        public List <DataRow> FilteredTables { get; set; }
         public db2hbmconf Configuration { get; set; }
         public IMappingModel Model { get; set; }
         public IDataBaseSchema Schema { get; set; }

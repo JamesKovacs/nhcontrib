@@ -19,7 +19,7 @@ namespace NHibernate.Tool.Db2hbm
         protected override void OnProcess(GenerationContext context)
         {
             currentContext = context;
-            foreach (DataRow t in TableEnumerator.GetInstance(currentContext.Schema))
+            foreach (DataRow t in currentContext.FilteredTables)
             {
                 IColumnMetadata[] keyColumns = new IColumnMetadata[0];
                 var tableMetaData = currentContext.Schema.GetTableMetadata(t, true);
