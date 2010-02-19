@@ -44,8 +44,6 @@ namespace cfg {
         
         private string entitiesassemblyField;
         
-        private object outputfolderField;
-        
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute("metadata-strategies")]
         [System.Xml.Serialization.XmlArrayItemAttribute("strategy", IsNullable=false)]
@@ -159,17 +157,6 @@ namespace cfg {
                 this.entitiesassemblyField = value;
             }
         }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("output-folder")]
-        public object outputfolder {
-            get {
-                return this.outputfolderField;
-            }
-            set {
-                this.outputfolderField = value;
-            }
-        }
     }
     
     /// <remarks/>
@@ -227,6 +214,233 @@ namespace cfg {
             }
             set {
                 this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:nhibernate-codegen-2.2")]
+    public partial class tagmodifier {
+        
+        private alter alterField;
+        
+        private string matchField;
+        
+        private bool excludeField;
+        
+        private bool excludeFieldSpecified;
+        
+        /// <remarks/>
+        public alter alter {
+            get {
+                return this.alterField;
+            }
+            set {
+                this.alterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string match {
+            get {
+                return this.matchField;
+            }
+            set {
+                this.matchField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool exclude {
+            get {
+                return this.excludeField;
+            }
+            set {
+                this.excludeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool excludeSpecified {
+            get {
+                return this.excludeFieldSpecified;
+            }
+            set {
+                this.excludeFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace="urn:nhibernate-codegen-2.2", IsNullable=false)]
+    public partial class alter {
+        
+        private alterSet[] setField;
+        
+        private alterRemove[] removeField;
+        
+        private alterMetaadd[] metaaddField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("set")]
+        public alterSet[] set {
+            get {
+                return this.setField;
+            }
+            set {
+                this.setField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("remove")]
+        public alterRemove[] remove {
+            get {
+                return this.removeField;
+            }
+            set {
+                this.removeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("meta-add")]
+        public alterMetaadd[] metaadd {
+            get {
+                return this.metaaddField;
+            }
+            set {
+                this.metaaddField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
+    public partial class alterSet {
+        
+        private string nameField;
+        
+        private string valueField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
+    public partial class alterRemove {
+        
+        private string nameField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
+    public partial class alterMetaadd {
+        
+        private string attributeField;
+        
+        private bool inheritField;
+        
+        private bool inheritFieldSpecified;
+        
+        private string valueField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string attribute {
+            get {
+                return this.attributeField;
+            }
+            set {
+                this.attributeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool inherit {
+            get {
+                return this.inheritField;
+            }
+            set {
+                this.inheritField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool inheritSpecified {
+            get {
+                return this.inheritFieldSpecified;
+            }
+            set {
+                this.inheritFieldSpecified = value;
             }
         }
         
@@ -824,44 +1038,11 @@ namespace cfg {
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
     public partial class db2hbmconfEntity {
         
-        private db2hbmconfEntityMember[] memberField;
+        private alter[] alterField;
         
-        private string matchField;
+        private tagmodifier[] membernameField;
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("member")]
-        public db2hbmconfEntityMember[] member {
-            get {
-                return this.memberField;
-            }
-            set {
-                this.memberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string match {
-            get {
-                return this.matchField;
-            }
-            set {
-                this.matchField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
-    public partial class db2hbmconfEntityMember {
-        
-        private db2hbmconfEntityMemberSet[] setField;
-        
-        private db2hbmconfEntityMemberRemove[] removeField;
+        private tagmodifier[] membertagField;
         
         private string matchField;
         
@@ -869,27 +1050,36 @@ namespace cfg {
         
         private bool excludeFieldSpecified;
         
-        private string tagField;
-        
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("set")]
-        public db2hbmconfEntityMemberSet[] set {
+        [System.Xml.Serialization.XmlElementAttribute("alter")]
+        public alter[] alter {
             get {
-                return this.setField;
+                return this.alterField;
             }
             set {
-                this.setField = value;
+                this.alterField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("remove")]
-        public db2hbmconfEntityMemberRemove[] remove {
+        [System.Xml.Serialization.XmlElementAttribute("member-name")]
+        public tagmodifier[] membername {
             get {
-                return this.removeField;
+                return this.membernameField;
             }
             set {
-                this.removeField = value;
+                this.membernameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("member-tag")]
+        public tagmodifier[] membertag {
+            get {
+                return this.membertagField;
+            }
+            set {
+                this.membertagField = value;
             }
         }
         
@@ -923,74 +1113,6 @@ namespace cfg {
             }
             set {
                 this.excludeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string tag {
-            get {
-                return this.tagField;
-            }
-            set {
-                this.tagField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
-    public partial class db2hbmconfEntityMemberSet {
-        
-        private string nameField;
-        
-        private string valueField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string value {
-            get {
-                return this.valueField;
-            }
-            set {
-                this.valueField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:nhibernate-codegen-2.2")]
-    public partial class db2hbmconfEntityMemberRemove {
-        
-        private string nameField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
             }
         }
     }

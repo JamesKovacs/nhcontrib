@@ -346,5 +346,15 @@ namespace NHibernate.Tool.hbm2net.Tests
         }
 
         #endregion
+
+        #region IStreamProvider Members
+
+
+        public void EndWrite()
+        {
+            
+        }
+
+        #endregion
     }
 }

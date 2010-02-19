@@ -131,30 +131,13 @@
             <xs:sequence>
               <xs:element name="entity" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="member" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="set" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                              
-                              <xs:attribute name="name" use="required" type="xs:string"/>
-                              <xs:attribute name="value" use="required" type="xs:string"/>
-                            </xs:complexType>
-                          </xs:element>
-                          <xs:element name="remove" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:attribute name="name" use="required" type="xs:string"/>
-                            </xs:complexType>
-                          </xs:element>
-                        </xs:sequence>
-                        <xs:attribute name="match" use="required" type="xs:string"/>
-                        <xs:attribute name="exclude" use="optional" type="xs:boolean"/>
-                        <xs:attribute name="tag" use="optional" type="xs:string"/>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
+                    <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+                      <xs:element ref="q:alter" maxOccurs="1" minOccurs="0"/>
+                        <xs:element name="member-name" minOccurs="0" maxOccurs="1" type="q:tagmodifier"/>
+                        <xs:element name="member-tag" minOccurs="0" maxOccurs="1" type="q:tagmodifier"/>
+                    </xs:sequence>
                   <xs:attribute name="match" use="required" type="xs:string"></xs:attribute>
+                  <xs:attribute name="exclude" use="optional" type="xs:boolean"></xs:attribute>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -164,7 +147,6 @@
         
         <xs:element name="entities-namespace" type="xs:string" />
         <xs:element name="entities-assembly" type="xs:string" />
-        <xs:element name="output-folder" />
         
       </xs:sequence>
     </xs:complexType>
@@ -183,4 +165,40 @@
     </xs:sequence>
     <xs:attribute name="class"/>
   </xs:complexType>
+
+  <xs:complexType name="tagmodifier" >
+    <xs:sequence minOccurs="0" maxOccurs="1" >
+      <xs:element ref="q:alter"/>
+    </xs:sequence>
+    <xs:attribute name="match" use="required" type="xs:string"></xs:attribute>
+    <xs:attribute name="exclude" use="optional" type="xs:boolean"></xs:attribute>
+  </xs:complexType>
+
+  <xs:element name="alter">
+  <xs:complexType >
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="set" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attribute name="name" use="required" type="xs:string"/>
+          <xs:attribute name="value" use="required" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="remove" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attribute name="name" use="required" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="meta-add" minOccurs="0" maxOccurs="1"  >
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="attribute" use="required" type="xs:string"/>
+              <xs:attribute name="inherit" use="optional" type="xs:boolean"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  </xs:element>
 </xs:schema>

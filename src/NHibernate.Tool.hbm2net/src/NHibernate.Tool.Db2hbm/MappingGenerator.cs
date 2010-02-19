@@ -115,6 +115,7 @@ namespace NHibernate.Tool.Db2hbm
                     ser.Serialize(target, mapping,empty);
                     target.Flush();
                     target.Close();
+                    streamProvider.EndWrite();
                 }
             }
             catch (Exception e)

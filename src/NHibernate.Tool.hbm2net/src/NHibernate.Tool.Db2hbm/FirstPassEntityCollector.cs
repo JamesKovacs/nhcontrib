@@ -59,11 +59,11 @@ namespace NHibernate.Tool.Db2hbm
                 {
                     logger.Warn(string.Format("No NHibernate type defined for dbtype:{0} len:{1}", cInfo.TypeName, cInfo.ColumnSize));
                 }
-                if (cInfo.ColumnSize != 0)
+                if (cInfo.ColumnSize > 0)
                 {
                     p.length = cInfo.ColumnSize.ToString();
                 }
-                if (cInfo.NumericalPrecision != 0)
+                if (cInfo.NumericalPrecision > 0)
                 {
                     p.precision = cInfo.NumericalPrecision.ToString();
                 }

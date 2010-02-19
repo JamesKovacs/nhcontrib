@@ -15,5 +15,15 @@ namespace NHibernate.Tool.Db2hbm
         }
 
         #endregion
+
+        #region IStreamProvider Members
+
+
+        public void EndWrite()
+        {
+            
+        }
+
+        #endregion
     }
 }

@@ -53,6 +53,6 @@
   </tables>
   <entities-namespace>NHibernate.DomainModel6</entities-namespace>
   <entities-assembly>NHibernate.DomainModel6</entities-assembly>
-  <output-folder></output-folder>
+ 
   
 </db2hbm-conf>

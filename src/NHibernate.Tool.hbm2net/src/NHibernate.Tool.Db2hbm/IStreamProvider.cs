@@ -9,5 +9,6 @@ namespace NHibernate.Tool.Db2hbm
     public interface IStreamProvider
     {
         TextWriter GetTextWriter(string entityName);
+        void EndWrite();
     }
 }

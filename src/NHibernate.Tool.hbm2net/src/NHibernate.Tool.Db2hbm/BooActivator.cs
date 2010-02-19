@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Boo.Lang.Compiler;
-using Boo.Lang.Compiler.Ast;
-using Boo.Lang.Compiler.IO;
-using Boo.Lang.Compiler.Pipelines;
-using Boo.Lang.Parser;
+
 using System.Reflection;
 using System.IO;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    /*
     static class BooActivator
     {
         public static T CreateInstance<T>(string codeFragment) where T: class
@@ -70,5 +67,5 @@ namespace NHibernate.Tool.Db2hbm
             }
             return sb.ToString();
         }
-    }
+    }*/
 }

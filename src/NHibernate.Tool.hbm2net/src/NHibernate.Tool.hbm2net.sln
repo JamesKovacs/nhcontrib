@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.Db2hbm", "NHibernate.Tool.Db2hbm\NHibernate.Tool.Db2hbm.csproj", "{66CA9291-80EA-428D-945A-8A9AEDB739D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.Db2hbm.Console", "NHibernate.Tool.Db2hbm.Console\NHibernate.Tool.Db2hbm.Console.csproj", "{84000770-C46D-44CD-9D4E-32B50E4A0EEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{66CA9291-80EA-428D-945A-8A9AEDB739D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66CA9291-80EA-428D-945A-8A9AEDB739D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66CA9291-80EA-428D-945A-8A9AEDB739D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84000770-C46D-44CD-9D4E-32B50E4A0EEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84000770-C46D-44CD-9D4E-32B50E4A0EEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84000770-C46D-44CD-9D4E-32B50E4A0EEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84000770-C46D-44CD-9D4E-32B50E4A0EEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

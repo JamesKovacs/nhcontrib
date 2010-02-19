@@ -51,6 +51,7 @@ namespace NHibernate.Tool.Db2hbm
             T instance = Create<T>(config.@class);
             PropertyInfo customScriptProperty = null;
             customScriptProperty = SetParams(config, instance);
+            /*
             if (null != customScriptProperty)
             {
                 string script = customScriptProperty.GetValue(instance, null) as string;
@@ -60,7 +61,7 @@ namespace NHibernate.Tool.Db2hbm
                     Inject(instance);
                     SetParams(config, instance);
                 }
-            }
+            }*/
             return instance;
         }
 

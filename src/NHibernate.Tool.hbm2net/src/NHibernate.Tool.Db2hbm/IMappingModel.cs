@@ -19,7 +19,8 @@ namespace NHibernate.Tool.Db2hbm
         property[] GetPropertyOfEntity(string entityName);
         manytoone[] GetManyToOnesOfEntity(string entityName);
         void RemoveEntity(string entityName);
-
         void RemoveCollectionFromEntity(string p, object rem);
+        void RemoveProperty(string entityName, property property);
+        void RemoveManyToOne(string entityName, manytoone manytoone);
     }
 }

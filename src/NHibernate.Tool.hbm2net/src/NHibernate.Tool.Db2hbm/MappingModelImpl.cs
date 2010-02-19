@@ -153,6 +153,16 @@ namespace NHibernate.Tool.Db2hbm
                 return new manytoone[0];
         }
 
+        public void RemoveProperty(string entityName, property property)
+        {
+            propertiesMapByEntity[entityName].Remove(property);
+        }
+
+        public void RemoveManyToOne(string entityName, manytoone manytoone)
+        {
+            manyToOnesByEntity[entityName].Remove(manytoone);
+        }
+
         #endregion
     }
 }

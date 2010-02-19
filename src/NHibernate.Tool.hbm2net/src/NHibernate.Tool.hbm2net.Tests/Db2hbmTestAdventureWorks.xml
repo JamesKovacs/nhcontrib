@@ -48,18 +48,35 @@
     <table schema="dbo" catalog="db2hbm" name="Simple">
     </table>
   </tables>
+  
   <entity-exceptions>
-    <entity match="test">
-      <member match=".*" exclude="true">
-        <set name="" value=""/>
-      </member>
-      <member match=".*" tag="bag|set|idbag|bag" exclude="true">
-        <remove name=""/>
-      </member>
+    
+    <entity match=".*Addres.*|UnitMeasure|CreditCard"  >
+      <member-tag match="set|bag|idbag|list" exclude="true"/>
+      <alter>
+        <set name="lazy" value="false"/>
+        <meta-add attribute="comment">ollla la la la</meta-add>
+      </alter>
     </entity>
+    
+    <entity match=".*">
+      <member-tag match="set|bag|idbag|list">
+        <alter>
+          <set name="access" value="field.camelcase-underscore"/>
+          <meta-add attribute="test">Value of test</meta-add>
+        </alter>
+      </member-tag>
+      <member-tag match="many-to-one">
+        <alter>
+          <set name="fetch" value="join"/>
+        </alter>
+      </member-tag>
+    </entity>
+    
   </entity-exceptions>
+  
   <entities-namespace>AdventureWorks.Entities</entities-namespace>
   <entities-assembly>AdventureWorks.Entities</entities-assembly>
-  <output-folder></output-folder>
+ 
  
 </db2hbm-conf>
