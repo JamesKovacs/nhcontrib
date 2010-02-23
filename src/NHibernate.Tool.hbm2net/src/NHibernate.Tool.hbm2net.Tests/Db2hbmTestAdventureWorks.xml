@@ -41,14 +41,15 @@
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <table-filter>
-    <include  /> <!--Include all-->
+    <include   /> <!--Include all-->
     
   </table-filter>
+  <!--
   <tables>
     <table schema="dbo" catalog="db2hbm" name="Simple">
     </table>
   </tables>
-  
+  -->
   <entity-exceptions>
     
     <entity match=".*Addres.*|UnitMeasure|CreditCard"  >
@@ -80,3 +81,4 @@
  
  
 </db2hbm-conf>
+

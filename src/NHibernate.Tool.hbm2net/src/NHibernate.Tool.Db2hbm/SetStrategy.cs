@@ -42,6 +42,7 @@ namespace NHibernate.Tool.Db2hbm
                             if (!multicolls.ContainsKey(collectedClass.name))
                                 multicolls[collectedClass.name] = 0;
                             set s = new set();
+                            s.inverse = true;
                             context.Model.AddCollectionToEntity(collectingClass.name, s);
                             s.table = collectedClass.table;
                             s.name = context.NamingStrategy.GetNameForCollection(collectedClass.name, multicolls[collectedClass.name]);

@@ -9,7 +9,7 @@ namespace NHibernate.Tool.Db2hbm
 {
     public class ManyToManyStrategy:KeyAwareMetadataStrategy
     {
-        public ILog logger { set; protected get; }
+        
         GenerationContext context;
         public TypeConverter typeConverter { set; protected get; }
         protected override void OnProcess(GenerationContext context)

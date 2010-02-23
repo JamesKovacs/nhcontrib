@@ -165,7 +165,8 @@ namespace NHibernate.Tool.Db2hbm
         {
             var cv = new ConfigurationValidator();
             cv.Validate(cfg);
-            log.Warn(cv.WarningMessage);
+            if( !string.IsNullOrEmpty(cv.WarningMessage) )
+                log.Warn(cv.WarningMessage);
         }
     }
 }

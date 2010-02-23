@@ -11,9 +11,12 @@ namespace NHibernate.Tool.Db2hbm
         Dictionary<string, db2hbmconfTable> exceptions = new Dictionary<string, db2hbmconfTable>();
         public TableExceptions(db2hbmconf conf)
         {
-            foreach (var k in conf.tables)
+            if (null != conf.tables)
             {
-                exceptions[GetKey(k.name, k.catalog, k.schema)] = k;
+                foreach (var k in conf.tables)
+                {
+                    exceptions[GetKey(k.name, k.catalog, k.schema)] = k;
+                }
             }
         }
         #region ITableExceptions Members

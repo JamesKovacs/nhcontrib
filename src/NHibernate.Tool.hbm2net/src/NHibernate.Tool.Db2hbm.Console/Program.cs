@@ -26,6 +26,10 @@ namespace NHibernate.Tool.Db2hbm.Console
                     {
                         gen.Configure(reader);
                     }
+                    if (!Directory.Exists(parms.OutputDir))
+                    {
+                        Directory.CreateDirectory(parms.OutputDir);
+                    }
                     using (var sp = new StreamProvider(parms.OutputDir))
                     {
                         gen.Generate(sp);
