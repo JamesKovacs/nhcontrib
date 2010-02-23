@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class ConfigurationValidator
     {
         public string WarningMessage { get; set; }

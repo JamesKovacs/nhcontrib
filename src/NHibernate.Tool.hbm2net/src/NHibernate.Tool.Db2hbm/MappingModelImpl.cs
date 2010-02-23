@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     class MappingModelImpl:IMappingModel
     {
         Dictionary<string, @class> entityMapByTable = new Dictionary<string, @class>();

@@ -7,6 +7,9 @@ using log4net;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class ManyToManyStrategy:KeyAwareMetadataStrategy
     {
         

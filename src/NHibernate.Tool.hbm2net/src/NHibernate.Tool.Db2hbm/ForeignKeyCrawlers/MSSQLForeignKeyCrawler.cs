@@ -8,6 +8,9 @@ using System.Data;
 
 namespace NHibernate.Tool.Db2hbm.ForeignKeyCrawlers
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     class MSSQLForeignKeyCrawlerFactory : IForeignKeyCrawlerFactory
     {
         public void Register()

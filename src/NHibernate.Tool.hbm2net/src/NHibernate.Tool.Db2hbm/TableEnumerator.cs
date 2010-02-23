@@ -9,7 +9,9 @@ using NHibernate.Dialect.Schema;
 
 namespace NHibernate.Tool.Db2hbm
 {
-    
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class TableEnumerator:IEnumerable<DataRow>
     {
         public static db2hbmconf Configuration { get; set; }

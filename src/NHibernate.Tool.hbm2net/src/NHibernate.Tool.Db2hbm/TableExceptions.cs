@@ -6,6 +6,9 @@ using cfg;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     class TableExceptions:ITableExceptions
     {
         Dictionary<string, db2hbmconfTable> exceptions = new Dictionary<string, db2hbmconfTable>();

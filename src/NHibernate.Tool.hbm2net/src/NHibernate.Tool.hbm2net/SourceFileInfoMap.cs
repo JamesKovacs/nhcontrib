@@ -7,6 +7,9 @@ using System.IO;
 
 namespace NHibernate.Tool.hbm2net
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     class SourceFileInfoMap
     {
         Dictionary<XmlDocument, FileInfo> map = new Dictionary<XmlDocument, FileInfo>();

@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public static class TypeFactory
     {
         static Dictionary<System.Type, object> services = new Dictionary<System.Type, object>();   

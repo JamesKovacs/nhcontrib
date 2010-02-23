@@ -6,6 +6,9 @@ using NHibernate.Dialect.Schema;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public interface IMetadataStrategy
     {
         void Process(GenerationContext context);

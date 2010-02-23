@@ -7,6 +7,9 @@ using System.Data.Common;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     static class Extensions
     {
         public static bool ParseFromDb(this bool boolean,string data)

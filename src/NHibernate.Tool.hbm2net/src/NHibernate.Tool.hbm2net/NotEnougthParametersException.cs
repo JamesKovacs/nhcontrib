@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NHibernate.Tool.hbm2net
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     [global::System.Serializable]
     public class NotEnougthParametersException : Exception
     {

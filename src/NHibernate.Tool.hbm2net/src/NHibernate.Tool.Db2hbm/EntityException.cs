@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class EntityException
     {
         Regex entityMatch;

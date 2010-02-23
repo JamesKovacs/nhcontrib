@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     abstract class AlterActionBase
     {
         protected string Name { get; set; }

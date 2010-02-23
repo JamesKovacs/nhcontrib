@@ -8,6 +8,9 @@ using System.Reflection;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class DefaultNamingStrategy:INamingStrategy
     {
         public DefaultNamingStrategy()

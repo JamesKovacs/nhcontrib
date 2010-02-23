@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NHibernate.Tool.Db2hbm
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public static class ForeignKeyCrawlersRegistar
     {
         static Dictionary<System.Type, IForeignKeyCrawlerFactory> factories = new Dictionary<System.Type,IForeignKeyCrawlerFactory>() ;

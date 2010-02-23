@@ -13,6 +13,9 @@ using System.Reflection;
 
 namespace NHibernate.Tool.hbm2net.T4
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     /// <summary>
     /// A render using T4 templates
     /// </summary>

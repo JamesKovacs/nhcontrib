@@ -10,6 +10,9 @@ using System.CodeDom;
 
 namespace NHibernate.Tool.hbm2net.T4
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     internal class PropertyProcessor:DirectiveProcessor
     {
         CodeDomProvider languageProvider;

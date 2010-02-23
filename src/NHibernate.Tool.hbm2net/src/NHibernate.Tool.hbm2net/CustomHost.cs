@@ -12,6 +12,9 @@ using log4net;
 
 namespace NHibernate.Tool.hbm2net.T4
 {
+    ///<author>
+    /// Felice Pollano (felice@felicepollano.com)
+    ///</author>
     public class CustomHost : ITextTemplatingEngineHost
     {
         static Dictionary<string, System.Type> directiveProcessors = new Dictionary<string, System.Type>();
