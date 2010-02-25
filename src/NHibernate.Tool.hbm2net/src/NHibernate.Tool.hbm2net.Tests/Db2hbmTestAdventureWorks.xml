@@ -31,6 +31,7 @@
     <sql-type dbtype="uniqueidentifier" nhtype="Guid"/>
     <sql-type dbtype="money" nhtype="Decimal"/>
     <sql-type dbtype="smallmoney" nhtype="Decimal"/>
+   
   </type-mapping>
   <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
     <property name="Language">English</property>
@@ -41,15 +42,23 @@
     <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
   </connection-info>
   <table-filter>
-    <include   /> <!--Include all-->
+    <include  /> <!--Include all-->
     
   </table-filter>
-  <!--
+  
   <tables>
     <table schema="dbo" catalog="db2hbm" name="Simple">
+      <primary-key >
+        <generator class="sequence" >
+          <param name="sequence">id_seq</param>
+        </generator>
+      </primary-key>
+      <foreign-key constraint-name="myconstraint" foreign-catalog="adatabase" foreign-schema="dbo" foreign-table="ReferredTable">
+        <column-ref foreign-column="id" local-column="referred-id"/>
+      </foreign-key>
     </table>
   </tables>
-  -->
+  
   <entity-exceptions>
     
     <entity match=".*Addres.*|UnitMeasure|CreditCard"  >

@@ -18,6 +18,7 @@
   </connection-info>
   <table-filter>
     <include table=".*"/>
+    
   </table-filter>
   <tables>
     <table schema="s1" catalog="c1" name="Simple" >

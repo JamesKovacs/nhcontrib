@@ -87,12 +87,15 @@ namespace NHibernate.Tool.Db2hbm
                 {
                     generator g = new generator();
                     g.@class = exc.primarykey.generator.@class;
-                    List<param> parms = new List<param>();
-                    foreach (var p in exc.primarykey.generator.param)
+                    if (null != exc.primarykey.generator.param)
                     {
-                        parms.Add(new param() { name=p.name, Text = new string[]{p.Value} });
+                        List<param> parms = new List<param>();
+                        foreach (var p in exc.primarykey.generator.param)
+                        {
+                            parms.Add(new param() { name = p.name, Text = new string[] { p.Value } });
+                        }
+                        g.param = parms.ToArray();
                     }
-                    g.param = parms.ToArray();
                     return g;
                 }
             }

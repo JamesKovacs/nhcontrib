@@ -78,7 +78,7 @@
                           <xs:element name="generator" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                               <xs:sequence>
-                                <xs:element maxOccurs="unbounded" name="param">
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="param">
                                   <xs:complexType>
                                     <xs:simpleContent>
                                       <xs:extension base="xs:string">
@@ -100,7 +100,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element maxOccurs="unbounded" name="foreign-key">
+                    <xs:element maxOccurs="unbounded" name="foreign-key" minOccurs="0">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="column-ref">
