@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Xml.Serialization;
+using System.Text.RegularExpressions;
 
 namespace NHibernate.Tool.Db2hbm
 {
@@ -64,7 +66,12 @@ namespace NHibernate.Tool.Db2hbm
         }
         public override void Alter(object target)
         {
-            PropertyInfo pi = target.GetType().GetProperty(Name);
+            PropertyInfo pi1 = target.GetType().GetProperty(Name+"1");
+            PropertyInfo pi = null;
+            if (pi1 == null)
+                target.GetType().GetProperty(Name);
+            else
+                pi = pi1;
             if (null != pi && pi.CanWrite)
             {
                 PropertyInfo piSpec = target.GetType().GetProperty(Name + "Specified");

@@ -7,7 +7,8 @@
     <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.SetStrategy, NHibernate.Tool.Db2hbm"/>
     <strategy class="NHibernate.Tool.Db2hbm.ManyToManyStrategy, NHibernate.Tool.Db2hbm"/>
-    <strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/>
+    <!--strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/-->
+    <strategy class="NHibernate.Tool.Db2hbm.ApplyEntityExceptionsStrategy, NHibernate.Tool.Db2hbm"/>
   </metadata-strategies>
   <foreign-key-crawlers>
     <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
@@ -34,6 +35,15 @@
     <table schema="dbo" catalog="db2hbm" name="Simple">
     </table>
   </tables>
+  <entity-exceptions>
+    <entity match="Widget">
+      <member-name match="Pay">
+        <!--alter>
+          <set name="type" value="timestamp"/>
+        </alter-->
+      </member-name>
+    </entity>
+  </entity-exceptions>
   <entities-namespace>NHibernate.DomainModel10</entities-namespace>
   <entities-assembly>NHibernate.DomainModel10</entities-assembly>
 
