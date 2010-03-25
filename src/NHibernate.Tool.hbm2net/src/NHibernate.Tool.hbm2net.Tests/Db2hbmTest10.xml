@@ -37,10 +37,14 @@
   </tables>
   <entity-exceptions>
     <entity match="Widget">
-      <member-name match="Pay">
-        <!--alter>
-          <set name="type" value="timestamp"/>
-        </alter-->
+      <member-name match="Pay|Name|Address">
+        <alter>
+          
+					<set name="insert" value="false"/>
+					<set name="update" value="false"/>
+				
+
+        </alter>
       </member-name>
     </entity>
   </entity-exceptions>

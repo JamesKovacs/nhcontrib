@@ -69,7 +69,7 @@ namespace NHibernate.Tool.Db2hbm
             PropertyInfo pi1 = target.GetType().GetProperty(Name+"1");
             PropertyInfo pi = null;
             if (pi1 == null)
-                target.GetType().GetProperty(Name);
+                pi = target.GetType().GetProperty(Name);
             else
                 pi = pi1;
             if (null != pi && pi.CanWrite)
