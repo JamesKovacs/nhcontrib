@@ -1,0 +1,1302 @@
+SPRING.NET FRAMEWORK CHANGELOG
+==============================
+http://www.springframework.net
+
+Release Version 1.3.0 December 17, 2009
+
+Release Notes - Spring.NET - Version 1.3.0
+
+Bug
+[SPRNET-1155] - Error when evaluating expression with #date variable
+[SPRNET-1198] - Dynamic Assemblies are not Strong Named
+[SPRNET-1228] - NmsTemplate: wrong timeout units in receive method (ticks instead of milliseconds)
+[SPRNET-1266] - Context creation can throw ObjectCurrentlyInCreatation exception thrown when using <tx:attribute-driven/> with NHibernateTransactionManager
+[SPRNET-1270] - Selection of DefaultProvider in MultiDelegatingDbProvider can be null
+[SPRNET-1272] - Recreating application context can result in calls to create same type twice leading to System.ArgumentException: Duplicate type name within an assembly.
+[SPRNET-1273] - Remove unnecessary cast to (int) in Spring.Data.Core.AdoTemplate ExecuteScalar with ICommandSetter method argument
+[SPRNET-1285] - MultiDelegatingDbProvider in wrong namespace
+[SPRNET-1288] - auto-start not parsed correctly in TIBCO EMS/ActiveMQ message listener container schema.
+[SPRNET-1290] - Project templates .csprog files references have 'SpecificVersion' set to true, set to false.
+[SPRNET-1296] - IConfigurableFactoryObject should not use ConfigureObject method to configure the product's factory
+
+Improvement
+[SPRNET-825] - Rename HtmlHelp-formatted reference docs to spring-net-reference.chm 
+[SPRNET-959] - Use 'invocation.Method' as variable for cache attributes key expression resolution
+[SPRNET-989] - Avoid throwing exception in Spring's custom timespan converter when delegating to default .NET BCL implementation.
+[SPRNET-1097] - Provide VS.NET 2008 integrated API help
+[SPRNET-1194] - Make public and protected method in AdoTemplate (both core and generic) virtual to better support testing
+[SPRNET-1257] - Improve performance in ExpressionParser by DynamicInvoke with SafeMethod.Invoke
+[SPRNET-1259] - Cache retrieval of CachingAspect custom attributes to improve performance
+[SPRNET-1260] - DefensiveEventRaiser must not swallow exceptions without notice - provide means to get exception information
+[SPRNET-1267] - Add optimize compiler flag for release build
+[SPRNET-1286] - Provide implementation of Apache.NMS.ITrace to merge NMS logging stream with Common.Logging stream.
+[SPRNET-1294] - Change use of NotImplementedExceptions to NotSupportedExceptions
+[SPRNET-1300] - NMS custom schema is missing a way to set the Exception Listener when creating message listener containers
+[SPRNET-1302] - Add IErrorHandler interface to be called when exception thrown by message processing is not of vendor specific messaging exception type.
+
+New Feature
+[SPRNET-1041] - Add new DbProvider for Oracle 11g
+[SPRNET-1136] - Add firebird db provider
+[SPRNET-1278] - Add integration with JNDI for TIBCO EMS
+
+Refactoring
+[SPRNET-1251] - Investigate regression bug in ProxyFactoryObject due to sync with Spring Java
+[SPRNET-1293] - Remove extraneous methods in implementations of NMS caching classes that use RequestTimeOut as a method parameter
+
+Task
+[SPRNET-850] - Upgrade to NUnit 2.5.2
+[SPRNET-1076] - API doc links from reference doc are broken
+[SPRNET-1148] - Provide quick start documentation for Spring NHibernate integration.
+[SPRNET-1229] - Documentation for TIBCO EMS integration
+[SPRNET-1239] - Check for package cycles with NDepend
+[SPRNET-1250] - Document use of  'DelegatingLocalSessionFactoryObject' and 'UserCredentialsDbProvider'
+[SPRNET-1265] - Upgrade to NHibernate 2.1.2
+[SPRNET-1279] - Create integration test project for NMS
+[SPRNET-1280] - Create integration test project for TIBCO EMS
+[SPRNET-1281] - Error when calling pre-build task to antlr in Spring.Core.2008 project 
+[SPRNET-1291] - Upgrade to Quartz.NET 1.0.2
+[SPRNET-1295] - Add MySql 6.1.3 ado.net provider
+[SPRNET-1298] - Copy edit the Spring reference documentation chapter on the web framework
+[SPRNET-1299] - Move older ways of configuring transaction management, using HibernateTemplate, to a 'Classic Spring Usage' section 
+
+
+Release Version 1.3.0 RC1 August 3, 2009
+
+Release Notes - Spring.NET - Version 1.3.0 RC1
+
+Bug
+
+[SPRNET-444] - An ID in Spring.Expressions can't contain '.' char
+[SPRNET-471] - TypeResolver does not support type array resolution
+[SPRNET-1073] - interface method IValidationErrors.MergeErrors(..) references concrete type "ValidationErrors"
+[SPRNET-1077] - PropertyPlaceholderConfigurer can't read from config sectiongroups
+[SPRNET-1106] - Invalid Injection
+[SPRNET-1111] - Bug in DynamicReflectionManager.ConvertValueTypeArgumentIfNecessary, the call Convert.ChangeType fails on converting DateTime to Nullable<DateTime>.
+[SPRNET-1115] - LocalSessionObjectFactory not detected as a IPersistenceExceptionTranslator in an application context
+[SPRNET-1117] - WebSupportModule fails to initialize on pre NET 2.0 SP2 platforms due to missing field HttpContext.HideRequestResponse
+[SPRNET-1121] - XmlMessageConverter error (stream closing order)
+[SPRNET-1128] - ApplicationContext instance is not removed from ContextRegistry when disposed
+[SPRNET-1130] - Wrong MessageQueueException handling in DistributedTxMessageListenerContainer and TransactionalMessageListenerContainer
+[SPRNET-1131] - Exception when using Nullable parameters in proxied service
+[SPRNET-1134] - Spring.Proxy classes does not generate correctly multiple parameters attributes (method's parameter attributes and method's return type attributes
+[SPRNET-1135] - Auto Injection for Unit Tests Failing when object has Parent
+[SPRNET-1142] - Adding parameters does not working for SQLlte text comand
+[SPRNET-1146] - Validation Controls cause NullReferenceException in webforms designer
+[SPRNET-1151] - Spring.Web.UI.Page.Validate() method hides framework's System.Web.UI.Page.Validate()
+[SPRNET-1153] - Deadlock when shutting down AbstractPeekingMessageListenerContainer
+[SPRNET-1160] - Synchronizations with the same (or no) Order are NOT applied in registration order
+[SPRNET-1162] - IConfigurableListableObjectFactory misses method RegisterObjectDefinition to be in sync w/ IObjectDefinitionRegistry
+[SPRNET-1168] - InheritanceBasedAopConfigurer prone to ambiguous matches while proxying methods
+[SPRNET-1171] - InteritanceAopConfigurer does not proxy protected virtual methods
+[SPRNET-1174] - Proxies dont implement methods of base interfaces of interfaces
+[SPRNET-1176] - Spring AOP proxies can't be serialized/deserialized in process
+[SPRNET-1179] - ServiceExporter cannot export types implementing multiple interfaces
+[SPRNET-1186] - DbParameters.GetValue returning DbParameter object instead of value
+[SPRNET-1201] - Error importing XML object definition file - IOUtils::CopyStream() does not handle buffer under fills.
+[SPRNET-1204] - Unable to export an AOP-proxied instance by using Enterprice Service Exporter
+[SPRNET-1211] - the same .aspx page cannot be registered under different id's or aliases
+[SPRNET-1219] - NonTransactionalMessageListenerContainer may require setting of message formatter before calling receive
+[SPRNET-1221] - Both <tx:attribute-driven> and an extra DefaultAdvisorAutoProxyCreator cause advices to be invoked multiple times
+[SPRNET-1222] - MessageQueueFactoryObject.GetObject() sets global MessageQueue.EnableConnectionCache property
+[SPRNET-1225] - Dependencies of Advisors should not be eligible for auto-proxying
+[SPRNET-1231] - objects defined using factory-object and factory-method get already instantiated during ObjectFactory postprocessing phase
+[SPRNET-1233] - Can not send to remote private MSMQ queue
+
+Improvement
+
+[SPRNET-467] - add support for bitwise operations to Spring.Expressions
+[SPRNET-504] - Allow circular references on prototypes
+[SPRNET-620] - Support for Collection Merging in Parent/Child Object Definitions
+[SPRNET-691] - Add ExecuteSqlScript utility method to AbstractTransactionalDbProviderSpringContextTests
+[SPRNET-698] - Make Advisor/Advice binary serializable
+[SPRNET-904] - RollbackRuleAttribute throws AopConfiguration exception instead of ArgumentException
+[SPRNET-929] - Improve namespace parsing infrastructure
+[SPRNET-1018] - DoRedirect in ResultMode uses Response.Redirect that throws ThreadAbortException
+[SPRNET-1081] - Add an ExceptionThrowingAction to Spring.Validation framework
+[SPRNET-1095] - mprove example application showing use of ServicedComponent exporter (COM+/EnterpriseServices)
+[SPRNET-1102] - Improve Northwind NHibernate example
+[SPRNET-1108] - Add support for InterSystems.Data.CacheClient provider
+[SPRNET-1110] - Add "contextswitch" to validation framework
+[SPRNET-1112] - Provide AbstractSimpleObjectDefinitionParser
+[SPRNET-1114] - Performance problems with Spring.Testing.NUnit in 1.2.0 release
+[SPRNET-1125] - Ordering of object names in ObjectFactory.GetObjectDefinitionNames() and GetObjectNamesForType() is not predictable
+[SPRNET-1126] - XmlMessageConverter/TypeMapper usage should be able to embed fully qualified type name to enable type sharing between producer and subscriber
+[SPRNET-1127] - NmsTemplate could support both topics/queues in a threadsafe manner.
+[SPRNET-1140] - Allow for both, CLR and Spring syntax for generic type definitions in XML and SpEL
+[SPRNET-1149] - MessageQueue not resolved from MessageQueueObjectName before container starts to consume messages
+[SPRNET-1150] - Provide warning if MSMQ IMessageConverter object is not specified with scope = prototype.
+[SPRNET-1154] - Update Apache.NMS library version
+[SPRNET-1158] - Provide means to check for an active AOP invocation context
+[SPRNET-1163] - AbstractSpringContextTests.SetDirty should take System.Object argument
+[SPRNET-1167] - It is impossible to configure Null values using VariablePlaceholderConfigurer
+[SPRNET-1177] - PropertyComparator doesn't perform stable sorting
+[SPRNET-1181] - Improve support for NHibernate 3
+[SPRNET-1182] - defer target==null checking until actual joinpoint invocation in aop proxy method implementations
+[SPRNET-1190] - Add error code for duplicateKeyCodes to DbProvider metadata for Oracle
+[SPRNET-1191] - Add additional convenience constructors to ProxyFactory
+[SPRNET-1192] - VS Intellisense doesn't show annotation comments from Spring Schemas
+[SPRNET-1206] - Upgrade to NUnit 2.5 or make it version independent
+[SPRNET-1208] - support IObjectFactoryAware on manual AddObjectPostProcessor registration
+[SPRNET-1215] - Add DuplicateKeyException to DAO exception hierachy
+[SPRNET-1224] - FactoryObject products from singleton factories don't get cached
+[SPRNET-1235] - Switch to internal AutoProxyCreator for <tx:attribute-driven /> (sync with Spring/J)
+[SPRNET-1238] - Repackage antlr 2.7.6 inside Spring.Core
+[SPRNET-1240] - Add Non/TransientDataAccessException to DAO exception hierarchy
+
+New Feature
+
+[SPRNET-843] - VS.NET 2008 project and solutions templates
+[SPRNET-1104] - NHibernate 2.1 Support
+[SPRNET-1109] - Support DI in EnterpriseServices / ServicedComponent
+[SPRNET-1178] - add utility methods for stable sorting of arbitrary collections
+[SPRNET-1196] - Add support for Microsoft's Test Framework in AbstractDependencyInjectionSpringContextTests and related subclasses
+[SPRNET-1197] - Add support for TIBCO EMS
+[SPRNET-1230] - Include NH 2.1 Proxy Generator Provider in distribution
+[SPRNET-1236] - NVelocity integration
+[SPRNET-1237] - Implement parsing of property element in NVelocity custom namespace
+[SPRNET-1243] - Add DictionaryVariableSource
+
+Refactoring
+
+[SPRNET-1089] - Change DoStop() in AbstractListenerContainer to protected
+[SPRNET-1090] - Make AbstractSendToQueueExceptionHandler abstract
+[SPRNET-1091] - Add ORIGINAL_DEFAULT_HANDLER_METHOD to MSMQ MessageListenerAdapter
+[SPRNET-1234] - Change validator type hierarchy to cleanly separated simple vs. group validator types
+
+Task
+
+[SPRNET-627] - Add example and reference documentation to show NmsTemplate usage with MSMQ binding.
+[SPRNET-1005] - Investigate AbstractObjectFactory method ContainsObject for behavior when searching parent object factory.
+[SPRNET-1072] - Extend validation schema for new "FastValidate" property on ValidatorGroup
+[SPRNET-1113] - Investigate propagation supports with readonly=true for NH
+[SPRNET-1118] - Investigate rendering of validation errors in nested controls
+[SPRNET-1137] - check possible bug w/ transactions and nhibernate integration
+[SPRNET-1143] - update renamed IApplicationListener -> IApplicationEventListener interface in reference docs
+[SPRNET-1165] - Compile against antlr 2.7.7.3
+[SPRNET-1218] - Update to use Apache NMS 1.1
+[SPRNET-1239] - Check for package cycles with NDepend
+
+
+Release Version 1.2.0, November 10, 2008
+
+Release Notes - Spring.NET - Version 1.2.0
+
+
+Bug
+[SPRNET-533] - xml <import> "directive" doesn't correctly resolve relative paths
+[SPRNET-863] - Passing name of inner object to IApplicationContext.IsSingleton() throws NullReferenceException
+[SPRNET-944] - Throws exception when evaluating literal 'date' in expression
+[SPRNET-957] - TypeAssemblyHolder doesn't work correctly for a generic full type name
+[SPRNET-966] - XML object definition parser strips whitespaces from values
+[SPRNET-971] - MessageSource resource lookup throws MissingManifestResourceException
+[SPRNET-988] - Add support for XmlArrayAttribute & XmlArrayItemAttribute to WebServiceProxyFactory
+[SPRNET-992] - ReflectionUtils.GetConstructorByArgumentValues throws System.IndexOutOfRangeException: Index was outside the bounds of the array.
+[SPRNET-996] - DataBinding null values to nullable type fails
+[SPRNET-997] - IIS7 integrated pipeline "The HttpRuntime.ProcessRequest method is not supported by IIS integrated pipeline mode"
+[SPRNET-1022] - MissingManifestResourceException when resolving resources in web apps
+[SPRNET-1035] - VariablePlaceholderConfigurer placeholder prefix is not configurable
+[SPRNET-1044] - Sync behavior of AbstractObjectFactory.GetObject( string name, object[] arguments) and .GetObject( string name, Type requiredType, object[] arguments)
+[SPRNET-1060] - Issue hooking up Spring.Web.Providers.xAdapter in test unit environment
+[SPRNET-1065] - Extraneous connection open in DataSet operations on AdoTemplate
+[SPRNET-1066] - Wrong assembly version number used to specify CommandBuilder Type and Exception Type for SQL CE 3.5 provider
+[SPRNET-1070] - SimpleMessageListenerContainer to check for null sessions and consumers when shutting down.
+[SPRNET-1074] - Remove required constraint on method attribute in listener element
+[SPRNET-1079] - custom namespace schema has problem with <import namespace=".." > element
+[SPRNET-1084] - Telerik RadGrid Control is broken with Spring RC1
+[SPRNET-1085] - Spring.Web.UI.Page throws exception when a custom ResourceProviderFactory is configured
+[SPRNET-1086] - Parent/Child ObjectDefinitions are merged incorrectly 
+[SPRNET-1088] - SpEL doesn't allow to concat string null 
+
+Improvement
+[SPRNET-605] - Improve DynamicMethodInvocation by reusing SafeMethod instance
+[SPRNET-672] - Provide strategy interface to make Model persistence customizable in Spring.Web.UI.Page
+[SPRNET-701] - Self-registering namespace parsers
+[SPRNET-912] - Ensure line number to top level error message when there are XML parsing errors.
+[SPRNET-969] - Improve dynamic reflection library for constructor and method invocations
+[SPRNET-1030] - CacheResultItem should work on IEnumerable
+[SPRNET-1033] - Enable short-circuit validation for validationgroup
+[SPRNET-1059] - WebServiceExporter generated proxy should not access ContextRegistry.GetContext or WebApplicationContext.Current
+[SPRNET-1062] - MessageHandlerAdapter for MSMQ should use Expression.Parse when dispatching handler method to avoid throwing first chance exception
+[SPRNET-1068] - Improve exception handling during object definition loading
+[SPRNET-1083] - Change logging level when overriding NHibernate ConnectionProvider in LocalSessionFactoryObject with Spring's IDbProvider to INFO from WARN
+
+New Feature
+[SPRNET-924] - Provide an AutoProxyCreator implementations based on object type names, class attributes, and type names
+
+Refactoring
+[SPRNET-1061] - Eliminate cyclic dependency in Spring.Web assembly Spring.Util.*/Spring.Web.Support.* namespace
+
+Task
+[SPRNET-828] - Add section on wiring .NET event to the reference documentation
+[SPRNET-1007] - Remove extraneous 'bean' references in reference documentation
+[SPRNET-1051] - Update to use postgresql driver 2.0.0.0
+[SPRNET-1053] - Investigate NET 3.5 Service Pack 1 issues w.r.t. Spring.NET
+[SPRNET-1067] - Add MySql 5.2.3 ado.net provider
+[SPRNET-1082] - Bad packaging in 3.5 lib directory
+
+
+Release Version 1.2.0 RC1, October 16, 2008
+
+
+Bug
+[SPRNET-899] - HttpContext.CurrenHandler returns Spring's internal PageHandler instead of real Page
+[SPRNET-923] - Spring.Services generated proxies  should not use explicitly ContextRegistry.GetContext or WebApplicationContext.Current direclty
+[SPRNET-967] - SaoFactoryObject should cast TransparentProxies to the interface it implements before to return
+[SPRNET-1008] - Add check for [Serializable] in SimpleMessageConverter
+[SPRNET-1017] - Apache.NMS.ActiveMQ.ConnectionClosedException when using CachingConnectionFactory
+[SPRNET-1020] - Consumer caching was not taking place for queues.
+[SPRNET-1023] - Problems performing DI with Telerik RAD controls
+[SPRNET-1027] - Spring Page Handler Factory does not respect EnableSessionState="ReadOnly", page setting cached until app pool reload
+[SPRNET-1028] - DefaultListableObjectFactory.IsAutowireCandidate(string , DependencyDescriptor)  does not search parent container
+[SPRNET-1032] - <name-values> elements to not append values for same key value
+[SPRNET-1047] - ObjectPostProcessors order isn't respected when mixing <object order="x"> and ObjectFactory.AddObjectPostProcessor() registrations
+
+Improvement
+[SPRNET-547] - Add Unsubscribe functionality to IEventRegistry
+[SPRNET-567] - Allow parameters to be passed to Spring.Web.UI.Page.SetResult()
+[SPRNET-784] - WebServiceProxyFactory support for SoapHeaderAttribute with Direction=SoapHeaderDirection.In 
+[SPRNET-795] - Change TransactionStatus Rollback setter property to Rollback() method so the contract of setting it to true is more explicit
+[SPRNET-840] - Reduce PageHandlerFactory complexity
+[SPRNET-958] - Result mapping doesn't support expressions for TargetPage
+[SPRNET-960] - Allow for selection of logging level when using exception handling advice for logging
+[SPRNET-995] - IsValid state of AbstractBinding should not be stored in LogicalThreadContext
+[SPRNET-1016] - Apply local transaction to DataSet operations in AdoTemplate.
+[SPRNET-1019] - Messaging namespace parser should support use of PropertyPlaceholderConfigurer
+[SPRNET-1021] - Avoid antlr exception thrown for internal flow control when selecting handler method in MessageListenerAdapter
+[SPRNET-1024] - Add AutoStartup as an attribute of the <listener-container> element
+[SPRNET-1025] - Make GetObject virtual in MethodInvokingJobDetailFactoryObject and provide protected access to JobDetail object.
+[SPRNET-1038] - Eliminate storing binding state to TLS in Spring.DataBinding.AbstractBinding
+[SPRNET-1056] - Provide easier configuration of exception handlers in ExceptionTranslationAdvice.
+
+New Feature
+[SPRNET-711] - Add generic DI support for IHttpHandlers
+[SPRNET-713] - Add support for custom .ashx IHttpHandler implementations
+[SPRNET-815] - Add Sql Server Compact Edition 3.5 database provider
+[SPRNET-883] - Add support for translation of exceptions using PersistenceExceptionTranslationInterceptor.
+[SPRNET-936] - Add message converter to/from XML (NMS)
+[SPRNET-1039] - Add support for Sybase ADO.NET 2.0 provider
+[SPRNET-1040] - Support encrypting url parameters when using Page.SetResult()
+[SPRNET-1046] - Move hardcoded, Spring.Web specific ISharedStateAware handling to generic SharedStateAwareObjectPostProcessor
+[SPRNET-1055] - Provide ability to easily register to MessageQueueFactoryObject definitions with the container at runtime
+[SPRNET-1057] - Add new 'execute' action for ExceptionTranslationAdvice
+[SPRNET-1058] - Provide WCF Service export akin to those for Remoting and .asmx WebServices
+
+Refactoring
+[SPRNET-1052] - Extract "SetResult" related code into a reusable ResultNavigator component
+
+Task
+[SPRNET-1045] - Colorize code listings (XML/C#) in reference documentation
+[SPRNET-1048] - Drop IProcess support from Spring.Web
+[SPRNET-1050] - Provide sample configuration for using MultiDelegatingDbProvider
+
+
+Release 1.2.0 M1, August 15, 2008
+
+
+Bug
+[SPRNET-542] - Spring NMS AbstractListenerContainer does not set or use the ExceptionListener correctly
+[SPRNET-939] - PageHandlerFactory does not behave like original factory w.r.t missing files
+[SPRNET-941] - Proxying method with generic type parameter fails when the type resolves to a value type at runtime.
+[SPRNET-942] - ExceptionHandlerAdvice doesn't allow for explicitly configured Handlers
+[SPRNET-945] - NameMatchTransactionAttributeSource to support conversion of string representation of  transaction attributes
+[SPRNET-948] - Missing dependency cycle check for request / session scoped singletons in Spring.Web
+[SPRNET-949] - Scoped object dictionaries (request,session) do not match case sensitivity setting of object factory
+[SPRNET-952] - ObjectCurrentlyInCreationException constructor mismatch doesn't show affected object's name
+[SPRNET-954] - DeclaredParameters property is not property initialized in AdoOperation subclasses
+[SPRNET-961] - Exception handling advice throws NullReferenceException when using swallow action on methods that return value types
+[SPRNET-970] - TypeConversionUtils should not throw TypeMismatchException on null value for System.Nullable
+[SPRNET-974] - SpEL ConstructorNode doesn't support non-public constructors
+[SPRNET-975] - Object alias names are not treated according to "caseSensitive" setting
+[SPRNET-985] - Autowire byType checks for UnsatisfiedDependencyException before honoring overrides
+[SPRNET-986] - Constructor autowiring for array types not working
+[SPRNET-988] - Add support for XmlArrayAttribute to WebServiceProxyFactory
+[SPRNET-994] - Null reference in SessionFactoryUtils.GetDbProvider
+[SPRNET-1002] - Object name generation when no name specified produces duplicate names
+
+Improvement
+[SPRNET-794] - Improve web-DI performance, in particular with GridViews
+[SPRNET-869] - WebServiceExporter to generate WebServiceBinding attribute with WSI basic profile 1.1 by default.
+[SPRNET-928] - Add nant build file and supporting tools in the release.
+[SPRNET-946] - Extend code example in chapter "19.4. Connection String management" of the reference documentation
+[SPRNET-947] - Singleton Cache Locks are too coarse grained for custom scopes (e.g. Request, Session)
+[SPRNET-955] - Provide better error message if dbprovider name is not found in thread local storage when using MultiDelegatingDbProvider
+[SPRNET-956] - Provide better error message if assembly name is not provided when specying method signature for MethodMapTransactionAttributeSource 
+[SPRNET-959] - Use 'invocation.Method' as variable for CacheResultAdvice Key expression resolution
+[SPRNET-976] - Register WebObjectFactory with EndSession and EndRequest events only when request|session scope is really used
+[SPRNET-977] - Avoid unnecessary use of HttpContextSwitch within WebObjectFactory.ConfigureObject()
+[SPRNET-978] - CaseInsensitiveHashtable is not serializable
+[SPRNET-999] - Add DefaultDbProvider property to MultiDelegatingDbProvider.
+
+New Feature
+[SPRNET-753] - Add ILifecycle interface
+[SPRNET-896] - Allow registering custom ICollectionProcessors in SpEL MethodNode
+[SPRNET-922] - NHibernate 2.0 RC1 Support
+[SPRNET-953] - Allow for circular dependencies of web-scoped singletons
+[SPRNET-980] - Quartz.NET Integration
+[SPRNET-982] - TIBCO EMS Integration
+[SPRNET-993] - Added InheritanceBasedAopConfigurer for true inheritance based AOP
+[SPRNET-1000] - Configure WCF services via dependency injection and add additional behavior to them using Aspect-Oriented programming (AOP)
+[SPRNET-1006] - ActiveMQ NMS integration
+
+
+Task
+[SPRNET-782] - Removed IApplicationContextAware.ApplicationContext getter from the interface.
+[SPRNET-811] - Removed WebServiceProxyFactory.ClientProtocolType property (obsolete)
+[SPRNET-990] - Removed IResourceLoaderAware.ResourceLoader getter from the interface.
+[SPRNET-991] - ContextRegistry.GetContext(string name) should throw an exception if no context has been registered under that name.
+
+Release 1.1.2, May 6, 2008
+
+Bug
+
+[SPRNET-930] - Validation user controls not rendering errors.
+[SPRNET-931] - PreviousPage property is not set correctly during Server.Transfer
+
+Improvement
+
+[SPRNET-558] - Enable Data Validation and Model Management for UserControl
+[SPRNET-785] - SessionScope / OSIV should obtain 1 EntityInterceptor per Session instance
+[SPRNET-926] - Add PessimisticLockingFailureException as base class for CannotAcquireLockException, CannotSerializeTransactionException, and DeadlockLoserDataAccessException.
+[SPRNET-927] - NHibernate Exception mapping improvements.
+[SPRNET-932] - Create signed DLLs in debug build configuration
+[SPRNET-933] - Support MethodInjection for objects declared inside the WebApplicationContext
+[SPRNET-935] - Release DLLs built with /DEBUG:pdbonly
+[SPRNET-937] - Add additional logging of cache inserts in Cache advice.
+
+Task
+
+[SPRNET-925] - Update documentation for DI in ASP.NET regarding use of name attribute and object definition inheritance
+[SPRNET-938] - Add documentation for authoring custom namespace parsers
+
+
+
+Release 1.1.1, April 7, 2008
+
+Bug
+
+[SPRNET-394] - Fix recursive calls to Context.GetRegistry()
+[SPRNET-538] - Binding fails with binding to property of nullable type
+[SPRNET-570] - ObjectNameAutoProxyCreator incompatible with NHibernate.LocalSessionFactoryObject 
+[SPRNET-576] - Allow formatting null values for .NET 2.0 Nullable Types
+[SPRNET-755] - SpEL method invocation fails if the same expression instance is used with two different context types
+[SPRNET-607] - TypeAliasConfigurer does not work in Spring.Web applications
+[SPRNET-818] - Provide .NET TypeConverter for ITransactionAttribute
+[SPRNET-820] - spring:CheckBoxList doesn't allow for <asp:ListItem> children
+[SPRNET-821] - HttpRequestBindingContainer can't bind to checkboxes
+[SPRNET-827] - TypedDataSetUtils should use IDbCommand instead of provider specified SqlDbCommand.
+[SPRNET-829] - Named constructor argument metadata should be stored/compared using consistent CultureInfo
+[SPRNET-838] - 404 exception handling in NET 1.1 does not work as expected / differs from standard behaviour
+[SPRNET-845] - OSIV/SessionScope generates the wrong key for EntityInterceptorObjectName
+[SPRNET-846] - ProxyFactory allows for advisors being added twice
+[SPRNET-847] - Implementations of AbstractPointcurAdvisor.Equals() and .GetHashCode() are wrong
+[SPRNET-852] - Creating a custom attribute did not take into account public field values that match the named arguments in the attribute declaration.
+[SPRNET-853] - Throw HibernateSystemException (part of Spring's DAO exception hierarchy) when can not translate inner exception in NHibernate.ADOException
+[SPRNET-854] - Fix NullReferenceException in HibernateAccessor when SqlString in ADOException is null. 
+[SPRNET-860] - Placeholders not resolved in name-values element 
+[SPRNET-861] - Couldn't resolve internal properties in Strong Typed resources in Web Application
+[SPRNET-862] - Resolve object references that use the Spring expression language while parsing config files
+[SPRNET-871] - GenericApplicationContext.ctor(IApplicationContext) always throws NullReferenceException
+[SPRNET-872] - Resolve WebResources relative to HttpContext.Current.Request.FilePath
+[SPRNET-873] - ReadCommitted was misspelled in spring-tx-1.1.xsd
+[SPRNET-874] - Null reference accessing TransactionSynchronizationManager.CurrentTransactionIsolationLevel when no Spring managed transaction is active
+[SPRNET-877] - IConfigurableFactoryObject instance cannot be proxied with the AOP auto proxy functionality
+[SPRNET-880] - Logging exception handler should continue processing of exception handler chain.
+[SPRNET-882] - Test "ExistsValidHttp" fails 
+[SPRNET-886] - IInitializingObject isn't honored in case of calls to ConfigureObject()
+[SPRNET-891] - Failure to create hiearchical context with depth greater than two.
+[SPRNET-893] - Retry advice goes into infinite loop when exception type not listed in advice is thrown
+[SPRNET-902] - DbProvider ExtractError method should explicitly perform ToString operation on object returned from SpEL expression to obtain error code
+[SPRNET-908] - ReflectionUtils.MethodIsOnOneOfTheseInterfaces does not correctly iterate over multiple interface types
+[SPRNET-920] - AbstractObjectFactory.GetObject(name,requiredType,arguments) does not propagate 'requiredType' and 'arguments' ParentObjectFactory
+
+Improvement
+
+[SPRNET-531] - It is not possible to call Page.SetResult() outside the page (e.g. from a Control)
+[SPRNET-558] - Enable Data Validation and Model Management  for UserControl
+[SPRNET-559] - Change ValidationError control to enable Message resolution for UserControl
+[SPRNET-762] - De-couple the url from the actual object definition name in WebServiceExporter
+[SPRNET-772] - Distribute Northwind sql server 2005 data files to provide easy 'out-of-the-box' running of NHibernate example application.
+[SPRNET-783] - Take TypeConverters into account in SpEL numeric aggregate functions
+[SPRNET-785] - SessionScope / OSIV should obtain 1 EntityInterceptor per Session instance
+[SPRNET-799] - Add support for IBinding.SetMessage() to DataBindingPanel
+[SPRNET-814] - Improve Spring.Web DataBinding error handling ("SetErrorMessage()") documentation
+[SPRNET-824] - Make WebApplicationContext and WebObjectFactory accessible from non Web threads
+[SPRNET-830] - Improved performance in Spring.Data by optimizing reflection calls.
+[SPRNET-835] - Add additional convenience method to set TableAdapter transaction/connection properties using DbProvider.
+[SPRNET-841] - Add option to specify external hibernate configuration files (hibernate.cfg.xml) in LocalSessionFactoryObject
+[SPRNET-842] - Using DbProvider to configure LocalSessionFactory object will by default integrate with NHibernate's 'external connection' management feature
+[SPRNET-855] - Update Oracle error code mapping to include ORA-2292 as a DataIntegrityViolationCodes 
+[SPRNET-856] - Add 03000 as BadSqlGrammarCode and 40001 as CannotSerializeTransactioncode for Postgress providers.
+[SPRNET-857] - Improved MySql provider error code mappings for DataIntegrityViolationCodes
+[SPRNET-858] - Added IDbProvider implementation, UserCredentialsDbProvider, to allow changing of username, password connection strings at runtime.
+[SPRNET-859] - Add addtional constructor to MultiDelegatingDbProvider that takes dictionary of target name/providers.
+[SPRNET-864] - Add additional result mapping variable prefix what will not clash with PropertyPlaceholderConfigurer
+[SPRNET-867] - Add line number to top level error message when there are XML parsing errors.
+[SPRNET-879] - LocalSessionFactoryObject can configure ISessionFactory to use Spring's IDbProvider as a NHibernate ConnectionProvider
+[SPRNET-887] - Add support for asp:HiddenField in DataBindingPanel
+[SPRNET-897] - Allow binding/unbding string.Empty to nullable types
+[SPRNET-898] - Add additional ICollectionProcessors to SpEL
+[SPRNET-901] - Extend SpEL selection with mysql-like LIMIT functionality
+[SPRNET-905] - RollbackRuleAttribute checks for null Type and null or empty string in constructor
+[SPRNET-906] - Build scripts generate unique revision numbers for assemblies
+[SPRNET-910] - Updated DB2 codes for exception translation
+[SPRNET-913] - Add convenience method in Spring.Web.UI.Page/UserControl to navigate to a Result using a user provided object for result expression evaluation.
+[SPRNET-914] - Add convenience method to get the Spring.Web.UI.Page Result as a url
+[SPRNET-915] - Add additional CannotSerializeTransactionCodes for Oracle providers
+[SPRNET-916] - Add additional BadSqlGrammarCode for Postgres
+[SPRNET-917] - Add additonal db error codes for exception translation for Oracle and MySql providers
+[SPRNET-918] - Add property to enable/disable logging of return value in SimpleLoggingAdvice
+[SPRNET-919] - Update NHibernate sample application to use NHibernate 1.2.1
+
+New Feature
+
+[SPRNET-892] - Introduce <spring:Panel> control for finer grained control over when to perform DI on user controls
+[SPRNET-907] - Add Required attribute and RequiredObjectFactoryPostProcessor, allowing to enforce required object properties
+[SPRNET-911] - Provide ParameterValidationAdvice to use validation framework to validate method arguments.
+
+Task
+
+[SPRNET-587] - Add example of validation usage in middle tier services
+[SPRNET-689] - Add more documentation describing ITransactionAttributeSource implementations.
+[SPRNET-775] - Document using a custom IFactoryObject to help with configuring embedded resources
+[SPRNET-780] - Valdiation example for ASP.NET refers to wrong namespace.
+[SPRNET-809] - Update to NHibernate 1.2.1
+[SPRNET-819] - Add Multiselection samples (CheckListBox, ListBox) to WebQuickStart DataBindingPanel sample
+[SPRNET-826] - Add section about manually registering objects with the container ("registersingleton" etc.)
+[SPRNET-831] - SpringAir html doesn't pass VS2005 default validation (not xhtml transitional)
+[SPRNET-849] - Add "SetErrorMessage" sample to Data Binding section in reference docs
+[SPRNET-865] - Add Documention for the expression attribute.
+[SPRNET-866] - Support .NET 1.1 for NHibernate 1.2
+[SPRNET-875] - Documentation incorrectly lists Unspecified as default isolation level, should be ReadCommitted.
+[SPRNET-885] - Add doc for <spring:Panel> server control usage
+[SPRNET-909] - Document that WebServiceExporter does not add WebServiceBinding attribute with WSI basic profile 1.1 by default.
+
+
+
+Release 1.1 final, December 7, 2007
+
+Bug
+
+[SPRNET-448] - TransactionTimeout setting not being applied correctly. 
+[SPRNET-453] - ConversionUtils should use ConvertFromInvariantString if failed to convert string value. 
+[SPRNET-511] - UrlResource Exists only returns true for file:// 
+[SPRNET-606] - Problems with Attributes in proxy generation 
+[SPRNET-719] - PropertyPlaceholderConfigurer does not replace property values in <list element-type=${prop}> 
+[SPRNET-723] - Head control renders not XHTML valid script tag 
+[SPRNET-752] - Implement advanced DataSet related methods in AdoTemplate 
+[SPRNET-759] - Wrong assembly named used to configure NHibernate12's SessionFactory property ExposeTransactionAwareSessionFactory 
+[SPRNET-760] - StoredProcedure.DeclaredParameters.AddOut("A", OracleType.Cursor); causes double ':' in Oracle10g stored procedure call 
+[SPRNET-761] - Fix use of Nested Transactions in TxScopeTransactionManager. 
+[SPRNET-767] - Generic AdoTemplate CommandTimeout property does not set corresponding ClassicAdoTemplate property 
+[SPRNET-769] - Resume and throw exception if exception is thrown at start of transaction. 
+[SPRNET-770] - Nested RequiresNew propagaion options not working in AdoPlatformTransaction manager . 
+[SPRNET-778] - AdoExceptionTranslator in HibernateTransactionManager did not have a default value 
+[SPRNET-779] - NHibernateTransactionManager can not convert AdoAcessException 
+[SPRNET-796] - AdoTemplate not using DbMetadata for CommandBuilderDeriveParamtersMethod 
+[SPRNET-800] - SimpleLoggingAdvice does not correctly check for logging level other than trace. 
+[SPRNET-802] - Default IsolationLevel should be ReadCommitted. 
+
+Improvement
+
+
+[SPRNET-497] - Print 'resultName's value if Page.SetResult() is called with a non-existant result name 
+[SPRNET-514] - dbproviders.xml configuration should allow for an optional 'DeriveParameters' method. 
+[SPRNET-555] - Improve ResourceSetMessageSource documentation and add example for ASP.NET 2.0 
+[SPRNET-756] - Add protected method to ErrorCodeExceptionTranslator to allow for a subclass to first attempt exception translation. 
+[SPRNET-766] - Add support for Sybase provider 
+[SPRNET-768] - Add support for ODBC provider 
+[SPRNET-774] - Add Designmode support for DataBindingPanel 
+[SPRNET-793] - Add Execute methods missing in Generic.AdoTemplate but present in non-generic version. 
+[SPRNET-797] - Make it such that DefaultTransactionStatus property Rollback can only be set to true 
+[SPRNET-803] - Allow web service base type to be configurable in WebServiceExporter. 
+
+Task
+
+[SPRNET-203] - Add test coverage for Spring.Net Web module 
+[SPRNET-217] - QuickStart documents for Spring.Air 
+[SPRNET-421] - Document programmatic use of data validation framework 
+[SPRNET-457] - ErrorCode translation can produce extraneous UncategorizedDataAccessException 
+[SPRNET-516] - Improve documentation on Spring.Data DataSet functionality 
+[SPRNET-574] - NHibernate and custom loader 
+[SPRNET-590] - Include use of Spring's implementation of NHibernate's ICurrentSessionContext in demo appliation. 
+[SPRNET-610] - AOP documentation improvements 
+[SPRNET-682] - Change vs.net 2002 solution to be Spring.Net.1.1.2002.sln 
+[SPRNET-708] - Remove "UniqueID" based usercontrol DI sample from web reference docs 
+[SPRNET-726] - Improve Spring.Data.NHibernate docs w.r.t FlushMode.Never in OSIV 
+[SPRNET-744] - update assembly version numbers to current builds in dbproviders.xml 
+[SPRNET-764] - NUnit 2.4.3 GUI-runner not executing Spring.Testing.NUnit based tests linked to NUnit 2.4.1. 
+[SPRNET-773] - Unit tests for ServiceDomainTransactionManager 
+[SPRNET-776] - Unit tests for AdoPlatformTransactionManager 
+[SPRNET-777] - Provide 10,000 ft intro page on spring.net features on web site 
+[SPRNET-781] - Add new providers added to dbproviders.xml to spring-dataase-1.1.xsd 
+[SPRNET-786] - Fix Spring.Data related projects in Spring VS2003 solution 
+[SPRNET-787] - add examples for DataBindingPanel to WebQuickStart 
+[SPRNET-788] - integrate Spring.Web.Tests with NUnitAspEx to support real HttpRuntime-integrated tests 
+[SPRNET-798] - Add overview documentation from web site into reference docs 
+
+Release 1.1 RC2, October 15, 2007
+
+(Note: A bug in the dbproviders.xml file was discovered shortly after the initial release of 1.1 RC2.  A new version was uploaded with the same name.  This should not present a problem, but if you have trouble creating an OracleODP-2.0 provider, please download again as it may take up to a day for the proxy servers to get updated)
+
+Bug 
+
+[SPRNET-297] - Cannot proxy ODP.NET OracleConnection 
+[SPRNET-500] - ProxyFactoryObject attempts to add all interfaces target implements even if ProxyInterfaces property is set 
+[SPRNET-659] - Page doesn't allow to specify neutral cultures for CultureResolver 
+[SPRNET-664] - Add description and show usage of Spring's WebSupportModule to documentation. 
+[SPRNET-667] - Update Common.Logging documentation to point to NetCommon sourceforge project web site. 
+[SPRNET-684] - Remove duplicate logging when completing transaction after thrown exception. 
+[SPRNET-685] - Rethrow exception during transaction manager rollback or commit and log correctly. 
+[SPRNET-686] - CacheResultAdvice should cache 'null' return values 
+[SPRNET-687] - AspNetCache does not differentiate cache-keys if several instances with different names exist 
+[SPRNET-688] - Registered transaction syncrhonizations should not have to implement IComparator. Add support for implemented Spring's IOrdered interface (optional). 
+[SPRNET-690] - AbstractSpringContextTests is not caching ApplicationContexts 
+[SPRNET-692] - Incorrect metadata in dbproviders.xml for parameterDbTypeProperty for OracleODP-2.0 
+[SPRNET-696] - AbstractMessageSource messes parameters when calling ParentMessageSource 
+[SPRNET-704] - UserControl's SharedState doesn't reload after changing/recompiling .ascx file 
+[SPRNET-706] - Page.DataBound and Page.DataUnbound events are only raised if Binding collection is not empty 
+[SPRNET-709] - SpEL fails evaluating expression 
+[SPRNET-710] - DotNetMock based AbstractMessageSourceTests and MessageSourceAccessorTests have both "false positives" and "false negatives" 
+[SPRNET-714] - SessionFactory not bound to thread local storage if DbProvider for HibernateTransactionManager is null 
+[SPRNET-715] - SpringSessionSynchronization did not close hibernate session with a nested transaction with TransactionPropagation.NotSupported 
+[SPRNET-716] - Create new session if thread local storage SessionHolder is marked as SyncrhonizedWithTransaction. 
+[SPRNET-721] - Intercept all target interfaces when using an introduction with ObjectNameAutoProxyCreator 
+[SPRNET-722] - ReflectionUtils.getMostSpecificMethod() throws exception when handling Generic methods with the same parameter signature and different generic types 
+[SPRNET-725] - Concurrency problem with Spring.Expressions.PropertyOrFieldNode.Set()/.Get() 
+[SPRNET-727] - MethodMatchTransactionAttributeSource does not correctly return transaction attributes on candidate target object if method registered using MethodInfo object is based on an interface 
+[SPRNET-728] - Add missing ExecuteFind<T> method on IHibernateOperations interface 
+[SPRNET-731] - OSIV configuration doesn't work as described in reference docs 
+[SPRNET-733] - PropertyOverrideConfigurer on abstract object definition does not work 
+[SPRNET-734] - Northwind FulfillmentServiceTests are broken 
+[SPRNET-739] - fix NHibernate12 solution + nant build script 
+[SPRNET-746] - StoredProcedure class doesn't return sproc return value in result dictionary 
+[SPRNET-749] - AdoTempate's QueryCallback did not property extract return or output values from stored procedure. 
+[SPRNET-750] - Add the property UseParameterPrefixInSql to IDbMetadata 
+
+Improvement
+
+[SPRNET-301] - Add IInstantiationAwareObjectPostProcessor functionality 
+[SPRNET-399] - Simplify custom config parser registration 
+[SPRNET-454] - PropertyPlaceholderConfigurer should be able to modify the values within expression elements 
+[SPRNET-485] - Add logging of transaction definition name and description when creating new transaction. 
+[SPRNET-486] - Provide better logging information in TransactionSynchronizationManager to identify ConnectionHolder, DbProvider and thread name 
+[SPRNET-679] - ResourceManagerConverter should throw a sensible exception in case of missing App_GlobalResources 
+[SPRNET-683] - Change type of "TimeToLive" parameter in ICache.Insert from int to TimeSpan 
+[SPRNET-697] - Refactor SessionScope initialization strategy 
+[SPRNET-705] - Page.SharedState must be discarded by PageHandler after .aspx recompile 
+[SPRNET-712] - Change ICache interface to be the least common denominator of potential cache implementations 
+[SPRNET-717] - Add default transaction timeout property on AbstractPlatformTransactionManager 
+[SPRNET-718] - Make node classes in SpEL public to allow for node traveral. 
+[SPRNET-720] - Change ObjectNameAutoProxyCreator default behavior to proxy the product of a IFactoryObject and not the IFactoryObject itself 
+[SPRNET-729] - Improve API documentation in NHibernate12 project using comment-checker program 
+[SPRNET-730] - Make current AppDomain's config file the default for RemotingConfigurer if filename==null 
+[SPRNET-732] - CollectionValidator should allow validation of any IEnumerable type 
+[SPRNET-740] - SpEL doesn't accept unicode characters 
+[SPRNET-742] - Exception handling aspect supports using SpEL expression as filtering condition as alternative to use of exception name. 
+[SPRNET-745] - Improved PropertyOverrideConfigurer to support 'ref' and 'expression' values override 
+
+
+New Feature
+
+[SPRNET-344] - Add the ability to bind to collections to data binding framework 
+[SPRNET-614] - Logging aspect based on Common.Logging 
+[SPRNET-693] - Add MultiDelegatingDbProvider to main distribution to support easy access to multiple databases selected at runtime. 
+[SPRNET-748] - Retry Advice 
+
+Task
+
+[SPRNET-495] - Add information on how to configure Spring under IIS7 to reference documentation 
+[SPRNET-544] - Update to use Common.Logging 1.2 
+[SPRNET-736] - Remove NHibernate integrations from CVS Integration module 
+[SPRNET-738] - Document configuring aop Namespace parser 
+[SPRNET-747] - Add description of how to do assembly redirects for database assemblies. 
+
+Release 1.1 RC1, August 10, 2007
+
+Summary:  Feature and bug fix release
+
+Bug
+
+[SPRNET-452] - Improve application context configuration error handling 
+[SPRNET-475] - ContextRegistry.GetContext() should print a detailed error 
+[SPRNET-583] - WebApplicationContext.Refresh() should be thread-safe 
+[SPRNET-607] - TypeAliasConfigurer does not work 
+[SPRNET-641] - MessageSource related code does not consistently use CultureInfo.CurrentUICulture as default 
+[SPRNET-642] - ObjectFactory must not call 'ObjectType' or 'GetObject()' of an IFactoryObject before calling IInitializingObject.AfterPropertiesSet() 
+[SPRNET-643] - ApplicationContextAwareProcessor and ObjectPostProcessorChecker may be registered twice on AbstractApplicationContext.Refresh() 
+[SPRNET-649] - AbstractLocalizer should by default use Thread.CurrentUICulturer instead of CurrentCulture 
+[SPRNET-650] - Introductions with AutoProxy 
+[SPRNET-655] - Proxy a Proxy where class explicitly implements interfaces with same method names and signatures 
+[SPRNET-658] - Npgsql-1.0 provider has incorrect configuration for parameter name prefix 
+[SPRNET-662] - DynamicMethod will call target method twice is target throws InvalidCastException 
+[SPRNET-666] - Change Log4NetFactoryObject to LogFactoryObject in documentation for IFactoryObject implementations (4.3.6) 
+[SPRNET-671] - Possible Null reference in HibernateAccessor.PrepareQuery 
+[SPRNET-675] - SpEL does not allow access to private/protected indexer 
+[SPRNET-677] - ReflectionUtils.GetMethodByArgumentValues() does not choose an exact overload match if available 
+
+Improvement
+
+[SPRNET-443] - Add support for SqlLite in DbProviders.xml 
+[SPRNET-461] - Support accessing WebApplicationContext from asynchronous worker threads 
+[SPRNET-469] - Add Generics support in Spring.Data.Object.* classes (e.g. support IRowMapper<T>) 
+[SPRNET-478] - Enhance the use of multiple object definition parsers 
+[SPRNET-481] - DelegateFactoryObject/MethodInvokingFactoryObject does not support generic methods 
+[SPRNET-490] - Make Model persistence customizable in Spring.Web.UI.Page 
+[SPRNET-565] - TxScopePlatformTransaction manager to support EnterpriseServicesInteropOption 
+[SPRNET-578] - Additional documentation for IVariableSource 
+[SPRNET-585] - Change spring-database.xsd to use 'provider' instead of 'dbprovider' element since it looks redundant in usage, i.e <db:dbProvider> instead of <db:provider> 
+[SPRNET-603] - Ignore missing local resources for asp.net 2.0 pages and user controls 
+[SPRNET-635] - Refactor implementation regarding finding correct overloaded factory-method 
+[SPRNET-644] - Make IConfigurableFactoryObject members of WebServiceProxyFactory virtual 
+[SPRNET-648] - Make ResourceSetLocalizer ignore missing invariant resourceset 
+[SPRNET-651] - In Spring.Caching.AspNetCache/Spring.Web replace usages of HttpContext.Current.Cache with HttpRuntime.Cache 
+[SPRNET-654] - Expose method ConfigureObject( name, target, objectDefinition ) on IListableObjectFactory and all implementations 
+[SPRNET-660] - Make configurable the choice of reflection library used in AOP proxies. 
+[SPRNET-661] - Rename CheckBoxListControl -> CheckBoxList and make it a first class citizen for DataBinding 
+[SPRNET-663] - Change signature of IVariableSource to string ResolveVariable(string name) instead of object return value to provide consistent contract with container property replacement.. 
+[SPRNET-665] - Enable RegistryVariableSource to deal with REG_MULTI_SZ and REG_DWORD values 
+[SPRNET-668] - Throw InvalidDataAccessApiUsageException if calling Execute<T>(ICommandCallback<T> action) with a provider whose IDbCommand implementation does not inherit from System.Data.Common.DbCommand. 
+[SPRNET-669] - Provide IDbProvider to IDbCommandCreator callback to simplify implementations that want to create parameters in provider neutral manner. 
+[SPRNET-673] - Rename XmlParserRegistry/IXmlObjectDefinitionParser to NamespaceParserRegistry/INamespaceParser for greater naming consistency. 
+[SPRNET-674] - Renaming/Moving of namespace parsers into Config subnamespace, renaming of *.xsd files to *-1.1.xsd for greater naming consistency 
+[SPRNET-681] - Add support for DB2 iSeries dbprovider. 
+
+New Feature
+
+[SPRNET-549] - Support for setting of TableAdapters transaction property for using typed data sets within a Spring demarcated transactional boundary 
+[SPRNET-556] - Add support for <httpModule> DI 
+[SPRNET-557] - Add DI support asp.net 2.0 intrinsic providers (membership,role,profile,sitemap) 
+[SPRNET-560] - Add custom HtmlForm tag to overcome "action"-Attribute rendering troubles 
+[SPRNET-599] - Create SessionScope based on top of current OSIV functionality 
+[SPRNET-647] - Add TabularMultiView control 
+[SPRNET-676] - Exception handling aspect for simple declarative configuration of common exception handling strategies. 
+
+Task
+
+[SPRNET-434] - Document ResourceHandlersSectionHandler to register custom IResource implementations 
+[SPRNET-439] - Refactor TransactionAspectSupport to use LogicalThreadContext for storage of TransactionInfo 
+[SPRNET-612] - Transaction quick start example to use tx schema and declarative exception handling advice. 
+[SPRNET-638] - Additional documentation regarding how NHibernateSessions are managed by both HibernateTransactionManager and OSIV 
+[SPRNET-646] - Document use of Client Certificates in WebServiceProxyFactory 
+
+Release 1.1 Milestone 2, July 11, 2007
+
+Summary:  Primarily a bug fix release
+
+Bug
+
+[SPRNET-501] - TxScopeTransactionManager's PromotableTxScopeTransactionObject property TransactionScope is always null. 
+[SPRNET-517] - Factory method IoC instantiation is not finding correct overloaded method. 
+[SPRNET-552] - Generic AdoTemplate to support Execute callbacks with IDbCommand as callback argument in addition to current DbCommand callback argument. 
+[SPRNET-613] - Recursive setting of ExposeTransactionAwareSessionFactory property in LocalSessionFactoryObject for NH12 
+[SPRNET-617] - Change aop namespace element from proxy-target-class to proxy-target-type 
+[SPRNET-621] - AbstractMessageSource does not correctly respect 'UseCodeAsDefaultMessage' when used within a hierarchical application context. 
+[SPRNET-624] - Support for nested transactions using TxScopeTransactionManager. 
+[SPRNET-625] - TxScopeTransaction manager did not copy declarative transaction information to TransactionOptions and TransactionScopeOption 
+[SPRNET-630] - AbstractObjectDefinitionReader did not correctly set default IResourceLoader 
+[SPRNET-631] - AdoTemplate.DataSet DataSetCreate(CommandType commandType, string sql, string[] tableNames) not using tableNames parameter 
+[SPRNET-633] - Allow multiple calls to proceed in AOP around advice 
+[SPRNET-634] - AutoProxyCreators does not take into account IFactoryObject when finding candidates advisors/aspects. 
+
+Improvement
+
+[SPRNET-140] - Add IVariableSource and VariablePlaceholderConfigurer allowing property placeholder data to be easily extensible to other data sources.
+[SPRNET-443] - Add support for SqlLite in DbProviders.xml 
+[SPRNET-482] - Update MqSql support to use latest 1.0.9 release 
+[SPRNET-483] - Add support for MySql 1.0.9/5.0/5.1 drivers 
+[SPRNET-586] - Change name of IRowMapper's method argument IDataReader from 'dataReader' to 'reader'
+[SPRNET-608] - Change transaction namespace element from proxy-target-class to proxy-target-type 
+[SPRNET-623] - Add additional functionality to TransactionSynchronizationManager (name, isolation level, etc) to level of Spring Java 2.x 
+[SPRNET-626] - BindingManager Configuration is not reloaded if UserControl or Page is modified 
+[SPRNET-632] - Update to use Common.Logging 1.1 
+[SPRNET-636] - Add provider support for DB2 9.0/9.1 databases 
+[SPRNET-637] - Add provider support for SqlLite database 
+
+
+New Feature
+
+[SPRNET-528] - Add AOP proxy type cache 
+[SPRNET-563] - Add CommonLoggingAroundAdvice in Calculator & Northwind sample 
+[SPRNET-629] - Add GenericApplicationContext to simplify creation of ApplicationContext from any (i.e. non XML) source of ObjectDefinitions 
+
+Task
+
+[SPRNET-253] - Document object scope in web tier. 
+[SPRNET-525] - Document use of InternalsVisibleTo assembly attribute to apply AOP to internal classes.
+[SPRNET-584] - Add AssemblyInfo.cs for those projects under ./src that are missing them in order to have AssemblyTitle and AssemblyDescription set correctly.
+[SPRNET-601] - Add tests for the new ProxyTargetAttributes property (Spring.Proxy and Spring.Aop) 
+[SPRNET-618] - Change MySql.Data.MySqlClient alias to refer to MySql 5.1 provider 
+
+
+
+Release 1.1 Milestone 1, June 1, 2007
+
+Summary:  In addition to bug fixes and various improvements to existing features, this
+release adds integration with NHibernate 1.0 and 1.2, NUnit, and ASP.NET AJAX.  
+Other new features are the introduction of aop and transaction namespace
+to simplify configuration of aop and delcartive transaction managment.  
+
+Bug
+
+[SPRNET-356] - Accessing HttpContext.Cache may throw an exception 
+[SPRNET-384] - Spring.Remoting.RemotingConfigurer.Filename within Windows Service 
+[SPRNET-385] - Cast to IAdvised wrong behavior 
+[SPRNET-391] - Table 4.5. - Duplicate entry 
+[SPRNET-392] - Section 4.5.3. Typos 
+[SPRNET-405] - ApplicationContext.ConfigureObject() doesn't process IApplicationContextAware, IMessageResolvable etc.? 
+[SPRNET-407] - BaseNode is not serializable 
+[SPRNET-420] - Page.IsPostBack is always false during PreInit in NET 1.1 
+[SPRNET-425] - Throw CannotGetAdoConnectionException when not able to retrieve Connection 
+[SPRNET-427] - Different access levels for property getter/setter cause exception 
+[SPRNET-428] - DynamicReflection doesn't work in DEBUG build if reflected properties are defined in transient modules 
+[SPRNET-431] - Concurrency issues in DynamicReflectionManager 
+[SPRNET-435] - Fallback translator should always throw uncategorized exception 
+[SPRNET-436] - Rollback for TxScopeTransactionManager should call TransactionScope.Dispose(), not System.Transactions.Transaction.Current.Rollback() 
+[SPRNET-438] - AdoTemplate QueryWithRowMapperDelegate always returns empty list. 
+[SPRNET-447] - Incorrect class level documentation on Spring.Validation.ExclusiveValidatorGroup 
+[SPRNET-449] - Spring.Util.CachedTypeResolver doesn't synchronize access to it's typecache 
+[SPRNET-450] - Numeric enum values not handled correctly by Spring.Expressions.PropertyOrFieldNode 
+[SPRNET-451] - Improve? support for Nullable Types in Spring.Expressions 
+[SPRNET-455] - Validation does not work properly if at least one error message is not specified 
+[SPRNET-460] - Remove "NotImplementedException" in TxScopeTransactionManager 
+[SPRNET-462] - Method cannot be matched by argument types when null value is passed as an argument 
+[SPRNET-466] - Stored Procedure call throws System.ArgumentOutOfRangeException if no NamedResultSetProcessors are declared. 
+[SPRNET-468] - AdoTemplate.AdoResultProcessorsQueryCommandCallback throws IndexOutOfRangeExeption on empty namedResultSetProcessors list 
+[SPRNET-470] - System.Type properties can't be evaluated by Spring.Expressions 
+[SPRNET-474] - Content (NET 1.1 version) control's "ContentPlaceHolderId" should match NET 2.0 name 
+[SPRNET-476] - Fix Spring.Web runtime setup (LogicalThreadContext, default resource protocol etc.) 
+[SPRNET-477] - ValidationConfigParser doesn't allow for XML comments 
+[SPRNET-479] - AbstractXmlApplicationContext does not correctly dispose an existing ObjectFactory during RefreshObjectFactory() 
+[SPRNET-487] - StoredProcedure doesn't return any rows 
+[SPRNET-489] - Aspects do not work with OUT of REF parameters 
+[SPRNET-494] - PropertyOrFieldNode can't resolve shadowed properties or fields 
+[SPRNET-498] - Make UserControl.Controller property virtual 
+[SPRNET-500] - ProxyFactoryObject attempts to add all interfaces target implements even if ProxyInterfaces property is set 
+[SPRNET-502] - PropertyOrFieldNode.GetPropertyInfo() should change to GetMemberInfo() 
+[SPRNET-505] - Proxies should be decorated with target attributes (type, method, parameter, return value attributes) 
+[SPRNET-509] - Web DI does not work in case of URL-rewriting 
+[SPRNET-515] - Multiple result sets not handled correctly in AdoTemplate in calls to IDictionary Query(...) and IDictionary Query IDictionary QueryByNamedParam(...) 
+[SPRNET-520] - WebServiceProxyFactory throws "MissingMethodException" on non-W3K machines 
+[SPRNET-522] - AOP ProxyFactoryObject seems to lack thread safety 
+[SPRNET-523] - DynamicReflectionManager race condition 
+[SPRNET-526] - ProxyFactoryObject recreates ProxyType on each call to GetObject() if non-singleton 
+[SPRNET-527] - AdvisedSupport lacks synchronization 
+[SPRNET-532] - Spring.Web.UI.Control.Head should derive from System.Web.UI.HtmlControl.HtmlHead for compatibility 
+[SPRNET-534] - When using an Oracle SP that only contains an output parameter through the StoredProcedure class, a System.IndexOutOfRangeException is thrown 
+[SPRNET-535] - Exception handling within AbstractPlatformTransactionManager causes loss of stackinformation 
+[SPRNET-536] - ContentReplacer resolves contentPlaceholderID incorrectly in case of Master templates 
+[SPRNET-537] - DbParametersBuilder did not copy size of each declared parameter when creating final IDbParameter collection 
+[SPRNET-543] - No output parameter is returned when using StoredProcedure with a stored procedure that only returns an output parameter. 
+[SPRNET-551] - DefaultTransactionStatus.HasTransaction() has reversed logic 
+[SPRNET-554] - Add a BooleanFormatter to Spring.Globalization.Formatters 
+[SPRNET-568] - Threading problems with dynamic type generation 
+
+Improvement
+
+[SPRNET-140] - Source of property placeholder data should be extensible. 
+[SPRNET-189] - Code duplication: resolving Ant style properties to environment variables. 
+[SPRNET-364] - ObjectNameAutoProxyCreator support for *xxx* pattern matching of object name in addition to "*xxx" and "xxx*" 
+[SPRNET-402] - Refactor ValidationErrors and delay the resolution of error messages. 
+[SPRNET-403] - Extract GetRedirectUri(object page) method from Result.DoRedirect() so it can be called independently 
+[SPRNET-423] - replace hardcoded html-tags with HtmlTextWriterTag enum values 
+[SPRNET-429] - Replace hardcoded HTML tag names with appropriate constants 
+[SPRNET-437] - Make Spring.Expressions serializable 
+[SPRNET-445] - Enable PropertyPlaceholderConfigurer to use the values from the standard connectionStrings section 
+[SPRNET-446] - Expression Language array initializer should allow for array size to be specified 
+[SPRNET-456] - Add support for set operations (union, intersection, difference) to expression language 
+[SPRNET-459] - Improve ObjectWrapper performance 
+[SPRNET-463] - Make Page / Control BindingManager's CacheKey customizable 
+[SPRNET-464] - Allow for "null" values and variable parameter lists in Spring.Expressions 
+[SPRNET-472] - Add Controller property to UserControl for easier switching databinding target 
+[SPRNET-473] - Allow users to specify root context and variables for the expressions within object definitions 
+[SPRNET-480] - Allow WebServiceClientFactory to generate proxy from a wsdl file 
+[SPRNET-484] - Add error reporting when Common.Logging can't load FactoryAdapter. 
+[SPRNET-496] - AttributeMatchMethodPointcut does not take into account implemented interfaces with method attributes 
+[SPRNET-506] - Introduce notion of templates and product templates within container. 
+[SPRNET-513] - Use of Dynamic Reflection in Spring.Aop 
+[SPRNET-539] - Add additional ctor argument XmlApplicationContext to supress refresh 
+[SPRNET-572] - Example project showing Spring.NET NHibernate features. 
+[SPRNET-581] - Refactor Advisor inheritance hierarchy to sync with Spring Java 2.0 
+[SPRNET-582] - Add custom parser infrastructur classes to aid with parsing of custom namespaces, sync with Spring Java 2.0 
+
+New Feature
+
+[SPRNET-278] - Implement commonly used validators (email, SSN, URL, credit card, etc.) 
+[SPRNET-285] - ASP.NET AJAX integration to allow access in JavaScript to container objects as WebService 
+[SPRNET-408] - Add TypeConverter for Nullable types 
+[SPRNET-430] - Add collection validator to data validation framework 
+[SPRNET-541] - Allow registration of custom resource handlers, type aliases, and type converters within standard <objects> configuration section. 
+[SPRNET-545] - Add Transaction namespace to simplify configuration of declarative transactions 
+[SPRNET-546] - Add AOP namespace to simplify use of AOP. 
+[SPRNET-571] - Add support for using plain NHiberatne API and participating in Spring managed transactions via custom ICurrentSessionContext implementation. 
+[SPRNET-573] - Spring NHibernate support 
+[SPRNET-580] - NUnit integratraion 
+
+Task
+
+[SPRNET-186] - Add Introductions Example to AOP Quickstart 
+[SPRNET-234] - Bundle SpringAir as self contained solution 
+[SPRNET-389] - Change how object id is generated when using ASP.NET pages 
+[SPRNET-400] - Can not run applications if Spring installed in GAC 
+[SPRNET-424] - Create NUnit task that runs in own process. 
+[SPRNET-432] - Remove System.Web dependency from Spring.Core 
+[SPRNET-512] - Merge WebServiceClientFactory & WebServiceProxyFactory 
+[SPRNET-566] - Update to NUnit 2.4.1  
+
+Release 1.1 Preview 3, December 6, 2006
+
+Summary:  This release is contains bug fixes and various improvements to existing features. 
+Major new features such as a Transaction Management Abstraction, ADO.NET data access framework, 
+and Spring "Services" allowing plain .NET objects to be exported as ServicedComponents, 
+Remoted objects, or Web Service.
+
+Bug
+
+[SPRNET-146] - Dependencies not injected into controls within Repeater 
+[SPRNET-225] - A Problem with Javascript and clientID of Master Page form like "Error: Expected ';' " (If use IE) 
+[SPRNET-254] - SpringAir WebServices doesn't work. 
+[SPRNET-260] - Concurent initialization of WebApplicationContext 
+[SPRNET-293] - Support for TransparentProxy in AOP Proxies 
+[SPRNET-294] - Page.PreviousPage.Items contents lost 
+[SPRNET-295] - Using soap header information in an exported PONO doesn't work 
+[SPRNET-315] - Circular reference not detected in web applications 
+[SPRNET-318] - IDisposable singletons with request or session scopr are not disposed of. 
+[SPRNET-319] - TypeConverterRegistry throws ArgumentException for valid converterTypeName 
+[SPRNET-325] - Hierarchical context issue 
+[SPRNET-327] - Objects section have to be named "objects" to be validated. 
+[SPRNET-328] - Converting a string value to IResource during property resolving in a Webapplication uses FileSystemResource 
+[SPRNET-329] - DefaultWebCultureResolver.GetDefaultLocale() throws exception on unknown Browserlanguage 
+[SPRNET-332] - Create a Proxy without Target 
+[SPRNET-333] - Some URLs generated can not be parsed by firefox 
+[SPRNET-334] - missing dependency injection on UserControl.LoadControl() 
+[SPRNET-335] - Duplicate context registration 
+[SPRNET-336] - Hierarchical context issue in Web application. 
+[SPRNET-337] - DataBinding stops working after Spring.Objects.InvalidPropertyException 
+[SPRNET-340] - CompositionProxyBuilder _targetMethods syncronization 
+[SPRNET-341] - AopContext not thread safe 
+[SPRNET-342] - Root context for the expression not updated properly 
+[SPRNET-345] - Base path should be ignored when relative path starts with slash 
+[SPRNET-346] - SessionHolder syncronization 
+[SPRNET-347] - Nested Contexts don't work in Web Applications 
+[SPRNET-350] - DynamicProxy doesn't support generic method declarations 
+[SPRNET-351] - Nested Child Contexts don't work in Web Applications 
+[SPRNET-354] - Update log4net version and use .NET 2.0 version 
+[SPRNET-356] - Accessing HttpContext.Cache may throw an exception 
+[SPRNET-358] - Creation via Factory Method does not support System.Type arguments. 
+[SPRNET-359] - WebObjectFactory and XmlObjectFactory behave differently regarding circular references 
+[SPRNET-360] - CacheAdvice does not take into account the parameters passed to the method 
+[SPRNET-365] - Page DI does not work on Server.Transfer 
+[SPRNET-367] - CaoExporter lifetime properties are not applied to the CAO 
+[SPRNET-368] - AutowireConstructor(string, RootObjectDefinition, object[]) does not work in some cases 
+[SPRNET-369] - Relative resources does not work with WebResource 
+[SPRNET-373] - .aspx, .ascx paths in object-definitions "type"-attribute don't resolve correctly 
+[SPRNET-374] - Use IDictionary.Item property instead of IDictionary.Add method to avoid ArgumentException in Spring.Expressions.PropertyOrFieldNode 
+[SPRNET-376] - ContextRegistry.Clear does not work with contexts registered by configuration 
+[SPRNET-377] - WebServiceHandlerFactory should not treat every Spring object as a Web Service 
+[SPRNET-379] - 'value' Attribute in spring objects schema does not allow empty strings 
+[SPRNET-393] - WebSupportModule throws exception if SessionState is not set to In-Process 
+[SPRNET-398] - Control DI doesn't work if @OutputCache directive is used 
+[SPRNET-413] - Sync issues in Common.Logging Adapter implementations 
+
+
+Improvement
+
+[SPRNET-58] - multi-value support in NameValueCollection 
+[SPRNET-174] - Refactor XmlObjectDefinitionReader inline with changes from Spring 1.2.4 
+[SPRNET-175] - replace log4net with something like SLF4J 
+[SPRNET-249] - Possibility to add other attributes than WebMethodAttribute to the WebServiceExporter 
+[SPRNET-270] - New Data Binding implementation 
+[SPRNET-273] - Spring.Web ASP.NET 2.0-compliant 
+[SPRNET-312] - Preserve exception stack trace in AOP proxy 
+[SPRNET-330] - Duplicate code in WebObjectDefinitionParser.CalculateId() and WebUtils.GetPageName() 
+[SPRNET-331] - FileSystemResource doesn't handle files under contention 
+[SPRNET-352] - Dynamic proxy code refactoring to remove duplicate code 
+[SPRNET-362] - ProxyTypeBuilder should apply target type/method attributes to the generated proxy. 
+[SPRNET-366] - Allow CAO to be disconnected from the client 
+[SPRNET-370] - Add support for cross-application mapping with WebResource 
+[SPRNET-371] - Make use of the newly Spring.Data module in SpringAir sample 
+[SPRNET-375] - Allow regular expression pointcut to specify RegexOptions 
+[SPRNET-380] - Enable data binding within user controls 
+[SPRNET-390] - Add Expressions support from the IoC container 
+[SPRNET-395] - Add the abiliity to configure additional type-level attributes to WebServiceExporter 
+[SPRNET-403] - Extract GetRedirectUri(object page) method from Result.DoRedirect() so it can be called independently 
+[SPRNET-406] - Allow BasePath-Placeholder in "configFile" configuration element for Common.Logging.Log4net.XXX Adapters 
+
+
+New Feature
+
+[SPRNET-35] - Add data validation support to Spring.Web 
+[SPRNET-207] - Dynamic Proxy to create MarshalByRefObject objects 
+[SPRNET-243] - Support hosting of SaoServiceExporter in IIS 
+[SPRNET-267] - Design time support for Spring.Web 
+[SPRNET-269] - Create rendering strategies for validation controls 
+[SPRNET-276] - Add the ability to reference Spring-managed objects to Expression Evaluator 
+[SPRNET-353] - Support ProxyTargetType=true in Aop Proxies 
+[SPRNET-378] - Enable Spring.Expressions to be used for DI 
+[SPRNET-383] - Added RemotingConfigurer convenience class to configure remoting infrastructure from Spring 
+[SPRNET-415] - ADO.NET Data Access Framework 
+[SPRNET-416] - Transaction Management abstraction supporting programmatic and declarative transactions for any persistence technology. 
+[SPRNET-417] - AOP support for for classes with virtual methods/properties 
+[SPRNET-419] - Create Logging framework to remove dependencies on specific log implementation (i.e. log4net) 
+
+Task
+
+[SPRNET-157] - Add XML config snippets chapter to reference documentation 
+[SPRNET-183] - Add IResource documentation chapter 
+[SPRNET-230] - DocBook callouts are broken in PDF stylesheet 
+[SPRNET-253] - Document object scope 
+[SPRNET-280] - Documentation for Validation Framework 
+[SPRNET-284] - Revert to old implementation of WebServiceProxyFactory 
+[SPRNET-321] - Documentation of code examples in C# code needs to be modified in order to conform to Document X! parsing rules. 
+[SPRNET-322] - Remove dependency on Log4Net 
+[SPRNET-323] - Unit tests for AutoProxy functionality 
+[SPRNET-324] - Update to use Antlr.NET 2.7.6 
+[SPRNET-343] - Reset Binding.IsValid to true after processing 
+[SPRNET-382] - Move Spring.Interop from Spring.Services to Spring.Interop.Iiop integration project 
+[SPRNET-397] - Implement expression parser that will allow for simpler attribute definitions in config files 
+[SPRNET-410] - Create vs.net 2003 solution for web quick start 
+[SPRNET-411] - Update docs for bi-direction data binding in Spring.Web 
+[SPRNET-412] - Create docs for Common.Logging 
+[SPRNET-418] - Create Data Access quick start application showing using of Spring.Data ADO.NET framework 
+
+-----------------------------
+
+Release 1.0.2, April 27, 2006
+
+Summary:  This release is contains bug fixes, new features and various improvements to existing features.
+
+Release Notes - Spring.NET - Version 1.0.2
+
+Bug
+[SPRNET-170] - Provide thread safety of IApplicationContext/IObjectFactory when retrieving lazy-init singletons.
+[SPRNET-193] - ResourceSetMessageSource Not Falling Back To Base Resources
+[SPRNET-244] - Registration of custom XML parsers should not use section name starting with 'config'.
+[SPRNET-247] - ExpressionEvaluatorTests class ignores Culture of test box
+[SPRNET-250] - Instrumentation code shouldn't use CutureInfo.CurrentUICulture as a formatter for debug messages
+[SPRNET-256] - Parent objects cannot be referenced via their aliases in child object defintions
+[SPRNET-262] - CopyTo method error in Spring.Collections.LinkedList
+[SPRNET-263] - LinkedList Contains(object value) throws exception if list is empty. Contains(null) also fails.
+
+Improvement
+[SPRNET-179] - Support setting of .NET Generic Collection Properties of type IList, IDictionary
+[SPRNET-261] - StringArrayConverter must not use the ListSeparator of the current Culture
+[SPRNET-275] - Refactor ProxyBuilder code
+[SPRNET-304] - Support concurent access to ContextRegistry.
+[SPRNET-305] - ReflectionUtils.ToInterfaceArray method to take inherited interfaces into account
+[SPRNET-306] - Added bool Contains method to CollectionUtils
+[SPRNET-307] - Changed IApplicationContext.DisplayName property name to IApplicationContext.Name
+[SPRNET-308] - Added ConfigurationUtils to encapsulate configuration framework differences between .NET 1.1 and 2.0 in one place
+[SPRNET-309] - Added TypeConverterRegistry and implemented section handler for 'typeConverters' config section.
+[SPRNET-313] - Use Innovasys Document X! to generate SDK documentation instead of NDoc.
+
+New Feature
+[SPRNET-101] - Added IInstantiationAwareObjectPostProcessor interface to IObjectFactory lifecycle
+[SPRNET-120] - Add Method Injection Functionality
+[SPRNET-248] - Add support to set indexer properties
+[SPRNET-277] - Implement support for custom actions in the config parser
+[SPRNET-298] - Add support for .NET 2.0 generics
+               - Creation of gernic types
+               - Dependency injection for generic collection properties (IList, IDictionary)
+	       - Register generic type aliases for more concise configuration
+               - Generic Factory methods.
+[SPRNET-302] - Object expression evaluation language - replaces object navigator 
+[SPRNET-303] - Added IQueue interface and a PriorityQueue implementation
+[SPRNET-310] - Added AOP AutoProxy functionality
+[SPRNET-311] - Added Validation Framework
+
+Task
+[SPRNET-131] - Support .NET Framework 2.0
+[SPRNET-246] - Document differences in ResourceManager.GetObject behaviour in .NET 2.0
+[SPRNET-255] - Classes using Regexs are inconsistently named
+[SPRNET-264] - Create strongly signed assemblies for ANTLR
+[SPRNET-265] - Document AOP AutoProxy functionality
+[SPRNET-279] - Test cases for Validation framework
+[SPRNET-300] - Documentation for Expressions support
+[SPRNET-314] - Use InstallShield instead of VS.NET solution to generate distribution file.
+
+
+----------------------------------------
+
+Release 1.1 Preview 2, November 16, 2005
+Release 1.0.1, November 16, 2005
+
+Summary:  This release is contains bug fixes, new features and various improvements to existing features.
+
+Bug
+[SPRNET-112] - IListableObjectFactory should treat factory methods as special case 
+[SPRNET-144] - Fix Request Scope on object defintions
+[SPRNET-192] - PropertyPlaceholderConfigurer does not work on IFactoryObject's property 
+[SPRNET-198] - Support overriden 'New' properties on a subclass that change the type of the property. 
+[SPRNET-200] - ObjectWrapper can not set property if it is a transparent proxy. 
+[SPRNET-201] - Exceptions from proxies are not being unwrapped from TargetInvocationException. 
+
+New Feature
+[SPRNET-6]   - Create SaoFactoryObject to access SAO on client. 
+[SPRNET-56]  - Create SaoServiceExporter to export and configure SAO on server 
+[SPRNET-82]  - Add Type aliasing for more concise configuration
+[SPRNET-116] - Allow configuration of the IoC container internals - resource handler, xml parsers.
+[SPRNET-168] - Add case insensitivity option for object names for better web support. 
+[SPRNET-181] - Add support for the <alias/> element tag in the XML object definition format 
+[SPRNET-240] - Create IRemoteFactory implementation to retrieve obtain CAO/SAO objects via 
+	       .NET Remoted ObjectFactory.
+[SPRNET-241] - Create QuickStart application to showcase .NET Remoting features
+
+Task
+[SPRNET-191] - Document config of params arguments 
+[SPRNET-195] - Rename ILocaleResolver to ICultureResolver 
+[SPRNET-196] - Move ILocaleResolver from Spring.Web to Spring.Core 
+[SPRNET-197] - Create archived (ZIP / TAR.GZ) files of the latest release. 
+[SPRNET-221] - Document the semantics of the IsSingleton property of ProxyFactoryObject 
+[SPRNET-222] - Document using prototype targets with the ProxyFactoryObject 
+[SPRNET-226] - Change references from DebugInterceptor to DebugAdvice in reference documentation 
+[SPRNET-229] - Document the use of prototype targets with AOP proxies 
+[SPRNET-232] - Document how target cannot be specified at end of InterceptorNames for ProxyFactoryObject 
+[SPRNET-236] - Document Page.GetMessage Resources Not Falling Back To Base Resources without 1.1 SP1 
+[SPRNET-218] - Add Clover.Net output to CC.NET implementation 
+
+
+Improvement
+[SPRNET-142] - StringArrayConverter to automatically trim spaces 
+[SPRNET-166] - ColorConverter to support more options. 
+[SPRNET-173] - Refactor RootBeanDefinition ctors inline with 1.2.4 release of Spring 
+[SPRNET-190] - AbstractFactoryObject To Supply IDisposable-style callback for singletons 
+[SPRNET-223] - Remove ability to list target name as last element in interceptor list. 
+[SPRNET-228] - Add documentation for creating advisor using AttributeMatchMethodPointcut 
+[SPRNET-237] - AbstractObjectFactory.GetObject to support calling constructor with array of arguments 
+[SPRNET-238] - Expose UserCulture setter within UserControl, in addition to getter
+[SPRNET-239] - Use CultureInfo.CreateSpecificCulture instead of new CultureInfo to create culture instances
+
+
+---------------------------------
+
+Release 1.0.0, September 14, 2005
+
+Summary:
+
+This release is primarly a bug fix and documentation enhancement release.  Minor new features were added.
+
+** Bugs
+[SPRNET-121] - Cannot proxy type declared as an inner class 
+[SPRNET-123] - ControlFlowPointcut breaks when method is jitted away 
+[SPRNET-148] - Implement methods in StaticListableObjectFactory and StaticMessageSource that throw NotImplementedException 
+[SPRNET-152] - Hyperlinks in pdf docs not showing correctly. 
+[SPRNET-158] - Remove Spring.Objects.Factory.NoSuchObjectDefinitionException thrown for flow control.
+[SPRNET-159] - CachedTypeResolver check for a null typeName parameter
+[SPRNET-163] - The 'clean' target of the NAnt build is broken 
+[SPRNET-176] - ContextHandler passes wrong arguments to DescendantContextInstantiator GetContextConstructor()
+               Fix incorrect processing of resources as applied to child and parent contexts that would create extraneous singleton instances.
+[SPRNET-178] - ThrowsAdvice should not examine InnerExceptions
+
+** New Features
+[SPRNET-167] - Configuration of custom collections 
+[SPRNET-171] - Expose PropertyComparator's SortDefinition 
+[SPRNET-185] - ContextRegistry.GetContext instantiates IApplicationContext from spring/context configuration section
+
+** Tasks
+
+[SPRNET-149] - Tests for IResource implementations to recognize '~' 
+[SPRNET-150] - Docs for PropertyResourceConfigurer NameValueCollection.Add behavior 
+[SPRNET-153] - DocBook HTML Help program listings not styled as per others 
+[SPRNET-154] - 'example programs' link on 1.0 RC1 forum announcement not working 
+[SPRNET-162] - Detail NameValueSectionHandler configuration in ASP.NET for PropertyXXXConfigurer 
+[SPRNET-165] - aop-quickstart.html not packaged in .msi 
+
+
+** Improvements
+
+[SPRNET-115] - Add .NET Compact Framework Support.  Prebuilt Assemblies not part of distro
+[SPRNET-143] - StringArrayConverter to use Culture specific list separator 
+[SPRNET-170] - Thread safety of IApplicationContext/IObjectFactory 
+[SPRNET-172] - Expose more information in the ToString of the various IObjectDefinition implementations 
+[SPRNET-180] - Use log4net in MovieFinder example. 
+[SPRNET-182] - Sync ProxyFactory / ProxyFactoryObject API with Spring.Java 1.2.4
+	       Added the missing AddAdvice / RemoveAdvice to the IAdvised interface.
+	       Removed convenience Add/Remove methods for BeforeAdvice, ThrowsAdvice and Interceptor
+
+--------------------------------
+
+Release 1.0 RC1, August 14, 2005
+
+Summary:
+
+This release is both a feature enhancement and bug fix release to the core 
+container and adds an AOP framework
+
+** Bug
+  [SPRNET-55] - PropertyResourceConfigurer should not use NameValueCollection.Add(NameValueCollection) 
+  [SPRNET-74] - thread unsafe access to application registry
+  [SPRNET-84] - MovieFinder example has misnamed file 
+  [SPRNET-85] - ApplicationListener not receiving ApplicationContext events  
+  [SPRNET-105] - ContextRegistry Silently Overwrites Contexts With The Same Name 
+  [SPRNET-130] - Object instantiation through Factory should not require class attribute 
+  [SPRNET-132] - DefaultListableObjectFactory should not throw an exception when MessageSource is not defined  
+
+** New Features
+  [SPRNET-43] - Add support for loosely coupled event wiring in configuration file and app context creation 
+  [SPRNET-86] - IResource implementations to recognize '~' 
+  [SPRNET-151] - AOP framework 
+
+** Tasks
+  [SPRNET-3] - VS.NET help integration 
+  [SPRNET-31] - Document AOP features 
+  [SPRNET-45] - FxCop code review 
+  [SPRNET-47] - build examples as part of nant build script. 
+  [SPRNET-48] - move Spring.Context.Tests into Spring.Core.Tests 
+  [SPRNET-76] - Finish documentation for quickstart examples 
+  [SPRNET-98] - Include block and architecture diagrams in the reference documentation 
+  [SPRNET-99] - Build file needs a finer granularity for build targets 
+  [SPRNET-109] - Investigate ConfigurableResourceLoader support for FTP 
+  [SPRNET-110] - Investigate ResourceConverter support for ${property} expansion 
+  [SPRNET-114] - Drop Support For Java Style Property Object Configuration 
+  [SPRNET-119] - Update example apps to use streamlined XML config syntax. 
+  [SPRNET-124] - ObjectsDtd.ClassAttribute constant is at odds with accepted naming conventions  
+  [SPRNET-125] - ProxyBuilder TargetClass & BaseClass properties at odds with accepted naming conventions 
+  [SPRNET-126] - ObjectsDtd class is inappropriately named 
+  [SPRNET-128] - IClassFilter name is at odds with accepted naming conventions 
+  [SPRNET-138] - Describe the lazy initialization of objects in the reference documentation 
+
+** Improvements
+  [SPRNET-2] - Integration with System.ComponentModel components dropped.
+  [SPRNET-111] - XmlObjectFactory now only supports instantiation via the IResource abstraction 
+  [SPRNET-113] - ApplicationEvent refactoring 
+  [SPRNET-122] - remove asserts on exception messages 
+  [SPRNET-129] - IMethodMatcher should use MethodInfo exclusively 
+  [SPRNET-139] - Add support for aliased arrays in the TypeAliasResolver class 
+  [SPRNET-147] - Add factory-method example with constructor arguments. 
+
+  [SPRNET-36] - Final pass over Spring.Java codebase to merge refactorings. 
+
+The SPRNET-36 changes consisted of synching with Spring.Java 1.2.2 - major changes were
+
+Spring.Objects namespace
+
+ - added IDictionary GetObjectsOfType(Type type) to IListableObjectFactory 
+ - added IObjectDefinition GetObjectDefinition(string name) to IConfigurableObjectFactory 
+ - added circular references check exception
+ - refined ObjectWrapperImpl and PropertyPlaceholderConfigurer to never log property values (which might be sensitive data) 
+ - added "GetObjectPostProcessorCount" method to ConfigurableObjectFactory interface 
+ - added "IgnoreDependencyInterface" method to AbstractAutowireCapableObjectFactory and ConfigurableListableObjectFactory 
+ - reworked AbstractAutowireCapableObjectFactory's dependency exclusion check to support ignored dependency interfaces 
+ - AbstractAutowireCapableObjectFactory registers ObjectFactoryAware as default ignored dependency interface 
+ - Factored out ObjectDefinitionVisitor from PropertyPlaceholderConfigurer, making the object definition traversal reusable 
+ - ConstructorArgumentValues holds generic ValueHolders in a List instead of a Set now, keeping their definition order 
+ - ConstructorArgumentValues offers "Get(Generic)ArgumentValue" variant that excludes already used ValueHolders 
+ - AbstractAutowireCapableObjectFactory applies generic constructor argument values of the same type in definition order 
+ - factored out ObjectDefinitionValueResolver helper class from AbstractAutowireCapableObjectFactory 
+ - added InstantiationAwareObjectPostProcessor extension of ObjecPostProcessor interface, intercepting before instantiation 
+ - added ObjectReferenceFactoryObject, allowing for exposure of a target object under a different name (effectively an alias) 
+ - refined AbstractObjectFactory's "GetType" to only suppress specific exceptions like ObjectCurrentlyInCreationException 
+ - refined AbstractAutowireCapableObjectFactory's "autowireConstructor" to only suppress UnsatisfiedDependencyException 
+ - added "value"/"ref" attributes to XML "property"/"constructor-arg" tag, as shortcut alternative to child elements 
+ - added "key" sub-element to XML "entry" tag for maps, allowing for inner beans, refs, values etc specified as key 
+ - added "key-ref" attribute to XML "entry" tag for maps, as shortcut alternative to a key element with "ref bean=" 
+
+Spring.Context namespace
+
+ - AbstractApplicationContext registers MessageSourceAware/ApplicationContextAware/etc as ignored dependency interfaces 
+ - fixed AbstractApplicationContext to not exclude dependencies of type MessageSource/ApplicationContext/etc by default 
+ - AbstractApplicationContext logs message when a bean is not eligible for getting processed by all ObjectPostProcessors 
+ - fixed GenericApplicationContext to correctly propagate the internal parent ObjectFactory in case of a "SetParent" call 
+ - GenericApplicationContext detects a passed-in ResourceLoader that implements ResourcePatternResolver and uses it 
+
+
+------------------------------------------------
+Release 0.6 Release Candidate 3  March 30, 2005.
+
+Summary:
+
+This is both a feature enhancement and bug fix release.
+
+Breaking changes from RC2 are the removal of the DTD.  The XML schema file 
+is used to validate the XML instead.  RC2 assemblies were delay signed, if you
+disabled assembly verification for any reason, enable it again.  The RC3 assemblies
+are strongly named.
+
+Changes:
+
+
+** Bug
+    * [SPRNET-54] - ConfigurationReader does not close resource stream
+    * [SPRNET-57] - Empty string not allowed as value for name-values collection
+    * [SPRNET-59] - Remove delay signing and generate stronly named assemblies.
+    * [SPRNET-62] - Inner IDisposable objects belonging to prototypes were autodestroyed
+    * [SPRNET-63] - Set default namespace if omitted.
+    * [SPRNET-68] - Invoke in EventUitls not throwing base exception.
+
+** New Feature
+    * [SPRNET-33] - Add support for configuration of existing objects.  Refer to the configure methods on IObjectFactory.
+    * [SPRNET-38] - Create IObjectPostProcessor for environment variable expansion
+    * [SPRNET-46] - Add factory class to create log4net log object
+    * [SPRNET-53] - Type converter for Color from RGB CSV
+
+** Task
+    * [SPRNET-37] - Update to NAnt 0.85rc1
+    * [SPRNET-49] - Documentation for MethodInvokingFactoryObject 
+    * [SPRNET-64] - Upgrade to NUnit 2.2
+    * [SPRNET-65] - Upgrade to .NET Mock 0.7.4
+
+** Improvement
+    * [SPRNET-29] - Add support for schema validation and drop DTD
+    * [SPRNET-51] - argument names for contructors and MessageInvocationFactory
+    * [SPRNET-61] - Add convenience methods to load Properties
+    * [SPRNET-66] - Display line numbers in errors and object definition resource descriptor
+    * [SPRNET-69] - Sync with Spring.Java APIs and refactorings.
+    * [SPRNET-72] - Release with strongly named assemblies
+    * Various miscellaneous documentation improvements and code cleanup.
+
+
+-------------------------------------------------
+Release 0.6 Release Candidate 2  February 6, 2005.
+
+Summary: 
+
+This is both a feature enhancement and bug fix release.  
+
+Breaking changes from the first release candidate to be aware of are
+changes to the DTD and the use of a new configuration section handler
+to create hierarchical contexts.  Spring.Context.dll and 
+Spring.Collections.dll where removed and their classes placed in
+Spring.Core.dll.  Refer to the example programs and documentation 
+for more information if you are upgrading from 0.6 RC1.
+
+Changes: 
+
+* Moved Spring.Collections and Spring.Context dlls/namespaces to Spring.Core dll.
+* Introduced threading utilities in Spring.Threading namespace.
+* Introduced object pooling utilities in Spring.Pool namespace.
+* Introduced object navigation support in Spring.Navigation namespace.
+* Introduced loosely coupled eventing in Spring.Objects.Events namespace.
+* Introduced pluggable URI based loading of application contexts. Supports file, http, https, config and embedeed assembly resource locations.
+* Introduced ContextRegistry as a service locator to retrieve IApplicationContext.
+* Introduced custom configuration section handler (ContextHandler) to create IApplicationContexts from custom configuration section.
+
+* Introduced AppContext and EventRegistry example programs.
+* Added GetSingletonCount() method to AbstractObjectFactory, returning the number of objects in the singleton cache.
+* Added support for relative resource creation to URL and AssemblyResource.  Refactored common code into base class AbstractResource. (SPRNET-23)
+* Added support for configuration of 'read-only' collection properties (ISet, IDictionary, IList).
+* Added support to create ConfigSectionResource using URI string, i.e. config://<sectionName>  (SPRNET-22)
+* Added convenience method to IMessageSource to use CurrentUICulture
+* Added generation of User Documenation in HTML Help (.chm) format (SPRNET-4)
+* Added support for retrieval of resource objects from IMessageSource
+
+* Changed IMessageSource to use variable arguments for replacement text values instead of object array.
+
+* Removed Close() and DestroySingletons() in IConfigurableObjectFactory and IConfigurableApplicationContext and replaced with use of IDisposable interface.  (SPRNET-19)
+* Removed Spring.Objects.Factory.Access and Spring.Context.Access namespace and contained classes.  Use ContextRegistry instead for service locator style access.
+
+* Removed Spring.Context.Support.ApplicationContextHandler, use ContextHandler instead.
+* Removed Spring's IDisposableObject interface and replaced with standard .NET IDisposable.  (SPRNET-18)
+
+* Fixed parsing of CDATA sections (SPRNET-27)
+* Fixed use of namespace in custom configuration section of .NET application configuration file.  (SPRNET-1)
+* Fixed validation of custom configuration section against DTD.  (SPRNET-13)
+* Fixed solution file to support building when base directory contains spaces (SPRNET-10)
+* Fixed System.ArgumentOutOfRangeException in Spring.Util.Properties (SPRNET-26)
+* Fixed registration of abstract IObjectPostProcessors and IObjectFactoryPostProcessor
+
+* Improvements to user documentation.
+
+DTD/XSD
+* Added 'abstract' element to XSD, was accidentally omitted.
+* Changed 'class' to 'type' in DTD/XSD
+* Changed <map> to <dictionary> in DTD/XSD

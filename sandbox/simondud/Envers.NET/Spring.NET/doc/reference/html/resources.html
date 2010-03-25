@@ -1,0 +1,281 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;7.&nbsp;Resources</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="objects-misc.html" title="Chapter&nbsp;6.&nbsp;The IObjectWrapper and Type conversion"><link rel="next" href="threading.html" title="Chapter&nbsp;8.&nbsp;Threading and Concurrency Support"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="resources"></a>Chapter&nbsp;7.&nbsp;Resources</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objects-iresource"></a>7.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The <code class="literal">IResource</code> interface contained in the
+    <code class="literal">Spring.Core.IO</code> namespace provides a common interface to
+    describe and access data from diverse resource locations. This abstraction
+    lets you treat the <code class="literal">InputStream</code> from a file and from
+    a URL in a polymorphic and protocol-independent manner... the .NET BCL
+    does not provide such an abstraction. The <code class="literal">IResource</code>
+    interface inherits from <code class="literal">IInputStream</code> that provides a
+    single property <code class="literal">Stream InputStream</code>. The
+    <code class="literal">IResource</code> interface adds descriptive information about
+    the resource via a number of additional properties. Several
+    implementations for common resource locations, i.e. file, assembly, uri,
+    are provided and you may also register custom IResource
+    implementations.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2761"></a>7.2.&nbsp;The <code class="literal">IResource</code> interface</h2></div></div></div>
+    
+
+    <p>The IResource interface is shown below</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IResource : IInputStreamSource
+{
+  <span style="color: #0000FF">bool</span> IsOpen { <span style="color: #0000FF">get</span>; }
+
+  Uri Uri { <span style="color: #0000FF">get</span>; }
+
+  FileInfo File { <span style="color: #0000FF">get</span>; }
+
+  <span style="color: #0000FF">string</span> Description { <span style="color: #0000FF">get</span>; }
+
+  <span style="color: #0000FF">bool</span> Exists { <span style="color: #0000FF">get</span>; }
+
+  IResource CreateRelative(<span style="color: #0000FF">string</span> relativePath);
+}</pre>
+
+    <div class="table"><a name="d4e2766"></a><div class="title">Table&nbsp;7.1.&nbsp;IResource Properties</div><div class="table-contents">
+      
+
+      <table summary="IResource Properties" border="1"><colgroup><col><col></colgroup><thead><tr><th>Property</th><th>Explanation</th></tr></thead><tbody><tr><td><code class="literal">InputStream</code></td><td>Inherited from IInputStream. Opens and returns a
+            <code class="literal">System.IO.Stream</code>. It is expected that each
+            invocation returns a fresh Stream. It is the responsibility of the
+            caller to close the stream.</td></tr><tr><td><code class="literal">Exists</code></td><td>returns a boolean indicating whether this resource actually
+            exists in physical form.</td></tr><tr><td><code class="literal">IsOpen</code></td><td>returns a boolean indicating whether this resource
+            represents a handle with an open stream. If true, the InputStream
+            cannot be read multiple times, and must be read once only and then
+            closed to avoid resource leaks. Will be false for all usual
+            resource implementations, with the exception of
+            <code class="literal">InputStreamResource</code>.</td></tr><tr><td><code class="literal">Description</code></td><td>Returns a description of the resource, such as the fully
+            qualified file name or the actual URL.</td></tr><tr><td><code class="literal">Uri</code></td><td>The Uri representation of the resource.</td></tr><tr><td><code class="literal">File</code></td><td>Returns a <code class="literal">System.IO.FileInfo</code> for
+            this resource if it can be resolved to an absolute file
+            path.</td></tr></tbody></table>
+    </div></div><br class="table-break">
+
+    <p>and the methods</p>
+
+    <div class="table"><a name="d4e2804"></a><div class="title">Table&nbsp;7.2.&nbsp;IResource Methods</div><div class="table-contents">
+      
+
+      <table summary="IResource Methods" border="1"><colgroup><col><col></colgroup><thead><tr><th>Method</th><th>Explanation</th></tr></thead><tbody><tr><td><code class="literal">IResource CreateRelative (string
+            relativePath)</code></td><td>Creates a resource relative to this resource using relative
+            path like notation (./ and ../).</td></tr></tbody></table>
+    </div></div><br class="table-break">
+
+    <p>You can obtain an actual URL or File object representing the
+    resource if the underlying implementation is compatible and supports that
+    functionality.</p>
+
+    <p>The Resource abstraction is used extensively in Spring itself, as an
+    argument type in many method signatures when a resource is needed. Other
+    methods in some Spring APIs (such as the constructors to various
+    <code class="literal">IApplicationContext</code> implementations), take
+    a String which is used to create a Resource appropriate to that context
+    implementation</p>
+
+    <p>While the Resource interface is used a lot with Spring and by
+    Spring, it's actually very useful to use as a general utility class by
+    itself in your own code, for access to resources, even when your code
+    doesn't know or care about any other parts of Spring. While this couples
+    your code to Spring, it really only couples it to this small set of
+    utility classes and can be considered equivalent to any other library you
+    would use for this purpose</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2822"></a>7.3.&nbsp;Built-in IResource implementations</h2></div></div></div>
+    
+
+    <p>The resource implementations provided are </p><div class="itemizedlist"><ul type="disc" compact><li>
+           
+
+          <code class="literal">AssemblyResource</code>
+
+           accesses data stored as .NET resources inside an assembly. Uri syntax is 
+
+          <code class="literal">assembly://&lt;AssemblyName&gt;/&lt;NameSpace&gt;/&lt;ResourceName&gt;</code>
+
+           
+        </li><li>
+           
+
+          <code class="literal">ConfigSectionResource</code>
+
+           accesses Spring.NET configuration data stored in a custom configuration section in the .NET application configuration file (i.e. App.config). Uri syntax is 
+
+          <code class="literal">config://&lt;path to section&gt;</code>
+
+           
+        </li><li>
+           
+
+          <code class="literal">FileSystemResource</code>
+
+           accesses file system data. Uri syntax is 
+
+          <code class="literal">file://&lt;filename&gt;</code>
+
+           
+        </li><li>
+           
+
+          <code class="literal">InputStreamResource</code>
+
+           a wrapper around a raw 
+
+          <code class="literal">System.IO.Stream</code>
+
+           . Uri syntax is not supported. 
+        </li><li>
+           
+
+          <code class="literal">UriResource</code>
+
+           accesses data from the standard System.Uri protocols such as http and https. In .NET 2.0 you can use this also for the ftp protocol. Standard Uri syntax is supported. 
+        </li></ul></div><p> Refer to the MSDN documentation for more information on
+    <a class="ulink" href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpref/html/frlrfsystemurimemberstopic.asp" target="_top">supported
+    Uri scheme types</a>.</p>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e2841"></a>7.3.1.&nbsp;Registering custom IResource implementations</h3></div></div></div>
+      
+
+      <p>The configuration section handler,
+      <code class="literal">ResourceHandlersSectionHandler</code>, is used to
+      register any custom <code class="literal">IResource</code>
+      implementations you have created. In the configuration section you list
+      the type of <code class="literal">IResource</code> implementation and
+      the protocol prefix. Your custom
+      <code class="literal">IResource</code> implementation must provide a
+      constructor that takes a string as it's sole argument that represents
+      the URI string. Refer to the SDK documentation for
+      <code class="literal">ResourceHandlersSectionHandler</code> for more
+      information. An example of the
+      <code class="literal">ResourceHandlersSectionHandler</code> is shown below for
+      a fictional <code class="literal">IResource</code> implementation that
+      interfaces with a database.</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'context'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Context.Support.ContextHandler, Spring.Core'</span><span style="color: #A31515">/&gt;</span>
+
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"resourceHandlers"</span> 
+               <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ResourceHandlersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+
+    <span style="color: #A31515">&lt;resourceHandlers&gt;</span>
+      <span style="color: #A31515">&lt;handler</span> <span style="color: #FF0000">protocol</span>=<span style="color: #0000FF">"db"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.Resources.MyDbResource, MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/resourceHandlers&gt;</span>
+
+    <span style="color: #A31515">&lt;context&gt;</span>
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"db://user:pass@dbName/MyDefinitionsTable"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/context&gt;</span>
+
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2852"></a>7.4.&nbsp;The <code class="literal">IResourceLoader</code></h2></div></div></div>
+    
+
+    <p>To load resources given their Uri syntax, an implementation of the
+    <code class="literal">IResourceLoader</code> is used. The default implementation
+    is <code class="literal">ConfigurableResourceLoader</code>. Typically you will
+    not need to access this class directly since the
+    <code class="literal">IApplicationContext</code> implements the
+    <code class="literal">IResourceLoader</code> interface that contains the single
+    method <code class="literal">IResource GetResource(string location)</code>. The
+    provided implementations of <code class="literal">IApplicationContext</code>
+    delegate this method to an instance of
+    <code class="literal">ConfigurableResourceLoader</code> which supports the Uri
+    protocols/schemes listed previously. If you do not specify a protocol then
+    the file protocol is used. The following shows some sample
+    usage.</p><pre class="programlisting">IResource resource = appContext.GetResource(<span style="color: #000000">"http://www.springframework.net/license.html"</span>);
+resource = appContext.GetResource(<span style="color: #000000">"assembly://Spring.Core.Tests/Spring/TestResource.txt"</span>);
+resource = appContext.GetResource(<span style="color: #000000">"https://sourceforge.net/"</span>);
+resource = appContext.GetResource(<span style="color: #000000">"file:///C:/WINDOWS/ODBC.INI"</span>);
+
+StreamReader reader = <span style="color: #0000FF">new</span> StreamReader(resource.InputStream);
+Console.WriteLine(reader.ReadToEnd());</pre><p> Other protocols can be
+    registered along with a new implementations of an IResource that must
+    correctly parse a Uri string in its constructor. An example of this can be
+    seen in the <code class="literal">Spring.Web</code> namespace that uses
+    <code class="literal">Server.MapPath</code> to resolve the filename of a
+    resource.</p>
+
+    <p>The <code class="literal">CreateRelative</code> method allows you to easily
+    load resources based on a relative path name. In the case of relative
+    assembly resources, the relative path navigates the namespace within an
+    assembly. For example: </p><pre class="programlisting">IResource res = <span style="color: #0000FF">new</span> AssemblyResource(<span style="color: #000000">"assembly://Spring.Core.Tests/Spring/TestResource.txt"</span>);
+IResource res2 = res.CreateRelative(<span style="color: #000000">"./IO/TestIOResource.txt"</span>);</pre><p>
+    This loads the resource <code class="literal">TestResource.txt</code> and then
+    navigates to the <code class="literal">Spring.Core.IO</code> namespace and loads the
+    resource <code class="literal">TestIOResource.txt</code></p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2872"></a>7.5.&nbsp;The <code class="literal">IResourceLoaderAware</code>
+    interface</h2></div></div></div>
+    
+
+    <p>The <code class="literal">IResourceLoaderAware</code> interface is
+    a special marker interface, identifying objects that expect to be provided
+    with a <code class="literal">IResourceLoader</code> reference.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IResourceLoaderAware
+{
+  IResourceLoader ResourceLoader
+  {
+    <span style="color: #0000FF">set</span>;
+    <span style="color: #0000FF">get</span>;
+  }
+}</pre>
+
+    <p>When a class implements
+    <code class="literal">IResourceLoaderAware</code> and is deployed into
+    an application context (as a Spring-managed object), it is recognized as
+    <code class="literal">IResourceLoaderAware</code> by the application
+    context. The application context will then invoke the ResourceLoader
+    property, supplying itself as the argument (remember, all application
+    contexts in Spring implement the
+    <code class="literal">IResourceLoader</code> interface).</p>
+
+    <p>Of course, since an
+    <code class="literal">IApplicationContext</code> is a
+    <code class="literal">IResourceLoader</code>, the object could also
+    implement the <code class="literal">IApplicationContextAware</code>
+    interface and use the supplied application context directly to load
+    resources, but in general, it's better to use the specialized
+    <code class="literal">IResourceLoader</code> interface if that's all
+    that's needed. The code would just be coupled to the resource loading
+    interface, which can be considered a utility interface, and not the whole
+    Spring <code class="literal">IApplicationContext</code>
+    interface.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2889"></a>7.6.&nbsp;Application contexts and <code class="literal">IResource</code>
+    paths</h2></div></div></div>
+    
+
+    <p>An application context constructor (for a specific application
+    context type) generally takes a string or array of strings as the location
+    path(s) of the resource(s) such as XML files that make up the definition
+    of the context. For example, you can create an XmlApplicationContext from
+    two resources as follows:</p>
+
+    <pre class="programlisting">IApplicationContext context = <span style="color: #0000FF">new</span> XmlApplicationContext(
+	<span style="color: #000000">"file://objects.xml"</span>, <span style="color: #000000">"assembly://MyAssembly/MyProject/objects-dal-layer.xml"</span>);
+</pre>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="objects-misc.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="threading.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;6.&nbsp;The IObjectWrapper and Type conversion&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;8.&nbsp;Threading and Concurrency Support</td></tr></table></div></body></html>

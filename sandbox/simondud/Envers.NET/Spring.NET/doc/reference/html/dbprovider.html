@@ -1,0 +1,518 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;19.&nbsp;DbProvider</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-middle-tier.html" title="Part&nbsp;II.&nbsp;Middle Tier Data Access"><link rel="prev" href="dao.html" title="Chapter&nbsp;18.&nbsp;DAO support"><link rel="next" href="ado.html" title="Chapter&nbsp;20.&nbsp;Data access using ADO.NET"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="dbprovider"></a>Chapter&nbsp;19.&nbsp;DbProvider</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dbprovider-introduction"></a>19.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Spring provides a generic factory for creating ADO.NET API artifacts
+    such as <code class="code"><code class="literal">IDbConnection</code></code> and
+    <code class="code"><code class="literal">IDbCommand</code></code>. The factory API is very
+    similar to the one introduced in .NET 2.0 but adds extra metadata needed
+    by Spring to support features provided by its DAO/ADO.NET framework such
+    as error code translation to a DAO exception hierarchy. The factory itself
+    is configured by using a standard Spring XML based configuration file
+    though it is unlikely you will need to modify those settings yourself, you
+    only need be concerned with using the factory. Out of the box several
+    popular databases are supported and an extension mechanism is available
+    for defining new database providers or modifying existing ones. A custom
+    database namespace for configuration aids in making terse XML based
+    declarations of Spring's database objects you wish to use.</p>
+
+    <p>The downside of Spring's factory as compared to the one in .NET 2.0
+    is that the types returned are lower level interfaces and not the abstract
+    base classes in System.Data.Common. However, there are still 'holes' in
+    the current .NET 2.0 provider classes that are 'plugged' with Spring's
+    provider implementation. One of the most prominent is the that the top
+    level DbException exposes the HRESULT of the remote procedure call, which
+    is not what you are commonly looking for when things go wrong. As such
+    Spring's provider factory exposes the vendor sql error code and also maps
+    that error code onto a consistent data access exception hierarchy. This
+    makes writing portable exception handlers much easier. In addition, the
+    DbParameter class doesn't provide the most common convenient methods you
+    would expect as when using say the SqlServer provider. If you need to
+    access the BCL provider abstraction, you still can through Spring's
+    provider class. Furthermore, a small wrapper around the standard BCL
+    provider abstraction allows for integration with Spring's transaction
+    management facilities, allowing you to create a DbCommand with its
+    connection and transaction properties already set based on the transaction
+    calling context.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dbprovider-dbprovider"></a>19.2.&nbsp;IDbProvider and DbProviderFactory</h2></div></div></div>
+    
+
+    <p>The <code class="code"><code class="literal">IDbProvider</code></code> API is shown below
+    and should look familiar to anyone using .NET 2.0 data providers. Note
+    that Spring's DbProvider abstraction can be used on .NET 1.1 in addition
+    to .NET 2.0</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDbProvider
+{
+  <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbCommand</span> CreateCommand();
+
+  <span style="color: #0000FF">object</span> CreateCommandBuilder();        
+
+  <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbConnection</span> CreateConnection();
+
+  <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbDataAdapter</span> CreateDataAdapter();
+
+  <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbDataParameter</span> CreateParameter();
+
+  <span style="color: #0000FF">string</span> CreateParameterName(<span style="color: #0000FF">string</span> name);
+
+  <span style="color: #0000FF">string</span> CreateParameterNameForCollection(<span style="color: #0000FF">string</span> name);
+
+  <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbMetadata</span> DbMetadata
+  {
+      <span style="color: #0000FF">get</span>;
+  }               
+
+  <span style="color: #0000FF">string</span> ConnectionString
+  {
+      <span style="color: #0000FF">set</span>;
+      <span style="color: #0000FF">get</span>;
+  }
+
+  <span style="color: #0000FF">string</span> ExtractError(Exception e);
+
+  <span style="color: #0000FF">bool</span> IsDataAccessException(Exception e);
+    
+}</pre>
+
+    <p>ExtractError is used to return an error string for translation into
+    a DAO exception. On .NET 1.1 the method IsDataAccessException is used to
+    determine if the thrown exception is related to data access since in .NET
+    1.1 there isn't a common base class for database exceptions.
+    CreateParameterName is used to create the string for parameters used in a
+    CommandText object while CreateParameterNameForCollection is used to
+    create the string for a IDataParameter.ParameterName, typically contained
+    inside a IDataParameterCollection.</p>
+
+    <p>The class <code class="literal">DbProviderFactory</code> creates IDbProvider
+    instances given a provider name. The connection string property will be
+    used to set the IDbConnection returned by the factory if present. The
+    provider names, and corresponding database, currently configured are
+    listed below.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p><code class="literal">SqlServer-1.1</code> - Microsoft SQL Server,
+        provider V1.0.5000.0 in framework .NET V1.1</p>
+      </li><li>
+        <p><code class="literal">SqlServer-2.0</code> (aliased to
+        <code class="literal">System.Data.SqlClient</code>) - Microsoft SQL Server,
+        provider V2.0.0.0 in framework .NET V2.0</p>
+      </li><li>
+        <p><code class="literal">SqlServerCe-3.1</code> - Microsoft SQL Server
+        Compact Edition, provider V9.0.242.0</p>
+      </li><li>
+        <p><code class="literal">SqlServerCe-3.5.1</code> (aliased to
+        <code class="literal">System.Data.SqlServerCe</code>) - Microsoft SQL Server
+        Compact Edition, provider V3.5.1.0</p>
+      </li><li>
+        <p><code class="literal">OleDb-1.1</code> - OleDb, provider V1.0.5000.0 in
+        framework .NET V1.1</p>
+      </li><li>
+        <p><code class="literal">OleDb-2.0</code> (aliased to
+        <code class="literal">System.Data.OleDb</code>) - OleDb, provider V2.0.0.0 in
+        framework .NET V2.0</p>
+      </li><li>
+        <p><code class="literal">OracleClient-2.0</code> (aliased to
+        <code class="literal">System.Data.OracleClient</code>) - Oracle, Microsoft
+        provider V2.0.0.0</p>
+      </li><li>
+        <p><code class="literal">OracleODP-2.0</code> (aliased to
+        <code class="literal">System.DataAccess.Client</code>) - Oracle, Oracle provider
+        V2.102.2.20 (Oracle 10g)</p>
+      </li><li>
+        <p><code class="literal">OracleODP-11-2.0</code> - Oracle, Oracle provider
+        V2.111.7.20 (Oracle 11g)</p>
+      </li><li>
+        <p><code class="literal">MySql</code> - MySQL, MySQL provider 1.0.10.1</p>
+      </li><li>
+        <p><code class="literal">MySql-1.0.9</code> - MySQL, MySQL provider
+        1.0.9</p>
+      </li><li>
+        <p><code class="literal">MySql-5.0</code> - MySQL, MySQL provider
+        5.0.7.0</p>
+      </li><li>
+        <p><code class="literal">MySql-5.0.8.1</code> - MySQL, MySQL provider
+        5.0.8.1</p>
+      </li><li>
+        <p><code class="literal">MySql-5.1</code> - MySQL, MySQL provider
+        5.1.2.2</p>
+      </li><li>
+        <p><code class="literal">MySql-5.1.4</code> - MySQL, MySQL provider
+        5.1.2.2</p>
+      </li><li>
+        <p><code class="literal">MySql-5.2.3</code> - MySQL, MySQL provider
+        5.2.3.0</p>
+      </li><li>
+        <p><code class="literal">MySql-6.1.3</code> (aliased to
+        <code class="literal">MySql.Data.MySqlClient</code>) - MySQL, MySQL provider
+        6.1.3.0</p>
+      </li><li>
+        <p><code class="literal">Npgsql-1.0</code> - Postgresql provider 1.0.0.0 (and
+        1.0.0.1 - were build with same version info)</p>
+      </li><li>
+        <p><code class="literal">Npgsql-2.0-beta1</code> - Postgresql provider
+        1.98.1.0 beta 1</p>
+      </li><li>
+        <p><code class="literal">Npgsql-2.0</code> - Postgresql provider
+        2.0.0.0</p>
+      </li><li>
+        <p><code class="literal">DB2-9.0.0-1.1</code> - IBM DB2 Data Provider 9.0.0
+        for .NET Framework 1.1</p>
+      </li><li>
+        <p><code class="literal">DB2-9.0.0-2.0</code> (aliased to
+        <code class="literal">IBM.Data.DB2</code>) - IBM DB2 Data Provider 9.0.0 for
+        .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">DB2-9.1.0-1.1</code> - IBM DB2 Data Provider 9.1.0
+        for .NET Framework 1.1</p>
+      </li><li>
+        <p><code class="literal">DB2-9.1.0.2</code> (aliased to
+        <code class="literal">IBM.Data.DB2.9.1.0</code>) - IBM DB2 Data Provider 9.1.0
+        for .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">iDB2-10.0.0.0</code> - IBM iSeries DB2 Data Provider
+        10.0.0.0 for .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">SQLite-1.0.43</code> - SQLite provider 1.0.43 for
+        .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">SQLite-1.0.44</code> - SQLite provider 1.0.44 for
+        .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">SQLite-1.0.47</code> - SQLite provider 1.0.47 for
+        .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">SQLite-1.0.56</code> - SQLite provider 1.0.56 for
+        .NET Framework 2.0</p>
+      </li><li>
+        <p><code class="literal">SQLite-1.0.65</code> (aliased to System.Data.SQLite)
+        - SQLite provider 1.0.65 for .NET Framework 2.0</p>
+
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+          <p>The default parameter prefix used in SQLite is : and not @,
+          please write your SQL accordingly or define a provider definition
+          for SQLite.</p>
+        </td></tr></table></div>
+      </li><li>
+        <p><code class="literal">Firebird-2.1</code> (aliased to
+        <code class="literal">Firebird-2.1</code>) - Firebird Server, provider V2.1.0.0
+        in framework .NET V2.0</p>
+      </li><li>
+        <p><code class="literal">SybaseAse-12</code> - Sybase ASE provider for ASE
+        12.x</p>
+      </li><li>
+        <p><code class="literal">SybaseAse-15</code> - Sybase ASE provider for ASE
+        15.x</p>
+      </li><li>
+        <p><code class="literal">SybaseAse-AdoNet2</code> - Sybase ADO.NET 2.0
+        provider for ASE 12.x and 15.x</p>
+      </li><li>
+        <p><code class="literal">Odbc-1.1</code> - ODBC provider V1.0.5000.0 in
+        framework .NET V1.1</p>
+      </li><li>
+        <p><code class="literal">Odbc-2.0</code> - ODBC provider V2.0.0.0 in
+        framework .NET V2</p>
+      </li><li>
+        <p><code class="literal">Cache-2.0.0.1</code> (aliased to
+        <code class="literal">InterSystems.Data.CacheClient</code>) - Cache provider
+        Version 2.0.0.1 in framework .NET V2</p>
+      </li></ul></div>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>If your exact version of the database provider is not listed, you
+      can pick the general provider name, i.e.
+      <code class="literal">MySql.Data.MySqlClient</code>, and then perform an assembly
+      redirect in App.config. This will often be sufficient to upgrade to
+      newer versions. As shown below</p>
+
+      <pre class="programlisting">&lt;runtime&gt;
+
+  &lt;assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1"&gt;
+
+    &lt;dependentAssembly&gt;
+      &lt;assemblyIdentity name="Npgsql" 
+                        publicKeyToken="5d8b90d52f46fda7" 
+                        culture="neutral"/&gt;
+      &lt;bindingRedirect oldVersion="0.0.0.0-65535.65535.65535.65535
+                       newVersion="2.0.0.0"/&gt;
+
+    &lt;/dependentAssembly&gt;
+
+  &lt;/assemblyBinding&gt;
+
+&lt;/runtime&gt;</pre>
+    </td></tr></table></div>
+
+    <p>An example using DbProviderFactory is shown below</p>
+
+    <pre class="programlisting"><span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbProvider</span> dbProvider = <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">DbProviderFactory</span>.GetDbProvider(<span style="color: #000000">"System.Data.SqlClient"</span>);</pre>
+
+    <p>The default definitions of the providers are contained in the
+    assembly resource
+    <code class="code">assembly://Spring.Data/Spring.Data.Common/dbproviders.xml</code>.
+    Future additions to round out the database coverage are forthcoming. The
+    current crude mechanism to add additional providers, or to apply any
+    standard Spring <code class="literal">IApplicationContext</code> functionality, such
+    as applying AOP advice, is to set the public static property
+    DBPROVIDER_ADDITIONAL_RESOURCE_NAME in
+    <code class="literal">DbProviderFactory</code> to a Spring resource location. The
+    default value is <code class="code">file://dbProviders.xml</code>. (That isn't a typo,
+    there is a difference in case with the name of the embedded resource).
+    This crude mechanism will eventually be replaced with one based on a
+    custom configuration section in App.config/Web.config.</p>
+
+    <p>It may happen that the version number of an assembly you have
+    downloaded is different than the one listed above. If it is a point
+    release, i.e. the API hasn't changed in anyway that is material to your
+    application, you should add an assembly redirect of the form shown
+    below.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;dependentAssembly&gt;</span>
+  <span style="color: #A31515">&lt;assemblyIdentity</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MySql.Data"</span> 
+                           <span style="color: #FF0000">publicKeyToken</span>=<span style="color: #0000FF">"c5687fc88969c44d"</span> 
+                           <span style="color: #FF0000">culture</span>=<span style="color: #0000FF">"neutral"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;bindingRedirect</span> <span style="color: #FF0000">oldVersion</span>=<span style="color: #0000FF">"0.0.0.0-65535.65535.65535.65535"</span>
+                         <span style="color: #FF0000">newVersion</span>=<span style="color: #0000FF">"1.0.10.1"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/dependentAssembly&gt;</span></pre>
+
+    <p>This redirects any reference to an older version of the assembly
+    MySql.Data to the version 1.0.10.1.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e5739"></a>19.3.&nbsp;XML based configuration</h2></div></div></div>
+    
+
+    <p>Creating a DbProvider in Spring's XML configuration file is shown
+    below in the typical case of using it to specify the DbProvider property
+    on an AdoTemplate.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">'http://www.springframework.net'</span>
+         <span style="color: #FF0000">xmlns:db</span>=<span style="color: #0000FF">"http://www.springframework.net/database"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"DbProvider"</span> 
+      <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"System.Data.SqlClient"</span> 
+      <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"Data Source=(local);Database=Spring;User ID=springqa;Password=springqa;Trusted_Connection=False"</span><span style="color: #A31515">/&gt;</span>
+  
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"adoTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Core.AdoTemplate, Spring.Data"</span><span style="color: #A31515">&gt;</span>  
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DbProvider"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"DbProvider"</span><span style="color: #A31515">/&gt;</span>                
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+    <p>A custom namespace should be registered in the main application
+    configuration file to use this syntax. This configuration, only for the
+    parsers, is shown below. Additional section handlers are needed to specify
+    the rest of the Spring configuration locations as described in previous
+    chapters.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span>
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Config.DatabaseNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span>
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e5745"></a>19.4.&nbsp;Connection String management</h2></div></div></div>
+    
+
+    <p>There are a few options available to help manage your connection
+    strings.</p>
+
+    <p>The first option is to leverage the Spring property replacement
+    functionality, as described in <a class="xref" href="objects.html#objects-factory-placeholderconfigurer" title="5.9.2.1.&nbsp;Example: The PropertyPlaceholderConfigurer">Section&nbsp;5.9.2.1, &#8220;Example: The
+        PropertyPlaceholderConfigurer&#8221;</a>. This lets you insert
+    variable names as placeholders for values in a Spring configuration file.
+    In the following example specific parts of a connection string have been
+    parameterized but you can also use a variable to set the entire connection
+    string.</p>
+
+    <p>An example of such a setting is shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'context'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Context.Support.ContextHandler, Spring.Core'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+
+    <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"databaseSettings"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.Configuration.NameValueSectionHandler, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"</span><span style="color: #A31515"> /&gt;</span>
+       
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;context&gt;</span>      
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"Aspects.xml"</span><span style="color: #A31515"> /&gt;</span>
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"Services.xml"</span><span style="color: #A31515"> /&gt;</span>
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"Dao.xml"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/context&gt;</span>
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+  <i style="color: #008000">&lt;!-- These properties are referenced in Dao.xml --&gt;</i>
+  <span style="color: #A31515">&lt;databaseSettings&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"db.datasource"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"(local)"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"db.user"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"springqa"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"db.password"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"springqa"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"db.database"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Northwind"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/databaseSettings&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+
+    <p>Where <code class="literal">Dao.xml</code> has a connection string as shown
+    below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">'http://www.springframework.net'</span>
+         <span style="color: #FF0000">xmlns:db</span>=<span style="color: #0000FF">"http://www.springframework.net/database"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"DbProvider"</span> 
+      <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"System.Data.SqlClient"</span> 
+      <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"${db.datasource};Database=${db.database};User ID=${db.user};Password=${db.password};Trusted_Connection=False"</span><span style="color: #A31515">/&gt;</span>
+  
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"adoTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Core.AdoTemplate, Spring.Data"</span><span style="color: #A31515">&gt;</span>  
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DbProvider"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"DbProvider"</span><span style="color: #A31515">/&gt;</span>                
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- configuration of what values to substitute for ${ } variables listed above --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"appConfigPropertyHolder"</span>
+          <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Objects.Factory.Config.PropertyPlaceholderConfigurer, Spring.Core"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"configSections"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"DatabaseConfiguration"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span> 
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+    <p>Please refer to the Section <a class="xref" href="objects.html#objects-factory-placeholderconfigurer" title="5.9.2.1.&nbsp;Example: The PropertyPlaceholderConfigurer">Section&nbsp;5.9.2.1, &#8220;Example: The
+        PropertyPlaceholderConfigurer&#8221;</a> for more
+    information.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dbprovider-additional"></a>19.5.&nbsp;Additional IDbProvider implementations</h2></div></div></div>
+    
+
+    <p>Spring provides some convenient implementations of the IDbProvider
+    interface that add addtional behavior on top of the standard
+    implementation.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>These provider implementations do not take into account usage with
+      NHibernate. NHibernate scopes a SessionFactory, where second level
+      caching is managed, to each connection. This <a class="link" href="http://forum.springframework.net/showthread.php?t=4462" target="_top">forum
+      thread</a>, contains an implementation of the class
+      LocalDelegatingSessionFactoryObject that will create multiple
+      SessionFactories for each database connection.</p>
+    </td></tr></table></div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dbprovider-usercredentials"></a>19.5.1.&nbsp;UserCredentialsDbProvider</h3></div></div></div>
+      
+
+      <p>This <code class="literal">UserCredentialsDbProvider</code> will allow you
+      to change the username and password of a database connection at runtime.
+      The API contains the properties <code class="literal">Username</code> and
+      <code class="literal">Password</code> which are used as the default strings
+      representing the user and password in the connection string. You can
+      then change the value of these properties in the connection string by
+      calling the method <code class="literal">SetCredentialsForCurrentThread</code> and
+      fall back to the default values by calling the method
+      <code class="literal">RemoveCredentialsFromCurrentThread</code>. You call the
+      <code class="literal">SetCredentialsForCurrentThread</code> method at runtime,
+      before any data access occurs, to determine which database user should
+      be used for the current user-case. Which user to select is up to you.
+      You may retrieve the user information from an HTTP session for example.
+      Example configuration and usage is shown below</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"DbProvider"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Common.UserCredentialsDbProvider, Spring.Data"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetDbProvider"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"targetDbProvider"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Username"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"User ID=defaultName"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Password"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Password=defaultPass"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+ 
+<span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"targetDbProvider"</span> <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"SqlServer-2.0"</span>
+    <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"Data Source=MARKT60\SQL2005;Database=Spring;Trusted_Connection=False"</span><span style="color: #A31515">/&gt;</span></pre>
+
+      <p>If you use dependency injection to configure a class with a
+      property of the type <code class="literal">IDbProvider</code>, you will need to
+      downcast to the subtype or you can change your class to have a property
+      of the type <code class="literal">UserCredentialsDbProvider</code> instead of
+      <code class="literal">IDbProvider</code>.</p>
+
+      <pre class="programlisting">userCredentialsDbProvider.SetCredentialsForCurrentThread(<span style="color: #000000">"User ID=springqa"</span>, <span style="color: #000000">"Password=springqa"</span>);</pre>
+
+      <p><code class="literal">UserCredentialsDbProvider's</code> has a base class,
+      <code class="literal">DelegatingDbProvider</code>, and is intended for you to use
+      in your own implementations that delegate calls to a target
+      <code class="literal">IDbProvider</code> instance. This class in meant to be
+      subclassed with subclasses overriding only those methods, such as
+      <code class="literal">CreateConnection()</code>, that should not simply delegate
+      to the target <code class="literal">IDbProvider</code>.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dbprovider-multidelegating"></a>19.5.2.&nbsp;MultiDelegatingDbProvider</h3></div></div></div>
+      
+
+      <p>There are use-cases in which there will need to be a runtime
+      selection of the database to connect to among many possible candidates.
+      This is often the case where the same schema is installed in separate
+      databases for different clients. The
+      <code class="literal">MultiDelegatingDbProvider</code> implements the
+      <code class="literal">IDbProvider</code> interface and provides an abstraction to
+      the multiple databases and can be used in DAO layer such that the DAO
+      layer is unaware of the switching between databases.
+      <code class="literal">MultiDelegatingDbProvider</code> does its job by looking
+      into thread local storage under the key dbProviderName. This storage
+      location stores the name of the dbProvider that is to be used for
+      processing the request. <code class="literal">MultiDelegatingDbProvider</code> is
+      configured using the dictionary property
+      <code class="literal">TargetDbProviders</code>. The key of this dictionary
+      contains the name of a dbProvider and its value is a dbProvider object.
+      (You can also provide this dictionary as a constructor argument.)</p>
+
+      <p>During request processing, once you have determined which target
+      dbProvider should be use, in this example database1ProviderName, you
+      should execute the following code is you are using Spring 1.2 M1 or
+      later</p>
+
+      <pre class="programlisting"><i style="color: #008000">// Spring 1.2 M1 or later</i>
+<span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">LogicalThreadContext</span>.SetData(<span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">MultiDelegatingDbProvider</span>.CURRENT_DBPROVIDER_SLOTNAME, <span style="color: #000000">"database1ProviderName"</span>)</pre>
+
+      <p>and the following ocde if you are using earlier versions</p>
+
+      <pre class="programlisting"><i style="color: #008000">// Prior to Spring 1.2 M1</i>
+<span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">LogicalThreadContext</span>.SetData(<span style="color: #000000">"dbProviderName"</span>, <span style="color: #000000">"database1ProviderName"</span>)</pre>
+
+      <p>and then call the data access layer.</p>
+
+      <p>Here is a sample configuration to build up an object definition
+      for <code class="literal">MultiDelegatingDbProvider</code>.</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"CreditAndDebitsDbProvider"</span>
+    <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"System.Data.SqlClient"</span>
+    <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"Data Source=MARKT60\SQL2005;Initial Catalog=CreditsAndDebits;User ID=springqa; Password=springqa"</span><span style="color: #A31515">/&gt;</span>
+
+<span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"CreditDbProvider"</span>
+    <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"System.Data.SqlClient"</span>
+    <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"Data Source=MARKT60\SQL2005;Initial Catalog=Credits;User ID=springqa; Password=springqa"</span><span style="color: #A31515">/&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"dbProviderDictionary"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Collections.SynchronizedHashtable, Spring.Core"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"['DbProvider1']"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"CreditAndDebitsDbProvider"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"['DbProvider2']"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"CreditDbProvider"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"DbProvider"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.MultiDelegatingDbProvider, Spring.Data"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetDbProviders"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"dbProviderDictionary"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dao.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ado.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;18.&nbsp;DAO support&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;20.&nbsp;Data access using ADO.NET</td></tr></table></div></body></html>

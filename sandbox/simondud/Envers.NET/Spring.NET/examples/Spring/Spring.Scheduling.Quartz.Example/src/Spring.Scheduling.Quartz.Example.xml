@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Spring.Scheduling.Quartz.Example</name>
+    </assembly>
+    <members>
+        <member name="T:Spring.Scheduling.Quartz.Example.AdminService">
+            <summary>
+            A 'plain' object (no inheritance of any infrastructure base class) whose method will 
+            be invoked by Quartz. 
+            </summary>
+        </member>
+        <member name="T:Spring.Scheduling.Quartz.Example.ExampleJob">
+            <summary>
+            Example job.
+            </summary>
+        </member>
+        <member name="M:Spring.Scheduling.Quartz.Example.ExampleJob.ExecuteInternal(Quartz.JobExecutionContext)">
+            <summary>
+            Execute.
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="P:Spring.Scheduling.Quartz.Example.ExampleJob.UserName">
+            <summary>
+            Simple property that can be injected.
+            </summary>
+        </member>
+    </members>
+</doc>

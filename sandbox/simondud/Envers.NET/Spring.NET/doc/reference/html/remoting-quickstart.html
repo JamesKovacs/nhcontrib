@@ -1,0 +1,787 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;37.&nbsp;Portable Service Abstraction Quick Start</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="aop-quickstart.html" title="Chapter&nbsp;36.&nbsp;AOP QuickStart"><link rel="next" href="web-quickstart.html" title="Chapter&nbsp;38.&nbsp;Web Quickstarts"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="remoting-quickstart"></a>Chapter&nbsp;37.&nbsp;Portable Service Abstraction Quick Start</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-remoting-introduction"></a>37.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This quickstart demonstrates the basic usage of Spring.NET's
+    portable service abstraction functionality. Sections 2-5 demonstrate the
+    use of .NET Remoting, Section 6 shows the use of the
+    ServicedComponentExporter for .NET Enterprise Services, and Section 7
+    shows the use of the WebServiceExporter.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>To follow this Quarts QuickStart load the solution file found in
+      the directory
+      <code class="literal">&lt;spring-install-dir&gt;\examples\Spring\Spring.Calculator</code></p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-remoting-projectstructure"></a>37.2.&nbsp;.NET Remoting Example</h2></div></div></div>
+    
+
+    <p>The infrastructure classes are located in the
+    <code class="literal">Spring.Services</code> assembly under the
+    <code class="literal">Spring.Services.Remoting</code> namespace. The overall
+    strategy is to export .NET objects on the server side as either CAO or SAO
+    objects using <code class="literal">CaoExporter</code> or
+    <code class="literal">SaoExporter</code> and obtain references to these objects on
+    the client side using <code class="literal">CaoFactoryObject</code> and
+    <code class="literal">SaoFactoryObject</code>. This quickstart does assume
+    familiarity with .NET Remoting on the part of the reader. If you are new
+    to .NET remoting you may find the links to introductory remoting material
+    presented at the conclusion of this quickstart of some help.</p>
+
+    <p>As usual with quick start examples in Spring.NET, the classes used
+    in the quickstart are intentionally simple. In the specific case of this
+    remoting quickstart we are going to make a simple calculator that can be
+    accessed remotely. The same calculator class will be exported in multiple
+    ways reflecting the variety of .NET remoting options available (CAO,
+    SAO-SingleCall, SAO-Singleton) and also the use of adding AOP advice to
+    SAO hosted objects.</p>
+
+    <p>The example solution is located in the
+    <code class="literal">examples\Spring\Spring.Calculator</code> directory and
+    contains multiple projects.</p>
+
+    <div class="mediaobject"><img src="images/remoting-solution.gif"></div>
+
+    <p>The <code class="literal">Spring.Calculator.Contract</code> project contains
+    the interface <code class="literal">ICalculator</code> that defines the basic
+    operations of a calculator and another interface
+    <code class="literal">IAdvancedCalculator</code> that adds support for memory
+    storage for results. (woo hoo - big feature - HP-12C beware!) These
+    interfaces are shown below. The
+    <code class="literal">Spring.Calculator.Services</code> project contains an
+    implementation of the these interfaces, namely the classes
+    <code class="literal">Calculator</code> and <code class="literal">AdvancedCalculator</code>.
+    The purpose of the <code class="literal">AdvancedCalculator</code> implementation is
+    to demonstrate the configuration of object state for SAO-singleton
+    objects. Note that the calculator implementations <span class="emphasis"><em>do
+    not</em></span> inherit from the <code class="literal">MarshalByRefObject</code>
+    class. The <code class="literal">Spring.Calculator.ClientApp</code> project contains
+    the client application and the
+    <code class="literal">Spring.Calculator.RemoteApp</code> project contains a console
+    application that will host a Remoted instance of the
+    <code class="literal">AdvancedCalculator</code> class. The
+    <code class="literal">Spring.Aspects</code> project contains some logging advice
+    that will be used to demonstrate the application of aspects to remoted
+    objects. <code class="literal">Spring.Calculator.RegisterComponentServices</code> is
+    related to enterprise service exporters and is not relevant for this
+    quickstart. <code class="literal">Spring.Calculator.Web</code> is related to web
+    services exporters and is not relevant for this quickstart.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICalculator
+{
+    <span style="color: #0000FF">int</span> Add(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2);
+
+    <span style="color: #0000FF">int</span> Subtract(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2);
+
+    DivisionResult Divide(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2);
+
+    <span style="color: #0000FF">int</span> Multiply(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2);
+}
+
+[Serializable]
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DivisionResult
+{
+	  <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> _quotient = 0;
+	  <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> _rest = 0;
+
+	  <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Quotient
+	  {
+		  <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> _quotient; }
+		  <span style="color: #0000FF">set</span> { _quotient = <span style="color: #0000FF">value</span>; }
+	  }
+
+	  <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Rest
+	  {
+		  <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> _rest; }
+		  <span style="color: #0000FF">set</span> { _rest = <span style="color: #0000FF">value</span>; }
+	  }
+}</pre>
+
+    <p>An extension of this interface that supports having a slot for
+    calculator memory is shown below</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAdvancedCalculator : ICalculator
+{
+	<span style="color: #0000FF">int</span> GetMemory();
+
+	<span style="color: #0000FF">void</span> SetMemory(<span style="color: #0000FF">int</span> memoryValue);
+
+	<span style="color: #0000FF">void</span> MemoryClear();
+
+	<span style="color: #0000FF">void</span> MemoryAdd(<span style="color: #0000FF">int</span> num);
+}</pre>
+
+    <p>The structure of the VS.NET solution is a consequence of following
+    the best practice of using interfaces to share type information between a
+    .NET remoting client and server. The benefits of this approach are that
+    the client does not need a reference to the assembly that contains the
+    implementation class. Having the client reference the implementation
+    assembly is undesirable for a variety of reasons. One reason being
+    security since an untrusted client could potentially obtain the source
+    code to the implementation since Intermediate Language (IL) code is easily
+    reverse engineered. Another, more compelling, reason is to provide a
+    greater decoupling between the client and server so the server can update
+    its implementation of the interface in a manner that is quite transparent
+    to the client; i.e. the client code need not change. Independent of .NET
+    remoting best practices, using an interface to provide a service contract
+    is just good object-oriented design. This lets the client choose another
+    implementation unrelated to .NET Remoting, for example a local, test-stub
+    or a web services implementation. One of the major benefits of using
+    Spring.NET is that it reduces the cost of doing 'interface based
+    programming' to almost nothing. As such, this best practice approach to
+    .NET remoting fits naturally into the general approach to application
+    development that Spring.NET encourages you to follow. Ok, with that
+    barrage of OO design ranting finished, on to the implementation!</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-remoting-implementation"></a>37.3.&nbsp;Implementation</h2></div></div></div>
+    
+
+    <p>The implementation of the calculators contained in the
+    <code class="literal">Spring.Calculator.Servies</code> project is quite
+    straightforward. The only interesting methods are those that deal with the
+    memory storage, which is the state that we will be configuring explicitly
+    using constructor injection. A subset of the implementation is shown
+    below.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> Calculator : ICalculator
+{
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Add(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2)
+    {
+        <span style="color: #0000FF">return</span> n1 + n2;
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Substract(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2)
+    {
+        <span style="color: #0000FF">return</span> n1 - n2;
+    }
+
+    <span style="color: #0000FF">public</span> DivisionResult Divide(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2)
+    {
+        DivisionResult result = <span style="color: #0000FF">new</span> DivisionResult();
+        result.Quotient = n1 / n2;
+        result.Rest = n1 % n2;
+        <span style="color: #0000FF">return</span> result;
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Multiply(<span style="color: #0000FF">int</span> n1, <span style="color: #0000FF">int</span> n2)
+    {
+        <span style="color: #0000FF">return</span> n1 * n2;
+    }
+
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdvancedCalculator : Calculator, IAdvancedCalculator
+{
+
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> memoryStore = 0;
+
+  <span style="color: #0000FF">public</span> AdvancedCalculator()
+  {}
+
+  <span style="color: #0000FF">public</span> AdvancedCalculator(<span style="color: #0000FF">int</span> initialMemory)
+  {
+    memoryStore = initialMemory;
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> GetMemory()
+  {
+    <span style="color: #0000FF">return</span> memoryStore;
+  }
+
+  <i style="color: #008000">// other methods omitted in this listing...</i>
+
+}</pre>
+
+    <p>The <code class="literal">Spring.Calculator.RemotedApp</code> project hosts
+    remoted objects inside a console application. The code is also quite
+    simple and shown below</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main(<span style="color: #0000FF">string</span>[] args)
+{
+    <span style="color: #0000FF">try</span> 
+    { 
+        <i style="color: #008000">// initialization of Spring.NET's IoC container</i>
+        IApplicationContext ctx = ContextRegistry.GetContext();
+
+        Console.Out.WriteLine(<span style="color: #000000">"Server listening..."</span>);
+    }   
+    <span style="color: #0000FF">catch</span> (Exception e)
+    {
+	Console.Out.WriteLine(e);
+    }
+    <span style="color: #0000FF">finally</span>
+    {
+	Console.Out.WriteLine(<span style="color: #000000">"--- Press &lt;return&gt; to quit ---"</span>);
+	Console.ReadLine();
+    }
+}</pre>
+
+    <p>The configuration of the .NET remoting channels is done using the
+    standard <code class="literal">system.runtime.remoting</code> configuration section
+    inside the .NET configuration file of the application
+    (<code class="literal">App.config</code>). In this case we are using the
+    <code class="literal">tcp</code> channel on port <code class="literal">8005</code>.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;system.runtime.remoting&gt;</span>
+  <span style="color: #A31515">&lt;application&gt;</span>
+    <span style="color: #A31515">&lt;channels&gt;</span>
+      <span style="color: #A31515">&lt;channel</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"tcp"</span> <span style="color: #FF0000">port</span>=<span style="color: #0000FF">"8005"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/channels&gt;</span>
+  <span style="color: #A31515">&lt;/application&gt;</span>
+<span style="color: #A31515">&lt;/system.runtime.remoting&gt;</span></pre>
+
+    <p>The objects created in Spring's application context are shown below.
+    Multiple resource files are used to export these objects under various
+    remoting configurations. The AOP advice used in this example is a simple
+    Log4Net based around advice.</p>
+
+    <pre class="programlisting">	<span style="color: #A31515">&lt;configSections&gt;</span>
+		<span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"context"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ContextHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+			<span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.DefaultSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+			<span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+		<span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"log4net"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"log4net.Config.Log4NetConfigurationSectionHandler,log4net"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/configSections&gt;</span>
+
+<span style="color: #A31515">&lt;spring&gt;</span>
+		<span style="color: #A31515">&lt;parsers&gt;</span>
+			<span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.Config.RemotingNamespaceParser, Spring.Services"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;/parsers&gt;</span>
+	<span style="color: #A31515">&lt;context&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://RemoteServer/RemoteServer.Config/cao.xml"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://RemoteServer/RemoteServer.Config/saoSingleCall.xml"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://RemoteServer/RemoteServer.Config/saoSingleCall-aop.xml"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://RemoteServer/RemoteServer.Config/saoSingleton.xml"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://RemoteServer/RemoteServer.Config/saoSingleton-aop.xml"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/context&gt;</span>
+	<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;description&gt;</span>Definitions of objects to be exported.<span style="color: #A31515">&lt;/description&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.RemotingConfigurer, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Filename"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.Calculator.RemoteApp.exe.config"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+      
+		<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"Log4NetLoggingAroundAdvice"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aspects.Logging.Log4NetLoggingAroundAdvice, Spring.Aspects"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Level"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Debug"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;/object&gt;</span>
+
+		<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"singletonCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"int"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"217"</span><span style="color: #A31515">/&gt;</span>
+		<span style="color: #A31515">&lt;/object&gt;</span>
+		
+		<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"singletonCalculatorWeaved"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"singletonCalculator"</span><span style="color: #A31515">/&gt;</span>
+			<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+				<span style="color: #A31515">&lt;list&gt;</span>
+					<span style="color: #A31515">&lt;value&gt;</span>Log4NetLoggingAroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+				<span style="color: #A31515">&lt;/list&gt;</span>
+			<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;/object&gt;</span>
+		
+		<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"prototypeCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"int"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"217"</span><span style="color: #A31515">/&gt;</span>
+		<span style="color: #A31515">&lt;/object&gt;</span>
+		
+		<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"prototypeCalculatorWeaved"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetSource"</span><span style="color: #A31515">&gt;</span>
+				<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Target.PrototypeTargetSource, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+					<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"prototypeCalculator"</span><span style="color: #A31515">/&gt;</span>
+				<span style="color: #A31515">&lt;/object&gt;</span>
+			<span style="color: #A31515">&lt;/property&gt;</span>
+			<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+				<span style="color: #A31515">&lt;list&gt;</span>
+					<span style="color: #A31515">&lt;value&gt;</span>Log4NetLoggingAroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+				<span style="color: #A31515">&lt;/list&gt;</span>
+			<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;/object&gt;</span>
+		
+	<span style="color: #A31515">&lt;/objects&gt;</span>
+<span style="color: #A31515">&lt;/spring&gt;</span></pre>
+
+    <p>The declaration of the calculator instance,
+    <code class="literal">singletonCalculator</code> for example, and the setting of any
+    property values and / or object references is done as you would normally
+    do for any object declared in the Spring.NET configuration file. To expose
+    the calculator objects as .NET remoted objects the exporter
+    <code class="literal">Spring.Remoting.CaoExporter</code> is used for CAO objects and
+    <code class="literal">Spring.Remoting.SaoExporter</code> is used for SAO objects.
+    Both exporters require the setting of a <code class="literal">TargetName</code>
+    property that refers to the name of the object in Spring's IoC container
+    that will be remoted. The semantics of SAO-SingleCall and CAO behavior are
+    achieved by exporting a target object that is declared as a "prototype"
+    (i.e. singleton=false). For SAO objects, the
+    <code class="literal">ServiceName</code> property defines the name of the service as
+    it will appear in the URL that clients use to locate the remote object. To
+    set the remoting lifetime of the objects to be infinite, the property
+    <code class="literal">Infinite</code> is set to true.</p>
+
+    <p>The configuration for the exporting a SAO-Singleton is shown
+    below.</p><pre class="programlisting"><span style="color: #A31515">&lt;objects</span>	
+	<span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> 
+	<span style="color: #FF0000">xmlns:r</span>=<span style="color: #0000FF">"http://www.springframework.net/remoting"</span><span style="color: #A31515">&gt;</span>
+	
+	<span style="color: #A31515">&lt;description&gt;</span>Registers the calculator service as a SAO in 'Singleton' mode.<span style="color: #A31515">&lt;/description&gt;</span>
+	
+	<span style="color: #A31515">&lt;r:saoExporter</span> 
+		<span style="color: #FF0000">targetName</span>=<span style="color: #0000FF">"singletonCalculator"</span> 
+		<span style="color: #FF0000">serviceName</span>=<span style="color: #0000FF">"RemotedSaoSingletonCalculator"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/objects&gt;</span></pre><p>The configuration shown above uses the Spring
+    Remoting schema but you can also choose to use the standard 'generic' XML
+    configuration shown below.</p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"saoSingletonCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.SaoExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"singletonCalculator"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ServiceName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"RemotedSaoSingletonCalculator"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre><p> This will result in the remote object being
+    identified by the URL
+    <code class="literal">tcp://localhost:8005/RemotedSaoSingletonCalculator</code>. The
+    use of <code class="literal">SaoExporter</code> and <code class="literal">CaoExporter</code>
+    for other configuration are similar, look at the configuration files in
+    the <code class="literal">Spring.Calculator.RemotedApp</code> project files for more
+    information.</p>
+
+    <p>On the client side, the client application will connect a specific
+    type of remote calculator service, object, ask it for it's current memory
+    value, which is pre-configured to <code class="literal">217</code>, then perform a
+    simple addition. As in the case of the server, the channel configuration
+    is done using the standard .NET Remoting configuration section of the .NET
+    application configuration file (<code class="literal">App.config</code>), as can
+    been seen below.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;system.runtime.remoting&gt;</span>
+    <span style="color: #A31515">&lt;application&gt;</span>
+    	<span style="color: #A31515">&lt;channels&gt;</span>
+    		<span style="color: #A31515">&lt;channel</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"tcp"</span><span style="color: #A31515">/&gt;</span>
+    	<span style="color: #A31515">&lt;/channels&gt;</span>
+    <span style="color: #A31515">&lt;/application&gt;</span>
+<span style="color: #A31515">&lt;/system.runtime.remoting&gt;</span></pre>
+
+    <p>The client implementation code is shown below.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main(<span style="color: #0000FF">string</span>[] args)
+{
+	<span style="color: #0000FF">try</span>
+	{
+	        Pause();
+
+		IApplicationContext ctx = ContextRegistry.GetContext();
+
+		Console.Out.WriteLine(<span style="color: #000000">"Get Calculator..."</span>);
+		IAdvancedCalculator firstCalc = (IAdvancedCalculator) ctx.GetObject(<span style="color: #000000">"calculatorService"</span>);
+    Console.WriteLine(<span style="color: #000000">"Divide(11, 2) : "</span> + firstCalc.Divide(11, 2));
+		Console.Out.WriteLine(<span style="color: #000000">"Memory = "</span> + firstCalc.GetMemory());
+		firstCalc.MemoryAdd(2);
+		Console.Out.WriteLine(<span style="color: #000000">"Memory + 2 = "</span> + firstCalc.GetMemory());
+
+		Console.Out.WriteLine(<span style="color: #000000">"Get Calculator..."</span>);
+		IAdvancedCalculator secondCalc = (IAdvancedCalculator) ctx.GetObject(<span style="color: #000000">"calculatorService"</span>);
+		Console.Out.WriteLine(<span style="color: #000000">"Memory = "</span> + secondCalc.GetMemory());
+	}
+	<span style="color: #0000FF">catch</span> (Exception e)
+	{
+		Console.Out.WriteLine(e);
+	}
+	<span style="color: #0000FF">finally</span>
+	{
+		Pause();
+	}
+}</pre>
+
+    <p>Note that the client application code is not aware that it is using
+    a remote object. The <code class="literal">Pause()</code> method simply waits until
+    the <code class="literal">Return</code> key is pressed on the console so that the
+    client doesn't make a request to the server before the server has had a
+    chance to start. The standard configuration and initialization of the .NET
+    remoting infrastructure is done before the creation of the Spring.NET IoC
+    container. The configuration of the client application is constructed in
+    such a way that one can easily switch implementations of the
+    <code class="literal">calculatorService</code> retrieved from the application
+    context. In more complex applications the calculator service would be a
+    dependency on another object in your application, say in a workflow
+    processing layer. The following listing shows a configuration for use of a
+    local implementation and then several remote implementations. The same
+    Exporter approach can be used to create Web Services and Serviced
+    Components (Enterprise Services) of the calculator object but are not
+    discussed in this QuickStart.</p>
+
+    <pre class="programlisting">
+<span style="color: #A31515">&lt;spring&gt;</span>
+  <span style="color: #A31515">&lt;context&gt;</span>
+    <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515"> /&gt;</span>
+      
+    <i style="color: #008000">&lt;!-- Only one at a time ! --&gt;</i>
+
+    <i style="color: #008000">&lt;!-- ================================== --&gt;</i>
+    <i style="color: #008000">&lt;!-- In process (local) implementations --&gt;</i>
+    <i style="color: #008000">&lt;!-- ================================== --&gt;</i>
+    <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.InProcess/inProcess.xml"</span><span style="color: #A31515"> /&gt;</span>
+
+    <i style="color: #008000">&lt;!-- ======================== --&gt;</i>
+    <i style="color: #008000">&lt;!-- Remoting implementations --&gt;</i>
+    <i style="color: #008000">&lt;!-- ======================== --&gt;</i>
+    <i style="color: #008000">&lt;!-- Make sure 'RemoteApp' console application is running and listening. --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/cao.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/cao-ctor.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/saoSingleton.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/saoSingleton-aop.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/saoSingleCall.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.Remoting/saoSingleCall-aop.xml" /&gt; --&gt;</i>
+
+    <i style="color: #008000">&lt;!-- =========================== --&gt;</i>
+    <i style="color: #008000">&lt;!-- Web Service implementations --&gt;</i>
+    <i style="color: #008000">&lt;!-- =========================== --&gt;</i>
+    <i style="color: #008000">&lt;!-- Make sure 'http://localhost/SpringCalculator/' web application is running --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.WebServices/webServices.xml" /&gt; --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.WebServices/webServices-aop.xml" /&gt; --&gt;</i>
+
+    <i style="color: #008000">&lt;!-- ================================= --&gt;</i>
+    <i style="color: #008000">&lt;!-- EnterpriseService implementations --&gt;</i>
+    <i style="color: #008000">&lt;!-- ================================= --&gt;</i>
+    <i style="color: #008000">&lt;!-- Make sure you register components with 'RegisterComponentServices' console application.  --&gt;</i>
+    <i style="color: #008000">&lt;!-- &lt;resource uri="assembly://Spring.Calculator.ClientApp/Spring.Calculator.ClientApp.Config.EnterpriseServices/enterpriseServices.xml" /&gt; --&gt;</i>
+  <span style="color: #A31515">&lt;/context&gt;</span>
+<span style="color: #A31515">&lt;/spring&gt;</span>
+</pre>
+
+    <p>The inProcess.xml configuration file creates an instance of
+    AdvancedCalculator directly </p><pre class="programlisting">
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+	
+  <span style="color: #A31515">&lt;description&gt;</span>inProcess<span style="color: #A31515">&lt;/description&gt;</span>
+	
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span><span style="color: #A31515"> /&gt;</span>
+	
+<span style="color: #A31515">&lt;/objects&gt;</span>
+</pre>
+
+    <p>Factory classes are used to create a client side reference to the
+    .NET remoting implementations. For SAO objects use the
+    <code class="literal">SaoFactoryObject</code> class and for CAO objects use the
+    <code class="literal">CaoFactoryObject</code> class. The configuration for obtaining
+    a reference to the previously exported SAO singleton implementation is
+    shown below </p><pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+	
+	<span style="color: #A31515">&lt;description&gt;</span>saoSingleton<span style="color: #A31515">&lt;/description&gt;</span>
+	
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.SaoFactoryObject, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ServiceInterface"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.Calculator.Interfaces.IAdvancedCalculator, Spring.Calculator.Contract"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ServiceUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:8005/RemotedSaoSingletonCalculator"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	
+<span style="color: #A31515">&lt;/objects&gt;</span>
+</pre>
+
+    <p>You must specify the property <code class="literal">ServiceInterface</code> as
+    well as the location of the remote object via the
+    <code class="literal">ServiceUrl</code> property. The property replacement
+    facilities of Spring.NET can be leveraged here to make it easy to
+    configure the URL value based on environment variable settings, a standard
+    .NET configuration section, or an external property file. This is useful
+    to easily switch between test, QA, and production (yea baby!)
+    environments. An example of how this would be expressed is...</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ServiceUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"${protocol}://${host}:${port}/RemotedSaoSingletonCalculator"</span><span style="color: #A31515"> /&gt;</span></pre>
+
+    <p>The property values in this example are defined elsewhere; refer to
+    <a class="xref" href="objects.html#objects-factory-placeholderconfigurer" title="5.9.2.1.&nbsp;Example: The PropertyPlaceholderConfigurer">Section&nbsp;5.9.2.1, &#8220;Example: The
+        PropertyPlaceholderConfigurer&#8221;</a> for additional
+    information. As mentioned previously, more important in terms of
+    configuration flexibility is the fact that now you can swap out different
+    implementations (.NET remoting based or otherwise) of this interface by
+    making a simple change to the configuration file.</p>
+
+    <p>The configuration for obtaining a reference to the previously
+    exported CAO implementation is shown below </p><pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+	
+	<span style="color: #A31515">&lt;description&gt;</span>cao<span style="color: #A31515">&lt;/description&gt;</span>
+	
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.CaoFactoryObject, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"RemoteTargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"prototypeCalculator"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ServiceUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:8005"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	
+<span style="color: #A31515">&lt;/objects&gt;</span>
+</pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10563"></a>37.4.&nbsp;Running the application</h2></div></div></div>
+    
+
+    <p>Now that we have had a walk though of the implementation and
+    configuration it is finally time to run the application (if you haven't
+    yet pulled the trigger). Be sure to set up VS.NET to run multiple
+    applications on startup as shown below.</p>
+
+    <div class="mediaobject"><img src="images/remoting-startup.gif"></div>
+
+    <p>Running the solution yields the following output in the server and
+    client window</p>
+
+    <pre class="programlisting">  SERVER WINDOW
+
+Server listening...
+--- Press &lt;return&gt; to quit ---
+
+
+   CLIENT WINDOW
+
+--- Press &lt;return&gt; to continue ---     (hit return...)
+Get Calculator...
+Divide(11, 2) : Quotient: '5'; Rest: '1'
+Memory = 0
+Memory + 2 = 2
+Get Calculator...
+Memory = 2
+--- Press &lt;return&gt; to continue ---</pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10573"></a>37.5.&nbsp;Remoting Schema</h2></div></div></div>
+    
+
+    <p>The spring-remoting.xsd file in the doc directory provides a short
+    syntax to configure Spring.NET remoting features. To install the schema in
+    the VS.NET environment run the install-schema NAnt script in the doc
+    directory. Refer to the Chapter on VS.NET integration for more
+    details.</p>
+
+    <p>The various configuration files in the RemoteServer and Client
+    projects show the schema in action. Here is a condensed listing of those
+    definitions which should give you a good feel for how to use the
+    schema.</p>
+
+    <pre class="programlisting"><i style="color: #008000">&lt;!-- Calculator definitions --&gt;</i>
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"singletonCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span><span style="color: #A31515">&gt;</span>
+	<span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"int"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"217"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"prototypeCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">&gt;</span>
+	<span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"int"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"217"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<i style="color: #008000">&lt;!-- CAO object --&gt;</i>
+<span style="color: #A31515">&lt;r:caoExporter</span> <span style="color: #FF0000">targetName</span>=<span style="color: #0000FF">"prototypeCalculator"</span> <span style="color: #FF0000">infinite</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;r:lifeTime</span> <span style="color: #FF0000">initialLeaseTime</span>=<span style="color: #0000FF">"2m"</span> <span style="color: #FF0000">renewOnCallTime</span>=<span style="color: #0000FF">"1m"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/r:caoExporter&gt;</span>
+
+<i style="color: #008000">&lt;!-- SAO Single Call --&gt;</i>
+<span style="color: #A31515">&lt;r:saoExporter</span> 
+  <span style="color: #FF0000">targetName</span>=<span style="color: #0000FF">"prototypeCalculator"</span> 
+  <span style="color: #FF0000">serviceName</span>=<span style="color: #0000FF">"RemotedSaoSingleCallCalculator"</span><span style="color: #A31515">/&gt;</span>
+
+<i style="color: #008000">&lt;!-- SAO Singleton --&gt;</i>
+<span style="color: #A31515">&lt;r:saoExporter</span> 
+  <span style="color: #FF0000">targetName</span>=<span style="color: #0000FF">"singletonCalculator"</span> 
+  <span style="color: #FF0000">serviceName</span>=<span style="color: #0000FF">"RemotedSaoSingletonCalculator"</span><span style="color: #A31515"> /&gt;</span></pre>
+
+    <p>Note that the singleton nature of the remoted object is based on the
+    Spring object definition. The "PrototypeCalculator" has its singleton
+    property set to false to that a new one will be created every time a
+    method on the remoted object is invoked for the SAO case.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="entsvc-example"></a>37.6.&nbsp;.NET Enterprise Services Example</h2></div></div></div>
+    
+
+    <p>The .NET Enterprise Services example is located in the project
+    Spring.Calculator.RegisterComponentServices.2005.csproj or
+    Spring.Calculator.RegisterComponentServices.2003.csproj, depending on the
+    use of .NET 1.1 or 2.0. The example uses the previous AdvancedCalculator
+    implementation and then imports the embedded configuration file
+    'enterpriseServices.xml' from the namespace
+    Spring.Calculator.RegisterComponentServices.Config. The top level
+    configuration is shown below</p>
+
+    <pre class="programlisting">	<span style="color: #A31515">&lt;spring&gt;</span>
+	
+		<span style="color: #A31515">&lt;context&gt;</span>
+			<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515"> /&gt;</span>
+			<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://Spring.Calculator.RegisterComponentServices/Spring.Calculator.RegisterComponentServices.Config/enterpriseServices.xml"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;/context&gt;</span>
+		
+		<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;description&gt;</span>Definitions of objects to be registered.<span style="color: #A31515">&lt;/description&gt;</span>
+			
+			<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span><span style="color: #A31515"> /&gt;</span>
+			
+		<span style="color: #A31515">&lt;/objects&gt;</span>
+		
+	<span style="color: #A31515">&lt;/spring&gt;</span></pre>
+
+    <p>The exporter that adapts the AdvancedCalculator for use as an
+    Enterprise Service component is defined first in enterpriseServices.xml.
+    Second is defined an exporter that will host the exported Enterprise
+    Services component application by signing the assembly, registering it
+    with the specified COM+ application name. If application does not exist it
+    will create it and configure it using values specified for Description,
+    AccessControl and Roles properties. The configuration file for
+    enterpriseServices.xml is shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+
+	<span style="color: #A31515">&lt;description&gt;</span>enterpriseService<span style="color: #A31515">&lt;/description&gt;</span>
+	
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorComponent"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.EnterpriseServices.ServicedComponentExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"calculatorService"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TypeAttributes"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;list&gt;</span>
+				<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.TransactionAttribute, System.EnterpriseServices"</span><span style="color: #A31515"> /&gt;</span>
+			<span style="color: #A31515">&lt;/list&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MemberAttributes"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;dictionary&gt;</span>
+				<span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"*"</span><span style="color: #A31515">&gt;</span>
+					<span style="color: #A31515">&lt;list&gt;</span>
+						<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.AutoCompleteAttribute, System.EnterpriseServices"</span><span style="color: #A31515"> /&gt;</span>
+					<span style="color: #A31515">&lt;/list&gt;</span>
+				<span style="color: #A31515">&lt;/entry&gt;</span>
+			<span style="color: #A31515">&lt;/dictionary&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.EnterpriseServices.EnterpriseServicesExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ApplicationName"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;value&gt;</span>Spring Calculator Application<span style="color: #A31515">&lt;/value&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;value&gt;</span>Spring Calculator application.<span style="color: #A31515">&lt;/value&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AccessControl"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.ApplicationAccessControlAttribute, System.EnterpriseServices"</span><span style="color: #A31515">&gt;</span>
+				<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AccessChecksLevel"</span><span style="color: #A31515">&gt;</span>
+					<span style="color: #A31515">&lt;value&gt;</span>ApplicationComponent<span style="color: #A31515">&lt;/value&gt;</span>
+				<span style="color: #A31515">&lt;/property&gt;</span>
+			<span style="color: #A31515">&lt;/object&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Roles"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;list&gt;</span>
+				<span style="color: #A31515">&lt;value&gt;</span>Admin : Administrator role<span style="color: #A31515">&lt;/value&gt;</span>
+				<span style="color: #A31515">&lt;value&gt;</span>User : User role<span style="color: #A31515">&lt;/value&gt;</span>
+				<span style="color: #A31515">&lt;value&gt;</span>Manager : Administrator role<span style="color: #A31515">&lt;/value&gt;</span>
+			<span style="color: #A31515">&lt;/list&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Components"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;list&gt;</span>
+				<span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">object</span>=<span style="color: #0000FF">"calculatorComponent"</span><span style="color: #A31515"> /&gt;</span>
+			<span style="color: #A31515">&lt;/list&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Assembly"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;value&gt;</span>Spring.Calculator.EnterpriseServices<span style="color: #A31515">&lt;/value&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="websvc-example"></a>37.7.&nbsp;Web Services Example</h2></div></div></div>
+    
+
+    <p>The WebServices example shows how to export the AdvancedCalculator
+    as a web service that is an AOP proxy of AdvancedCalculator that has
+    logging advice applied to it. The main configuration file, Web.config,
+    includes information from three locations as shown below</p>
+
+    <pre class="programlisting">		<span style="color: #A31515">&lt;context&gt;</span>
+			<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515">/&gt;</span>
+			<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/webServices.xml"</span><span style="color: #A31515">/&gt;</span>
+			<span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/webServices-aop.xml"</span><span style="color: #A31515">/&gt;</span>
+		<span style="color: #A31515">&lt;/context&gt;</span></pre>
+
+    <p>The config section 'spring/objects' in Web.config contains the
+    definition for the 'plain' Advanced calculator, as well as the definitions
+    to create an AOP proxy of an AdvancedCalculator that adds logging advice.
+    These definitions are shown below</p><pre class="programlisting">		<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+			
+      <i style="color: #008000">&lt;!-- Aspect --&gt;</i>
+      
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"CommonLoggingAroundAdvice"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aspects.Logging.CommonLoggingAroundAdvice, Spring.Aspects"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Level"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Debug"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+      
+      <i style="color: #008000">&lt;!-- Service --&gt;</i>
+			
+      <i style="color: #008000">&lt;!-- 'plain object' for AdvancedCalculator --&gt;</i>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Calculator.Services.AdvancedCalculator, Spring.Calculator.Services"</span><span style="color: #A31515">/&gt;</span>
+			
+      <i style="color: #008000">&lt;!-- AdvancedCalculator object with AOP logging advice applied. --&gt;</i>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorWeaved"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"calculator"</span><span style="color: #A31515">/&gt;</span>
+				    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+					     <span style="color: #A31515">&lt;list&gt;</span>
+						      <span style="color: #A31515">&lt;value&gt;</span>CommonLoggingAroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+					     <span style="color: #A31515">&lt;/list&gt;</span>
+				    <span style="color: #A31515">&lt;/property&gt;</span>
+			    <span style="color: #A31515">&lt;/object&gt;</span>
+		
+    <span style="color: #A31515">&lt;/objects&gt;</span></pre><p>The configuration file webService.xml
+    simply exports the named calculator object</p>
+
+    <pre class="programlisting">	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Web.Services.WebServiceExporter, Spring.Web"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"calculator"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Namespace"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"http://SpringCalculator/WebServices"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring Calculator Web Services"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>Whereas the webService-aop.xml exports the calculator instance that
+    has AOP advice applied to it.</p>
+
+    <pre class="programlisting">	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorServiceWeaved"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Web.Services.WebServiceExporter, Spring.Web"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"calculatorWeaved"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Namespace"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"http://SpringCalculator/WebServices"</span><span style="color: #A31515"> /&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring Calculator Web Services"</span><span style="color: #A31515"> /&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	</pre>
+
+    <p>Setting the solution to run the web project as the startup, you will
+    be presented with a screen as shown below</p>
+
+    <div class="mediaobject"><img src="images/web-exporter-calc-svc-main.jpg"></div><p>Selecting the CalculatorService and
+    CalculatorServiceWeaved links will bring you to the standard user
+    interface generated for browsing a web service, as shown below</p><div class="mediaobject"><img src="images/web-exporter-calc-svc.jpg"></div>
+
+    <p>And similarly for the calculator service with AOP applied</p>
+
+    <div class="mediaobject"><img src="images/web-exporter-calc-svc-aop.jpg"></div>
+
+    <p>Invoking the Add method for calculatorServiceWeaved shows the
+    screen</p>
+
+    <div class="mediaobject"><img src="images/web-exporter-calc-svc-aop-add.jpg"></div>
+
+    <p>Invoking add will then show the result '4' in a new browser instance
+    and the log file log.txt will contain the following entires</p>
+
+    <pre class="programlisting">2007-10-15 17:59:47,375 [DEBUG] Spring.Aspects.Logging.CommonLoggingAroundAdvice - Intercepted call : about to invoke method 'Add'
+2007-10-15 17:59:47,421 [DEBUG] Spring.Aspects.Logging.CommonLoggingAroundAdvice - Intercepted call : returned '4'</pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-remoting-additional"></a>37.8.&nbsp;Additional Resources</h2></div></div></div>
+    
+
+    <p>Some introductory articles on .NET remoting can be found online at
+    MSDN. Ingo Rammer is also a very good authority on .NET remoting, and the
+    .NET Remoting FAQ (link below) which is maintained by Ingo is chock full
+    of useful information.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+          <p><a class="ulink" href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dndotnet/html/introremoting.asp" target="_top">An
+          Introduction to Microsoft .NET Remoting Framework</a></p>
+        </li><li>
+          <p><a class="ulink" href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dndotnet/html/hawkremoting.asp" target="_top">Microsoft
+          .NET Remoting: A Technical Overview</a></p>
+        </li><li>
+          <p><a class="ulink" href="http://www.apress.com/book/bookDisplay.html?bID=374" target="_top">Advanced
+          .NET Remoting</a> (authored by Ingo Rammer)</p>
+        </li><li>
+          <p><a class="ulink" href="http://www.thinktecture.com/resources/remotingfaq/default.html" target="_top">.NET
+          Remoting FAQ</a></p>
+        </li></ul></div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="aop-quickstart.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="web-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;36.&nbsp;AOP QuickStart&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;38.&nbsp;Web Quickstarts</td></tr></table></div></body></html>

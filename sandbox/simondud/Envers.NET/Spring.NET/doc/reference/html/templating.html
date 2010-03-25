@@ -1,0 +1,335 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;33.&nbsp;Template Engine Support</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-integration.html" title="Part&nbsp;V.&nbsp;Integration"><link rel="prev" href="scheduling.html" title="Chapter&nbsp;32.&nbsp;Scheduling and Thread Pooling"><link rel="next" href="spring-vsnet.html" title="Part&nbsp;VI.&nbsp;VS.NET Integration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="templating"></a>Chapter&nbsp;33.&nbsp;Template Engine Support</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="templating-introduction"></a>33.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The Spring Framework features integration classes for templating
+    engine support. Spring 1.3 provides support for the <a class="ulink" href="http://www.castleproject.org/others/nvelocity/index.html" target="_top">NVelocity</a>
+    templating engine.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="templating-nvelocity-dependencies"></a>33.2.&nbsp;Dependencies</h2></div></div></div>
+    
+
+    <p>The Spring NVelocity support depends on the Castle project's
+    NVelocity implementation which is located in the lib directory of the
+    Spring release.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="templating-nvelocity-factory"></a>33.3.&nbsp;Configuring a VelocityEngine</h2></div></div></div>
+    
+
+    <p>The NVelocity template engine is set up using a
+    <code class="literal">IFactoryObject</code> with optional configuration parameters
+    to define where templates reside, define logging and more. For more
+    information on <code class="literal">IFactoryObjects</code> see <a class="xref" href="objects.html#objects-factory-lifecycle-factoryobject" title="5.9.3.&nbsp;Customizing instantiation logic using IFactoryObjects">Section&nbsp;5.9.3, &#8220;Customizing instantiation logic using
+      IFactoryObjects&#8221;</a>. A custom namespace
+    parser is provided to simplify the configuration of a NVelocity template
+    engine. For more information on custom namespace parser see <a class="xref" href="objects.html#context-custom-parsers" title="5.11.1.&nbsp;Registering custom parsers">Section&nbsp;5.11.1, &#8220;Registering custom parsers&#8221;</a>.</p>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-file"></a>33.3.1.&nbsp;Simple file based template engine definition</h3></div></div></div>
+      
+
+      <p>You create a simple definition of the template engine that uses
+      the default resource loader as follows:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> <span style="color: #FF0000">xmlns:nv</span>=<span style="color: #0000FF">"http://www.springframework.net/nvelocity"</span><span style="color: #A31515">&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Simple no arg file based configuration use's NVeclocity default file resource loader  --&gt;</i>
+  <span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515"> /&gt;</span>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>The velocity engine could then be used to load and merge a local
+      template using a simple relative path (the default resource loader path
+      is the current execution directory):</p>
+
+      <pre class="programlisting">StringWriter stringWriter = <span style="color: #0000FF">new</span> StringWriter();
+Hashtable modelTable = <span style="color: #0000FF">new</span> Hashtable();
+modelTable.Add(<span style="color: #000000">"var1"</span>, TEST_VALUE);
+VelocityContext velocityContext = <span style="color: #0000FF">new</span> VelocityContext(modelTable);
+velocityEngine.MergeTemplate(<span style="color: #000000">"Template/Velocity/MyTemplate.vm"</span>, Encoding.UTF8.WebName, velocityContext, stringWriter);
+<span style="color: #0000FF">string</span> mergedContent = stringWriter.ToString();</pre>
+
+      <p>To disable the use of NVelocity's file loader that tracks runtime
+      changes, set the element <code class="literal">prefer-file-system-access</code> of
+      &lt;engine/&gt; to false.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-engine-configuration"></a>33.3.2.&nbsp;Configuration Options</h3></div></div></div>
+      
+
+      <p>You can define several attributes on the &lt;engine&gt; element to
+      control how the factory is configured:</p>
+
+      <div class="table"><a name="template-velocity-engine-config-tbl"></a><div class="title">Table&nbsp;33.1.&nbsp;Engine Factory Configuration Options</div><div class="table-contents">
+        
+
+        <table summary="Engine Factory Configuration Options" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Required</th><th>Default Value</th></tr></thead><tbody><tr><td>config-file</td><td>
+                <p>A uri of a properties file defining the NVelocity
+                configuration. This value accepts all spring resource loader
+                uri (e.g., file://, http://). See <a class="xref" href="templating.html#templating-nvelocity-resource-config" title="33.3.7.&nbsp;Using a custom configuration file">Section&nbsp;33.3.7, &#8220;Using a custom configuration file&#8221;</a></p>
+              </td><td>no</td><td>N/A</td></tr><tr><td>prefer-file-system-access</td><td>
+                <p>Instructs the NVelocity engine factory to attempt use
+                NVelocity's file loader. When set to false the provided
+                <code class="literal">SpringResourceLoader</code> will be used (and the
+                <code class="literal">ResourceLoaderPath</code> property must be
+                set)</p>
+              </td><td>no</td><td>true</td></tr><tr><td>override-logging</td><td>
+                <p>Instructs the NVelocity engine factory to use the
+                provided spring commons logging based logging system. See
+                <a class="xref" href="templating.html#templating-nvelocity-resource-logging" title="33.3.8.&nbsp;Logging">Section&nbsp;33.3.8, &#8220;Logging&#8221;</a></p>
+              </td><td>no</td><td>true</td></tr></tbody></table>
+      </div></div><br class="table-break">
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-assembly"></a>33.3.3.&nbsp;Assembly based template loading</h3></div></div></div>
+      
+
+      <p>When templates are packaged in an assembly, NVelocity's assembly
+      resource loader can be used to define where templates reside:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;nv:resource-loader&gt;</span>
+        <span style="color: #A31515">&lt;nv:assembly</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyAssembly"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/nv:resource-loader&gt;</span>
+<span style="color: #A31515">&lt;/nv:nvelocity&gt;</span></pre>
+
+      <p>Using the example above the template would be loaded using a
+      namespace syntax for the template resource:</p>
+
+      <pre class="programlisting">velocityEngine.MergeTemplate(<span style="color: #000000">"MyAssembly.MyNamespace.MyTemplate.vm"</span>, Encoding.UTF8.WebName, velocityContext, stringWriter);</pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-spring-resource-loader"></a>33.3.4.&nbsp;Using Spring's <code class="literal">IResourceLoader</code> to load
+      templates</h3></div></div></div>
+      
+
+      <p>In some cases Spring's <a class="link" href="resources.html" title="Chapter&nbsp;7.&nbsp;Resources">IResource</a>
+      abstraction can be beneficial to load templates from a variety of
+      resources. A Spring IResource loader extension to the NVelocity resource
+      loader implementation is provided for this use case. The following
+      object definition loads the NVelocity templates from a single
+      path</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;nv:resource-loader&gt;</span>
+    <span style="color: #A31515">&lt;nv:spring</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"file://Template/Velocity/"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/nv:resource-loader&gt;</span>
+<span style="color: #A31515">&lt;/nv:engine&gt;</span></pre>
+
+      <p>Or with multiple locations</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;nv:resource-loader&gt;</span>
+    <span style="color: #A31515">&lt;nv:spring</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"file://Template/Velocity/"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;nv:spring</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"assembly://MyAssembly/MyNameSpace"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/nv:resource-loader&gt;</span>
+<span style="color: #A31515">&lt;/nv:engine&gt;</span>
+</pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>By default spring will attempt to load resources using
+        NVelocity's file based template loading (useful for detection of
+        template changes at runtime). If this is not desirable you set the
+        <code class="literal">prefer-file-system-access</code> property of the factory
+        object to <code class="literal">false</code> which will cause the factory to
+        utilize the supplied spring resource loader.</p>
+      </td></tr></table></div>
+
+      <p>Using the example above when resource loader paths are defined
+      templates can be loaded using their name:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">string</span> mergedTemplate = VelocityEngineUtils.MergeTemplateIntostring(velocityEngine, <span style="color: #000000">"MyFileTemplate.vm"</span>, Encoding.UTF8.WebName, model); <i style="color: #008000">// template loaded from file://Template/Velocity/</i>
+<span style="color: #0000FF">string</span> mergedTemplate = VelocityEngineUtils.MergeTemplateIntostring(velocityEngine, <span style="color: #000000">"MyAseemblyTemplate.vm"</span>, Encoding.UTF8.WebName, model); <i style="color: #008000">// template loaded from assembly://MyAssembly/MyNameSpace</i></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-custom-resource-loader"></a>33.3.5.&nbsp;Defining a custom resource loader</h3></div></div></div>
+      
+
+      <p>The following defines a custom resource loader (the type is an
+      extension of NVelocity's <code class="literal">ResourceLoader</code>
+      class):</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;nv:resource-loader&gt;</span>
+        <span style="color: #A31515">&lt;nv:custom</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"myResourceLoader"</span> 
+                   <span style="color: #FF0000">description</span>=<span style="color: #0000FF">"A custom resource loader"</span> 
+                   <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.MyResourceLoader, MyAssembly"</span>  
+                   <span style="color: #FF0000">path</span>=<span style="color: #0000FF">"Template/Velocity/"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/nv:resource-loader&gt;</span>
+<span style="color: #A31515">&lt;/nv:engine&gt;</span>
+</pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-resource-loader-configuration"></a>33.3.6.&nbsp;Resource Loader configuration options</h3></div></div></div>
+      
+
+      <p>The &lt;nv:resource-loader&gt; element has additional attributes
+      which define how NVelocity's resource manager and resource loader
+      behave.</p>
+
+      <div class="table"><a name="templating-nvelocity-resource-loader-configuration-tbl"></a><div class="title">Table&nbsp;33.2.&nbsp;Resource Loader Configuration Options</div><div class="table-contents">
+        
+
+        <table summary="Resource Loader Configuration Options" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Required</th><th>Default Value</th></tr></thead><tbody><tr><td>default-cache-size</td><td>
+                <p>defines resource manager global cache size, applies when
+                caching is turned on. This maps to NVelocity's resource
+                manager <code class="literal">resource.manager.defaultcache.size</code>
+                property</p>
+              </td><td>no</td><td>89</td></tr><tr><td>template-caching</td><td>
+                <p>Enables template caching for the defined resource
+                loader. This maps to NVelocity's resource loader
+                <code class="literal">&lt;name&gt;.resource.loader.cache</code>
+                property</p>
+              </td><td>no</td><td>false</td></tr><tr><td>modification-check-interval</td><td>
+                <p>The modification check interval value (seconds) of the
+                resource loader, applies only to resource loader with change
+                detection capabilities (file or custom). This maps to
+                NVelocity's resource loader
+                <code class="literal">&lt;name&gt;.resource.loader.modificationCheckInterval</code>
+                property</p>
+              </td><td>no</td><td>2</td></tr></tbody></table>
+      </div></div><br class="table-break">
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-resource-config"></a>33.3.7.&nbsp;Using a custom configuration file</h3></div></div></div>
+      
+
+      <p>If so desired one could provide a custom configuration resource to
+      customize the NVelocity configuration:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">config-file</span>=<span style="color: #0000FF">"file://Template/Velocity/config.properties"</span><span style="color: #A31515">/&gt;</span></pre>
+
+      <p>You can override specific properties by providing the
+      <code class="literal">VelocityProperties</code> property to the NVelocity factory
+      object (shown above)</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;nv:engine</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityTemplate"</span><span style="color: #A31515"> &gt;</span>
+  <span style="color: #A31515">&lt;nv:nvelocity-properties&gt;</span>
+    <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"input.encoding"</span>  <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"ISO-8859-1"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"output.encoding"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"ISO-8859-1"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/nv:nvelocity-properties&gt;</span>
+<span style="color: #A31515">&lt;/nv:engine&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="templating-nvelocity-resource-logging"></a>33.3.8.&nbsp;Logging</h3></div></div></div>
+      
+
+      <p>By default Spring will override NVelocity's default
+      <code class="literal">ILogSystem</code> implementation with its own
+      <code class="literal">CommonsLoggingLogSystem</code> implementation so that the
+      logging stream of NVelocity will go to the same logging subsystem that
+      Spring uses. If this is not desirable, you can specify the following
+      property of the NVelocity factory object:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;template:nvelocity</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">override-logging</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515"> /&gt;</span>
+</pre>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="templating-nvelocity-resource-merging"></a>33.4.&nbsp;Merging a template</h2></div></div></div>
+    
+
+    <p>Spring provides the <code class="literal">VelocityEngineUtils</code> utility
+    for merging templates using an engine instance:</p>
+
+    <pre class="programlisting">string mergedTemplate = VelocityEngineUtils.MergeTemplateIntostring(velocityEngine, "MyTemplate.vm", Encoding.UTF8.WebName, model);</pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="templating-nvelocity-resource-namespace"></a>33.5.&nbsp;Configuring a VelocityEngine without a custom namespace</h2></div></div></div>
+    
+
+    <p>While most users will prefer to use the NVelocity custom namespace
+    to configure a VelocityEngine, you can also use standard &lt;object/&gt;
+    definition syntax as shown below:</p>
+
+    <p>To create a VelocityEngine using the default file resource loader
+    use the definition:</p>
+
+    <pre class="programlisting"><i style="color: #008000">&lt;!-- Simple no arg file based configuration use's NVelocity default file resource loader  --&gt;</i>
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515"> /&gt;</span></pre>
+
+    <p>For convenience in defining NVelocity engine instances a custom
+    namespace is provided, for example the resource loader definition could be
+    done this way:</p>
+
+    <pre class="programlisting">
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> <span style="color: #FF0000">xmlns:nv</span>=<span style="color: #0000FF">"http://www.springframework.net/nvelocity"</span><span style="color: #A31515">&gt;</span>
+
+<span style="color: #A31515">&lt;nv:nvelocity</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;nv:resource-loader&gt;</span>
+        <span style="color: #A31515">&lt;nv:file</span> <span style="color: #FF0000">path</span>=<span style="color: #0000FF">"Template/Velocity/"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/nv:resource-loader&gt;</span>
+<span style="color: #A31515">&lt;/nv:nvelocity&gt;</span>
+
+<span style="color: #A31515">&lt;/objects</span></pre>
+
+    <p>When templates are packaged in an assembly, NVelocity's assembly
+    resource loader can be used to define where templates reside:</p>
+
+    <pre class="programlisting"><i style="color: #008000">&lt;!-- Assembly based template loading with NVelocity assembly resource loader --&gt;</i>
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"VelocityProperties"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;dictionary</span> <span style="color: #FF0000">key-type</span>=<span style="color: #0000FF">"string"</span> <span style="color: #FF0000">value-type</span>=<span style="color: #0000FF">"object"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"resource.loader"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"assembly"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"assembly.resource.loader.class"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"NVelocity.Runtime.Resource.Loader.AssemblyResourceLoader"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"assembly.resource.loader.assembly"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/dictionary&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>To load NVelocity templates from a single path use the
+    definition:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ResourceLoaderPath"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"file://MyTemplateFolder/AnotherFolder/"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+</pre>
+
+    <p>To load NVelocity templates from multiple paths use the
+    definition:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ResourceLoaderPaths"</span><span style="color: #A31515"> &gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>file://MyTemplateFolder/<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>file://MyOtherTemplateFolder/<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>By default spring will attempt to load resources using NVelocity's
+      file based template loading (useful for detection of template changes at
+      runtime). If this is not desirable you set the
+      <code class="literal">preferFileSystemAccess</code> property of the factory object
+      to <code class="literal">false</code> which will cause the factory to utilize the
+      supplied spring resource loader.</p>
+    </td></tr></table></div>
+
+    <p>To refer to a property file based configuration of the
+    TemplateEngine use the definition:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConfigLocation "</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"file://Template/Velocity/config.properties"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>You can override specific properties by providing the
+        <code class="literal">VelocityProperties</code> property.</p>
+      </td></tr></table></div>
+
+    <p>To not integrate with the Common.Logging subsystem, set the
+    OverrideLogging property to false:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"velocityEngine"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Template.Velocity.VelocityEngineFactoryObject, Spring.Template.Velocity"</span><span style="color: #A31515"> &gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"OverrideLogging"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p></p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="scheduling.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spring-vsnet.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;32.&nbsp;Scheduling and Thread Pooling&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;VI.&nbsp;VS.NET Integration</td></tr></table></div></body></html>

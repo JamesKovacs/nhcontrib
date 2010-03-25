@@ -1,0 +1,1139 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;31.&nbsp;Message Oriented Middleware - MSMQ</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-integration.html" title="Part&nbsp;V.&nbsp;Integration"><link rel="prev" href="messaging-ems.html" title="Chapter&nbsp;30.&nbsp;Message Oriented Middleware - TIBCO EMS"><link rel="next" href="scheduling.html" title="Chapter&nbsp;32.&nbsp;Scheduling and Thread Pooling"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="msmq"></a>Chapter&nbsp;31.&nbsp;Message Oriented Middleware - MSMQ</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-introduction"></a>31.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The goals of Spring's MSMQ 3.0 messaging support is to raise the
+    level of abstraction when writing MSMQ applications. The
+    <code class="literal">System.Messaging</code> API is a low-level API that provides
+    the basis for creating a messaging application. However, 'Out-of-the-box',
+    <code class="literal">System.Messaging</code> leaves the act of creating
+    sophisticated multi-threaded messaging servers and clients as an
+    infrastructure activity for the developer. Spring fills this gap by
+    proving easy to use helper classes that makes creating an enterprise
+    messaging application easy. These helper classes take into account the
+    nuances of the <code class="literal">System.Messaging</code> API, such as its lack
+    of thread-safety in many cases, the handling of so-called 'poison
+    messages' (messages that are endlessly redelivered due to an unrecoverable
+    exception during message processing), and combining database transactions
+    with message transactions. Other goals of Spring's MSMQ messaging support
+    are to support messaging best practices, in particular encouraging a clean
+    architectural layering that separates the messaging middleware specifics
+    from the core business processing.</p>
+
+    <p>Spring's approach to distributed computing has always been to
+    promote a plain old .NET object approach or a PONO programming model. In
+    this approach plain .NET objects are those that are devoid of any
+    reference to a particular middleware technology. Spring provides the
+    'adapter' classes that converts between the middleware world, in this case
+    MSMQ, and the oo-world of your business processing. This is done through
+    the use of Spring's <code class="literal">MessageListenerAdapter</code> class and
+    <code class="literal">IMessageConverters</code>.</p>
+
+    <p>The namespace <code class="literal">Spring.Messaging</code> provides the core
+    functionality for messaging. It contains the class
+    <code class="literal">MessageQueueTemplate</code> that simplifies the use of
+    <code class="literal">System.Messaging.MessageQueue</code> by handling the lack of
+    thread-safety in most of
+    <code class="literal">System.Messaging.MessageQueue's</code> methods (for example
+    <code class="literal">Send</code>). A single instance of
+    <code class="literal">MessageQueueTemplate</code> can be used throughout your
+    application and Spring will ensure that a different instance of a
+    <code class="literal">MessageQueue</code> class is used per thread when using
+    <code class="literal">MessageQueueTemplate's</code> methods. This per-thread
+    instance of a <code class="literal">System.Messaging.MessageQueue</code> is also
+    available via its property <code class="literal">MessageQueue</code>. The
+    <code class="literal">MessageQueueTemplate</code> class is also aware of the
+    presence of either an 'ambient' <code class="literal">System.Transaction's</code>
+    transaction or a local
+    <code class="literal">System.Messaging.MessageQueueTransaction</code>. As such if
+    you use <code class="literal">MessageQueueTemplate's</code> send and receive
+    methods, unlike with plain use of
+    <code class="literal">System.Messaging.MessageQueue</code>, you do not need to keep
+    track of this information yourself and call the correct overloaded
+    <code class="literal">System.Messaging.MessageQueue</code> method for a specific
+    transaction environment. When using a
+    <code class="literal">System.Messaging.MessageQueueTransaction</code> this would
+    usually require you as a developer to come up with your own mechanism for
+    passing around a <code class="literal">MessageQueueTransaction</code> to multiple
+    classes and layers in your application.
+    <code class="literal">MessageQueueTemplate</code> manages this for you, so you don't
+    have to do so yourself. These resource management and transaction features
+    of <code class="literal">MessageQueueTemplate</code> are quite analogous to the
+    transactional features of Spring's <code class="literal">AdoTemplate</code> in case
+    you are already familiar with that functionality.</p>
+
+    <p>For asynchronous reception Spring provides several multi-threaded
+    message listener containers. You can pick and configure the container that
+    matches your message transactional processing needs and configure
+    poison-message handling policies. The message listener container leverages
+    Spring's support for managing transactions. Both DTC, local messaging
+    transactions, and local database transactions are supported. In
+    particular, you can easily coordinate the commit and rollback of a local
+    MessageQueueTransaction and a local database transaction when they are
+    used together.</p>
+
+    <p>From a programming perspective, Spring's MSMQ support involves you
+    <span class="emphasis"><em>configuring</em></span> message listener containers and
+    <span class="emphasis"><em>writing a callback function</em></span> for message processing.
+    On the sending side, it involves you learning how to use
+    <code class="literal">MessageQueueTemplate</code>. In both cases you will quite
+    likely want to take advantage of using
+    <code class="literal">MessageListenerConverters</code> so you can better structure
+    the translation from the System.Messaging.Message data structure to your
+    business objects. After the initial learning hurdle, you should find that
+    you will be much more productive leveraging Spring's helper classes to
+    write enterprise MSMQ applications than rolling your own infrastructure.
+    Feedback and new feature requests are always welcome.</p>
+
+    <p>The Spring.MsmqQuickstart application located in the examples
+    directory of the distribution shows this functionality in action.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-quick-tour"></a>31.2.&nbsp;A quick tour for the impatient</h2></div></div></div>
+    
+
+    <p>Here is a quick example of how to use Spring's MSMQ support to
+    create a client that sends a message and a multi-threaded server
+    application that receives the message. (The client code could also be used
+    as-is in a multi-threaded environment but this is not
+    demonstrated).</p>
+
+    <p>On the client side you create an instance of the
+    <code class="literal">MessageQueueTemplate</code> class and configure it to use a
+    <code class="literal">MessageQueue</code>. This can be done programmatically but it
+    is common to use dependency injection and Spring's XML configuration file
+    to configure your client class as shown below.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'questionTxQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\questionTxQueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageQueueTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Core.MessageQueueTemplate, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"questionTxQueue"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Class you write --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"questionService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.QuestionService, MyAssembly"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueTemplate"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageQueueTemplate"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;object&gt;</span>
+
+</pre>
+
+    <p>The <code class="literal">MessageQueue</code> object is created via an
+    instance of <code class="literal">MessageQueueFactoryObject</code> and the
+    <code class="literal">MessageQueueTemplate</code> refers to this factory object by
+    name and not by reference. The <code class="literal">SimpleSender</code> class looks
+    like this</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> QuestionService : IQuestionService
+{
+  <span style="color: #0000FF">private</span> MessageQueueTemplate messageQueueTemplate;
+
+  <span style="color: #0000FF">public</span> MessageQueueTemplate { 
+    <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> messageQueueTemplate; }
+    <span style="color: #0000FF">set</span> { messageQueueTemplate = <span style="color: #0000FF">value</span>; }
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> SendQuestion(<span style="color: #0000FF">string</span> question)
+  {
+    MessageQueueTemplate.ConvertAndSend(question);
+  }
+}</pre>
+
+    <p>This class can be shared across multiple threads and the
+    <code class="literal">MessageQueueTemplate</code> will take care of managing thread
+    local access to a <code class="literal">System.Messaging.MessageQueue</code> as well
+    as any <code class="literal">System.Messaging.IMessageFormatter</code>
+    instances.</p>
+
+    <p>Furthermore, since this is a transactional queue (only the name
+    gives it away), the message will be sent using a single local messaging
+    transaction. The conversion from the string to the underling message is
+    managed by an instance of the <code class="literal">IMessageConverter</code> class.
+    By default an implementation that uses an
+    <code class="literal">XmlMessageFormatter</code> with a
+    <code class="literal">TargetType</code> of <code class="literal">System.String</code> is used.
+    You can configure the <code class="literal">MessageQueueTemplate</code> to use other
+    <code class="literal">IMessageConveter</code> implementations that do conversions
+    above and beyond what the 'stock' <code class="literal">IMessageFormatters</code>
+    do. See the section on MessageConverters for more details.</p>
+
+    <p>On the receiving side we would like to consume the messages
+    transactionally from the queue. Since no other database operations are
+    being performed in our server side processing, we select the
+    <code class="literal">TransactionMessageListenerContainer</code> and configure it to
+    use the <code class="literal">MessageQueueTransactionManager</code>. The
+    <code class="literal">MessageQueueTransactionManager</code> an implementation of
+    Spring's <code class="literal">IPlatformTransactionManager</code> abstraction that
+    provides a uniform API on top of various transaction manager
+    (ADO.NET,NHibernate, MSMQ, etc). Spring's
+    <code class="literal">MessageQueueTransactionManager</code> is responsible for
+    createing, committing, and rolling back a MSMQ
+    <code class="literal">MessageQueueTransaction</code>.</p>
+
+    <p>While you can create the message listener container
+    programmatically, we will show the declarative configuration approach
+    below</p>
+
+    <pre class="programlisting">  <i style="color: #008000">&lt;!-- Queue to receive from --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'questionTxQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\questionTxQueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- MSMQ Transaction Manager --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageQueueTransactionManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Core.MessageQueueTransactionManager, Spring.Messaging"</span><span style="color: #A31515">/&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Message Listener Container that uses MSMQ transactional for receives --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"transactionalMessageListenerContainer"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.TransactionalMessageListenerContainer, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"questionTxQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"PlatformTransactionManager"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageQueueTransactionManager"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MaxConcurrentListeners"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageListener"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageListenerAdapter"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+ 
+  <i style="color: #008000">&lt;!-- Adapter to call a PONO as a messaging callback --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageListenerAdapter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.MessageListenerAdapter, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"HandlerObject"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"questionHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- The PONO class that you write --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"questionHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.QuestionHandler, MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+  </pre>
+
+    <p>We have specified the queue to listen, that we want to consume the
+    messages transactionally, process messages from the queue using 10
+    threads, and that our plain object that will handle the business
+    processing is of the type <code class="literal">QuestionHandler</code>. The only
+    class you need to write, <code class="literal">QuestionHandler</code>, looks
+    like</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> QuestionHandler : IQuestionHandler
+{
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> HandleObject(<span style="color: #0000FF">string</span> question)
+  {
+     <i style="color: #008000">// perform message processing here</i>
+
+     Console.WriteLine(<span style="color: #000000">"Received question: "</span> + question);
+
+     <i style="color: #008000">// use an instance of MessageQueueTemplate and have other MSQM send operations</i>
+     <i style="color: #008000">// partake in the same local message transaction used to receive</i>
+  }
+
+}</pre>
+
+    <p>That is general idea. You write the sender class using
+    <code class="literal">MessageQueueTemplate</code> and the consumer class which does
+    not refer to any messaging specific class. The rest is configuration of
+    Spring provided helper classes.</p>
+
+    <p>Note that if the <code class="literal">HandleObject</code> method has returned
+    a string value a reply message would be sent to a response queue. The
+    response queue would be taken from the Message's own
+    <code class="literal">ResponseQueue</code> property or can be specified explicitly
+    using MessageListenerAdapter's <code class="literal">DefaultResponseQueueName</code>
+    property.</p>
+
+    <p>If an exception is thrown inside the QuestionHandler, then the MSMQ
+    transaction is rolled back, putting the message back on the queue for
+    redelivery. If the exception is not due to a transient error in the
+    system, but a logical processing exception, then one would get endless
+    redelivery of the message - clearly not a desirable situation. These
+    messages are so called 'poison messages' and a strategy needs to be
+    developed to deal with them. This is left as a development task if you
+    when using the System.Messaging APIs but Spring provides a strategy for
+    handling poison messages, both for DTC based message reception as well as
+    for local messaging transactions.</p>
+
+    <p>In the last part this 'quick tour' we will configure the message
+    listener container to handle poison messages. This is done by creating an
+    instance of <code class="literal">SendToQueueExceptionHandler</code> and setting the
+    property <code class="literal">MaxRetry</code> to be the number of exceptions or
+    retry attempts we are willing to tolerate before taking corrective
+    actions. In this case, the corrective action is to send the message to
+    another queue. We can then create other message listener containers to
+    read from those queues and handle the messages appropriately or perhaps
+    you will avoid automated processing of these messages and take manual
+    corrective actions.</p>
+
+    <pre class="programlisting">
+  <i style="color: #008000">&lt;!-- The 'error' queue to send poison messages --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'errorQuestionTxQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\errorQuestionTxQueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Message Listener Container that uses MSMQ transactional for receives --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"transactionalMessageListenerContainer"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.TransactionalMessageListenerContainer, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+
+    <i style="color: #008000">&lt;!-- as before but adding --&gt;</i>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageTransactionExceptionHandler"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageTransactionExceptionHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Poison message handling policy --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageTransactionExceptionHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.SendToQueueExceptionHandler, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MaxRetry"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"5"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"errorQuestionTxQueue"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>In the event of an exception while processing the message, the
+    message transaction will be rolled back (putting the message back on the
+    queue questionTxQueue for redelivery). If the same message causes an
+    exception in processing 5 times ,then it will be sent transactionally to
+    the errorQuestionTxQueue and the message transaction will commit (removing
+    it from the queue questionTxQueue). You can also specify that certain
+    exceptions should commit the transaction (remove from the queue) but this
+    is not shown here ,see below for more informatio non this functionality
+    The <code class="literal">SendToQueueExceptionHandler</code> implements the
+    interface <code class="literal">IMessageTransactionExceptionHandler</code>
+    (discussed below) so you can write your own implementations should the
+    provided ones not meet your needs.</p>
+
+    <p>That's the quick tour folks. Hopefully you got a general feel for
+    how things work, what requires configuration, and what is the code you
+    need to write. The following sections describe each of Spring's helper
+    classes in more detail. The sample application that ships with Spring is
+    also a good place to get started.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-using"></a>31.3.&nbsp;Using Spring MSMQ</h2></div></div></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="msmq-messagequeuetemplate"></a>31.3.1.&nbsp;MessageQueueTemplate</h3></div></div></div>
+      
+
+      <p>The <code class="literal">MessageQueueTemplate</code> is used for
+      synchronously sending and receiving messages. A single instance can be
+      shared across multiple threads, unlike the standard
+      <code class="literal">System.Messaging.MessageQueue</code> class. (One less
+      resource management issue to worry about!) A thread-local instance of
+      the <code class="literal">MessageQueue</code> class is available via
+      <code class="literal">MessageQueueTemplate's</code> property
+      <code class="literal">MessageQueue</code>. A
+      <code class="literal">MessageQueueTemplate</code> is created by passing a
+      reference to the name of a <code class="literal">MessageQueueFactoryObject</code>,
+      you can think of it as a friendly name for your
+      <code class="literal">MessagingQueue</code> and the recipe of how to create an
+      instance of it. See the following section on
+      <code class="literal">MessageQueueFactoryObject</code> for more
+      information.</p>
+
+      <p>The <code class="literal">MessageQueueTemplate</code> also provides several
+      convenience methods for sending and receiving messages. A family of
+      overloaded <code class="literal">ConvertAndSend</code> and
+      <code class="literal">ReceiveAndConvert</code> methods allow you to send and
+      receive an object. The default message queue to send and receive from is
+      specified using the <code class="literal">MessageQueueTemplate's</code> property
+      <code class="literal">MessageQueueObjectName</code>. The responsibility of
+      converting the object to a <code class="literal">Message</code> and vice versa is
+      given to the template's associated <code class="literal">IMessageConverter</code>
+      implementation. This can be set using the property
+      <code class="literal">MessageConverter</code>. The default implementation,
+      <code class="literal">XmlMessageConverter</code>, uses an
+      <code class="literal">XmlMessageFormatter</code> with its
+      <code class="literal">TargetType</code> set to <code class="literal">System.String</code>.
+      Note that <code class="literal">System.Messaging.IMessageFormatter</code> classes
+      are also not thread safe, so <code class="literal">MessageQueueTemplate</code>
+      ensures that thread-local instances of
+      <code class="literal">IMessageConverter</code> are used (as they generally wrap
+      <code class="literal">IMessageFormatter's</code> that are not thread-safe).</p>
+
+      <p>You can use the <code class="literal">MessageQueueTemplate</code> to send
+      messages to other MessageQueues by specifying their queue 'object name',
+      the name of the <code class="literal">MessageQueueFactoryObject</code>.</p>
+
+      <p>The family of overloaded <code class="literal">ConvertAndSend</code> and
+      <code class="literal">ReceiveAndConvert</code> methods are shown below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">void</span> ConvertAndSend(<span style="color: #0000FF">object</span> obj);
+
+<span style="color: #0000FF">void</span> ConvertAndSend(<span style="color: #0000FF">object</span> obj, MessagePostProcessorDelegate messagePostProcessorDelegate);
+
+<span style="color: #0000FF">void</span> ConvertAndSend(<span style="color: #0000FF">string</span> messageQueueObjectName, <span style="color: #0000FF">object</span> message);
+
+<span style="color: #0000FF">void</span> ConvertAndSend(<span style="color: #0000FF">string</span> messageQueueObjectName, <span style="color: #0000FF">object</span> obj, MessagePostProcessorDelegate messagePostProcessorDelegate);
+
+<span style="color: #0000FF">object</span> ReceiveAndConvert();
+
+<span style="color: #0000FF">object</span> ReceiveAndConvert(<span style="color: #0000FF">string</span> messageQueueObjectName);</pre>
+
+      <p>The transactional settings of the underlying overloaded
+      <code class="literal">System.Messaging.MessageQueue</code> Send method that are
+      used are based on the following algorithm.</p>
+
+      <div class="orderedlist"><ol type="1"><li>
+          <p>If the message queue is transactional and there is an ambient
+          <code class="literal">MessageQueueTransaction</code> in thread local storage
+          (put there via the use of Spring's
+          <code class="literal">MessageQueueTransactionManager</code> or
+          <code class="literal">TransactionalMessageListenerContainer</code>), the
+          message will be sent transactionally using the
+          <code class="literal">MessageQueueTransaction</code> object in thread local
+          storage.</p>
+
+          <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+            <p>This lets you group together multiple messaging operations
+            within the same transaction without having to explicitly pass
+            around the <code class="literal">MessageQueueTransaction</code>
+            object.</p>
+          </td></tr></table></div>
+        </li><li>
+          <p>f the message queue is transactional but there is no ambient
+          <code class="literal">MessageQueueTransaction</code>, then a single message
+          transaction is created on each messaging operation.
+          (MessageQueueTransactionType = Single).</p>
+        </li><li>
+          <p>If there is an ambient System.Transactions transaction then
+          that transaction will be used (MessageQueueTransactionType =
+          Automatic).</p>
+        </li><li>
+          <p>If the queue is not transactional, then a non-transactional
+          send (MessageQueueTransactionType = None) is used.</p>
+        </li></ol></div>
+
+      <p>The delegate <code class="literal">MessagePostProcessorDelegate</code> has
+      the following signature</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> Message MessagePostProcessorDelegate(Message message);</pre>
+
+      <p>This lets you modify the message after it has been converted from
+      and object to a message using the <code class="literal">IMessageConverter</code>
+      but before it is sent. This is useful for setting
+      <code class="literal">Message</code> properties (e.g.
+      <code class="literal">CorrelationId</code>, <code class="literal">AppSpecific</code>,
+      <code class="literal">TimeToReachQueue</code>). Using anonymous delegates in .NET
+      2.0 makes this a very succinct coding task. If you have elaborate
+      properties that need to be set, perhaps creating a custom
+      <code class="literal">IMessageConverter</code> would be appropriate.</p>
+
+      <p>Overloaded <code class="literal">Send</code> and <code class="literal">Receive</code>
+      operations that use the algorithm listed above to set transactional
+      delivery options are also available. These are listed below</p>
+
+      <pre class="programlisting">Message Receive();
+
+Message Receive(<span style="color: #0000FF">string</span> messageQueueObjectName);
+
+<span style="color: #0000FF">void</span> Send(Message message);
+
+<span style="color: #0000FF">void</span> Send(<span style="color: #0000FF">string</span> messageQueueObjectName, Message message);
+
+<span style="color: #0000FF">void</span> Send(MessageQueue messageQueue, Message message);</pre>
+
+      <p>Note that in the last <code class="literal">Send</code> method that takes a
+      <code class="literal">MessageQueue</code> instance, it is the callers
+      responsibility to ensure that this instance is not accessed from
+      multiple threads. This <code class="literal">Send</code> method is commonly used
+      when getting the <code class="literal">MessageQueue</code> from the
+      <code class="literal">ResponseQueue</code> property of a
+      <code class="literal">Message</code> during an asynchronous receive process. The
+      receive timeout of the <code class="literal">Receive</code> operations is set
+      using the <code class="literal">ReceiveTimeout</code> property of
+      <code class="literal">MessageQueueTemplate</code>. The default value is
+      <code class="literal">MessageQueue.InfiniteTimeout </code>(which is actually ~3
+      months).</p>
+
+      <p>The XML configuration snippit for defining a MessageQueueTemplate
+      is shown in the previous section and also is located in the MSMQ
+      quickstart application configuraiton file Messaging.xml</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="msmq-messagequeuefactoryobject"></a>31.3.2.&nbsp;MessageQueueFactoryObject</h3></div></div></div>
+      
+
+      <p>The <code class="literal">MessageQueueFactoryObject</code> is responsible
+      for creating <code class="literal">MessageQueue</code> instances. You configure
+      the factory with some basic information, namely the constructor
+      parameters you are familiar with already when creating a standard
+      <code class="literal">MessageQueue</code> instance, and then setting
+      <code class="literal">MessageQueue</code> properties, such a Label etc. Some
+      configuration tasks of a <code class="literal">MessageQueue</code> involve calling
+      methods, for example to set which properties of the message to read.
+      These available as properties to set on the
+      <code class="literal">MessageQueueFactoryObject</code>. An example declarative
+      configuration is shown below</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'testqueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <i style="color: #008000">&lt;!-- propeties passed to the MessageQueue constructor --&gt;</i>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\testqueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'DenySharedReceive'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'AccessMode'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'Receive'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'EnableCache'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <i style="color: #008000">&lt;!-- properties that call configuration methods on the MessageQueue --&gt;</i>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'ProductTemplate'</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Label'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'MyLabel'</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!-- other MessageQueue properties can be set here --&gt;</i>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Whenever an object reference is made to 'testqueue' an new
+      instance of the <code class="literal">MessageQueue</code> class is created. This
+      Spring's so-called 'prototype' model, which differs from 'singleton'
+      mode. In the singleton creation mode whenever an object reference is
+      made to a 'testqueue' the same <code class="literal">MessageQueue</code> instance
+      would be used. So that a new instance can be retrieved based on need,
+      the message listener containers take as an argument the name of the
+      <code class="literal">MessageQueueFactoryObject</code> and not a reference. (i.e.
+      use of 'value' instead of 'ref' in the XML).</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The <code class="literal">MessageQueueFactoryObject</code> class is an
+        ideal candidate for use of a custom namespace. This will be provided
+        in the future. This will allow you to use VS.NET IntelliSense to
+        configure this commonly used object. An example of the potential
+        syntax is shown below</p>
+
+        <pre class="programlisting"><span style="color: #A31515">&lt;mq:messageQueue</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"testqueue"</span> <span style="color: #FF0000">path</span>=<span style="color: #0000FF">".\Private$\testqueue"</span> <span style="color: #FF0000">MessageReadPropertyFilterSetAll</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;mq:properties</span> <span style="color: #FF0000">label</span>=<span style="color: #0000FF">"MyLabel"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/mq:messageQueue&gt;</span></pre>
+      </td></tr></table></div>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="msmq-messageconverter"></a>31.3.3.&nbsp;MessageQueue and IMessageConverter resource management</h3></div></div></div>
+      
+
+      <p><code class="literal">MessageQueues</code> and
+      <code class="literal">IMessageFormatters</code> (commonly used in
+      <code class="literal">IMessageConverter</code> implementations) are not
+      thread-safe. For example, only the following methods on
+      <code class="literal">MessageQueue</code> are thread-safe,
+      <code class="literal">BeginPeek</code>, <code class="literal">BeginReceive</code>,
+      <code class="literal">EndPeek</code>, <code class="literal">EndReceive</code>,
+      <code class="literal">GetAllMessages</code>, <code class="literal">Peek</code>, and
+      <code class="literal">Receive</code>.</p>
+
+      <p>To isolate the creation logic of these classes, the factory
+      interface <code class="literal">IMessageQueueFactory</code> is used. The interface
+      is shown below</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMessageQueueFactory
+    {
+        MessageQueue CreateMessageQueue(<span style="color: #0000FF">string</span> messageQueueObjectName);
+
+        IMessageConverter CreateMessageConverter(<span style="color: #0000FF">string</span> messageConverterObjectName);
+    }</pre>
+
+      <p>A provided implementation,
+      <code class="literal">DefaultMessageQueueFactory</code> will create an instance of
+      each class per-thread. It delegates the creation of the
+      <code class="literal">MessageQueue</code> instance to the Spring container. The
+      argument, messageConverterObjectName, must be the id/name of a
+      <code class="literal">MessageQueueFactoryObject</code> defined in the Spring
+      container.</p>
+
+      <p><code class="literal">DefaultMessageQueueFactory</code> leverages Spring's
+      local thread storage support so it will work correctly in stand alone
+      and web applications.</p>
+
+      <p>You can use the <code class="literal">DefaultMessageQueueFactory</code>
+      independent of the rest of Spring's MSMQ support should you need only
+      the functionality it offers. <code class="literal">MessageQueueTemplate</code> and
+      the listener containers create an instance of
+      <code class="literal">DefaultMessageQueueFactory</code> by default. Should you
+      want to share the same instance across these two classes, or provide
+      your own custom implementation, use the property
+      <code class="literal">MessageQueueFactory</code> on either
+      <code class="literal">MessageQueueTemplate</code> or the message listener
+      classe.s</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="msmq-messagelistenercontainer"></a>31.3.4.&nbsp;Message Listener Containers</h3></div></div></div>
+      
+
+      <p>One of the most common uses of MSMQ is to concurrently process
+      messages delivered asynchronously. This support is provided in Spring by
+      message listener containers. A message listener container is the
+      intermediary between an <code class="literal">IMessageListener</code> and a
+      <code class="literal">MessageQueue</code>. (Note, message listener containers are
+      conceptually different than Spring's Inversion of Control container,
+      though it integrates and leverages the IoC container.) The message
+      listener container takes care of registering to receive messages,
+      participating in transactions, resource acquisition and release,
+      exception conversion and suchlike. This allows you as an application
+      developer to write the (possibly complex) business logic associated with
+      receiving a message (and possibly responding to it), and delegate
+      boilerplate MSMQ infrastructure concerns to the framework.</p>
+
+      <p>A subclass of <code class="literal">AbstractMessageListenerContainer</code>
+      is used to receive messages from a <code class="literal">MessageQueue</code>.
+      Which subclass you pick depends on your transaction processing
+      requirements. The following subclasses are available in the namespace
+      <code class="literal">Spring.Messaging.Listener</code></p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">NonTransactionalMessageListenerContainer</code> -
+          does not surround the receive operation with a transaction</p>
+        </li><li>
+          <p><code class="literal">TransactionalMessageListenerContainer</code> -
+          surrounds the receive operation with local (non-DTC) based
+          transaction(s).</p>
+        </li><li>
+          <p><code class="literal">DistributedTxMessageListenerContainer</code> -
+          surrounds the receive operation with a distributed (DTC)
+          transaction</p>
+        </li></ul></div>
+
+      <p>Each of these containers use an implementation in which is based
+      on Peeking for messages on a <code class="literal">MessageQueue</code>. Peeking is
+      the only resource efficient approach that can be used in order to have
+      <code class="literal">MessageQueue</code> receipt in conjunction with
+      transactions, either local MSMQ transactions, local ADO.NET based
+      transactions, or DTC transactions. Each container can specify the number
+      of threads that will be created for processing messages after the Peek
+      occurs via the property <code class="literal">MaxConcurrentListeners</code>. Each
+      processing thread will continue to listen for messages up until the
+      timeout value specified by <code class="literal">ListenerTimeLimit</code> or until
+      there are no more messages on the queue (whichever comes first). The
+      default value of <code class="literal">ListenerTimeLimit</code> is
+      <code class="literal">TimeSpan.Zero</code>, meaning that only one attempt to
+      receive a message from the queue will be performed by each listener
+      thread. The current implementation uses the standard .NET thread pool.
+      Future implementations will use a custom (and pluggable) thread
+      pool.</p>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="msmq-NonTransactionalMessageListenerContainer"></a>31.3.4.1.&nbsp;NonTransactionalMessageListenerContainer</h4></div></div></div>
+        
+
+        <p>This container performs a Receive operation on the
+        <code class="literal">MessageQueue</code> without any transactional settings. As
+        such messages will not be redelivered if an exception is thrown during
+        message processing. Exceptions during message processing can be
+        handled via an implementation of the interface
+        <code class="literal">IExceptionHandler</code>. This can be set via the property
+        <code class="literal">ExceptionHandler</code> on the listener. The
+        <code class="literal">IExceptionHandler</code> interface is shown below</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IExceptionHandler
+    {
+        <span style="color: #0000FF">void</span> OnException(Exception exception, Message message);
+    }</pre>
+
+        <p>An example of configuring a
+        <code class="literal">NonTransactionalMessageListenerContainer</code> with an
+        <code class="literal">IExceptionHandler</code> is shown below</p>
+
+        <pre class="programlisting">
+  <i style="color: #008000">&lt;!-- Queue to receive from --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'msmqTestQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\testqueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'ProductTemplate'</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Label'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'MyTestQueueLabel'</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Queue to respond to --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'msmqTestResponseQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\testresponsequeue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'ProductTemplate'</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Label'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'MyTestResponseQueueLabel'</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Listener container --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"nonTransactionalMessageListenerContainer"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.NonTransactionalMessageListenerContainer, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"msmqTestQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MaxConcurrentListeners"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"2"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ListenerTimeLimit"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"20s"</span><span style="color: #A31515">/&gt;</span>  <i style="color: #008000">&lt;!-- 20 seconds --&gt;</i>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageListener"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageListenerAdapter"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ExceptionHandler"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"exceptionHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Delegate to plain .NET object for message handling --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageListenerAdapter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.MessageListenerAdapter, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultResponseQueueName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"msmqTestResponseQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"HandlerObject"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"simpleHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Classes you need to write --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"simpleHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.SimpleHandler, MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"exceptionHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.SimpleExceptionHandler, MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+</pre>
+
+        <p>The SimpleHandler class would look something like this</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SimpleHandler : ISimpleHandler
+{
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> HandleObject(<span style="color: #0000FF">string</span> txt)
+  {
+     <i style="color: #008000">// perform message processing...</i>
+     Console.WriteLine(<span style="color: #000000">"Received text: "</span> + txt);
+  }
+}</pre>
+      </div>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="msmq-TransactionalMessageListenerContainer"></a>31.3.4.2.&nbsp;TransactionalMessageListenerContainer</h4></div></div></div>
+        
+
+        <p>This message listener container performs receive operations
+        within the context of local transaction. This class requires an
+        instance of Spring's <code class="literal">IPlatformTransactionManager</code>,
+        either <code class="literal">AdoPlatformTransactionManager</code>,
+        <code class="literal">HibernateTransactionManager</code>, or
+        <code class="literal">MessageQueueTransactionManager</code>.</p>
+
+        <p>If you specify a
+        <code class="literal">MessageQueueTransactionManager</code> then a
+        <code class="literal">MessageQueueTransaction</code> will be started before
+        receiving the message and used as part of the container's receive
+        operation. As with other
+        <code class="literal">IPlatformTransactionManager</code> implementation's, the
+        transactional resources (in this case an instance of the
+        <code class="literal">MessageQueueTransaction</code> class) is bound to thread
+        local storage. <code class="literal">MessageQueueTemplate</code> will look in
+        thread-local storage and use this 'ambient' transaction if found for
+        its send and receive operations. The message listener is invoked and
+        if no exception occurs, then the
+        <code class="literal">MessageQueueTransactionManager</code> will commit the
+        <code class="literal">MessageQueueTransaction</code>.</p>
+
+        <p>The message listener implementation can call into service layer
+        classes that are made transactional using standard Spring declarative
+        transactional techniques. In case of exceptions in the service layer,
+        the database operation will be rolled back (nothing new here), and the
+        <code class="literal">TransactionalMessageListenerContainer</code> will call
+        it's <code class="literal">IMessageTransactionExceptionHandler</code>
+        implementation to determine if the
+        <code class="literal">MessageQueueTransaction</code> should commit (removing the
+        message from the queue) or rollback (leaving the message on the queue
+        for redelivery).</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+            <p>The use of a transactional service layer in combination with
+            a <code class="literal">MessageQueueTransactionManager</code> is a powerful
+            combination that can be used to achieve "exactly one" transaction
+            message processing with database operations. This requires a
+            little extra programming effort and is a more efficient
+            alternative than using distributed transactions which are commonly
+            associated with this functionality since both the database and the
+            message transaction commit or rollback together.</p>
+
+            <p>The additional programming logic needed to achieve this is
+            to keep track of the <code class="literal">Message.Id</code> that has been
+            processed successfully within the transactional service layer.
+            This is needed as there may be a system failure (e.g. power goes
+            off) between the 'inner' database commit and the 'outer' messaging
+            commit, resulting in message redelivery. The transactional service
+            layer needs logic to detect if incoming message was processed
+            successfully. It can do this by checking the database for an
+            indication of successful processing, perhaps by recording the
+            <code class="literal">Message.Id</code> itself in a status table. If the
+            transactional service layer determines that the message has
+            already been processed, it can throw a specific exception for this
+            case. The container's exception handler will recognize this
+            exception type and vote to commit (remove from the queue) the
+            'outer' messaging transaction. Spring provides an exception
+            handler with this functionality, see
+            <code class="literal">SendToQueueExceptionHandler</code> described
+            below.</p>
+          </td></tr></table></div>
+
+        <p>An example of configuring the
+        <code class="literal">TransactionalMessageListenerContainer</code> using a
+        <code class="literal">MessageQueueTransactionManager</code> is shown
+        below</p>
+
+        <pre class="programlisting">  <i style="color: #008000">&lt;!-- Queue to receive from --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'msmqTestQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\testqueue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'ProductTemplate'</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Label'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'MyTestQueueLabel'</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Queue to respond to --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">'msmqTestResponseQueue'</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">'Spring.Messaging.Support.MessageQueueFactoryObject, Spring.Messaging'</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Path'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'.\Private$\testresponsequeue'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'MessageReadPropertyFilterSetAll'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'true'</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'ProductTemplate'</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">'Label'</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">'MyTestResponseQueueLabel'</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Transaction Manager for MSMQ Messaging --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageQueueTransactionManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Core.MessageQueueTransactionManager, Spring.Messaging"</span><span style="color: #A31515">/&gt;</span>
+
+  <i style="color: #008000">&lt;!-- The transaction message listener container --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"transactionalMessageListenerContainer"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.TransactionalMessageListenerContainer, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"msmqTestQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"PlatformTransactionManager"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageQueueTransactionManager"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MaxConcurrentListeners"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"5"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ListenerTimeLimit"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"20s"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageListener"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageListenerAdapter"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageTransactionExceptionHandler"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"messageTransactionExceptionHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Delegate to plain .NET object for message handling --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageListenerAdapter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.MessageListenerAdapter, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultResponseQueueName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"msmqTestResponseQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"HandlerObject"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"simpleHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Poison message handling --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageTransactionExceptionHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.SendToQueueExceptionHandler, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MaxRetry"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"5"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageQueueObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"testTxErrorQueue"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- Classes you need to write --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"simpleHandler"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyNamespace.SimpleHandler, MyAssembly"</span><span style="color: #A31515">/&gt;</span>
+
+
+</pre>
+
+        <p>If you specify either
+        <code class="literal">AdoPlatformTransactionManager</code> or
+        <code class="literal">HibernateTransactionManager</code> then a local database
+        transaction will be started before the receiving the message. By
+        default, the container will also start a local
+        <code class="literal">MessageQueueTransaction</code> after the local database
+        transaction has started, but before the receiving the message. This
+        <code class="literal">MessageQueueTransaction</code> will be used to receive the
+        message. By default the <code class="literal">MessageQueueTransaction</code>
+        will be bound to thread local storage so that any
+        <code class="literal">MessageQueueTemplate</code> send or receive operations
+        will participate transparently in the same
+        <code class="literal">MessageQueueTransaction</code>. If you do not want this
+        behavior set the property
+        <code class="literal">ExposeContainerManagedMessageQueueTransaction</code> to
+        false.</p>
+
+        <p>In case of exceptions during <code class="literal">IMessageListener</code>
+        processing when using either either
+        <code class="literal">AdoPlatformTransactionManager</code> or
+        <code class="literal">HibernateTransactionManager</code> the container's
+        <code class="literal">IMessageTransactionExceptionHandler</code> will determine
+        if the <code class="literal">MessageQueueTransaction</code> should commit
+        (removing it from the queue) or rollback (placing it back on the queue
+        for redelivery). The listener exception will always trigger a rollback
+        in the 'outer' database transaction.</p>
+
+        <p>Poison message handing, that is, the endless redelivery of a
+        message due to exceptions during processing, can be detected using
+        implementations of the
+        <code class="literal">IMessageTransactionExceptionHandler</code>. This interface
+        is shown below</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMessageTransactionExceptionHandler
+{
+    TransactionAction OnException(Exception exception, Message message,  MessageQueueTransaction messageQueueTransaction);
+}</pre>
+
+        <p>The return value is an enumeration with the values
+        <code class="literal">Commit</code> and <code class="literal">Rollback</code>. A specific
+        implementation is provided that will move the poison message to
+        another queue after a maximum number of redelivery attempts. See
+        <code class="literal">SendToQueueExceptionHandler</code> described below. You
+        can set a specific implementation to by setting
+        <code class="literal">TransactionalMessageListenerContainer's</code> property
+        <code class="literal">MessageTransactionExceptionHandler</code></p>
+
+        <p>The <code class="literal">IMessageTransactionExceptionHandler</code>
+        implementation <code class="literal">SendToQueueExceptionHandler</code> keeps
+        track of the Message's <code class="literal">Id</code> property in memory with a
+        count of how many times an exception has occurred. If that count is
+        greater than the handler's <code class="literal">MaxRetry</code> count it will
+        be sent to another queue using the provided
+        <code class="literal">MessageQueueTransaction</code>. The queue to send the
+        message to is specified via the property
+        <code class="literal">MessageQueueObjectName</code>.</p>
+      </div>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="msmq-DistributedTxMessageListenerContainer"></a>31.3.4.3.&nbsp;DistributedTxMessageListenerContainer</h4></div></div></div>
+        
+
+        <p>This message listener container performs receive operations
+        within the context of distributed transaction. A distributed
+        transaction is started before a message is received. The receive
+        operation participates in this transaction using by specifying
+        MessageQueueTransactionType = Automatic. The transaction that is
+        started is automatically promoted to two-phase-commit to avoid the
+        default behavior of transaction promotion since the only reason to use
+        this container is to use two different resource managers (messaging
+        and database typically).</p>
+
+        <p>The commit and rollback semantics are simple, if the message
+        listener does not throw an exception the transaction is committed,
+        otherwise it is rolled back.</p>
+
+        <p>Exceptions in message listener processing are handled by
+        implementations of the
+        <code class="literal">IDistributedTransactionExceptionHandler</code> interface.
+        This interface is shown below</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDistributedTransactionExceptionHandler
+    {
+        <span style="color: #0000FF">bool</span> IsPoisonMessage(Message message);
+
+        <span style="color: #0000FF">void</span> HandlePoisonMessage(Message poisonMessage);        
+
+        <span style="color: #0000FF">void</span> OnException(Exception exception, Message message);
+    }</pre>
+
+        <p>the <code class="literal">IsPoisonMessage</code> method determines whether
+        the incoming message is a poison message. This method is called before
+        the <code class="literal">IMessageListener</code> is invoked. The container will
+        call <code class="literal">HandlePoisonMessage</code> is
+        <code class="literal">IsPoisonMessage</code> returns true and will then commit
+        the distributed transaction (removing the message from the queue.
+        Typical implementations of <code class="literal">HandlePoisonMessage</code> will
+        move the poison message to another queue (under the same distributed
+        transaction used to receive the message). The class
+        <code class="literal">SendToQueueDistributedTransactionExceptionHandler</code>
+        detects poison messages by tracking the Message <code class="literal">Id</code>
+        property in memory with a count of how many times an exception has
+        occurred. If that count is greater than the handler's
+        <code class="literal">MaxRetry</code> count it will be sent to another queue.
+        The queue to send the message to is specified via the property
+        <code class="literal">MessageQueueObjectName</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-using-messageconverters"></a>31.4.&nbsp;MessageConverters</h2></div></div></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9251"></a>31.4.1.&nbsp;Using MessageConverters</h3></div></div></div>
+      
+
+      <p>In order to facilitate the sending of business model objects, the
+      <code class="literal">MessageQueueTemplate</code> has various send methods that
+      take a .NET object as an argument for a message's data content. The
+      overloaded methods ConvertAndSend and ReceiveAndConvert in
+      <code class="literal">MessageQueue</code> delegate the conversion process to an
+      instance of the <code class="literal">IMessageConverter</code> interface. This
+      interface defines a simple contract to convert between .NET objects and
+      JMS messages. The interface is shown below</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMessageConverter : ICloneable
+    {
+        Message ToMessage(<span style="color: #0000FF">object</span> obj);
+
+        <span style="color: #0000FF">object</span> FromMessage(Message message);
+    }</pre>
+
+      <p>There are a standard implementations provided the simply wrap
+      existing <code class="literal">IMessageFormatter</code> implementations.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">XmlMessageConverter</code> - uses a
+          XmlMessageFormatter.</p>
+        </li><li>
+          <p><code class="literal">BinaryMessageConverter</code> - uses a
+          BinaryMessageFormatter</p>
+        </li><li>
+          <p><code class="literal">ActiveXMessageConverter</code> - uses a
+          ActiveXMessageFormatter</p>
+        </li></ul></div>
+
+      <p>The default implementation used in
+      <code class="literal">MessageQueueTemplate</code> and the message listener
+      containers is an instance of XmlMessageConverter configured with a
+      TargetType to be System.String. You specify the types that the
+      XmlMessageConverter can convert though either the array property
+      <code class="literal">TargetTypes</code> or <code class="literal">TargetTypeNames</code>.
+      Here is an example taken from the QuickStart application</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"xmlMessageConverter"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Support.Converters.XmlMessageConverter, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetTypes"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;list&gt;</span>
+        <span style="color: #A31515">&lt;value&gt;</span>Spring.MsmqQuickStart.Common.Data.TradeRequest, Spring.MsmqQuickStart.Common<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;value&gt;</span>Spring.MsmqQuickStart.Common.Data.TradeResponse, Spring.MsmqQuickStart.Common<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;value&gt;</span>System.String, mscorlib<span style="color: #A31515">&lt;/value&gt;</span>        
+      <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>You can specify other <code class="literal">IMessageConverter</code>
+      implementations using the <code class="literal">MessageConverterObjectName</code>
+      property on the <code class="literal">MessageQueueTemplate</code> and
+      <code class="literal">MessageListenerAdapter</code>.</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The scope of the object definition is set to singleton="false",
+        meaning that a new instance of the MessageConverter will be created
+        each time you ask the container for an object of the name
+        'xmlMessageConverter'. This is important to ensure that a new instance
+        will be used for each thread. If you forget, a warning will be logged
+        and IMessageConverter's Clone() method will be called to create an
+        indepentend instance.</p>
+      </td></tr></table></div>
+
+      <p>Other implementations provided are</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">XmlDocumentConverter</code> - loads and saves an
+          XmlDocument to the message BodyStream. This lets you manipulate
+          directly the XML data independent of type serialization issues. This
+          is quite useful if you use XPath expressions to pick out the
+          relevant information to construct your business objects.</p>
+        </li></ul></div>
+
+      <p>Other potential implementations:</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p>RawBytesMessageConverter - directly write raw bytes to the
+          message stream, compress</p>
+        </li><li>
+          <p>CompressedMessageConverter - compresses the message
+          payload</p>
+        </li><li>
+          <p>EncryptedMessageConverter - encrypt the message (standard MSMQ
+          encryptiong has several limitations)</p>
+        </li><li>
+          <p>SoapMessageConverter - use soap formatting.</p>
+        </li></ul></div>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-interface-based-processing"></a>31.5.&nbsp;Interface based message processing</h2></div></div></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"></div>
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e9300"></a>31.5.1.1.&nbsp;MessageListenerAdapater</h4></div></div></div>
+        
+
+        <p>The <code class="literal">MessageListenerAdapter</code> allows methods of
+        a class that does not implement the
+        <code class="literal">IMessageListener</code> interface to be invoked upon
+        message delivery. Lets call this class the 'message handler' class. To
+        achieve this goal the <code class="literal">MessageListenerAdapter</code>
+        implements the standard <code class="literal">IMessageListener</code> interface
+        to receive a message and then delegates the processing to the message
+        handler class. Since the message handler class does not contain
+        methods that refer to MSMQ artifacts such as Message, the
+        <code class="literal">MessageListenerAdapter</code> uses a
+        <code class="literal">IMessageConverter</code> to bridge the MSMQ and 'plain
+        object' worlds. As a reminder, the default
+        <code class="literal">XmlMessageConverter</code> used in
+        <code class="literal">MessageQueueTemplate</code> and the message listener
+        containers converts from Message to string. Once the incoming message
+        is converted to an object (string for example) a method with the name
+        'HandleMessage' is invoked via reflection passing in the string as an
+        argument.</p>
+
+        <p>Using the default configuration of XmlMessageConverter in the
+        message listeners, a simple string based message handler would look
+        like this.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> MyHandler
+{
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> HandleMessage(<span style="color: #0000FF">string</span> text)
+    {
+      ...
+    }
+     
+}</pre>
+
+        <p>The next example has a similar method signature but the name of
+        the handler method name has been changed to "DoWork", by setting the
+        adapter's property DefaultHandlerMethod.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMyHandler
+{
+    <span style="color: #0000FF">void</span> DoWork(<span style="color: #0000FF">string</span> text);
+}</pre>
+
+        <p>If your IMessageConverter implementation will return multiple
+        object types, overloading the handler method is perfectly acceptable,
+        the most specific matching method will be used. A method with an
+        object signature would be consider a 'catch-all' method of last
+        resort.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMyHandler
+{
+   <span style="color: #0000FF">void</span> DoWork(<span style="color: #0000FF">string</span> text);
+   <span style="color: #0000FF">void</span> DoWork(OrderRequest orderRequest);
+   <span style="color: #0000FF">void</span> DoWork(InvoiceRequest invoiceRequest);
+   <span style="color: #0000FF">void</span> DoWork(<span style="color: #0000FF">object</span> obj);
+}</pre>
+
+        <p>Another of the capabilities of the
+        <code class="literal">MessageListenerAdapter</code> class is the ability to
+        automatically send back a response <code class="literal">Message</code> if a
+        handler method returns a non-void value. Any non-null value that is
+        returned from the execution of the handler method will (in the default
+        configuration) be converted to a string. The resulting string will
+        then be sent to the <code class="literal">ResponseQueue</code> defined in the
+        Message's <code class="literal">ResponseQueue</code> property of the original
+        Message, or the <code class="literal">DefaultResponseQueueName</code> on the
+        <code class="literal">MessageListenerAdapter</code> (if one has been configured)
+        will be used. If not <code class="literal">ResponseQueue</code> is found then an
+        Spring <code class="literal">MessagingException</code> will be thrown. Please
+        note that this exception will not be swallowed and will propagate up
+        the call stack.</p>
+
+        <p>Here is an example of Handler signatures that have various
+        return types.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMyHandler
+{
+   <span style="color: #0000FF">string</span> DoWork(<span style="color: #0000FF">string</span> text);
+   OrderResponse DoWork(OrderRequest orderRequest);
+   InvoiceResponse DoWork(InvoiceRequest invoiceRequest);
+   <span style="color: #0000FF">void</span> DoWork(<span style="color: #0000FF">object</span> obj);
+}</pre>
+
+        <p>The following configuration shows how to hook up the adapter to
+        process incoming MSMQ messages using the default message
+        converter.</p>
+
+        <pre class="programlisting">  <i style="color: #008000">&lt;!-- Delegate to plain .NET object for message handling --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"messageListenerAdapter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Listener.MessageListenerAdapter, Spring.Messaging"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultResponseQueueName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"msmqTestResponseQueue"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"HandlerObject"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"myHandler"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="msmq-wcf-comparison"></a>31.6.&nbsp;Comparison with using WCF</h2></div></div></div>
+    
+
+    <p>The goals of Spring's MSMQ messaging support are quite similar to
+    those of WCF with its MSMQ related bindings, in as much as a WCF service
+    contract is a PONO (minus the attributes if you really picky about what
+    you call a PONO). Spring's messaging support can give you the programming
+    convenience of dealing with PONO contracts for message receiving but does
+    not (at the moment) provide a similar PONO contract for sending, instead
+    relying on explicit use of the MessageQueueTemplate class. This feature
+    exists - some question whether it should for messaging - in the Java
+    version of the Spring framework, see JmsInvokerServiceExporter and
+    JmsInvokerProxyFactoryBean.</p>
+
+    <p>The good news is that if and when it comes time to move from a
+    Spring MSMQ solution to WCF, you will be in a great position as the PONO
+    interface used for business processing when receiving in a Spring based
+    MSMQ application can easily be adapted to a WCF environment. There may
+    also be some features unique to MSMQ and/or Spring's MSMQ support that you
+    may find appealing over WCF. Many messaging applications still need to be
+    'closer to the metal' and this is not possible using the WCF bindings, for
+    example Peeking and Label, AppSpecific properties, multicast.. An
+    interesting recent quote by Yoel Arnon (MSMQ guru) <span class="emphasis"><em>"With all the
+    respect to WCF, System.Messaging is still the major programming model for
+    MSMQ programmers, and is probably going to remain significant for the
+    foreseeable future. The message-oriented programming model is different
+    from the service-oriented model of WCF, and many real-world solutions
+    would always prefer it."</em></span></p>
+
+    <p></p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="messaging-ems.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="scheduling.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;30.&nbsp;Message Oriented Middleware - TIBCO EMS&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;32.&nbsp;Scheduling and Thread Pooling</td></tr></table></div></body></html>

@@ -1,0 +1,232 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;48.&nbsp;Spring.NET for Java Developers</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-javadevelopers.html" title="Part&nbsp;VIII.&nbsp;Spring.NET for Java developers"><link rel="prev" href="spring-javadevelopers.html" title="Part&nbsp;VIII.&nbsp;Spring.NET for Java developers"><link rel="next" href="spring-appendices.html" title="Part&nbsp;IX.&nbsp;Appendices"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="javadevelopers"></a>Chapter&nbsp;48.&nbsp;Spring.NET for Java Developers</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-introduction"></a>48.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This chapter is to help Java developers get their sea legs using
+    Spring.NET. It is not intended to be a comprehensive comparison between
+    .NET and Java. Rather, it highlights the day-to-day differences you will
+    experience when you start to use Spring.NET.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-beans-objects"></a>48.2.&nbsp;Beans to Objects</h2></div></div></div>
+    
+
+    <p>There are some simple name changes, basically everywhere you saw the
+    word 'bean' you will now see the word 'object'. A comparison of a simple
+    Spring configuration file highlights these small name changes. Here is the
+    application.xml file for the sample MovieFinder application in Spring.Java
+    </p><pre class="programlisting"><b>&lt;!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"&gt;</b>
+<span style="color: #A31515">&lt;beans&gt;</span>
+   <span style="color: #A31515">&lt;bean</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"MyMovieLister"</span> <span style="color: #FF0000">class</span>=<span style="color: #0000FF">"MovieFinder.MovieLister"</span><span style="color: #A31515">&gt;</span>
+       <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"finder"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MyMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+   <span style="color: #A31515">&lt;/bean&gt;</span>
+   <span style="color: #A31515">&lt;bean</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"MyMovieFinder"</span> <span style="color: #FF0000">class</span>=<span style="color: #0000FF">"MovieFinder.SimpleMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/beans&gt;</span></pre><p> Here is the corresponding file in Spring.NET
+    </p><pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> 
+	<span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span> 
+	<span style="color: #FF0000">xsi:schemaLocation</span>=<span style="color: #0000FF">"http://www.springframework.net http://www.springframework.net/xsd/spring-objects-1.1.xsd"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieLister"</span> 
+          <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.MovieLister, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"movieFinder"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MyMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieFinder"</span> 
+          <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.SimpleMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/objects&gt;</span></pre><p> As you can easily see the &lt;beans&gt; and
+    &lt;bean&gt; elements are replaced by &lt;objects&gt; and &lt;object&gt;
+    elements. The class definition in Spring.Java contains the fully qualified
+    class name. The Spring.NET version also contains the fully qualified
+    classname but in addition specifies the name of the assembly where that
+    type is located. This is necessary since .NET does not have a 'classpath'
+    concept. Assembly names in .NET can have up to four parts to describe the
+    exact version.</p>
+
+    <p>The other XML Schema elements in Spring.NET are the same as in
+    Spring.Java's DTD except for specifying string based key value pairs. In
+    Java this is represented by the java.util.Properties class and the xml
+    element is name &lt;props&gt; as shown below 
+    </p><pre class="programlisting"><span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"people"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;props&gt;</span>
+    <span style="color: #A31515">&lt;prop</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"PennAndTeller"</span><span style="color: #A31515">&gt;</span>The magic property<span style="color: #A31515">&lt;/prop&gt;</span>
+    <span style="color: #A31515">&lt;prop</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"GeorgeCarlin"</span><span style="color: #A31515">&gt;</span>The funny property<span style="color: #A31515">&lt;/prop&gt;</span>
+  <span style="color: #A31515">&lt;/props&gt;</span>
+<span style="color: #A31515">&lt;/property&gt;</span></pre><p> In .NET the analogous class is
+    System.Collections.Specialized.NameValueCollection and is represented by
+    the xml element &lt;name-values&gt;. The listing of the elements also
+    follows the .NET convention of application configuration files using the
+    &lt;add&gt; element with 'key' and 'value' attributes. This is show below
+    </p><pre class="programlisting"><span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"people"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;name-values&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"PennAndTeller"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"The magic property"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"GeorgeCarlin"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"The funny property"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/name-values&gt;</span>
+<span style="color: #A31515">&lt;/property&gt;</span></pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-propertyeditor-typeconverter"></a>48.3.&nbsp;PropertyEditors to TypeConverters</h2></div></div></div>
+    
+
+    <p>PropertyEditors from the java.beans package provide the ability to
+    convert from a string to an instance of a Java class and vice-versa. For
+    example, to set a string array property, a comma delimited string can be
+    used. The Java class that provides this functionality is the appropriately
+    named StringArrayPropertyEditor. In .NET, TypeConverters from the
+    System.ComponentModel namespace provide the same functionality. The type
+    conversion functionality in .NET also allows for TypeConverters to be
+    explicitly registered with a data type. This allows for transparent
+    setting of complex object properties. However, some classes in the .NET
+    framework do not support the style of conversion we are used to from
+    Spring.Java, such as setting of a string[] with a comma delimited string.
+    The type converter, StringArrayConverter in the
+    Spring.Objects.TypeConverters namespace is therefore explicitly registered
+    with Spring.NET in order to provide this functionality. As in the case of
+    Spring.Java, Spring.NET allows user defined type converters to be
+    registered. However, if you are creating a custom type in .NET, using the
+    standard .NET mechanisms for type conversion is the preferred
+    approach.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-ResourceBundle-ResourceManager"></a>48.4.&nbsp;ResourceBundle-ResourceManager</h2></div></div></div>
+    
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-exceptions"></a>48.5.&nbsp;Exceptions</h2></div></div></div>
+    
+
+    <p>Exceptions in Java can either be checked or unchecked. .NET supports
+    only unchecked exceptions. Spring.Java prefers the use of unchecked
+    exceptions, frequently making conversions from checked to unchecked
+    exceptions. In this respect Spring.Java is similar to the default behavior
+    of .NET</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-app-config"></a>48.6.&nbsp;Application Configuration</h2></div></div></div>
+    
+
+    <p>In Spring.Java it is very common to create an ObjectFactory or
+    ApplicationContext from an external XML configuration file This
+    functionality is also provided in Spring.NET. However, in .NET the
+    System.Configuration namespace provides support for managing application
+    configuration information. The functionality in this namespace depends on
+    the availability of specially named files: Web.config for ASP.NET
+    applications and &lt;MyExe&gt;.exe.config for WinForms and console
+    applications. &lt;MyExe&gt; is the name of your executable. As part of the
+    compilation process, if you have a file name App.config in the root of
+    your project, the compiler will rename the file to
+    &lt;MyExe&gt;.exe.config and place it into the runtime executable
+    folder.</p>
+
+    <p>These application configuration files are XML based and contain
+    configuration sections that can be referenced by name to retrieve custom
+    configuration objects. In order to inform the .NET configuration system
+    how to create a custom configuration object from one of these sections, an
+    implementation of the interface, IConfigurationSectionHandler, needs to be
+    registered. Spring.NET provides two implementations, one to create an
+    IApplicationContext from a <code class="literal">&lt;context&gt;</code> section and
+    another to configure the context with object definitions contained in an
+    <code class="literal">&lt;objects&gt;</code> section. The
+    <code class="literal">&lt;context&gt;</code> section is very powerful and
+    expressive. It provides full support for locating all
+    <code class="literal">IResource</code> via Uri syntax and hierarchical contexts
+    without coding or using more verbose XML as would be required in the
+    current version of Spring.Java</p>
+
+    <pre class="programlisting">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+<span style="color: #A31515">&lt;configuration&gt;</span>
+
+    <span style="color: #A31515">&lt;configSections&gt;</span>
+        <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"context"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ContextHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.DefaultSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+    <span style="color: #A31515">&lt;/configSections&gt;</span>
+ 
+    <span style="color: #A31515">&lt;spring&gt;</span>
+    
+        <span style="color: #A31515">&lt;context&gt;</span>
+            <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/context&gt;</span>
+        
+        <span style="color: #A31515">&lt;objects&gt;</span>
+            <span style="color: #A31515">&lt;description&gt;</span>An  example that demonstrates simple IoC features.<span style="color: #A31515">&lt;/description&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieLister"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.MovieLister, MovieFinder"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"movieFinder"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/object&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieFinder"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.SimpleMovieFinder, MovieFinder"</span><span style="color: #A31515">/&gt;</span>
+            <i style="color: #008000">&lt;!--
+            An IMovieFinder implementation that uses a text file as it's movie source...
+            --&gt;</i>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.ColonDelimitedMovieFinder, MovieFinder"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">index</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"movies.txt"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/objects&gt;</span>
+
+    <span style="color: #A31515">&lt;/spring&gt;</span>
+    
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+
+    <p>The &lt;configSections&gt; and &lt;section&gt; elements are a
+    standard part of the .NET application configuration file. These elements
+    are used to register an instance of IConfigurationSectionHandler and
+    associate it with another xml element in the file, in this case the
+    &lt;context&gt; and &lt;objects&gt; elements.</p>
+
+    <p>The following code segment is used to retrieve the
+    IApplicationContext from the .NET application configuration file.
+    </p><pre class="programlisting">IApplicationContext ctx
+          = ConfigurationUtils.GetSection(<span style="color: #000000">"spring/context"</span>) <span style="color: #0000FF">as</span> IApplicationContext;</pre>
+
+    <p>In order to enforce the usage of the named configuration section
+    <code class="literal">spring/context</code> the preferred instantiation mechanism is
+    via the use of the registry class ContextRegistry as shown below
+    </p><pre class="programlisting">IApplicationContext ctx = ContextRegistry.GetContext();</pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jd-aop-framework"></a>48.7.&nbsp;AOP Framework</h2></div></div></div>
+    
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="NoTargetInInterceptorNames"></a>48.7.1.&nbsp;Cannot specify target name at the end of interceptorNames for
+      ProxyFactoryObject</h3></div></div></div>
+      
+
+      <p>When configuring the list of interceptor names on a
+      <code class="literal">ProxyFactoryObject</code> instance (or object
+      definition), one <span class="emphasis"><em>cannot</em></span> specify the name of the
+      target (i.e. the object being proxied) at the end of the list of
+      interceptor names. This shortcut <span class="emphasis"><em>is</em></span> valid in Spring
+      Java, where the <code class="literal">ProxyFactoryBean</code> will
+      automatically detect this, and use the last name in the interceptor
+      names list as the target of the <code class="literal">ProxyFactoryBean</code>.
+      The following configuration, which would be valid in Spring Java
+      (barring the obvious element name changes), is <span class="bold"><strong>not</strong></span> valid in Spring.NET (so don't do it).</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+    <span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"target"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Objects.TestObject"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Bingo"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/object&gt;</span>
+
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"nopInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Interceptor.NopInterceptor"</span><span style="color: #A31515">/&gt;</span>
+
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"prototypeTarget"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"nopInterceptor,target"</span><span style="color: #A31515">/&gt;</span> <i style="color: #008000">&lt;!-- not valid! --&gt;</i>
+        <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>In Spring.NET, the <code class="literal">InterceptorNames</code> property of
+      the <code class="literal">ProxyFactoryObject</code> can
+      <span class="emphasis"><em>only</em></span> be used to specify the names of interceptors.
+      Use the <code class="literal">TargetName</code> property to specify the name of
+      the target object that is to be proxied.</p>
+
+      <p>The main reason for not supporting exactly the same style of
+      configuration as Spring Java is because this 'feature' is regarded as a
+      legacy holdover from Rod Johnson's initial Spring AOP implementation,
+      and is currently only kept as-is (in Spring Java) for reasons of
+      backward compatibility.</p>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="spring-javadevelopers.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spring-appendices.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;VIII.&nbsp;Spring.NET for Java developers&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;IX.&nbsp;Appendices</td></tr></table></div></body></html>

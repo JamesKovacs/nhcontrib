@@ -1,0 +1,300 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;39.&nbsp;SpringAir - Reference Application</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="web-quickstart.html" title="Chapter&nbsp;38.&nbsp;Web Quickstarts"><link rel="next" href="data-quickstart.html" title="Chapter&nbsp;40.&nbsp;Data Access QuickStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="springair"></a>Chapter&nbsp;39.&nbsp;SpringAir - Reference Application</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10640"></a>39.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The SpringAir sample application demonstrates a selection of
+    Spring.NET's powerful features making a .NET programmer's life easier. It
+    demonstrates the following features of Spring.Web</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>Spring.NET IoC container configuration</p>
+      </li><li>
+        <p>Dependency Injection as applied to ASP.NET pages</p>
+      </li><li>
+        <p>Master Page support</p>
+      </li><li>
+        <p>Web Service support</p>
+      </li><li>
+        <p>Bi-directional data binding</p>
+      </li><li>
+        <p>Declarative validation of domain objects</p>
+      </li><li>
+        <p>Internationalization</p>
+      </li><li>
+        <p>Result mapping to better encapsulate page navigation
+        flows</p>
+      </li></ul></div>
+
+    <p>The application models a flight reservation system where you can
+    browse flights, book a trip and even attach your own clients by leveraging
+    the web services exposed by the SpringAir application.</p>
+
+    <p>All pages within the application are fully Spring managed.
+    Dependencies get injected as configured within a Spring Application
+    Context. For NET 1.1 it shows how to apply centrally managed layouts to
+    all pages in an application by using master pages - a well-known feature
+    from NET 2.0.</p>
+
+    <p>When selecting your flights, you are already experiencing a fully
+    localized form. Select your preferred language from the bottom of the form
+    and see, how the new language is immediately applied. As soon as you
+    submit your desired flight, the submitted values are automatically unbound
+    from the form onto the application's data model by leveraging Spring.Web's
+    support for Data Binding. With Data Binding you can easily associate
+    properties on your PONO model with elements on your ASP.NET form.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10663"></a>39.2.&nbsp;Getting Started</h2></div></div></div>
+    
+
+    <p>The application is located in the installation directory under
+    'examples/SpringAir. The directory 'SpringAir.Web.2003' contains the .NET
+    1.1 version of the application and the directory 'SpringAir.Web.2005'
+    contains the .NET 2.0 version. For .NET 1.1 you will need to create a
+    virtual directory named 'SpringAir.2003' using IIS Administrator and point
+    it to the following directory
+    examples\Spring\SpringAir\src\SpringAir.Web.2003. The solution file for
+    .NET 1.1 is examples\Spring\SpringAir\SpringAir.2003.sln. For .NET 2.0
+    simply open the solution examples\Spring\SpringAir\SpringAir.2005.sln. Set
+    your startup project to be SpringAir.Web and the startpage to
+    .\Web\Home.aspx</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10666"></a>39.3.&nbsp;Container configuration</h2></div></div></div>
+    
+
+    <p>The web project's top level Web.config configures the IoC container
+    that is used within the web application. You do not need to explicitly
+    instantiate the IoC container. The important parts of that configuration
+    are shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span>
+        <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Config.DatabaseNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span>
+
+    <span style="color: #A31515">&lt;context&gt;</span>
+        <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/Aspects.xml"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/Web.xml"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/Services.xml"</span><span style="color: #A31515">/&gt;</span>
+      
+        <i style="color: #008000">&lt;!-- TEST CONFIGURATION --&gt;</i>
+
+       <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/Test/Services.xml"</span><span style="color: #A31515">/&gt;</span>
+       <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"~/Config/Test/Dao.xml"</span><span style="color: #A31515">/&gt;</span>
+      
+       <i style="color: #008000">&lt;!-- PRODUCTION CONFIGURATION --&gt;</i>
+
+       <i style="color: #008000">&lt;!--
+       &lt;resource uri="~/Config/Production/Services.xml"/&gt;
+       &lt;resource uri="~/Config/Production/Dao.xml"/&gt;
+       --&gt;</i>
+    <span style="color: #A31515">&lt;/context&gt;</span>
+<span style="color: #A31515">&lt;/spring&gt;</span></pre>
+
+    <p>In this example there are separate configuration files for test and
+    production configuration. The Services.xml file is in fact the same
+    between the two, and the example will be refactored in future to remove
+    that duplication. The Dao layer in the test configuration is an in-memory
+    version, faking database access, whereas the production version uses an
+    ADO.NET based solution.</p>
+
+    <p>The pages that comprise the application are located in the directory
+    'Web/BookTrip'. In that directory is another Web.config that is
+    responsible for configuring that directory's .aspx pages. There are three
+    main pages in the flow of the application.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>TripForm - form to enter in airports, times, round-trip or
+        one-way</p>
+      </li><li>
+        <p>Suggested Flights - form to select flights</p>
+      </li><li>
+        <p>ReservationConfirmationPage - your confirmation ID from the
+        booking process.</p>
+      </li></ul></div>
+
+    <p>The XML configuration to configure the TripForm form is shown
+    below</p>
+
+    <pre class="programlisting">      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"TripForm.aspx"</span> <span style="color: #FF0000">parent</span>=<span style="color: #0000FF">"standardPage"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"BookingAgent"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"bookingAgent"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AirportDao"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"airportDao"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TripValidator"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"tripValidator"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Results"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;dictionary&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"displaySuggestedFlights"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"redirect:SuggestedFlights.aspx"</span><span style="color: #A31515"> /&gt;</span>
+          <span style="color: #A31515">&lt;/dictionary&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>As you can see the various services it needs are set using standard
+    DI techniques. The Results property externalizes the page flow,
+    redirecting to the next page in the flow, SuggestedFlights. The 'parent'
+    attribute lets this page inherit properties from a template. The is
+    located in the top level Web.config file, packaged under the Config
+    directory. The standardPage sets up properties of Spring's base page
+    class, from which all the pages in this application inherit from. (Note
+    that to perform only dependency injection on pages you do not need to
+    inherit from Spring's Page class).</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10682"></a>39.4.&nbsp;Bi-directional data binding</h2></div></div></div>
+    
+
+    <p>The TripForm page demonstrates the bi-directional data binding
+    features. A Trip object is used to back the information of the form. The
+    family of methods that are overridden to support the bi-directional data
+    binding are listed below.</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> InitializeModel()
+    {
+        trip = <span style="color: #0000FF">new</span> Trip();
+        trip.Mode = TripMode.RoundTrip;
+        trip.StartingFrom.Date = DateTime.Today;
+        trip.ReturningFrom.Date = DateTime.Today.AddDays(1);
+    }
+
+    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> LoadModel(<span style="color: #0000FF">object</span> savedModel)
+    {
+        trip = (Trip)savedModel;
+    }
+
+    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">object</span> SaveModel()
+    {
+        <span style="color: #0000FF">return</span> trip;
+    }
+
+    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> InitializeDataBindings()
+    {
+        BindingManager.AddBinding(<span style="color: #000000">"tripMode.Value"</span>, <span style="color: #000000">"Trip.Mode"</span>);
+        BindingManager.AddBinding(<span style="color: #000000">"leavingFromAirportCode.SelectedValue"</span>, <span style="color: #000000">"Trip.StartingFrom.AirportCode"</span>);
+        BindingManager.AddBinding(<span style="color: #000000">"goingToAirportCode.SelectedValue"</span>, <span style="color: #000000">"Trip.ReturningFrom.AirportCode"</span>);
+        BindingManager.AddBinding(<span style="color: #000000">"leavingFromDate.SelectedDate"</span>, <span style="color: #000000">"Trip.StartingFrom.Date"</span>);
+        BindingManager.AddBinding(<span style="color: #000000">"returningOnDate.SelectedDate"</span>, <span style="color: #000000">"Trip.ReturningFrom.Date"</span>);
+    }</pre>
+
+    <p>This is all you need to set up in order to have values from the Trip
+    object 'marshaled' to and from the web controls. The
+    InitializeDataBindings method set this up, using the Spring Expression
+    Language to define the UI element property that is associate with the
+    model (Trip) property.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10687"></a>39.5.&nbsp;Declarative Validation</h2></div></div></div>
+    
+
+    <p>The method called when the Search button is clicked will perform
+    validation. If validation succeeds as well as additional business logic
+    checks, the next page in the flow is loaded. This is shown in the code
+    below. Notice how much cleaner and more business focused the code reads
+    than if you were using standard ASP.NET APIs.</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">void</span> SearchForFlights(<span style="color: #0000FF">object</span> sender, EventArgs e)
+    {
+        <span style="color: #0000FF">if</span> (Validate(trip, tripValidator))
+        {
+            FlightSuggestions suggestions = <span style="color: #0000FF">this</span>.bookingAgent.SuggestFlights(Trip);
+            <span style="color: #0000FF">if</span> (suggestions.HasOutboundFlights)
+            {
+                Session[Constants.SuggestedFlightsKey] = suggestions;
+                SetResult(DisplaySuggestedFlights);
+            }
+        }
+    }</pre>
+
+    <p>The 'Validate' method of the page takes as arguments the object to
+    validate and a IValidator instance. The TripForm property TripValidator is
+    set via dependency injection (as shown above). The validation logic is
+    defined declaratively in the XML configuration file and is shown
+    below.</p>
+
+    <pre class="programlisting">   <span style="color: #A31515">&lt;v:group</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"tripValidator"</span><span style="color: #A31515">&gt;</span>
+
+    <span style="color: #A31515">&lt;v:required</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"departureAirportValidator"</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"StartingFrom.AirportCode"</span><span style="color: #A31515">&gt;</span>
+				  <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.departureAirport.required"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"departureAirportErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				<span style="color: #A31515">&lt;/v:required&gt;</span>
+
+			  <span style="color: #A31515">&lt;v:group</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"destinationAirportValidator"</span><span style="color: #A31515">&gt;</span>
+				  <span style="color: #A31515">&lt;v:required</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"ReturningFrom.AirportCode"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.destinationAirport.required"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"destinationAirportErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				  <span style="color: #A31515">&lt;/v:required&gt;</span>
+				  <span style="color: #A31515">&lt;v:condition</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"ReturningFrom.AirportCode != StartingFrom.AirportCode"</span> <span style="color: #FF0000">when</span>=<span style="color: #0000FF">"ReturningFrom.AirportCode != ''"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.destinationAirport.sameAsDeparture"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"destinationAirportErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				  <span style="color: #A31515">&lt;/v:condition&gt;</span>
+			  <span style="color: #A31515">&lt;/v:group&gt;</span>
+
+				<span style="color: #A31515">&lt;v:group</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"departureDateValidator"</span><span style="color: #A31515">&gt;</span>
+					<span style="color: #A31515">&lt;v:required</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"StartingFrom.Date"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.departureDate.required"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"departureDateErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				  <span style="color: #A31515">&lt;/v:required&gt;</span>
+					<span style="color: #A31515">&lt;v:condition</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"StartingFrom.Date &gt;= DateTime.Today"</span> <span style="color: #FF0000">when</span>=<span style="color: #0000FF">"StartingFrom.Date != DateTime.MinValue"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.departureDate.inThePast"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"departureDateErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+					<span style="color: #A31515">&lt;/v:condition&gt;</span>
+				<span style="color: #A31515">&lt;/v:group&gt;</span>
+
+				<span style="color: #A31515">&lt;v:group</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"returnDateValidator"</span> <span style="color: #FF0000">when</span>=<span style="color: #0000FF">"Mode == 'RoundTrip'"</span><span style="color: #A31515">&gt;</span>
+					<span style="color: #A31515">&lt;v:required</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"ReturningFrom.Date"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.returnDate.required"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"returnDateErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				  <span style="color: #A31515">&lt;/v:required&gt;</span>
+					<span style="color: #A31515">&lt;v:condition</span> <span style="color: #FF0000">test</span>=<span style="color: #0000FF">"ReturningFrom.Date &gt;= StartingFrom.Date"</span> <span style="color: #FF0000">when</span>=<span style="color: #0000FF">"ReturningFrom.Date != DateTime.MinValue"</span><span style="color: #A31515">&gt;</span>
+				    <span style="color: #A31515">&lt;v:message</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"error.returnDate.beforeDeparture"</span> <span style="color: #FF0000">providers</span>=<span style="color: #0000FF">"returnDateErrors, validationSummary"</span><span style="color: #A31515">/&gt;</span>
+				  <span style="color: #A31515">&lt;/v:condition&gt;</span>
+				<span style="color: #A31515">&lt;/v:group&gt;</span>
+
+			<span style="color: #A31515">&lt;/v:group&gt;</span></pre>
+
+    <p>The validation logic has 'when' clauses so that return dates can be
+    ignored if the Mode property of the Trip object is set to
+    'RoundTrip'.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10694"></a>39.6.&nbsp;Internationalization</h2></div></div></div>
+    
+
+    <p>Both image and text based internationalization are supported. You
+    can see this in action by clicking on the English, Srpski, or &#1057;&#1088;&#1087;&#1089;&#1082;&#1080; links
+    on the bottom of the page.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10697"></a>39.7.&nbsp;Web Services</h2></div></div></div>
+    
+
+    <p>The class BookingAgent that was used by the TripForm class is a
+    standard .NET class, i.e no WebMethod attributes are on any of its
+    methods. Spring can expose this object as a web service by declaring the
+    following XML defined in the top level Config/Services.xml file</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"bookingAgentWebService"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Web.Services.WebServiceExporter, Spring.Web"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"bookingAgent"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"BookingAgent"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Namespace"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"http://SpringAir/WebServices"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"SpringAir Booking Agent Web Service"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MemberAttributes"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;dictionary&gt;</span>
+        <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"SuggestFlights"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.Web.Services.WebMethodAttribute, System.Web.Services"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Gets those flight suggestions that are applicable for the supplied trip."</span><span style="color: #A31515">/&gt;</span>
+          <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/entry&gt;</span>
+        <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"Book"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.Web.Services.WebMethodAttribute, System.Web.Services"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Goes ahead and actually books what up until this point has been a transient reservation."</span><span style="color: #A31515">/&gt;</span>
+          <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/entry&gt;</span>
+        <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"GetAirportList"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.Web.Services.WebMethodAttribute, System.Web.Services"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Return a collection of all those airports that can be used for the purposes of booking."</span><span style="color: #A31515">/&gt;</span>
+          <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/entry&gt;</span>
+      <span style="color: #A31515">&lt;/dictionary&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p></p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="web-quickstart.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="data-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;38.&nbsp;Web Quickstarts&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;40.&nbsp;Data Access QuickStart</td></tr></table></div></body></html>

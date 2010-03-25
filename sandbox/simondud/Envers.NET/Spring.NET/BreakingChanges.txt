@@ -1,0 +1,110 @@
+Changes (1.3 RC1 to 1.3 GA or greater)
+========================
+
+Spring.Data
+-----------
+
+1. The namespace for MultiDelegatingDbProvider was changed from Spring.Data to Spring.Data.Common as that is consistent with all the other implementations of IDbProvider.
+
+Changes (1.2.0 to 1.3 or greater)
+========================
+
+Spring.Core
+-----------
+
+1. within an ValidationGroup element (<v:group>,<v:exclusive>,..), nested validator elements now must occur after any
+   <v:message>, <v:action> or <v:property> elements. The following was allowed previously, but now will raise a schema
+   validation error:
+
+   <v:group ..>
+      <v:validator ...>
+      <v:action ...>
+
+   change this to
+
+   <v:group ..>
+      <v:action ...>
+      <v:validator ...>
+
+2. XmlReaderContext constructor now requires an IObjectDefinitionFactory to be specified. Thus XmlReaderContext.ObjectDefinitionFactory
+   is read only now.
+
+3. Changes to the Apache NMS API, which was not yet a public release when included in Spring 1.2.0 made breaking API changes.
+   On NmsTemlate,
+
+   1) The property 'byte Priority' was changed to 'MsgPriority Priority'
+   2) The property 'bool Persistent' is no longer part of the NMS API but is still supported in a backward compatible
+      manner by Spring by translation to standard MsgDeliveryMode enumeration values of Persistent and NonPersistent.
+      A new property MsgDelivery has been added.  The class, CachedMessageProducer, which is unlikely to be use by
+      end users, was directly upgraded to the latest API without any backwards compatibility support.
+
+4. AbstractApplicationContext.CaseSensitive renamed to AbstractApplicationContext.IsCaseSensitive
+
+5. Spring.Validation: Base class BaseValidator changed to BaseSimpleValidator for single validators as compared to group validators
+   which now commonly derive from BaseGroupValidator instead of ValidatorGroup
+
+6. IVariableSource implementations now must also implement CanResolveVariable(string variableName) and may throw exceptions in
+   ResolveVariable() in case the variable cannot resolved by this particular variable source.
+   In order to distinguish between an existing variable having a null value and a non-existing variable, variable sources
+   need to be changed to this new contract.
+
+7. a) Signature of CollectionUtils.Contains(ICollection collection, object element) changed to CollectionUtils.Contains(IEnumerable collection, object element)
+   b) returns 'null' in case of collection==null instead of throwing an exception
+
+8. dropped Spring.Expressions.DateLiteralNode
+
+
+
+Spring.Aop
+----------
+
+1. AbstractAutoProxyCreator.FindEligibleAdvisors(Type) changed to
+   AbstractAutoProxyCreator.FindEligibleAdvisors(Type, Name)
+
+2. It is not possible to change a ProxyFactoryObject's product configuration at runtime
+   if IsSingleton==true since factory object singleton products get cached now.
+
+
+
+Changes (1.2 RC1 to 1.2.0 or greater)
+=====================================
+
+none
+
+
+
+Changes (1.1.2 to 1.2 RC1 or greater)
+=====================================
+
+Spring.Core
+-----------
+
+1. ContextRegistry.GetContext(string name) now throws an exception if no context has been registered under that name instead of returning null.
+
+2. Removed getter property of IApplicationContext in IApplicationContextAware
+
+3. Removed getter property of IResourceLoader in IResourceLoaderAware
+
+4. AbstractBinding.IsValid property changed to method AbstractBinding.IsValid( IValidationErrors )
+
+Spring.Data
+-----------
+
+1. The provider name System.Data.SqlServerCe is now aliased to SqlServerCe-3.5.1 (was SqlServerCe-3.1)
+
+2. Removed setter property RollbackOnly on ITransactionStatus, now use the method SetRollbackOnly() to 'doom' a transaction to always rollback.
+
+Spring.Services
+---------------
+1. Removed WebServiceProxyFactory.ClientProtocolType property (obsolete)
+
+2. WebServiceExporter generates WebServiceBinding attribute with WSI basic profile 1.1 by default.
+
+Spring.Web
+----------
+
+1. Moved Spring.Web.Support.ISharedStateAware to Spring.Objects.ISharedStateAware
+
+2. Dropped IProcess support
+
+3. IHttpHandler instance dependencies won't be injected until PreRequestHandlerExecute stage (to support "session"-scoped deps)

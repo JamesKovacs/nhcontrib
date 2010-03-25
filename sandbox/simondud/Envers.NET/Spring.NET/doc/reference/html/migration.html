@@ -1,0 +1,132 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;4.&nbsp;Migrating from 1.1 M2</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="index.html" title="The Spring.NET Framework"><link rel="prev" href="background.html" title="Chapter&nbsp;3.&nbsp;Background information"><link rel="next" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="migration"></a>Chapter&nbsp;4.&nbsp;Migrating from 1.1 M2</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="M2RC1-introduction"></a>4.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Several API changes were made after 1.1 M2 (before 1.1 RC1)due
+    primarily by the need to refactor the code base to remove circular
+    dependency cycles, which are now all removed. Class and schema name
+    changes were also made to provide a more consistent naming convention
+    across the codebase. As a result of these changes, you can not simply drop
+    in the new .dlls as you may have done in previous release. This document
+    serves as a high level guide to the most likely areas where you will need
+    to make changes to either your configuration or your code.</p>
+
+    <p>The file, BreakingChanges-1.1.txt, in the root directory of the
+    distribution contains the full listing of breaking changes made for RC1
+    and higher</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="migration-changes"></a>4.2.&nbsp;Important Changes</h2></div></div></div>
+    
+
+    <p>This section covers the common areas were you will need to make
+    changes in code/configuration when migration from M2 to RC1or
+    higher.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e199"></a>4.2.1.&nbsp;Namespaces</h3></div></div></div>
+      
+
+      <p>Note: If you previously installed Spring .xsd files to your VS.NET
+      installation directory, remove them manually, and copy over the new
+      ones, which have the -1.1.xsd suffix.</p>
+
+      <p>The names of the section handlers to register custom schemas has
+      changed, from ConfigParsersSectionHandler to
+      <code class="literal">NamespaceParsersSectionHandler</code>.</p>
+
+      <p>The target namespaces have changed, the 'directory' named /schema/
+      has been removed. For example, the target schema changed from
+      http://www.springframework.net/schema/tx to
+      <code class="literal">http://www.springframework.net/tx.</code></p>
+
+      <p>A typical declaration to use custom schemas within your
+      configuration file looks like this</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">'http://www.springframework.net'</span>
+         <span style="color: #FF0000">xmlns:db</span>=<span style="color: #0000FF">"http://www.springframework.net/database"</span>
+         <span style="color: #FF0000">xmlns:tx</span>=<span style="color: #0000FF">"http://www.springframework.net/tx"</span>
+         <span style="color: #FF0000">xmlns:aop</span>=<span style="color: #0000FF">"http://www.springframework.net/aop"</span><span style="color: #A31515">&gt;</span></pre>
+
+      <p>The class <code class="literal">XmlParserRegistry</code> was renamed to
+      <code class="literal">NamespaceParserRegistry</code>.</p>
+
+      <p>Renamed
+      <code class="literal">Spring.Validation.ValidationConfigParser</code> to
+      <code class="literal">Spring.Validation.Config.ValidationNamespaceParser</code></p>
+
+      <p>Renamed from <code class="literal">DatabaseConfigParser</code> to
+      <code class="literal">DatabaseNamespaceParser</code></p>
+
+      <p>Renamed/Moved <code class="literal">Remoting.RemotingConfigParser</code>
+      to
+      <code class="literal">Remoting.Config.RemotingNamespaceParser</code><em class="parameter"><code></code></em></p>
+
+      <p>A typical registration of custom parsers within your configuration
+      file looks like this</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>         
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Config.AopNamespaceParser, Spring.Aop"</span><span style="color: #A31515"> /&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Config.DatabaseNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Transaction.Config.TxNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span> 
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span></pre>
+
+      <p>A manual registration would look like this</p>
+
+      <pre class="programlisting">NamespaceParserRegistry.RegisterParser(<span style="color: #0000FF">typeof</span>(AopNamespaceParser));
+NamespaceParserRegistry.RegisterParser(<span style="color: #0000FF">typeof</span>(DatabaseNamespaceParser));
+NamespaceParserRegistry.RegisterParser(<span style="color: #0000FF">typeof</span>(TxNamespaceParser));
+</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e225"></a>4.2.2.&nbsp;Core</h3></div></div></div>
+      
+
+      <p>Moved Spring.Util.DynamicReflection to
+      Spring.Reflection.Dynamic</p>
+
+      <p>Moved TypeRegistry and related classes from Spring.Context.Support
+      to Spring.Core.TypeResolution</p>
+
+      <p>Moved Spring.Objects.TypeConverters to
+      Spring.Core.TypeConvesion</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e230"></a>4.2.3.&nbsp;Web</h3></div></div></div>
+      
+
+      <p>Moved Spring.Web.Validation to Spring.Web.UI.Validation</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e233"></a>4.2.4.&nbsp;Data</h3></div></div></div>
+      
+
+      <p>Changed schema to use 'provider' instead of 'dbProvider' element,
+      usage is now &lt;db:provider ... /&gt; and not &lt;db:dbProvider
+      .../&gt;</p>
+
+      <p>Moved TransactionTemplate, TransactionDelegate and
+      ITransactionCallback from Spring.Data to Spring.Data.Support</p>
+
+      <p>Moved AdoTemplate, AdoAccessor, AdoDaoSupport,
+      RowMapperResultSetExtractor from Spring.Data to Spring.Data.Core</p>
+
+      <p>Moved AdoPlatformTransactionManager,
+      ServiceDomainPlatformTransactionManager, and TxScopeTransactionManager
+      from Spring.Data to Spring.Data.Core</p>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="background.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spring-core.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;3.&nbsp;Background information&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;I.&nbsp;Core Technologies</td></tr></table></div></body></html>

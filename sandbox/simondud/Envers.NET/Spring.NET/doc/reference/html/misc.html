@@ -1,0 +1,119 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;10.&nbsp;Spring.NET miscellanea</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="pool.html" title="Chapter&nbsp;9.&nbsp;Object Pooling"><link rel="next" href="expressions.html" title="Chapter&nbsp;11.&nbsp;Expression Evaluation"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="misc"></a>Chapter&nbsp;10.&nbsp;Spring.NET miscellanea</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spring-net-miscellanea"></a>10.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This chapter contains miscellanea information on features, goodies,
+    caveats that does not belong to any paricular area.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="pathmatcher"></a>10.2.&nbsp;PathMatcher</h2></div></div></div>
+    
+
+    <p><code class="literal">Spring.Util.PathMatcher</code> provides
+    <code class="literal">Ant/NAnt</code>-like path name matching features.</p>
+
+    <p>To do the match, you use the method: </p><pre class="programlisting"><span style="color: #0000FF">static</span> <span style="color: #0000FF">bool</span> Match(<span style="color: #0000FF">string</span> pattern, <span style="color: #0000FF">string</span> path)</pre>
+
+    <p>If you want to decide if case is important or not use the method:
+    </p><pre class="programlisting"><span style="color: #0000FF">static</span> <span style="color: #0000FF">bool</span> Match(<span style="color: #0000FF">string</span> pattern, <span style="color: #0000FF">string</span> path, <span style="color: #0000FF">bool</span> ignoreCase)</pre>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="pathmatcher-general-rules"></a>10.2.1.&nbsp;General rules</h3></div></div></div>
+      
+
+      <p>To build your pattern, you use the <code class="literal">*</code>,
+      <code class="literal">?</code> and <code class="literal">**</code> building blocks:
+      </p><div class="itemizedlist"><ul type="disc" compact><li>
+            <p><code class="literal">*</code>: matches any number of non slash
+            characters;</p>
+          </li><li>
+            <p><code class="literal">?</code>: matches exactly 1 (one) non slash/dot
+            character;</p>
+          </li><li>
+            <p><code class="literal">**</code>: matches any subdirectory, without
+            taking care of the depth;</p>
+          </li></ul></div>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="pathmatcher-matching-filenames"></a>10.2.2.&nbsp;Matching filenames</h3></div></div></div>
+      
+
+      <p>A file name can be matched using the following notation:
+      </p><pre class="programlisting">foo?bar.*</pre><p> matches: </p><pre class="programlisting">fooAbar.txt
+foo1bar.txt
+foo_bar.txt
+foo-bar.txt</pre><p> does not match: </p><pre class="programlisting">foo.bar.txt
+foo/bar.txt
+foo\bar.txt</pre>
+
+      <p>The classical all files pattern: </p><pre class="programlisting">*.*</pre><p>
+      matches: </p><pre class="programlisting">foo.db
+.db
+foo
+foo.bar.db
+foo.db.db
+db.db.db</pre><p> does not match: </p><pre class="programlisting">c:/
+c:/foo.db
+c:/foo
+c:/.db
+c:/foo.foo.db
+//server/foo</pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="pathmatcher-matching-subdirectories"></a>10.2.3.&nbsp;Matching subdirectories</h3></div></div></div>
+      
+
+      <p>A directory name can be matched at any depth level using the
+      following notation: </p><pre class="programlisting">**/db/**</pre><p> That
+      pattern matches the following paths: </p><pre class="programlisting">/db
+//server/db
+c:/db
+c:/spring/app/db/foo.db
+//Program Files/App/spaced dir/db/foo.db
+/home/spring/spaced dir/db/v1/foo.db</pre><p> but does not match
+      these: </p><pre class="programlisting">c:/spring/app/db-v1/foo.db
+/home/spring/spaced dir/db-v1/foo.db</pre>
+
+      <p>You can compose subdirectories to match like this:
+      </p><pre class="programlisting">**/bin/**/tmp/**</pre><p> That pattern matches
+      the following paths: </p><pre class="programlisting">c:/spring/foo/bin/bar/tmp/a
+c:/spring/foo/bin/tmp/a/b.c</pre><p> but does not match these:
+      </p><pre class="programlisting">c:/spring/foo/bin/bar/temp/a
+c:/tmp/foo/bin/bar/a/b.c</pre>
+
+      <p>You can use more advanced patterns: </p><pre class="programlisting">**/.spring-assemblies*/**</pre><p>
+      matches: </p><pre class="programlisting">c:/.spring-assemblies
+c:/.spring-assembliesabcd73xs
+c:/app/.spring-assembliesabcd73xs
+c:/app/.spring-assembliesabcd73xs/foo.dll
+//server/app/.spring-assembliesabcd73xs</pre><p> does not match:
+      </p><pre class="programlisting">c:/app/.spring-assemblie</pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="pathmatcher-case-matters"></a>10.2.4.&nbsp;Case does matter, slashes don't</h3></div></div></div>
+      
+
+      <p>.NET is expected to be a cross-platform development ... platform.
+      So, <code class="literal">PathMatcher</code> will match taking care of the case of
+      the pattern and the case of the path. For example: </p><pre class="programlisting">**/db/**/*.DB</pre><p>
+      matches: </p><pre class="programlisting">c:/spring/service/deploy/app/db/foo.DB</pre><p>
+      but does not match: </p><pre class="programlisting">c:/spring/service/deploy/app/DB/foo.DB
+c:spring/service/deploy/app/spaced dir/DB/foo.DB
+//server/share/service/deploy/app/DB/backup/foo.db</pre>
+
+      <p>If you do not matter about case, you should explicitly tell the
+      <code class="literal">Pathmatcher</code>.</p>
+
+      <p>Back and forward slashes, in the very same cross-platform spirit,
+      are not important: </p><pre class="programlisting">spring/foo.bar</pre><p>
+      matches all the following paths: </p><pre class="programlisting">c:\spring\foo.bar
+c:/spring\foo.bar
+c:/spring/foo.bar
+/spring/foo.bar
+\spring\foo.bar</pre>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pool.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="expressions.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;9.&nbsp;Object Pooling&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;11.&nbsp;Expression Evaluation</td></tr></table></div></body></html>

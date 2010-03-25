@@ -1,0 +1,246 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;8.&nbsp;Threading and Concurrency Support</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="resources.html" title="Chapter&nbsp;7.&nbsp;Resources"><link rel="next" href="pool.html" title="Chapter&nbsp;9.&nbsp;Object Pooling"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="threading"></a>Chapter&nbsp;8.&nbsp;Threading and Concurrency Support</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="threading-introduction"></a>8.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The purpose of the <code class="literal">Spring.Threading</code> namespace
+    is to provide a place to keep useful concurrency abstractions that augment
+    those in the BCL. Since Doug Lea has provided a wealth of mature public
+    domain concurrency abstractions in his Java based
+    'EDU.oswego.cs.dl.util.concurrent' libraries we decided to port a few of
+    his abstractions to .NET. So far, we've only ported three classes, the
+    minimum necessary to provide basic object pooling functionality to support
+    an AOP based pooling aspect and to provide a Semaphore class that was
+    mistakenly not included in .NET 1.0/1.1.</p>
+
+    <p>There is also an important abstraction, IThreadStorage, for
+    performing thread local storage.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2901"></a>8.2.&nbsp;Thread Local Storage</h2></div></div></div>
+    
+
+    <p>Depending on your runtime environment there are different strategies
+    to use for storing objects in thread local storage. If you are in web
+    applications a single Request may be executed on different threads. As
+    such, the location to store thread local objects is in
+    <code class="literal">HttpContext.Current</code>. For other environments
+    <code class="literal">System.Runtime.Remoting.Messaging.CallContext</code> is
+    used. For more background information on the motivation behind these
+    choices, say as compared to the attribute [ThreadStatic] refer to
+    "Piers7"'s <a class="ulink" href="http://piers7.blogspot.com/2005/11/threadstatic-callcontext-and_02.html" target="_top">blog</a>
+    and this <a class="ulink" href="http://forum.springframework.net/showthread.php?t=572&amp;highlight=LogicalThreadContext" target="_top">forum
+    post</a>. The interface IThreadStorage serves as the basis for the
+    thread local storage abstraction and various implementations can be
+    selected from depending on your runtime requirements. Configuring the
+    implementation of IThreadStorage makes it easier to have more portability
+    across runtime environments.</p>
+
+    <p>The API is quite simple and shown below</p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IThreadStorage
+{
+  <span style="color: #0000FF">object</span> GetData(<span style="color: #0000FF">string</span> name)
+
+  <span style="color: #0000FF">void</span> SetData(<span style="color: #0000FF">string</span> name, <span style="color: #0000FF">object</span> <span style="color: #0000FF">value</span>)
+
+  <span style="color: #0000FF">void</span> FreeNamedDataSlot(<span style="color: #0000FF">string</span> name)
+
+}
+</pre>
+
+    <p>The methods <code class="methodname">GetData</code> and
+    <code class="methodname">SetData</code> are responsible for retrieving and
+    setting the object that is to be bound to thread local storage and
+    associating it with a name. Clearing the thread local storage is done via
+    the method <code class="methodname">FreeNamedDataSlot</code>.</p>
+
+    <p>In <code class="literal">Spring.Core</code> is the implementation,
+    <code class="literal">CallContextStorage</code>, that directly uses
+    <code class="literal">CallContext</code> and also the implementation
+    <code class="literal">LogicalThreadContext</code> which by default uses
+    <code class="literal">CallContextStorage</code> but can be configured via the
+    static method <code class="methodname">SetStorage(IThreadStorage)</code>. The
+    methods on CallContextStorage and LogicalThreadContext are static.</p>
+
+    <p>In <code class="literal">Spring.Web</code> is the implementation
+    <code class="literal">HttpContextStorage</code> which uses the
+    <code class="literal">HttpContext</code> to store thread local data and
+    <code class="literal">HybridContextStorage</code> that uses
+    <code class="literal">HttpContext</code> if within a web environment, i.e.
+    <code class="literal">HttpContext.Current != null</code>, and
+    <code class="literal">CallContext</code> otherwise.</p>
+
+    <p>Spring internally uses <code class="literal">LogicalThreadContext</code>
+    as this doesn't require a coupling to the <code class="package">System.Web</code>
+    namespace. In the case of Spring based web applications, Spring's
+    <code class="literal">WebSupportModule</code> sets the storage strategy of
+    <code class="literal">LogicalThreadContext</code> to be
+    <code class="literal">HybridContextStorage</code>.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e2935"></a>8.3.&nbsp;Synchronization Primitives</h2></div></div></div>
+    
+
+    <p>When you take a look at these synchronization classes, you'll wonder
+    why it's even necessary when <code class="literal">System.Threading</code> provides
+    plenty of synchronization options. Although
+    <code class="literal">System.Threading</code> provides great synchronization
+    classes, it doesn't provide well-factored abstractions and interfaces for
+    us. Without these abstractions, we will tend to code at a low-level. With
+    enough experience, you'll eventually come up with some abstractions that
+    work well. Doug Lea has already done a lot of that research and has a
+    class library that we can take advantage of.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e2940"></a>8.3.1.&nbsp;ISync</h3></div></div></div>
+      
+
+      <p><code class="literal">ISync</code> is the central interface for all classes
+      that control access to resources from multiple threads. It's a simple
+      interface which has two basic use cases. The first case is to block
+      indefinitely until a condition is met:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">void</span> ConcurrentRun(ISync <span style="color: #0000FF">lock</span>) {
+  <span style="color: #0000FF">lock</span>.Acquire(); <i style="color: #008000">// block until condition met</i>
+  <span style="color: #0000FF">try</span> {
+    <i style="color: #008000">// ... access shared resources</i>
+  }
+  <span style="color: #0000FF">finally</span> {
+    <span style="color: #0000FF">lock</span>.Release();
+  }
+}
+</pre>
+
+      <p>The other case is to specify a maximum amount of time to block
+      before the condition is met:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">void</span> ImpatientConcurrentRun(ISync <span style="color: #0000FF">lock</span>) {
+  <i style="color: #008000">// block for at most 10 milliseconds for condition</i>
+  <span style="color: #0000FF">if</span> ( <span style="color: #0000FF">lock</span>.Attempt(10) ) {
+    <span style="color: #0000FF">try</span> {
+      <i style="color: #008000">// ... access shared resources</i>
+    }
+    <span style="color: #0000FF">finally</span> {
+      <span style="color: #0000FF">lock</span>.Release();
+    }
+  } <span style="color: #0000FF">else</span> {
+    <i style="color: #008000">// complain of time out</i>
+  }
+}
+</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e2947"></a>8.3.2.&nbsp;SyncHolder</h3></div></div></div>
+      
+
+      <p>The <code class="literal">SyncHolder</code> class implements the
+      <code class="literal">System.IDisposable</code> interface and so provides a way to
+      use an <code class="literal">ISync</code> with the <code class="literal">using</code> C#
+      keyword: the <code class="literal">ISync</code> will be automatically
+      <code class="literal">Acquire</code>d and then <code class="literal">Release</code>d on
+      exiting from the block.</p>
+
+      <p>This should simplify the programming model for code using (!) an
+      <code class="literal">ISync</code>: </p><pre class="programlisting">
+ISync sync = ...
+...
+<span style="color: #0000FF">using</span> (<span style="color: #0000FF">new</span> SyncHolder(sync))
+  {
+    <i style="color: #008000">// ... code to be executed</i>
+    <i style="color: #008000">// holding the ISync lock</i>
+  }
+      </pre><p> There is also the timed version, a little more
+      cumbersome as you must deal with timeouts: </p><pre class="programlisting">
+ISync sync = ...
+<span style="color: #0000FF">long</span> msecs = 100;
+...
+<i style="color: #008000">// try to acquire the ISync for msecs milliseconds</i>
+<span style="color: #0000FF">try</span> 
+{
+  <span style="color: #0000FF">using</span> (<span style="color: #0000FF">new</span> SyncHolder(sync, msecs))
+  {
+    <i style="color: #008000">// ... code to be executed</i>
+    <i style="color: #008000">// holding the ISync lock</i>
+  }
+}    
+<span style="color: #0000FF">catch</span> (TimeoutException)
+{
+  <i style="color: #008000">// deal with failed lock acquisition</i>
+}
+
+      </pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e2961"></a>8.3.3.&nbsp;Latch</h3></div></div></div>
+      
+
+      <p>The <code class="literal">Latch</code> class implements the
+      <code class="literal">ISync</code> interface and provides an implementation of a
+      <span class="emphasis"><em>latch</em></span>. A latch is a boolean condition that is set
+      at most once, ever. Once a single release is issued, all acquires will
+      pass. It is similar to a <code class="literal">ManualResetEvent</code> initialized
+      unsignalled (Reset) and can only be <code class="literal">Set()</code>. A typical
+      use is to act as a start signal for a group of worker threads.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">class</span> Boss {
+  Latch _startPermit;
+
+  <span style="color: #0000FF">void</span> Worker() {
+    <i style="color: #008000">// very slow worker initialization ...</i>
+    <i style="color: #008000">// ... attach to messaging system</i>
+    <i style="color: #008000">// ... connect to database</i>
+    _startPermit.Acquire();
+    <i style="color: #008000">// ... use resources initialized in Mush</i>
+    <i style="color: #008000">// ... do real work</i>
+  }
+
+  <span style="color: #0000FF">void</span> Mush() {
+    _startPermit = <span style="color: #0000FF">new</span> Latch();
+    <span style="color: #0000FF">for</span> (<span style="color: #0000FF">int</span> i=0; i&lt;10; ++i) {
+      <span style="color: #0000FF">new</span> Thread(<span style="color: #0000FF">new</span> ThreadStart(Worker)).Start();
+    }
+    <i style="color: #008000">// very slow main initialization ...</i>
+    <i style="color: #008000">// ... parse configuration</i>
+    <i style="color: #008000">// ... initialize other resources used by workers</i>
+    _startPermit.Release();
+  }
+
+}</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e2970"></a>8.3.4.&nbsp;Semaphore</h3></div></div></div>
+      
+
+      <p>The <code class="literal">Semaphore</code> class implements the
+      <code class="literal">ISync</code> interface and provides an implementation of a
+      semaphore. Conceptually, a semaphore maintains a set of permits. Each
+      <code class="literal">Acquire()</code> blocks if necessary until a permit is
+      available, and then takes it. Each <code class="literal">Release()</code> adds a
+      permit. However, no actual permit objects are used; the Semaphore just
+      keeps a count of the number available and acts accordingly. A typical
+      use is to control access to a pool of shared objects.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">class</span> LimitedConcurrentUploader {
+  <i style="color: #008000">// ensure we don't exceed maxUpload simultaneous uploads</i>
+  Semaphore _available;
+  <span style="color: #0000FF">public</span> LimitedConcurrentUploader(maxUploads) {
+    _available = <span style="color: #0000FF">new</span> Semaphore(maxUploads);
+  }
+  <i style="color: #008000">// no matter how many threads call this method no more</i>
+  <i style="color: #008000">// than maxUploads concurrent uploads will occur.</i>
+  <span style="color: #0000FF">public</span> Upload(IDataTransfer upload) {
+    _available.Acquire();
+    <span style="color: #0000FF">try</span> {
+      upload.TransferData();
+    }
+    <span style="color: #0000FF">finally</span> {
+      _available.Release();
+    }
+  }
+}
+
+</pre>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="resources.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="pool.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;7.&nbsp;Resources&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;9.&nbsp;Object Pooling</td></tr></table></div></body></html>

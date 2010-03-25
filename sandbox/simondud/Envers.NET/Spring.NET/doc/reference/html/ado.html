@@ -1,0 +1,2076 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;20.&nbsp;Data access using ADO.NET</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-middle-tier.html" title="Part&nbsp;II.&nbsp;Middle Tier Data Access"><link rel="prev" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider"><link rel="next" href="orm.html" title="Chapter&nbsp;21.&nbsp;Object Relational Mapping (ORM) data access"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="ado"></a>Chapter&nbsp;20.&nbsp;Data access using ADO.NET</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-introduction"></a>20.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Spring provides an abstraction for data access via ADO.NET that
+    provides the following benefits and features</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>Consistent and comprehensive database provider interfaces for
+        both .NET 1.1 and 2.0</p>
+      </li><li>
+        <p>Integration with Spring's transaction management
+        features.</p>
+      </li><li>
+        <p>Template style use of DbCommand that removes the need to write
+        typical ADO.NET boiler-plate code.</p>
+      </li><li>
+        <p>'One-liner' implementations for the most common database usage
+        patterns lets you focus on the 'meat' of your ADO.NET code.</p>
+      </li><li>
+        <p>Easy database parameter creation/management</p>
+      </li><li>
+        <p>Provider independent exceptions with database error codes and
+        higher level DAO exception hierarchy.</p>
+      </li><li>
+        <p>Centralized resource management for connections, commands, data
+        readers, etc.</p>
+      </li><li>
+        <p>Simple DataReader to Object mapping framework.</p>
+      </li></ul></div>
+
+    <p>This chapter is divided up into a number of sections that describe
+    the major areas of functionality within Spring's ADO.NET support.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>Motivations - describes why one should consider using Spring's
+        ADO.NET features as compared to using 'raw' ADO.NET API.</p>
+      </li><li>
+        <p>Provider Abstraction - a quick overview of Spring's provider
+        abstraction.</p>
+      </li><li>
+        <p>Approaches to ADO.NET Data Access - Discusses the two styles of
+        Spring's ADO.NET data access classes - template and object
+        based.</p>
+      </li><li>
+        <p>Introduction to AdoTemplate - Introduction to the design and
+        core methods of the central class in Spring's ADO.NET support.</p>
+      </li><li>
+        <p>Exception Translation - Describes the features of Spring's data
+        access exceptions</p>
+      </li><li>
+        <p>Parameter Management - Convenience classes and methods for easy
+        parameter management.</p>
+      </li><li>
+        <p>Custom IDataReader implementations - Strategy for providing
+        custom implementations of IDataReader. This can be used to centralized
+        and transparently map DBNull values to CLR types when accessing an
+        IDataReader or to provide extended mapping functionality in
+        sub-interfaces.</p>
+      </li><li>
+        <p>Basic data access operations - Usage of AdoTemplate for
+        IDbCommand 'ExecuteScalar' and 'ExecuteNonScalar' functionality</p>
+      </li><li>
+        <p>Queries and Lightweight Object Mapping - Using AdoTemplate to
+        map result sets into objects</p>
+      </li><li>
+        <p>DataSet and DataTable operations - Using AdoTemplate with
+        DataSets and DataTables</p>
+      </li><li>
+        <p>Modeling ADO.NET operations as .NET objects - An object-oriented
+        approach to data access operations.</p>
+      </li></ul></div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-motivations"></a>20.2.&nbsp;Motivations</h2></div></div></div>
+    
+
+    <p>There are a variety of motivations to create a higher level ADO.NET
+    persistence API.</p>
+
+    <p>Encapsulation of common 'boiler plate' tasks when coding directly
+    against the ADO.NET API. For example here is a list of the tasks typically
+    required to be coded for processing a result set query. Note that the code
+    needed when using Spring's ADO.NET framework is in italics.</p>
+
+    <div class="orderedlist"><ol type="1"><li>
+        <p>Define connection parameters</p>
+      </li><li>
+        <p>Open the connection</p>
+      </li><li>
+        <p><span class="emphasis"><em>Specify the command type and text</em></span></p>
+      </li><li>
+        <p>Prepare and execute the statement</p>
+      </li><li>
+        <p>Set up the loop to iterate through the results (if any)</p>
+      </li><li>
+        <p><span class="emphasis"><em>Do the work for each iteration</em></span></p>
+      </li><li>
+        <p>Process any exception</p>
+      </li><li>
+        <p>Display or rollback on warnings</p>
+      </li><li>
+        <p>Handle transactions</p>
+      </li><li>
+        <p>Close the connection</p>
+      </li></ol></div>
+
+    <p>Spring takes care of the low-level tasks and lets you focus on
+    specifying the SQL and doing the real work of extracting data. This
+    standard boiler plate pattern is encapsulated in a class, AdoTemplate. The
+    name 'Template' is used because if you look at the typical code workflow
+    for the above listing, you would essentially like to 'template' it, that
+    is stick in the code that is doing the real work in the midst of the
+    resource, transaction, exception management.</p>
+
+    <p>Another very important motivation is to provide an easy means to
+    group multiple ADO.NET operations within a single transaction while at the
+    same time adhering to a DAO style design in which transactions are
+    initiated outside the DAOs, typically in a business service layer. Using
+    the 'raw' ADO.NET API to implement this design often results in explicitly
+    passing around of a Transaction/Connection pair to DAO objects. This
+    infrastructure task distracts from the main database task at hand and is
+    frequently done in an ad-hoc manner. Integrating with Spring's transaction
+    management features provides an elegant means to achieve this common
+    design goal. There are many other benefits to integration with Spring's
+    transaction management features, see <a class="xref" href="transaction.html" title="Chapter&nbsp;17.&nbsp;Transaction management">Chapter&nbsp;17, <i>Transaction management</i></a> for
+    more information.</p>
+
+    <p>Provider Independent Code: In .NET 1.1 writing provider independent
+    code was difficult for a variety of reasons. The most prominent was the
+    lack of a lack of a central factory for creating interface based
+    references to the core ADO.NET classes such as IDbConnection, IDbCommand,
+    DbParameter etc. In addition, the APIs exposed by many of these interfaces
+    were minimal or incomplete - making for tedious code that would otherwise
+    be more easily developed with provider specific subclasses. Lastly, there
+    was no common base class for data access exceptions across the providers.
+    .NET 2.0 made many changes for the better in that regard across all these
+    areas of concern - and Spring only plugs smaller holes in that regard to
+    help in the portability of your data access code.</p>
+
+    <p>Resource Management: The 'using' block is the heart of elegant
+    resource management in .NET from the API perspective. However, despite its
+    elegance, writing 2-3 nested using statements for each data access method
+    also starts to be tedious, which introduces the risk of forgetting to do
+    the right thing <span class="emphasis"><em>all the time</em></span> in terms of both direct
+    coding and 'cut-n-paste' errors. Spring centralizes this resource
+    management in one spot so you never forget or make a mistake and rely on
+    it always being done correctly.</p>
+
+    <p>Parameter management: Frequently much of data access code is related
+    to creating appropriate parameters. To alleviate this boiler plate code
+    Spring provides a parameter 'builder' class that allows for succinct
+    creation of parameter collections. Also, for the case of stored
+    procedures, parameters can be derived from the database itself which
+    reduces parameter creation code to just one line.</p>
+
+    <p>Frequently result set data is converted into objects. Spring
+    provides a simple framework to organize that mapping task and allows you
+    to reuse mapping artifacts across your application.</p>
+
+    <p>Exceptions: The standard course of action when an exception is
+    thrown from ADO.NET code is to look up the error code and then re-run the
+    application to set a break point where the exception occurred so as to see
+    what the command text and data values were that caused the exception.
+    Spring provides exceptions translation from these error codes (across
+    database vendors) to a Data Access Object exception hierarchy. This allows
+    you to quickly understand the category of the error that occurred and also
+    the 'bad' data which lead to the exception.</p>
+
+    <p>Warnings: A common means to extract warning from the database, and
+    to optionally treat those warnings as a reason to rollback is not directly
+    supported with the new System.Data.Common API</p>
+
+    <p>Portability: Where possible, increase the portability of code across
+    database provider in the higher level API. The need adding of a parameter
+    prefix, i.e. @ for SqlServer or ':' for oracle is one such example of an
+    area where a higher level API can offer some help in making your code more
+    portable.</p>
+
+    <p>Note that Spring's ADO.NET framework is just 'slightly' above the
+    raw API. It does not try to compete with other higher level persistence
+    abstractions such as result set mappers (iBATIS.NET) or other ORM tools
+    (NHibernate). (Apologies if your favorite is left out of that short list).
+    As always, pick and choose the appropriate level of abstraction for the
+    task at hand. As a side note, Spring does offer integration with higher
+    level persistence abstractions (currently NHibernate) providing such
+    features as integration with Spring's transaction management features as
+    well as mixing orm/ado.net operations within the same transaction.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-providers"></a>20.3.&nbsp;Provider Abstraction</h2></div></div></div>
+    
+
+    <p>Before you get started executing queries against the database you
+    need to connect to it. <a class="xref" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider">Chapter&nbsp;19, <i>DbProvider</i></a> covers this topic in
+    detail so we only discuss the basic idea of how to interact with the
+    database in this section. One important ingredient that increases the
+    portability of writing ADO.NET applications is to refer to the base
+    ADO.NET interfaces, such as IDbCommand or IDbParameter in your code.
+    However, In the .NET 1.1 BCL the only means to obtain references to
+    instances of these interfaces is to directly instantiate the classes, i.e.
+    for SqlServer this would be </p><pre class="programlisting"> IDbCommand command = <span style="color: #0000FF">new</span> SqlCommand();</pre><p>
+    One of the classic creational patterns in the GoF Design Patterns book
+    addresses this situation directly, the Abstract Factory pattern. This
+    approach was applied in the .NET BCL with the introduction of the
+    DbProviderFactory class which contains various factory methods that create
+    the various objects used in ADO.NET programming. In addition, .NET 2.0
+    introduced new abstract base classes that all ADO.NET providers must
+    inherit from. These base classes provide more core functionality and
+    uniformity across the various providers as compared to the original
+    ADO.NET interfaces.</p>
+
+    <p>Spring's database provider abstraction has a similar API to that of
+    .ADO.NET 2.0's DbProviderFactory. The central interface is IDbProvider and
+    it has factory methods that are analogous to those in the
+    DbProviderFactory class except that they return references to the base
+    ADO.NET interfaces. Note that in keeping with the Spring Framework's
+    philosophy, IDbProvider is an interface, and can thus be easily mocked or
+    stubbed as necessary. Another key element of this interface is the
+    ConnectionString property that specifies the specific runtime information
+    necessary to connect to the provider. The interface also has a IDbMetadata
+    property that contains minimal database metadata information needed to
+    support the functionality in rest of the Spring ADO.NET framework. It is
+    unlikely you will need to use the DatabaseMetadata class directly in your
+    application.</p>
+
+    <p>For more information on configuring a Spring database provider refer
+    to <a class="xref" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider">Chapter&nbsp;19, <i>DbProvider</i></a></p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-dbprovider-creating-instance"></a>20.3.1.&nbsp;Creating an instance of IDbProvider</h3></div></div></div>
+      
+
+      <p>Each database vendor is associated with a particular
+      implementation of the IDbProvider interfaces. A variety of
+      implementations are provided with Spring such as SqlServer, Oracle and
+      MySql. Refer to the documentation on Spring's DbProvider for creating a
+      configuration for database that is not yet provided. The programmatic
+      way to create an IDbProvider is shown below</p>
+
+      <pre class="programlisting">IDbProvider dbProvider = DbProviderFactory.GetDbProvider(<span style="color: #000000">"System.Data.SqlClient"</span>);</pre>
+    </div>
+
+    <p>Please refer to the <a class="xref" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider">Chapter&nbsp;19, <i>DbProvider</i></a> for information on
+    how to create a IDbProvider in Spring's XML configuration file.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-namespaces"></a>20.4.&nbsp;Namespaces</h2></div></div></div>
+    
+
+    <p>The ADO.NET framework consists of a few namespaces, namely
+    <code class="package">Spring.Data</code>, <code class="package">Spring.Data.Generic</code>,
+    <code class="package">Spring.Data.Common</code>,
+    <code class="package">Spring.Data.Support</code>, and
+    <code class="package">Spring.Data.Object</code>.</p>
+
+    <p>The <code class="package">Spring.Data</code> namespace contains the majority
+    of the classes and interfaces you will deal with on a day to day
+    basis.</p>
+
+    <p>The <code class="package">Spring.Data.Generic</code> namespaces add generic
+    versions of some classes and interfaces and you will also likely deal with
+    this on a day to day basis if you are using .NET 2.0</p>
+
+    <p>The <code class="package">Spring.Data.Common</code> namespaces contains
+    Spring's DbProvider abstraction in addition to utility classes for
+    parameter creation.</p>
+
+    <p>The <code class="package">Spring.Data.Object</code> namespaces contains
+    classes that represent RDBMS queries, updates, and stored procedures as
+    thread safe, reusable objects.</p>
+
+    <p>Finally the <code class="literal">Spring.Data.Support</code> namespace is
+    where you find the <code class="literal">IAdoExceptionTransactor</code> translation
+    functionality and some utility classes.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-data-access-approaches"></a>20.5.&nbsp;Approaches to Data Access</h2></div></div></div>
+    
+
+    <p>Spring provides two styles to interact with ADO.NET. The first is a
+    'template' based approach in which you create an single instance of
+    <code class="literal">AdoTemplate</code> to be used by all your DAO implementations.
+    Your DAO methods are frequently implemented as a single method call on the
+    template class as described in detail in the following section. The other
+    approach a more object-oriented manner that models database operations as
+    objects. For example, one can encapsulate the functionality of a database
+    query via an <code class="literal">AdoQuery</code> class and a create/update/delete
+    operation as a <code class="literal">AdoNonQuery</code> class. Stored procedures are
+    also modelled in this manner via the class
+    <code class="literal">StoredProcedure</code>. To use these classes you inherit from
+    them and define the details of the operation in the constructor and
+    implement an abstract method. This reads very cleanly when looking at DAO
+    method implementation as you can generally see all the details of what is
+    going on.</p>
+
+    <p>Generally speaking, experience has shown that the AdoTemplate
+    approach reads very cleanly when looking at DAO method implementation as
+    you can generally see all the details of what is going on as compared to
+    the object based approach. The object based approach however, offers some
+    advantages when calling stored procedures since it acts as a cache of
+    derived stored procedure arguments and can be invoked passing a variable
+    length argument list to the 'execute' method. As always, take a look at
+    both approaches and use the approach that provides you with the most
+    benefit for a particular situation.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-adotemplate-intro"></a>20.6.&nbsp;Introduction to AdoTemplate</h2></div></div></div>
+    
+
+    <p>The class <code class="literal">AdoTemplate</code> is at the heart of Spring's
+    ADO.NET support. It is based on an Inversion of Control (i.e. callback)
+    design with the central method '<code class="literal">Execute</code>' handing you a
+    <code class="literal">IDbCommand</code> instance that has its Connection and
+    Transaction properties set based on the transaction context of the calling
+    code. All resource management is handled by the framework, you only need
+    to focus on dealing with the <code class="literal">IDbCommand</code> object. The
+    other methods in this class build upon this central 'Execute' method to
+    provide you a quick means to execute common data access scenarios.</p>
+
+    <p>There are two implementations of <code class="literal">AdoTemplate</code>. The
+    one that uses Generics and is in the namespace
+    <code class="literal">Spring.Data.Generic</code> and the other non-generic version
+    in <code class="package">Spring.Data</code>. In either case you create an instance
+    of an <code class="literal">AdoTemplate</code> by passing it a
+    <code class="literal">IDbProvider</code> instance as shown below</p>
+
+    <pre class="programlisting">AdoTemplate adoTemplate = <span style="color: #0000FF">new</span> AdoTemplate(dbProvider);</pre>
+
+    <p><code class="literal">AdoTemplate</code> is a thread-safe class and as such a
+    single instance can be used for all data access operations in you
+    applications DAOs. <code class="literal">AdoTemplate</code> implements an
+    <code class="literal">IAdoOperations</code> interface. Although the
+    <code class="literal">IAdoOperations</code> interface is more commonly used for
+    testing scenarios you may prefer to code against it instead of the direct
+    class instance.</p>
+
+    <p>If you are using the generic version of AdoTemplate you can access
+    the non-generic version via the property ClassicAdoTemplate.</p>
+
+    <p>The following two sections show basic usage of the
+    <code class="literal">AdoTemplate</code> 'Execute' API for .NET 1.1 and 2.0.</p>
+
+    <p></p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-execute-callback"></a>20.6.1.&nbsp;Execute Callback</h3></div></div></div>
+      
+
+      <p>The <code class="methodname">Execute</code> method and its associated
+      callback function/inteface is the basic method upon which all the other
+      methods in <code class="literal">AdoTemplate</code> delegate their work. If you
+      can not find a suitable 'one-liner' method in
+      <code class="literal">AdoTemplate</code> for your purpose you can always fall back
+      to the <code class="methodname">Execute</code> method to perform any database
+      operation while benefiting from ADO.NET resource management and
+      transaction enlistment. This is commonly the case when you are using
+      special provider specific features, such as XML or BLOB support.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-execute-callback-net2"></a>20.6.2.&nbsp;Execute Callback in .NET 2.0</h3></div></div></div>
+      
+
+      <p>In this example a simple query against the 'Northwind' database is
+      done to determine the number of customers who have a particular postal
+      code.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> FindCountWithPostalCode(<span style="color: #0000FF">string</span> postalCode)
+{
+  <span style="color: #0000FF">return</span> adoTemplate.Execute&lt;<span style="color: #0000FF">int</span>&gt;(<span style="color: #0000FF">delegate</span>(DbCommand command)
+         {
+             command.CommandText =
+                 <span style="color: #000000">"select count(*) from Customers where PostalCode = @PostalCode"</span>;
+                                                    
+             DbParameter p = command.CreateParameter();
+             p.ParameterName = <span style="color: #000000">"@PostalCode"</span>;
+             p.Value = postalCode;
+             command.Parameters.Add(p);
+                                                         
+             <span style="color: #0000FF">return</span> (<span style="color: #0000FF">int</span>)command.ExecuteScalar();
+
+          });
+
+}</pre><p>The <code class="literal">DbCommand</code> that is passed into the
+      anonymous delegate is already has it Connection property set to the
+      corresponding value of the dbProvider instance used to create the
+      template. Furthermore, the <code class="methodname">Transaction</code> property
+      of the <code class="literal">DbCommand</code> is set based on the transactional
+      calling context of the code as based on the use of Spring's transaction
+      management features. Also note the feature of anonymous delegates to
+      access the variable 'postalCode' which is defined 'outside' the
+      anonymous delegate implementation. The use of anonymous delegates is a
+      powerful approach since it allows you to write compact data access code.
+      If you find that your callback implementation is getting very long, it
+      may improve code clarity to use an interface based version of the
+      callback function, i.e. an <code class="literal">ICommandCallback</code> shown
+      below.</p>
+
+      <p>As you can see, only the most relevant portions of the data access
+      task at hand need to be coded. (Note that in this simple example you
+      would be better off using AdoTemplate's ExecuteScalar method directly.
+      This method is described in the following sections). As mentioned
+      before, the typical usage scenario for the Execute callback would
+      involve downcasting the passed in <code class="literal">DbCommand</code> object to
+      access specific provider API features.</p>
+
+      <p>There is also an interface based version of the execute method.
+      The signatures for the delegate and interface are shown below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> T CommandDelegate&lt;T&gt;(DbCommand command);  
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICommandCallback
+{
+  T DoInCommand&lt;T&gt;(DbCommand command);
+}</pre>
+
+      <p>While the delegate version offers the most compact syntax, the
+      interface version allows for reuse. The corresponding method signatures
+      on <code class="package">Spring.Data.Generic.AdoTemplate</code> are shown
+      below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdoTemplate : AdoAccessor, IAdoOperations
+{
+   ...
+
+   T Execute&lt;T&gt;(ICommandCallback action);
+
+   T Execute&lt;T&gt;(CommandDelegate&lt;T&gt; del);
+
+   ...
+}</pre>
+
+      <p>While it is common for .NET 2.0 ADO.NET provider implementations
+      to inherit from the base class System.Data.Common.DbCommand, that is not
+      a requirement. To accommodate the few that don't, which as of this
+      writing are the latest Oracle (ODP) provider, Postgres, and DB2 for
+      iSeries, two additional execute methods are provided. The only
+      difference is the use of callback and delegate implementations that have
+      IDbCommand and not DbCommand as callback arguments. The following
+      listing shows these methods on AdoTemplate.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdoTemplate : AdoAccessor, IAdoOperations
+{
+   ...
+
+   T Execute&lt;T&gt;(IDbCommandCallback action);
+
+   T Execute&lt;T&gt;(IDbCommandDelegate&lt;T&gt; del);
+
+   ...
+}</pre>
+
+      <p>where the signatures for the delegate and interface are shown
+      below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> T IDbCommandDelegate&lt;T&gt;(IDbCommand command);
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDbCommandCallback&lt;T&gt;
+{
+  T DoInCommand(IDbCommand command);
+}</pre>
+
+      <p>Internally the <code class="literal">AdoTemplate</code> implementation
+      delegates to implementations of <code class="literal">IDbCommandCallback</code> so
+      that the 'lowest common denominator' API is used to have maximum
+      portability. If you accidentally call
+      <code class="literal">Execute&lt;T&gt;(ICommandCallback action)</code>and the
+      command does not inherit from <code class="literal">DbCommand</code>, an
+      <code class="literal">InvalidDataAccessApiUsageException</code> will be
+      thrown.</p>
+
+      <p>Depending on how portable you would like your code to be, you can
+      choose among the two callback styles. The one based on
+      <code class="literal">DbCommand</code> has the advantage of access to the more
+      user friendly <code class="literal">DbParameter</code> class as compared to
+      <code class="literal">IDbParameter</code> obtained from
+      <code class="literal">IDbCommand</code>.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-execute-callback-net11"></a>20.6.3.&nbsp;Execute Callback in .NET 1.1</h3></div></div></div>
+       &gt; 
+
+      
+
+       
+
+      <p>AdoTemplate differs from its .NET 2.0 generic counterpart in that
+      it exposes the interface <code class="literal">IDbCommand</code> in its 'Execute'
+      callback methods and delegate as compared to the abstract base class
+      <code class="literal">DbProvider</code>. Also, since anonymous delegates are not
+      available in .NET 1.1, the typical usage pattern requires you to create
+      a explicitly delegate and/or class that implements the
+      <code class="literal">ICommandCallback</code> interface. Example code to query In
+      .NET 1.1 the 'Northwind' database is done to determine the number of
+      customers who have a particular postal code is shown below.</p>
+
+       
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> <span style="color: #0000FF">int</span> FindCountWithPostalCode(<span style="color: #0000FF">string</span> postalCode)
+{
+  <span style="color: #0000FF">return</span> (<span style="color: #0000FF">int</span>) AdoTemplate.Execute(<span style="color: #0000FF">new</span> PostalCodeCommandCallback(postalCode));
+}</pre>
+
+       
+
+      <p>and the callback implementation is</p>
+
+       
+
+      <pre class="programlisting"><span style="color: #0000FF">private</span> <span style="color: #0000FF">class</span> PostalCodeCommandCallback : ICommandCallback
+{
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> cmdText = <span style="color: #000000">"select count(*) from Customer where PostalCode = @PostalCode"</span>;
+
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> postalCode;
+    
+    <span style="color: #0000FF">public</span> PostalCodeCommandCallback(<span style="color: #0000FF">string</span> postalCode)
+    {
+        <span style="color: #0000FF">this</span>.postalCode = postalCode;
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> DoInCommand(IDbCommand command)
+    {
+        command.CommandText = cmdText;
+
+        IDbDataParameter p = command.CreateParameter();
+        p.ParameterName = <span style="color: #000000">"@PostalCode"</span>;
+        p.Value = postalCode;
+        command.Parameters.Add(p);
+        
+        <span style="color: #0000FF">return</span> command.ExecuteScalar();
+
+    }
+}</pre>
+
+       
+
+      <p>Note that in this example, one could more easily use AdoTemplate's
+      ExecuteScalar method.</p>
+
+       
+
+      <p>The Execute method has interface and delegate overloads. The
+      signatures for the delegate and interface are shown below</p>
+
+       
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> <span style="color: #0000FF">object</span> CommandDelegate(IDbCommand command);
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICommandCallback
+{
+  <span style="color: #0000FF">object</span> DoInCommand(IDbCommand command);
+}</pre>
+
+       
+
+      <p>The corresponding method signatures on
+      <code class="package">Spring.Data.AdoTemplate</code> are shown below</p>
+
+       
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdoTemplate : AdoAccessor, IAdoOperations
+{
+   ...
+
+   <span style="color: #0000FF">object</span> Execute(CommandDelegate del);
+
+   <span style="color: #0000FF">object</span> Execute(ICommandCallback action);
+
+   ...
+
+}</pre>
+
+       
+
+      <p>Note that you have to cast to the appropriate object type returned
+      from the execute method.</p>
+
+       
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-template-method-guide"></a>20.6.4.&nbsp;Quick Guide to AdoTemplate Methods</h3></div></div></div>
+      
+
+      <p>There are many methods in AdoTemplate so it is easy to feel a bit
+      overwhelmed when taking a look at the SDK documentation. However, after
+      a while you will hopefully find the class 'easy to navigate' with
+      intellisense. Here is a quick categorization of the method names and
+      their associated data access operation. Each method is overloaded to
+      handle common cases of passing in parameter values.</p>
+
+      <p>The generic 'catch-all' method</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">Execute</code> - Allows you to perform any
+          data access operation on a standard DbCommand object. The connection
+          and transaction properties of the DbCommand are already set based on
+          the transactional calling context. There is also an overloaded
+          method that operates on a standard IDbCommand object. This is for
+          those providers that do not inherit from the base class
+          DbCommand.</p>
+        </li></ul></div>
+
+      <p>The following methods mirror those on the DbCommand object.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">ExecuteNonQuery</code> - Executes the
+          'NonQuery' method on a DbCommand, applying provided parameters and
+          returning the number of rows affected.</p>
+        </li><li>
+          <p><code class="methodname">ExecuteScalar</code> - Executes the 'Scalar'
+          method on a DbCommand, applying provided parameters, and returning
+          the first column of the first row in the result set.</p>
+        </li></ul></div>
+
+      <p>Mapping result sets to objects</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">QueryWithResultSetExtractor</code> - Execute
+          a query mapping a result set to an object with an implementation of
+          the <code class="literal">IResultSetExtractor</code> interface.</p>
+        </li><li>
+          <p><code class="methodname">QueryWithResultSetExtractorDelegate</code> -
+          Same as QueryWithResultSetExtractor but using a
+          <code class="literal">ResultSetExtractorDelegate</code> to perform result set
+          mapping.</p>
+        </li><li>
+          <p><code class="methodname">QueryWithRowCallback</code> - Execute a
+          query calling an implementation of <code class="literal">IRowCallback</code>
+          for each row in the result set.</p>
+        </li><li>
+          <p><code class="methodname">QueryWithRowCallbackDelegate</code> - Same
+          as QueryWithRowCallback but calling a
+          <code class="literal">RowCallbackDelegate</code> for each row.</p>
+        </li><li>
+          <p><code class="methodname">QueryWithRowMapper</code> - Execute a query
+          mapping a result set on a row by row basis with an implementation of
+          the <code class="literal">IRowMapper</code> interface.</p>
+        </li><li>
+          <p><code class="methodname">QueryWithRowMapperDelegate</code> - Same as
+          QueryWithRowMapper but using a <code class="literal">RowMapperDelegate</code>
+          to perform result set row to object mapping.</p>
+        </li></ul></div>
+
+      <p>Mapping result set to a single object</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">QueryForObject</code> - Execute a query
+          mapping the result set to an object using a
+          <code class="literal">IRowMapper</code>. Exception is thrown if the query does
+          not return exactly one object.</p>
+        </li></ul></div>
+
+      <p>Query with a callback to create the DbCommand object. These are
+      generally used by the framework itself to support other functionality,
+      such as in the Spring.Data.Objects namespace.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">QueryWithCommandCreator</code> - Execute a
+          query with a callback to <code class="literal">IDbCommandCreator</code> to
+          create a IDbCommand object and using either a IRowMapper or
+          IResultSetExtractor to map the result set to an object. One
+          variation lets multiple result set 'processors' be specified to act
+          on multiple result sets and return output parameters.</p>
+        </li></ul></div>
+
+      <p>DataTable and DataSet operations</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">DataTableCreate</code> - Create and Fill
+          DataTables</p>
+        </li><li>
+          <p><code class="methodname">DataTableCreateWithParameters</code> -
+          Create and Fill DataTables using a parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataTableFill</code> - Fill a pre-existing
+          DataTable.</p>
+        </li><li>
+          <p><code class="methodname">DataTableFillWithParameters</code> - Fill a
+          pre-existing DataTable using parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataTableUpdate</code> - Update the database
+          using the provided DataTable, insert, update, delete SQL.</p>
+        </li><li>
+          <p><code class="methodname">DataTableUpdateWithCommandBuilder</code> -
+          Update the database using the provided DataTable, select SQL, and
+          parameters.</p>
+        </li><li>
+          <p><code class="methodname">DataSetCreate</code> - Create and Fill
+          DataSets</p>
+        </li><li>
+          <p><code class="methodname">DataSetCreateWithParameters</code> - Create
+          and Fill DataTables using a parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataSetFill</code> - Fill a pre-existing
+          DataSet</p>
+        </li><li>
+          <p><code class="methodname">DataSetFillWithParameters</code> - Fill a
+          pre-existing DataTable using parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataSetUpdate</code> - Update the database
+          using the provided DataSet, insert, update, delete SQL.</p>
+        </li><li>
+          <p><code class="methodname">DataSetUpdateWithCommandBuilder</code> -
+          Update the database using the provided DataSet, select SQL, and
+          parameters..</p>
+        </li></ul></div>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>These methods are not currently in the generic version of
+        AdoTemplate but accessible through the property
+        ClassicAdoTemplate.</p>
+      </td></tr></table></div>
+
+      <p>Parameter Creation utility methods</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">DeriveParameters</code> - Derive the
+          parameter collection for stored procedures.</p>
+        </li></ul></div>
+
+      <p>In turn each method typically has four overloads, one with no
+      parameters and three for providing parameters. Aside from the
+      DataTable/DataSet operations, the three parameter overloads are of the
+      form shown below</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">MethodName</code>(CommandType cmdType, string
+          cmdText, <span class="emphasis"><em>CallbackInterfaceOrDelegate</em></span>,
+          <span class="emphasis"><em>parameter setting arguments</em></span>)</p>
+        </li></ul></div>
+
+      <p>The CallbackInterfaceOrDelegate is one of the three types listed
+      previously. The parameters setting arguments are of the form</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">MethodName( ... string parameterName, Enum dbType,
+          int size, object parameterValue</code>)</p>
+        </li><li>
+          <p><code class="literal">MethodName( ... IDbParameters
+          parameters)</code></p>
+        </li><li>
+          <p><code class="literal">MethodName( ... ICommandSetter
+          commandSetter)</code></p>
+        </li></ul></div>
+
+      <p>The first overload is a convenience method when you only have one
+      parameter to set. The database enumeration is the base class 'Enum'
+      allowing you to pass in any of the provider specific enumerations as
+      well as the common DbType enumeration. This is a trade off of
+      type-safety with provider portability. (Note generic version could be
+      improved to provide type safety...).</p>
+
+      <p>The second overload contains a collection of parameters. The data
+      type is Spring's IDbParameters collection class discussed in the
+      following section.</p>
+
+      <p>The third overload is a callback interface allowing you to set the
+      parameters (or other properties) of the IDbCommand passed to you by the
+      framework directly.</p>
+
+      <p>If you are using .NET 2.0 the delegate versions of the methods are
+      very useful since very compact definitions of database operations can be
+      created that reference variables local to the DAO method. This removes
+      some of the tedium in passing parameters around with interface based
+      versions of the callback functions since they need to be passed into the
+      constructor of the implementing class. The general guideline is to use
+      the delegate when available for functionality that does not need to be
+      shared across multiple DAO classes or methods and use interface based
+      version to reuse the implementation in multiple places. The .NET 2.0
+      versions make use of generics where appropriate and therefore enhance
+      type-safety.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-adotemplate-properties-quicguide"></a>20.6.5.&nbsp;Quick Guide to AdoTemplate Properties</h3></div></div></div>
+      
+
+      <p>AdoTemplate has the following properties that you can
+      configure</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">LazyInit</code> - Indicates if the
+          <code class="literal">IAdoExceptionTranslator</code> should be created on
+          first encounter of an exception from the data provider or when
+          <code class="literal">AdoTemplate</code> is created. Default is true, i.e. to
+          lazily instantiate.</p>
+        </li><li>
+          <p><code class="literal">ExceptionTranslator</code> - Gets or sets the
+          implementation of <code class="literal">IAdoExceptionTranslator</code> to use.
+          If no custom translator is provided, a default
+          <code class="literal">ErrorCodeExceptionTranslator</code> is used.</p>
+        </li><li>
+          <p><code class="literal">DbProvider</code> - Gets or sets the
+          <code class="literal">IDbProvider</code> instance to use.</p>
+        </li><li>
+          <p><code class="literal">DataReaderWrapperType</code> - Gets or set the
+          System.Type to use to create an instance of
+          <code class="literal">IDataReaderWrapper</code> for the purpose of providing
+          extended mapping functionality. Spring provides an implementation to
+          use as the basis for a mapping strategy that will map
+          <code class="literal">DBNull</code> values to default values based on the
+          standard <code class="literal">IDataReader</code> interface. See the section
+          <a class="link" href="ado.html#ado-dbnull" title="20.10.&nbsp;Custom IDataReader implementations">custom IDataReader implementations</a>
+          for more information.</p>
+        </li><li>
+          <p><code class="literal">CommandTimeout</code> - Gets or sets the command
+          timeout for IDbCommands that this <code class="literal">AdoTemplate</code>
+          executes. Default is 0, indicating to use the database provider's
+          default.</p>
+        </li></ul></div>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-transaction-management"></a>20.7.&nbsp;Transaction Management</h2></div></div></div>
+    
+
+    <p>The AdoTemplate is used in conjunction with an implementation of a
+    <code class="literal">IPlatformTransactionManager</code>, which is Spring's portable
+    transaction management API. This section gives a brief overview of the
+    transaction managers you can use with AdoTemplate and the details of how
+    you can retrieve the connection/transaction ADO.NET objects that are bound
+    to the thread when a transaction starts. Please refer to the section <a class="link" href="transaction.html#key-abstractions" title="17.3.&nbsp;Key Abstractions">key abstractions</a> in the chapter on
+    transactions for more comprehensive introduction to transaction
+    management.</p>
+
+    <p>To use local transactions, those with only one transactional
+    resource (i.e. the database) you will typically use
+    <code class="literal">AdoPlatformTransactionManager</code>. If you need to mix
+    Hibernate and ADO.NET data access operations within the same local
+    transaction you should use <code class="literal">HibernatePlatformTransaction</code>
+    manager which is described more in the section on <a class="link" href="orm.html#orm-tx-mgmt" title="21.2.2.&nbsp;Transaction Management">ORM transaction management</a>.</p>
+
+    <p>While it is most common to use Spring's <a class="link" href="transaction.html" title="Chapter&nbsp;17.&nbsp;Transaction management">transaction management features</a> to avoid the
+    low level management of ADO.NET connection and transaction objects, you
+    can retrieve the connection/transaction pair that was created at the start
+    of a transaction and bound to the current thread. This may be useful for
+    some integration with other data access APIs. The can be done using the
+    utility class ConnectionUtils as shown below.</p>
+
+    <pre class="programlisting">IDbProvider dbProvider = DbProviderFactory.GetDbProvider(<span style="color: #000000">"System.Data.SqlClient"</span>);
+ConnectionTxPair connectionTxPairToUse = ConnectionUtils.GetConnectionTxPair(dbProvider);
+
+
+IDbCommand command = DbProvider.CreateCommand();
+command.Connection = connectionTxPairToUse.Connection;
+command.Transaction = connectionTxPairToUse.Transaction;</pre>
+
+    <p>It is possible to provide a wrapper around the standard .NET
+    provider interfaces such that you can use the plain ADO.NET API in
+    conjunction with Spring's transaction management features.</p>
+
+    <p>If you are using
+    <code class="literal">ServiceDomainPlatformTransactionManager</code> or
+    <code class="literal">TxScopePlatformTransactionManager</code> then you can retrieve
+    the currently executing transaction object via the standard .NET
+    APIs.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-exception-translation"></a>20.8.&nbsp;Exception Translation</h2></div></div></div>
+    
+
+    <p>AdoTemplate's methods throw exceptions within a Data Access Object
+    (DAO) exception hierarchy described in <a class="xref" href="dao.html" title="Chapter&nbsp;18.&nbsp;DAO support">Chapter&nbsp;18, <i>DAO support</i></a>. In
+    addition, the command text and error code of the exception are extracted
+    and logged. This leads to easier to write provider independent exception
+    handling layer since the exceptions thrown are not tied to a specific
+    persistence technology. Additionally, for ADO.NET code the error messages
+    logged provide information on the SQL and error code to better help
+    diagnose the issue.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-parameter-management"></a>20.9.&nbsp;Parameter Management</h2></div></div></div>
+    
+
+    <p>A fair amount of the code in ADO.NET applications is related to the
+    creation and population of parameters. The BCL parameter interfaces are
+    very minimal and do not have many convenience methods found in provider
+    implementations such as SqlClient. Even still, with SqlClient, there is a
+    fair amount of verbosity to creating and populating a parameter
+    collection. Spring provides two ways to make this mundane task easier and
+    more portable across providers.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-idbparametersbuilder"></a>20.9.1.&nbsp;IDbParametersBuilder</h3></div></div></div>
+      
+
+      <p>Instead of creating a parameter on one line of code, then setting
+      its type on another and size on another, a builder and parameter
+      interface, <code class="literal">IDbParametersBuilder</code> and
+      <code class="literal">IDbParameter</code> respectfully, are provided so that this
+      declaration process can be condensed. The IDbParameter support chaining
+      calls to its methods, in effect a simple language-constrained domain
+      specific language, to be fancy about it. Here is an example of it in
+      use.</p>
+
+      <pre class="programlisting">IDbParametersBuilder builder = CreateDbParametersBuilder();
+builder.Create().Name(<span style="color: #000000">"Country"</span>).Type(DbType.String).Size(15).Value(country);
+builder.Create().Name(<span style="color: #000000">"City"</span>).Type(DbType.String).Size(15).Value(city);
+
+
+<i style="color: #008000">// now get the IDbParameters collection for use in passing to AdoTemplate methods.</i>
+
+
+IDbParameters parameters = builder.GetParameters();</pre>
+
+      <p>Please note that <code class="literal">IDbParameters</code> and
+      <code class="literal">IDbParameter</code> are not part of the BCL, but part of the
+      Spring.Data.Common namespace. The IDbParameters collection is a frequent
+      argument to the overloaded methods of AdoTemplate.</p>
+
+      <p>The parameter prefix, i.e. '@' in Sql Server, is not required to
+      be added to the parameter name. The DbProvider is aware of this metadata
+      and AdoTemplate will add it automatically if required before
+      execution.</p>
+
+      <p>An additional feature of the IDbParametersBuilder is to create a
+      Spring FactoryObject that creates IDbParameters for use in the XML
+      configuration file of the IoC container. By leveraging Spring's
+      expression evaluation language, the above lines of code can be taken as
+      text from the XML configuration file and executed. As a result you can
+      externalize your parameter definitions from your code. In combination
+      with abstract object definitions and importing of configuration files
+      your increase the chances of having one code base support multiple
+      database providers just by a change in configuration files.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-idbparameters"></a>20.9.2.&nbsp;IDbParameters</h3></div></div></div>
+      
+
+      <p>This class is similar to the parameter collection class you find
+      in provider specific implementations of IDataParameterCollection. It
+      contains a variety of convenience methods to build up a collection of
+      parameters.</p>
+
+      <p>Here is an abbreviated listing of the common convenience
+      methods.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p>int Add(object parameterValue)</p>
+        </li><li>
+          <p>void AddRange(Array values)</p>
+        </li><li>
+          <p>IDbDataParameter AddWithValue(string name, object
+          parameterValue)</p>
+        </li><li>
+          <p>IDbDataParameter Add(string name, Enum parameterType)</p>
+        </li><li>
+          <p>IDbDataParameter AddOut(string name, Enum
+          parameterType)</p>
+        </li><li>
+          <p>IDbDataParameter AddReturn(string name, Enum
+          parameterType)</p>
+        </li><li>
+          <p>void DeriveParameters(string storedProcedureName)</p>
+        </li></ul></div>
+
+      <p>Here a simple usage example</p>
+
+      <pre class="programlisting"><i style="color: #008000">// inside method has has local variable country and city...</i>
+
+IDbParameters parameters = CreateDbParameters();
+parameters.AddWithValue(<span style="color: #000000">"Country"</span>, country).DbType = DbType.String;
+parameters.Add(<span style="color: #000000">"City"</span>, DbType.String).Value = city;
+
+
+<i style="color: #008000">// now pass on to AdoTemplate methods.</i></pre>
+
+      <p>The parameter prefix, i.e. '@' in Sql Server, is not required to
+      be added to the parameter name. The DbProvider is aware of this metadata
+      and AdoTemplate will add it automatically if required before
+      execution.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e6212"></a>20.9.3.&nbsp;Parameter names in SQL text</h3></div></div></div>
+      
+
+      <p>While the use of <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbParameters</span> or
+      <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IDbParametersBuilder</span> will remove the need for use
+      to vendor specific parameter prefixes when creating a parameter
+      collection, @User in Sql SqlSerer vs. :User in Oracle, you still need to
+      specify the vendor specific parameter prefix in the SQL Text. Portable
+      SQL in this regard is possible to implement, it is available as a
+      feature in Spring Java. If you would like such a feature, please <a class="link" href="http://jira.springsource.org/secure/CreateIssue!default.jspa?pid=10020" target="_top">raise
+      an issue</a>.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-dbnull"></a>20.10.&nbsp;Custom IDataReader implementations</h2></div></div></div>
+    
+
+    <p>The passed in implementation of <code class="literal">IDataReader</code> can
+    be customized. This lets you add a strategy for handling null values to
+    the standard methods in the <code class="literal">IDataReader</code> interface or to
+    provide sub-interface of IDataReader that contains extended functionality,
+    for example support for default values. In callback code, i.e. IRowMapper
+    and associated delegate, you would downcast to the sub-interface to
+    perform processing.</p>
+
+    <p>Spring provides a class to map <code class="literal">DBNull</code> values to
+    default values. When reading from a IDataReader there is often the need to
+    map <code class="literal">DBNull</code> values to some default values, i.e. null or
+    say a magic number such as -1. This is usually done via a ternary operator
+    which decreases readability and also increases the likelihood of mistakes.
+    Spring provides an <code class="literal">IDataReaderWrapper</code> interface (which
+    inherits from the standard <code class="literal">IDataReader</code>) so that you can
+    provide your own implementation of a IDataReader that will perform DBNull
+    mapping for you in a consistent and non invasive manner to your result set
+    reading code. A default implementation,
+    <code class="literal">NullMappingDataReader</code> is provided which you can
+    subclass to customize or simply implement the
+    <code class="literal">IDataReaderWrapper</code> interface directly. This interface
+    is shown below</p>
+
+    <pre class="programlisting">	<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDataReaderWrapper : IDataReader
+	{
+	    IDataReader WrappedReader
+	    {
+	        <span style="color: #0000FF">get</span>;
+	        <span style="color: #0000FF">set</span>;
+	    }
+	    
+	}</pre>
+
+    <p>All of AdoTemplates callback interfaces/delegates that have an
+    <code class="literal">IDataReader</code> as an argument are wrapped with a
+    <code class="literal">IDataReaderWrapper</code> if the AdoTemplate has been
+    configured with one via its <code class="methodname">DataReaderWrapperType</code>
+    property. Your implementation should support a zero-arg
+    constructor.</p>
+
+    <p>Frequently you will use a common mapper for DBNull across your
+    application so only one instance of <code class="literal">AdoTemplate</code> and
+    <code class="literal">IDataReaderWrapper</code> in required. If you need to use
+    multiple null mapping strategies you will need to create multiple
+    instances of <code class="literal">AdoTemplate</code> and configure them
+    appropriately in the DAO objects.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-basic-operations"></a>20.11.&nbsp;Basic data access operations</h2></div></div></div>
+    
+
+    <p>The 'ExecuteNonQuery' and 'ExecuteScalar' methods of
+    <code class="literal">AdoTemplate</code> have the same functionality as the same
+    named methods on the DbCommand object</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-executenonquery"></a>20.11.1.&nbsp;ExecuteNonQuery</h3></div></div></div>
+      
+
+      <p>ExecuteNonQuery is used to perform create, update, and delete
+      operations. It has four overloads listed below reflecting different ways
+      to set the parameters.</p>
+
+      <p>An example of using this method is shown below</p>
+
+      <pre class="programlisting">        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> CreateCredit(<span style="color: #0000FF">float</span> creditAmount)
+        {
+            AdoTemplate.ExecuteNonQuery(CommandType.Text,
+                    String.Format(<span style="color: #000000">"insert into Credits(creditAmount) VALUES ({0})"</span>,
+                    creditAmount));
+        }</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-executescalar"></a>20.11.2.&nbsp;ExecuteScalar</h3></div></div></div>
+      
+
+      <p>An example of using this method is shown below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">int</span> iCount = (<span style="color: #0000FF">int</span>)adoTemplate.ExecuteScalar(CommandType.Text, <span style="color: #000000">"SELECT COUNT(*) FROM TestObjects"</span>);
+                </pre>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-lightweight-orm"></a>20.12.&nbsp;Queries and Lightweight Object Mapping</h2></div></div></div>
+    
+
+    <p>A common ADO.NET development task is reading in a result set and
+    converting it to a collection of domain objects. The family of QueryWith
+    methods on AdoTemplate help in this task. The responsibility of performing
+    the mapping is given to one of three callback interfaces/delegates that
+    you are responsible for developing. These callback interfaces/delegates
+    are:</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>IResultSetExtractor / ResultSetExtractorDelegate - hands you a
+        IDataReader object for you to iterate over and return a result
+        object.</p>
+      </li><li>
+        <p>IRowCallback / RowCallbackDelegate - hands you a IDataReader to
+        process the current row. Returns void and as such is usually stateful
+        in the case of IRowCallback implementations or uses a variable to
+        collect a result that is available to an anonymous delegate.</p>
+      </li><li>
+        <p>IRowMapper / RowMapperDelegate - hands you a IDataReader to
+        process the current row and return an object corresponding to that
+        row.</p>
+      </li></ul></div>
+
+    <p>There are generic versions of the IResultSetExtractor and IRowMapper
+    interfaces/delegates providing you with additional type-safety as compared
+    to the object based method signatures used in the .NET 1.1
+    implementation.</p>
+
+    <p>As usual with callback APIs in Spring.Data, your implementations of
+    these interfaces/delegates are only concerned with the core task at hand -
+    mapping data - while the framework handles iteration of readers and
+    resource management.</p>
+
+    <p>Each 'QueryWith' method has 4 overloads to handle common ways to
+    bind parameters to the command text.</p>
+
+    <p>The following sections describe in more detail how to use Spring's
+    lightweight object mapping framework.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-resultsetextractor"></a>20.12.1.&nbsp;ResultSetExtractor</h3></div></div></div>
+      
+
+      <p>The ResultSetExtractor gives you control to iterate over the
+      IDataReader returned from the query. You are responsible for iterating
+      through all the result sets and returning a corresponding result object.
+      Implementations of IResultSetExtractor are typically stateless and
+      therefore reusable as long as the implementation doesn't access stateful
+      resources. The framework will close the IDataReader for you.</p>
+
+      <p>The interface and delegate signature for ResutSetExtractors is
+      shown below for the generic version in the Spring.Data.Generic
+      namespace</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IResultSetExtractor&lt;T&gt;
+{
+  T ExtractData(IDataReader reader);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> T ResultSetExtractorDelegate&lt;T&gt;(IDataReader reader);
+</pre>
+
+      <p>The definition for the non-generic version is shown below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IResultSetExtractor
+{
+    <span style="color: #0000FF">object</span> ExtractData(IDataReader reader);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> <span style="color: #0000FF">object</span> ResultSetExtractorDelegate(IDataReader reader);</pre>
+
+      <p>Here is an example taken from the Spring.DataQuickStart. It is a
+      method in a DAO class that inherits from AdoDaoSupport, which has a
+      convenience method 'CreateDbParametersBuilder()'.</p>
+
+      <p></p>
+
+      <pre class="programlisting">        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> IList&lt;<span style="color: #0000FF">string</span>&gt; GetCustomerNameByCountryAndCityWithParamsBuilder(<span style="color: #0000FF">string</span> country, <span style="color: #0000FF">string</span> city)
+        {
+
+            IDbParametersBuilder builder = CreateDbParametersBuilder();
+            builder.Create().Name(<span style="color: #000000">"Country"</span>).Type(DbType.String).Size(15).Value(country);
+            builder.Create().Name(<span style="color: #000000">"City"</span>).Type(DbType.String).Size(15).Value(city);
+            <span style="color: #0000FF">return</span> AdoTemplate.QueryWithResultSetExtractor(CommandType.Text,
+                                                           customerByCountryAndCityCommandText,
+                                                           <span style="color: #0000FF">new</span> CustomerNameResultSetExtractor&lt;List&lt;<span style="color: #0000FF">string</span>&gt;&gt;(),
+                                                           builder.GetParameters());
+        }
+        </pre>
+
+      <p>The implementation of the ResultSetExtractor is shown
+      below.</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">internal</span> <span style="color: #0000FF">class</span> CustomerNameResultSetExtractor&lt;T&gt; : IResultSetExtractor&lt;T&gt; <span style="color: #0000FF">where</span> T : IList&lt;<span style="color: #0000FF">string</span>&gt;, <span style="color: #0000FF">new</span>()
+    {
+
+        <span style="color: #0000FF">public</span> T ExtractData(IDataReader reader)
+        {
+            T customerList = <span style="color: #0000FF">new</span> T();
+            <span style="color: #0000FF">while</span> (reader.Read())
+            {
+                <span style="color: #0000FF">string</span> contactName = reader.GetString(0);
+                customerList.Add(contactName);
+            }
+            <span style="color: #0000FF">return</span> customerList;
+        }
+    }</pre>
+
+      <p>Internally the implementation of the QueryWithRowCallback and
+      QueryWithRowMapper methods are specializations of the general
+      ResultSetExtractor. For example, the QueryWithRowMapper implementation
+      iterates through the result set, calling the callback method 'MapRow'
+      for each row and collecting the results in an IList. If you have a
+      specific case that is not covered by the QueryWithXXX methods you can
+      subclass AdoTemplate and follow the same implementation pattern to
+      create a new QueryWithXXX method to suit your needs.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-rowcallback"></a>20.12.2.&nbsp;RowCallback</h3></div></div></div>
+      
+
+      <p>The RowCallback is usually a stateful object itself or populates
+      another stateful object that is accessible to the calling code. Here is
+      a sample take from the Data QuickStart</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> RowCallbackDao : AdoDaoSupport
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> cmdText = <span style="color: #000000">"select ContactName, PostalCode from Customers"</span>;
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> IDictionary&lt;<span style="color: #0000FF">string</span>, IList&lt;<span style="color: #0000FF">string</span>&gt;&gt; GetPostalCodeCustomerMapping()
+        {
+            PostalCodeRowCallback statefullCallback = <span style="color: #0000FF">new</span> PostalCodeRowCallback();
+            AdoTemplate.QueryWithRowCallback(CommandType.Text, cmdText,
+                                             statefullCallback);
+
+            <i style="color: #008000">// Do something with results in stateful callback...</i>
+            <span style="color: #0000FF">return</span> statefullCallback.PostalCodeMultimap;
+        }
+             
+    }</pre>
+
+      <p>The PostalCodeRowCallback builds up state which is then retrieved
+      via the property PostalCodeMultimap. The Callback implementation is
+      shown below</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">internal</span> <span style="color: #0000FF">class</span> PostalCodeRowCallback : IRowCallback
+    {
+        <span style="color: #0000FF">private</span> IDictionary&lt;<span style="color: #0000FF">string</span>, IList&lt;<span style="color: #0000FF">string</span>&gt;&gt; postalCodeMultimap =
+            <span style="color: #0000FF">new</span> Dictionary&lt;<span style="color: #0000FF">string</span>, IList&lt;<span style="color: #0000FF">string</span>&gt;&gt;();
+
+        <span style="color: #0000FF">public</span> IDictionary&lt;<span style="color: #0000FF">string</span>, IList&lt;<span style="color: #0000FF">string</span>&gt;&gt; PostalCodeMultimap
+        {
+            <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> postalCodeMultimap; }
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> ProcessRow(IDataReader reader)
+        {
+            <span style="color: #0000FF">string</span> contactName = reader.GetString(0);
+            <span style="color: #0000FF">string</span> postalCode = reader.GetString(1);
+            IList&lt;<span style="color: #0000FF">string</span>&gt; contactNameList;
+            <span style="color: #0000FF">if</span> (postalCodeMultimap.ContainsKey(postalCode))
+            {
+                contactNameList = postalCodeMultimap[postalCode];
+            }
+            <span style="color: #0000FF">else</span>
+            {
+                postalCodeMultimap.Add(postalCode, contactNameList = <span style="color: #0000FF">new</span> List&lt;<span style="color: #0000FF">string</span>&gt;());
+            }
+            contactNameList.Add(contactName);
+        }
+    }</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-rowmapper"></a>20.12.3.&nbsp;RowMapper</h3></div></div></div>
+      
+
+      <p>The RowMapper lets you focus on just the logic to map a row of
+      your result set to an object. The creation of a IList to store the
+      results and iterating through the IDataReader is handled by the
+      framework. Here is a simple example taken from the Data QuickStart
+      application</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> RowMapperDao : AdoDaoSupport
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> cmdText = <span style="color: #000000">"select Address, City, CompanyName, ContactName, "</span> +
+                             <span style="color: #000000">"ContactTitle, Country, Fax, CustomerID, Phone, PostalCode, "</span> +
+                             <span style="color: #000000">"Region from Customers"</span>;
+
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> IList&lt;Customer&gt; GetCustomers()
+        {
+            <span style="color: #0000FF">return</span> AdoTemplate.QueryWithRowMapper&lt;Customer&gt;(CommandType.Text, cmdText,
+                                                  <span style="color: #0000FF">new</span> CustomerRowMapper&lt;Customer&gt;());
+        }
+    }</pre>
+
+      <p>where the implementation of the RowMapper is</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CustomerRowMapper&lt;T&gt; : IRowMapper&lt;T&gt; <span style="color: #0000FF">where</span> T : Customer, <span style="color: #0000FF">new</span>()
+    {        
+        <span style="color: #0000FF">public</span> T MapRow(IDataReader dataReader, <span style="color: #0000FF">int</span> rowNum)
+        {
+            T customer = <span style="color: #0000FF">new</span> T();
+            customer.Address = dataReader.GetString(0);
+            customer.City = dataReader.GetString(1);
+            customer.CompanyName = dataReader.GetString(2);
+            customer.ContactName = dataReader.GetString(3);
+            customer.ContactTitle = dataReader.GetString(4);
+            customer.Country = dataReader.GetString(5);
+            customer.Fax = dataReader.GetString(6);
+            customer.Id = dataReader.GetString(7);
+            customer.Phone = dataReader.GetString(8);
+            customer.PostalCode = dataReader.GetString(9);
+            customer.Region = dataReader.GetString(10);
+            <span style="color: #0000FF">return</span> customer;
+        }
+    }</pre>
+
+      <p>You may also pass in a delegate, which is particularly convenient
+      if the mapping logic is short and you need to access local variables
+      within the mapping logic.</p>
+
+      <pre class="programlisting">        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> IList&lt;Customer&gt; GetCustomersWithDelegate()
+        {
+            <span style="color: #0000FF">return</span> AdoTemplate.QueryWithRowMapperDelegate&lt;Customer&gt;(CommandType.Text, cmdText,
+                        <span style="color: #0000FF">delegate</span>(IDataReader dataReader, <span style="color: #0000FF">int</span> rowNum)
+                            {
+                                Customer customer = <span style="color: #0000FF">new</span> Customer();
+                                customer.Address = dataReader.GetString(0);
+                                customer.City = dataReader.GetString(1);
+                                customer.CompanyName = dataReader.GetString(2);
+                                customer.ContactName = dataReader.GetString(3);
+                                customer.ContactTitle = dataReader.GetString(4);
+                                customer.Country = dataReader.GetString(5);
+                                customer.Fax = dataReader.GetString(6);
+                                customer.Id = dataReader.GetString(7);
+                                customer.Phone = dataReader.GetString(8);
+                                customer.PostalCode = dataReader.GetString(9);
+                                customer.Region = dataReader.GetString(10);
+                                <span style="color: #0000FF">return</span> customer;
+                            });
+        }</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-query-for-single-object"></a>20.12.4.&nbsp;Query for a single object</h3></div></div></div>
+      
+
+      <p>The QueryForObject method is used when you expect there to be
+      exactly one object returned from the mapping, otherwise a
+      Spring.Dao.IncorrectResultSizeDataAccessException will be thrown. Here
+      is some sample usage taken from the Data QuickStart.</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> QueryForObjectDao : AdoDaoSupport
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> cmdText = <span style="color: #000000">"select Address, City, CompanyName, ContactName, "</span> +
+                     <span style="color: #000000">"ContactTitle, Country, Fax, CustomerID, Phone, PostalCode, "</span> +
+                     <span style="color: #000000">"Region from Customers where ContactName = @ContactName"</span>;
+        
+        <span style="color: #0000FF">public</span> Customer GetCustomer(<span style="color: #0000FF">string</span> contactName)
+        {
+            <span style="color: #0000FF">return</span> AdoTemplate.QueryForObject(CommandType.Text, cmdText, 
+                                              <span style="color: #0000FF">new</span> CustomerRowMapper&lt;Customer&gt;(),
+                                              <span style="color: #000000">"ContactName"</span>, DbType.String, 30, contactName);
+        }
+    }</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-queyr-commandcreator"></a>20.12.5.&nbsp;Query using a CommandCreator</h3></div></div></div>
+      
+
+      <p>There is a family of overloaded methods that allows you to
+      encapsulate and reuse a particular configuration of a
+      <code class="literal">IDbCommand</code> object. These methods also allow for
+      access to returned out parameters as well as a method that allows
+      processing of multiple result sets. These methods are used internally to
+      support the classes in the <code class="package">Spring.Data.Objects</code>
+      namespace and you may find the API used in that namespace to be more
+      convenient. The family of methods is listed below.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">object QueryWithCommandCreator(IDbCommandCreator cc,
+          IResultSetExtractor rse)</code></p>
+        </li><li>
+          <p><code class="literal">void QueryWithCommandCreator(IDbCommandCreator cc,
+          IRowCallback rowCallback)</code></p>
+        </li><li>
+          <p><code class="literal">IList QueryWithCommandCreator(IDbCommandCreator cc,
+          IRowMapper rowMapper)</code></p>
+        </li></ul></div>
+
+      <p>There is also the same methods with an additional collecting
+      parameter to obtain any output parameters. These are</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">object QueryWithCommandCreator(IDbCommandCreator cc,
+          IResultSetExtractor rse, IDictionary
+          returnedParameters)</code></p>
+        </li><li>
+          <p><code class="literal">void QueryWithCommandCreator(IDbCommandCreator cc,
+          IRowCallback rowCallback, IDictionary
+          returnedParameters)</code></p>
+        </li><li>
+          <p><code class="literal">IList QueryWithCommandCreator(IDbCommandCreator cc,
+          IRowMapper rowMapper, IDictionary
+          returnedParameters)</code></p>
+        </li></ul></div>
+
+      <p>The IDbCommandCreator callback interface is shown below</p>
+
+      <pre class="programlisting">	<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDbCommandCreator 
+	{
+	    IDbCommand CreateDbCommand();
+	}</pre>
+
+      <p>The created IDbCommand object is used when performing the
+      QueryWithCommandCreator method.</p>
+
+      <p>To process multiple result sets specify a list of named result set
+      processors,( i.e. <code class="literal">IResultSetExtractor</code>,
+      <code class="literal">IRowCallback</code>, or <code class="literal">IRowMapper). </code>This
+      method is shown below</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">IDictionary QueryWithCommandCreator(IDbCommandCreator
+          cc, IList namedResultSetProcessors)</code></p>
+        </li></ul></div>
+
+      <p>The list must contain objects of the type
+      <code class="literal">Spring.Data.Support.NamedResultSetProcessor</code>. This is
+      the class responsible for associating a name with a result set
+      processor. The constructors are listed below.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> NamedResultSetProcessor  {
+  
+  <span style="color: #0000FF">public</span> NamedResultSetProcessor(<span style="color: #0000FF">string</span> name, IRowMapper rowMapper) { ... }
+
+  <span style="color: #0000FF">public</span> NamedResultSetProcessor(<span style="color: #0000FF">string</span> name, IRowCallback rowcallback)  { ... } 
+
+  <span style="color: #0000FF">public</span> NamedResultSetProcessor(<span style="color: #0000FF">string</span> name, IResultSetExtractor resultSetExtractor) { ... }
+
+  . . . 
+
+}</pre>
+
+      <p>The results of the RowMapper or ResultSetExtractor are retrieved
+      by name from the dictionary that is returned. RowCallbacks, being
+      stateless, only have the placeholder text, "ResultSet returned was
+      processed by an IRowCallback" as a value for the name of the RowCallback
+      used as a key. Output and InputOutput parameters can be retrieved by
+      name. If this parameter name is null, then the index of the parameter
+      prefixed with the letter 'P' is a key name, i.e P2, P3, etc.</p>
+
+      <p>The namespace Spring.Data.Objects.Generic contains generic
+      versions of these methods. These are listed below</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">T QueryWithCommandCreator&lt;T&gt;(IDbCommandCreator
+          cc, IResultSetExtractor&lt;T&gt; rse)</code></p>
+        </li><li>
+          <p><code class="literal">IList&lt;T&gt;
+          QueryWithCommandCreator&lt;T&gt;(IDbCommandCreator cc,
+          IRowMapper&lt;T&gt; rowMapper)</code></p>
+        </li></ul></div>
+
+      <p>and overloads that have an additional collecting parameter to
+      obtain any output parameters.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">T QueryWithCommandCreator&lt;T&gt;(IDbCommandCreator
+          cc, IResultSetExtractor&lt;T&gt; rse, IDictionary
+          returnedParameters)</code></p>
+        </li><li>
+          <p><code class="literal">IList&lt;T&gt;
+          QueryWithCommandCreator&lt;T&gt;(IDbCommandCreator cc,
+          IRowMapper&lt;T&gt; rowMapper, IDictionary
+          returnedParameters)</code></p>
+        </li></ul></div>
+
+      <p>When processing multiple result sets you can specify up to two
+      type safe result set processors.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">IDictionary
+          QueryWithCommandCreator&lt;T&gt;(IDbCommandCreator cc, IList
+          namedResultSetProcessors)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary
+          QueryWithCommandCreator&lt;T,U&gt;(IDbCommandCreator cc, IList
+          namedResultSetProcessors)</code></p>
+        </li></ul></div>
+
+      <p>The list of result set processors contains either objects of the
+      type Spring.Data.Generic.NamedResultSetProcessor&lt;T&gt; or
+      Spring.Data.NamedResultSetProcessor. The generic result set processors,
+      NamedResultSetProcessor&lt;T&gt;, is used to process the first result
+      set in the case of using QueryWithCommandCreator&lt;T&gt; and to process
+      the first and second result set in the case of using
+      QueryWithCommandCreator&lt;T,U&gt;. Additional
+      Spring.Data.NamedResultSetProcessors that are listed can be used to
+      process additional result sets. If you specify a RowCallback with
+      NamedResultSetProcessor&lt;T&gt;, you still need to specify a type
+      parameter (say string) because the RowCallback processor does not return
+      any object. It is up to subclasses of RowCallback to collect state due
+      to processing the result set which is later queried.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-datatable-dataset"></a>20.13.&nbsp;DataTable and DataSet</h2></div></div></div>
+    
+
+    <p>AdoTemplate contains several 'families' of methods to help remove
+    boilerplate code and reduce common programming errors when using
+    DataTables and DataSets. There are many methods in AdoTemplate so it is
+    easy to feel a bit overwhelmed when taking a look at the SDK
+    documentation. However, after a while you will hopefully find the class
+    'easy to navigate' with intellisense. Here is a quick categorization of
+    the method names and their associated data access operation. Each method
+    is overloaded to handle common cases of passing in parameter
+    values.</p>
+
+    <p>The 'catch-all' Execute methods upon which other functionality is
+    built up upon are shown below.</p>
+
+    <p>In <span class="property">Spring.Data.Core.AdoTemplate</span></p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p><code class="literal">object Execute(IDataAdapterCallback
+        dataAdapterCallback)</code> - Execute ADO.NET operations on a
+        IDbDataAdapter object using an interface based callback.</p>
+      </li></ul></div>
+
+    <p>Where <code class="literal">IDataAdapterCallback</code> is defined as</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDataAdapterCallback 
+{
+    <span style="color: #0000FF">object</span> DoInDataAdapter(IDbDataAdapter dataAdapter);
+}</pre>
+
+    <p>The passed in <code class="literal">IDbDataAdapter</code> will have its
+    <span class="property">SelectCommand</span> property created and set with its
+    <span class="property">Connection</span> and <span class="property">Transaction</span>
+    values based on the calling transaction context. The return value is the
+    result of processing or null.</p>
+
+    <p>There are type-safe versions of this method in
+    <code class="literal">Spring.Data.Generic.AdoTemplate</code></p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p><code class="literal">T Execute&lt;T&gt;(IDataAdapterCallback&lt;T&gt;
+        dataAdapterCallback) </code>- Execute ADO.NET operations on a
+        IDbDataAdapter object using an interface based callback.</p>
+      </li><li>
+        <p><code class="literal">T Execute&lt;T&gt;(DataAdapterDelegate&lt;T&gt; del)
+        </code>- Execute ADO.NET operations on a IDbDataAdapter object
+        using an delegate based callback.</p>
+      </li></ul></div>
+
+    <p>Where IDataAdapterCallback&lt;T&gt; and DataAdapterDelegate&lt;T&gt;
+    are defined as</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IDataAdapterCallback&lt;T&gt;
+{
+    T DoInDataAdapter(IDbDataAdapter dataAdapter);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">delegate</span> T DataAdapterDelegate&lt;T&gt;(IDbDataAdapter dataAdapter);</pre>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-datatable"></a>20.13.1.&nbsp;DataTables</h3></div></div></div>
+      
+
+      <p>DataTable operations are available on the class
+      <code class="literal">Spring.Data.Core.AdoTemplate</code>. If you are using the
+      generic version, <code class="literal">Spring.Data.Generic.AdoTemplate</code>, you
+      can access these methods through the property
+      <span class="property">ClassicAdoTemplate</span>, which returns the non-generic
+      version of AdoTemplate. DataTable operations available fall into the
+      general family of methods with 3-5 overloads per method.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">DataTableCreate</code> - Create and Fill
+          DataTables</p>
+        </li><li>
+          <p><code class="methodname">DataTableCreateWithParameters</code> -
+          Create and Fill DataTables using a parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataTableFill</code> - Fill a pre-existing
+          DataTable.</p>
+        </li><li>
+          <p><code class="methodname">DataTableFillWithParameters</code> - Fill a
+          pre-existing DataTable using a parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataTableUpdate</code> - Update the database
+          using the provided DataTable, insert, update, delete SQL.</p>
+        </li><li>
+          <p><code class="methodname">DataTableUpdateWithCommandBuilder</code> -
+          Update the database using the provided DataTable, select SQL, and
+          parameters.</p>
+        </li></ul></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-dataset"></a>20.13.2.&nbsp;DataSets</h3></div></div></div>
+      
+
+      <p>DataSet operations are available on the class
+      <code class="literal">Spring.Data.Core.AdoTemplate</code>. If you are using the
+      generic version, <code class="literal">Spring.Data.Generic.AdoTemplate</code>, you
+      can access these methods through the property
+      <span class="property">ClassicAdoTemplate</span>, which returns the non-generic
+      version of AdoTemplate. DataSet operations available fall into the
+      following family of methods with 3-5 overloads per method.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="methodname">DataSetCreate</code> - Create and Fill
+          DataSets</p>
+        </li><li>
+          <p><code class="methodname">DataSetCreateWithParameters</code> - Create
+          and Fill DataTables using a parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataSetFill</code> - Fill a pre-existing
+          DataSet</p>
+        </li><li>
+          <p><code class="methodname">DataSetFillWithParameters</code> - Fill a
+          pre-existing DataTable using parameter collection.</p>
+        </li><li>
+          <p><code class="methodname">DataSetUpdate</code> - Update the database
+          using the provided DataSet, insert, update, delete SQL.</p>
+        </li><li>
+          <p><code class="methodname">DataSetUpdateWithCommandBuilder</code> -
+          Update the database using the provided DataSet, select SQL, and
+          parameters.</p>
+        </li></ul></div>
+
+      <p>The following code snippets demonstrate the basic functionality of
+      these methods using the Northwind database. See the SDK documentation
+      for more details on other overloaded methods.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DataSetDemo : AdoDaoSupport
+{
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> selectAll = <span style="color: #000000">@"select Address, City, CompanyName, ContactName, "</span> +
+                              <span style="color: #000000">"ContactTitle, Country, Fax, CustomerID, Phone, PostalCode, "</span> +
+                              <span style="color: #000000">"Region from Customers"</span>;
+
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DemoDataSetCreate()
+  {
+    DataSet customerDataSet = AdoTemplate.DataSetCreate(CommandType.Text, selectAll);
+
+    <i style="color: #008000">// customerDataSet has a table named 'Table' with 91 rows</i>
+
+    customerDataSet = AdoTemplate.DataSetCreate(CommandType.Text, selectAll, <span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[] { <span style="color: #000000">"Customers"</span> });
+
+    <i style="color: #008000">// customerDataSet has a table named 'Customers' with 91 rows</i>
+
+}
+
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DemoDataSetCreateWithParameters()
+  {
+    <span style="color: #0000FF">string</span> selectLike = <span style="color: #000000">@"select Address, City, CompanyName, ContactName, "</span> +
+                         <span style="color: #000000">"ContactTitle, Country, Fax, CustomerID, Phone, PostalCode, "</span> +
+                         <span style="color: #000000">"Region from Customers where ContactName like @ContactName"</span>;
+
+    DbParameters dbParameters = CreateDbParameters();
+    dbParameters.Add(<span style="color: #000000">"ContactName"</span>, DbType.String).Value = <span style="color: #000000">"M%';
+</span>    DataSet customerLikeMDataSet = AdoTemplate.DataSetCreateWithParams(CommandType.Text, selectLike, dbParameters);
+
+   <i style="color: #008000">// customerLikeMDataSet has a table named 'Table' with 12 rows</i>
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DemoDataSetFill()
+  {
+    DataSet dataSet = <span style="color: #0000FF">new</span> DataSet();
+    dataSet.Locale = CultureInfo.InvariantCulture;
+    AdoTemplate.DataSetFill(dataSet, CommandType.Text, selectAll);
+  }</pre><p>Updating a DataSet can be done using a CommandBuilder,
+      automatically created from the specified select command and select
+      parameters, or by explicitly specifying the insert, update, delete
+      commands and parameters. Below is an example, refer to the SDK
+      documentation for additional overloads</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DataSetDemo : AdoDaoSupport
+{
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">string</span> selectAll = <span style="color: #000000">@"select Address, City, CompanyName, ContactName, "</span> +
+                              <span style="color: #000000">"ContactTitle, Country, Fax, CustomerID, Phone, PostalCode, "</span> +
+                              <span style="color: #000000">"Region from Customers"</span>;
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DemoDataSetUpdateWithCommandBuilder()
+  {
+    DataSet dataSet = <span style="color: #0000FF">new</span> DataSet();
+    dataSet.Locale = CultureInfo.InvariantCulture;
+    AdoTemplate.DataSetFill(dataSet, CommandType.Text, selectAll, <span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[]{ <span style="color: #000000">"Customers"</span> } );
+
+    AddAndEditRow(dataSet);.
+
+    AdoTemplate.DataSetUpdateWithCommandBuilder(dataSet, CommandType.Text, selectAll, <span style="color: #0000FF">null</span>, <span style="color: #000000">"Customers"</span>);
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DemoDataSetUpdateWithoutCommandBuilder()
+  {
+    DataSet dataSet = <span style="color: #0000FF">new</span> DataSet();
+    dataSet.Locale = CultureInfo.InvariantCulture;
+    AdoTemplate.DataSetFill(dataSet, CommandType.Text, selectAll, <span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[]{ <span style="color: #000000">"Customers"</span> } );
+
+    AddAndEditRow(dataSet);.
+
+    <span style="color: #0000FF">string</span> insertSql = <span style="color: #000000">@"INSERT Customers (CustomerID, CompanyName) VALUES (@CustomerId, @CompanyName)"</span>;
+    IDbParameters insertParams = CreateDbParameters();
+    insertParams.Add(<span style="color: #000000">"CustomerId"</span>, DbType.String, 0, <span style="color: #000000">"CustomerId"</span>);   <i style="color: #008000">//.Value = "NewID";</i>
+    insertParams.Add(<span style="color: #000000">"CompanyName"</span>, DbType.String, 0, <span style="color: #000000">"CompanyName"</span>); <i style="color: #008000">//.Value = "New Company Name";</i>
+
+    <span style="color: #0000FF">string</span> updateSql = <span style="color: #000000">@"update Customers SET Phone=@Phone where CustomerId = @CustomerId"</span>;                
+    IDbParameters updateParams = CreateDbParameters();
+    updateParams.Add(<span style="color: #000000">"Phone"</span>, DbType.String, 0, <span style="color: #000000">"Phone"</span>);<i style="color: #008000">//.Value = "030-0074322"; // simple change, last digit changed from 1 to 2.</i>
+    updateParams.Add(<span style="color: #000000">"CustomerId"</span>, DbType.String, 0, <span style="color: #000000">"CustomerId"</span>);<i style="color: #008000">//.Value = "ALFKI";</i>
+
+    AdoTemplate.DataSetUpdate(dataSet, <span style="color: #000000">"Customers"</span>,
+                                        CommandType.Text, insertSql, insertParams,
+                                        CommandType.Text, updateSql, updateParams,
+                                        CommandType.Text, <span style="color: #0000FF">null</span> , <span style="color: #0000FF">null</span>);
+  }
+
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> AddAndEditRow(DataSet dataSet)
+  {
+    DataRow dataRow = dataSet.Tables[<span style="color: #000000">"Customers"</span>].NewRow();
+    dataRow[<span style="color: #000000">"CustomerId"</span>] = <span style="color: #000000">"NewID"</span>;
+    dataRow[<span style="color: #000000">"CompanyName"</span>] = <span style="color: #000000">"New Company Name"</span>;
+    dataRow[<span style="color: #000000">"ContactName"</span>] = <span style="color: #000000">"New Name"</span>;
+    dataRow[<span style="color: #000000">"ContactTitle"</span>] = <span style="color: #000000">"New Contact Title"</span>;
+    dataRow[<span style="color: #000000">"Address"</span>] = <span style="color: #000000">"New Address"</span>;
+    dataRow[<span style="color: #000000">"City"</span>] = <span style="color: #000000">"New City"</span>;
+    dataRow[<span style="color: #000000">"Region"</span>] = <span style="color: #000000">"NR"</span>;
+    dataRow[<span style="color: #000000">"PostalCode"</span>] = <span style="color: #000000">"New Code"</span>;
+    dataRow[<span style="color: #000000">"Country"</span>] = <span style="color: #000000">"New Country"</span>;
+    dataRow[<span style="color: #000000">"Phone"</span>] = <span style="color: #000000">"New Phone"</span>;
+    dataRow[<span style="color: #000000">"Fax"</span>] = <span style="color: #000000">"New Fax"</span>;
+    dataSet.Tables[<span style="color: #000000">"Customers"</span>].Rows.Add(dataRow);
+
+    DataRow alfkiDataRow = dataSet.Tables[<span style="color: #000000">"Customers"</span>].Rows[0];
+    alfkiDataRow[<span style="color: #000000">"Phone"</span>] = <span style="color: #000000">"030-0074322"</span>; <i style="color: #008000">// simple change, last digit changed from 1 to 2.</i>
+  }
+}</pre>
+
+      <p>In the case of needing to set parameter SourceColumn or
+      SourceVersion properties it may be more convenient to use
+      IDbParameterBuilder.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-tableadapter-tx"></a>20.14.&nbsp;TableAdapters and participation in transactional context</h2></div></div></div>
+    
+
+    <p>Typed DataSets need to have commands in their internal DataAdapters
+    and command collections explicitly set with a connection/transaction in
+    order for them to correctly participate with a surrounding transactional
+    context. The reason for this is by default the code generated is
+    explicitly managing the connections and transactions. This issue is very
+    well described in the article <a class="ulink" href="http://www.code-magazine.com/Article.aspx?quickid=0605031" target="_top">System.Transactions
+    and ADO.NET 2.0</a> by ADO.NET guru Sahil Malik. Spring offers a
+    convenience method that will use reflection to internally set the
+    transaction on the table adapter's internal command collection to the
+    ambient transaction. This method on the class
+    <code class="literal">Spring.Data.Support.TypedDataSetUtils</code> and is named
+    <code class="methodname">ApplyConnectionAndTx</code>. Here is sample usage of a
+    DAO method that uses a VS.NET 2005 generated typed dataset for a
+    PrintGroupMapping table.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> PrintGroupMappingDataSet FindAll()
+{
+
+   PrintGroupMappingTableAdapter adapter = <span style="color: #0000FF">new</span> PrintGroupMappingTableAdapter();
+   PrintGroupMappingDataSet printGroupMappingDataSet = <span style="color: #0000FF">new</span> PrintGroupMappingDataSet();
+       
+       
+   printGroupMappingDataSet = AdoTemplate.Execute(<span style="color: #0000FF">delegate</span>(IDbCommand command)
+                              {
+                                  TypedDataSetUtils.ApplyConnectionAndTx(adapter, command);
+                                  adapter.Fill(printGroupMappingDataSet.PrintGroupMapping);
+                                  
+                                  <span style="color: #0000FF">return</span> printGroupMappingDataSet;
+                              }) 
+                              <span style="color: #0000FF">as</span> PrintGroupMappingDataSet;
+
+   <span style="color: #0000FF">return</span> printGroupMappingDataSet;
+}</pre>
+
+    <p>This DAO method may be combined with other DAO operations inside a
+    transactional context and they will all share the same
+    connection/transaction objects.</p>
+
+    <p>There are two overloads of the method ApplyConnectionAndTx which
+    differ in the second method argument, one takes an IDbCommand and the
+    other IDbProvider. These are listed below</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> ApplyConnectionAndTx(<span style="color: #0000FF">object</span> typedDataSetAdapter, IDbCommand sourceCommand)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> ApplyConnectionAndTx(<span style="color: #0000FF">object</span> typedDataSetAdapter, IDbProvider dbProvider)</pre>
+
+    <p>The method that takes IDbCommand is a convenience if you will be
+    using AdoTemplate callback's as the passed in command object will already
+    have its connection and transaction properties set based on the current
+    transactional context. The method that takes an IDbProvider is convenient
+    to use when you have data access logic that is not contained within a
+    single callback method but is instead spead among multiple classes. In
+    this case passing the transactionally aware IDbCommand object can be
+    intrusive on the method signatures. Instead you can pass in an instance of
+    IDbProvider that can be obtained via standard dependency injection
+    techniques or via a service locator style lookup.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ado-objects"></a>20.15.&nbsp;Database operations as Objects</h2></div></div></div>
+    
+
+    <p>The <code class="literal">Spring.Data.Objects and Spring.Data.Objects.Generic
+    </code>namespaces contains classes that allow one to access the
+    database in a more object-oriented manner. By way of an example, one can
+    execute queries and get the results back as a list containing business
+    objects with the relational column data mapped to the properties of the
+    business object. One can also execute stored procedures and run update,
+    delete and insert statements.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>There is a view borne from experience acquired in the field
+        amongst some of the Spring developers that the various RDBMS operation
+        classes described below (with the exception of the <a class="link" href="ado.html#ado-storedproc" title="20.15.4.&nbsp;Stored Procedure">StoredProcedure</a> class) can often be
+        replaced with straight <code class="literal">AdoTemplate</code> calls... often
+        it is simpler to use and plain easier to read a DAO method that simply
+        calls a method on a <code class="literal">AdoTemplate</code> direct (as opposed
+        to encapsulating a query as a full-blown class).</p>
+
+        <p>It must be stressed however that this is just a
+        <span class="emphasis"><em>view</em></span>... if you feel that you are getting
+        measurable value from using the RDBMS operation classes, feel free to
+        continue using these classes.</p>
+      </td></tr></table></div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-adoquery"></a>20.15.1.&nbsp;AdoQuery</h3></div></div></div>
+      
+
+      <p><code class="literal">AdoQuery</code> is a reusable, threadsafe class that
+      encapsulates an SQL query. Subclasses must implement the
+      <code class="methodname">NewRowMapper(..)</code> method to provide a
+      <code class="literal">IRowMapper</code> instance that can create one object per
+      row obtained from iterating over the <code class="literal">IDataReader</code> that
+      is created during the execution of the query. The
+      <code class="literal">AdoQuery</code> class is rarely used directly since the
+      <code class="literal">MappingAdoQuery</code> subclass provides a much more
+      convenient implementation for mapping rows to .NET classes. Another
+      implementations that extends <code class="literal">AdoQuery</code> is
+      <code class="literal">MappingadoQueryWithParameters</code> (See SDK docs for
+      details).</p>
+
+      <p>The <code class="literal">AdoNonQuery</code> class encapsulates an
+      IDbCommand 's ExecuteNonQuery method functionality. Like the
+      <code class="literal">AdoQuery</code> object, an <code class="literal">AdoNonQuery</code>
+      object is reusable, and like all <code class="literal">AdoOperation</code>
+      classes, an <code class="literal">AdoNonQuery</code> can have parameters and is
+      defined in SQL. This class provides two execute methods</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">IDictionary ExecuteNonQuery(params object[]
+          inParameterValues)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary ExecuteNonQueryByNamedParam(IDictionary
+          inParams)</code></p>
+        </li></ul></div>
+
+      <p>This class is concrete. Although it can be subclassed (for example
+      to add a custom update method) it can easily be parameterized by setting
+      SQL and declaring parameters.</p>
+
+      <p>An example of an AdoQuery subclass to encapsulate an insert
+      statement for a 'TestObject' (consisting only name and age columns) is
+      shown below</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CreateTestObjectNonQuery : AdoNonQuery
+{
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> sql = <span style="color: #000000">"insert into TestObjects(Age,Name) values (@Age,@Name)"</span>;
+   
+  <span style="color: #0000FF">public</span> CreateTestObjectNonQuery(IDbProvider dbProvider) : <span style="color: #0000FF">base</span>(dbProvider, sql)
+  {
+    DeclaredParameters.Add(<span style="color: #000000">"Age"</span>, DbType.Int32);
+    DeclaredParameters.Add(<span style="color: #000000">"Name"</span>, SqlDbType.NVarChar, 16);
+    Compile();
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Create(<span style="color: #0000FF">string</span> name, <span style="color: #0000FF">int</span> age)
+  {
+     ExecuteNonQuery(name, age);
+  }
+
+}</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-mappingadoquery"></a>20.15.2.&nbsp;MappingAdoQuery</h3></div></div></div>
+      
+
+      <p><code class="literal">MappingAdoQuery</code> is a reusable query in which
+      concrete subclasses must implement the abstract
+      <code class="methodname">MapRow(..)</code> method to convert each row of the
+      supplied <code class="literal">IDataReader</code> into an object. Find below a
+      brief example of a custom query that maps the data from a relation to an
+      instance of the <code class="literal">Customer</code> class.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> TestObjectQuery : MappingAdoQuery
+{
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> sql = <span style="color: #000000">"select TestObjectNo, Age, Name from TestObjects"</span>;
+        
+    <span style="color: #0000FF">public</span> TestObjectQuery(IDbProvider dbProvider) 
+        : <span style="color: #0000FF">base</span>(dbProvider, sql)
+    {           
+        CommandType = CommandType.Text;
+    }
+
+    <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">object</span> MapRow(IDataReader reader, <span style="color: #0000FF">int</span> num)
+    {
+        TestObject to = <span style="color: #0000FF">new</span> TestObject();
+        to.ObjectNumber = reader.GetInt32(0);
+        to.Age = reader.GetInt32(1);
+        to.Name = reader.GetString(2);
+        <span style="color: #0000FF">return</span> to;
+    }
+}</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-adononquery"></a>20.15.3.&nbsp;AdoNonQuery</h3></div></div></div>
+      
+
+      <p>The <code class="literal">AdoNonQuery</code> class encapsulates an
+      IDbCommand 's ExecuteNonQuery method functionality. Like the
+      <code class="literal">AdoQuery</code> object, an <code class="literal">AdoNonQuery</code>
+      object is reusable, and like all <code class="literal">AdoOperation</code>
+      classes, an <code class="literal">AdoNonQuery</code> can have parameters and is
+      defined in SQL. This class provides two execute methods</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">IDictionary ExecuteNonQuery(params object[]
+          inParameterValues)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary ExecuteNonQueryByNamedParam(IDictionary
+          inParams)</code></p>
+        </li></ul></div>
+
+      <p>This class is concrete. Although it can be subclassed (for example
+      to add a custom update method) it can easily be parameterized by setting
+      SQL and declaring parameters.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CreateTestObjectNonQuery : AdoNonQuery
+{
+  <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> sql = <span style="color: #000000">"insert into TestObjects(Age,Name) values (@Age,@Name)"</span>;
+   
+  <span style="color: #0000FF">public</span> CreateTestObjectNonQuery(IDbProvider dbProvider) : <span style="color: #0000FF">base</span>(dbProvider, sql)
+  {
+    DeclaredParameters.Add(<span style="color: #000000">"Age"</span>, DbType.Int32);
+    DeclaredParameters.Add(<span style="color: #000000">"Name"</span>, SqlDbType.NVarChar, 16);
+    Compile();
+  }
+
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Create(<span style="color: #0000FF">string</span> name, <span style="color: #0000FF">int</span> age)
+  {
+    ExecuteNonQuery(name, age);
+  }
+
+}</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ado-storedproc"></a>20.15.4.&nbsp;Stored Procedure</h3></div></div></div>
+      
+
+      <p>The StoredProcedure class is designed to make it as simple as
+      possible to call a stored procedure. It takes advantage of metadata
+      present in the database to look up names of in and out parameters.. This
+      means that you don't have to explicitly declare parameters. You can of
+      course still declare them if you prefer. There are two versions of the
+      StoredProcedure class, one that uses generics and one that doesn't.
+      Using the StoredProcedure class consists of two steps, first defining
+      the in/out parameter and any object mappers and second executing the
+      stored procedure.</p>
+
+      <p>The non-generic version of StoredProcedure is in the namespace
+      Spring.Data.Objects. It contains the following methods to execute a
+      stored procedure</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">IDictionary ExecuteScalar(params object[]
+          inParameterValues)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary ExecuteScalarByNamedParam(IDictionary
+          inParams)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary ExecuteNonQuery(params object[]
+          inParameterValues)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary ExecuteNonQueryByNamedParam(IDictionary
+          inParams)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary Query(params object[]
+          inParameterValues)</code></p>
+        </li><li>
+          <p><code class="literal">IDictionary QueryByNamedParam(IDictionary
+          inParams)</code></p>
+        </li></ul></div>
+
+      <p>Each of these methods returns an <code class="literal">IDictionary</code>
+      that contains the output parameters and/or any results from Spring's
+      object mapping framework. The arguments to these methods can be a
+      variable length argument list, in which case the order must match the
+      parameter order of the stored procedure. If the argument is an
+      IDictionary it contains parameter key/value pairs. Return values from
+      stored procedures are contained under the key
+      "<code class="literal">RETURN_VALUE</code>".</p>
+
+      <p>The standard in/out parameters for the stored procedure can be set
+      programmatically by adding to the parameter collection exposed by the
+      property DeclaredParameters. For each result sets that is returned by
+      the stored procedures you can registering either an
+      <code class="literal">IResultSetExtractor</code>, <code class="literal">IRowCallback</code>,
+      or <code class="literal">IRowMapper</code> by name, which is used later to extract
+      the mapped results from the returned
+      <code class="literal">IDictionary</code>.</p>
+
+      <p>Lets take a look at an example. The following stored procedure
+      class will call the CustOrdersDetail stored procedure in the Northwind
+      database, passing in the OrderID as a stored procedure argument and
+      returning a collection of OrderDetails business objects.</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CustOrdersDetailStoredProc : StoredProcedure
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> procedureName = <span style="color: #000000">"CustOrdersDetail"</span>;
+
+        <span style="color: #0000FF">public</span> CustOrdersDetailStoredProc(IDbProvider dbProvider) : <span style="color: #0000FF">base</span>(dbProvider, procedureName)
+        {           
+            DeriveParameters();
+            AddRowMapper(<span style="color: #000000">"orderDetailRowMapper"</span>, <span style="color: #0000FF">new</span> OrderDetailRowMapper() );
+            Compile();
+        }
+        
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> IList GetOrderDetails(<span style="color: #0000FF">int</span> orderid)
+        {
+            IDictionary outParams = Query(orderid);
+            <span style="color: #0000FF">return</span> outParams[<span style="color: #000000">"orderDetailRowMapper"</span>] <span style="color: #0000FF">as</span> IList;
+        }
+
+    }</pre>
+
+      <p>The '<code class="literal">DeriveParameters</code>' method saves you the
+      trouble of having to declare each parameter explicitly. When using
+      <code class="literal">DeriveParameters</code> is it often common to use the Query
+      method that takes a variable length list of arguments. This assumes
+      additional knowledge on the order of the stored procedure arguments. If
+      you do not want to follow this loose shorthand convention, you can call
+      the method <code class="literal">QueryByNamesParameters</code> instead passing in
+      a IDictionary of parameter key/value pairs. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+          <p>If you would like to have the return value of the stored
+          procedure included in the returned dictionary, pass in
+          <code class="literal">true</code> as a method parameter to
+          <code class="literal">DeriveParameters</code>().</p>
+        </td></tr></table></div>
+
+      <p>The <code class="literal">StoredProcedure</code> class is threadsafe once
+      'compiled', an act which is usually done in the constructor. This sets
+      up the cache of database parameters that can be used on each call to
+      Query or QueryByNamedParam. The implementation of
+      <code class="literal">IRowMapper</code> that is used to extract the business
+      objects is 'registered' with the class and then later retrieved by name
+      as a fictional output parameter. You may also register
+      <code class="literal">IRowCallback</code> and
+      <code class="literal">IResultSetExtractor</code> callback interfaces via the
+      <code class="literal">AddRowCallback</code> and
+      <code class="literal">AddResultSetExtractor</code> methods.</p>
+
+      <p>The generic version of StoredProcedure is in the namespace
+      Spring.Data.Objects.Generic. It allows you to define up to two generic
+      type parameters that will be used to process result sets returned from
+      the stored procedure. An example is shown below</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CustOrdersDetailStoredProc : StoredProcedure
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> procedureName = <span style="color: #000000">"CustOrdersDetail"</span>;
+
+        <span style="color: #0000FF">public</span> CustOrdersDetailStoredProc(IDbProvider dbProvider) : <span style="color: #0000FF">base</span>(dbProvider, procedureName)
+        {           
+            DeriveParameters();
+            AddRowMapper(<span style="color: #000000">"orderDetailRowMapper"</span>, <span style="color: #0000FF">new</span> OrderDetailRowMapper&lt;OrderDetails&gt;() );
+            Compile();
+        }
+        
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> List&lt;OrderDetails&gt; GetOrderDetails(<span style="color: #0000FF">int</span> orderid)
+        {
+            
+            IDictionary outParams = Query&lt;OrderDetails&gt;(orderid);
+            <span style="color: #0000FF">return</span> outParams[<span style="color: #000000">"orderDetailRowMapper"</span>] <span style="color: #0000FF">as</span> List&lt;OrderDetails&gt;;
+        }
+
+    }</pre>
+
+      <p>You can find ready to run code demonstrating the StoredProcedure
+      class in the example 'Data Access' that is part of the Spring.NET
+      distribution.</p>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dbprovider.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="orm.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;19.&nbsp;DbProvider&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;21.&nbsp;Object Relational Mapping (ORM) data access</td></tr></table></div></body></html>

@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net"
+         xmlns:nms="http://www.springframework.net/nms">
+
+
+  <object id="ConnectionFactory" type="Apache.NMS.ActiveMQ.ConnectionFactory, Apache.NMS.ActiveMQ">
+    <constructor-arg index="0" value="tcp://localhost:61616"/>
+  </object>
+
+  <!-- NMS based implementation of technology neutral IStockServiceGateway -->
+  <object name="StockServiceGateway" type="Spring.NmsQuickStart.Client.Gateways.NmsStockServiceGateway, Spring.NmsQuickStart.Client">
+    <property name="NmsTemplate"  ref="NmsTemplate"/>
+    <property name="DefaultReplyToQueue">
+      <object type="Apache.NMS.ActiveMQ.Commands.ActiveMQQueue, Apache.NMS.ActiveMQ">
+        <constructor-arg value="APP.STOCK.JOE"/>
+      </object>
+    </property>
+  </object>
+
+
+  <object name="NmsTemplate" type="Spring.Messaging.Nms.Core.NmsTemplate, Spring.Messaging.Nms">
+    <property name="ConnectionFactory" ref="ConnectionFactory"/>
+    <property name="DefaultDestinationName" value="APP.STOCK.REQUEST"/>
+    <property name="MessageConverter" ref="XmlMessageConverter"/>
+  </object>
+
+
+  <nms:listener-container connection-factory="ConnectionFactory">
+    <nms:listener ref="MessageListenerAdapter" destination="APP.STOCK.JOE" />
+    <nms:listener ref="MessageListenerAdapter" destination="APP.STOCK.MARKETDATA" pubsub-domain="true"/>
+  </nms:listener-container>
+
+  
+  <!-- Plain object message handler -->
+  <object id="MessageListenerAdapter" type="Spring.Messaging.Nms.Listener.Adapter.MessageListenerAdapter, Spring.Messaging.Nms">
+    <property name="HandlerObject" ref="StockAppHandler"/>
+    <property name="DefaultHandlerMethod" value="Handle"/>
+    <!-- converter from JMS object to plain object -->
+    <property name="MessageConverter" ref="XmlMessageConverter"/>
+  </object>
+
+
+  <object name="XmlMessageConverter" type="Spring.NmsQuickStart.Common.Converters.XmlMessageConverter, Spring.NmsQuickStart.Common">
+    <property name="TypeMapper" ref="TypeMapper"/>
+  </object>
+
+  <object name="TypeMapper" type="Spring.NmsQuickStart.Common.Converters.TypeMapper, Spring.NmsQuickStart.Common">
+    <!-- use simple configuation style -->
+    <property name="DefaultNamespace" value="Spring.NmsQuickStart.Common.Data"/>
+    <property name="DefaultAssemblyName" value="Spring.NmsQuickStart.Common"/>
+  </object>
+  
+
+</objects>

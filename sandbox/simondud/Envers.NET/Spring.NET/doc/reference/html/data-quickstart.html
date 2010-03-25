@@ -1,0 +1,163 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;40.&nbsp;Data Access QuickStart</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="springair.html" title="Chapter&nbsp;39.&nbsp;SpringAir - Reference Application"><link rel="next" href="tx-quickstart.html" title="Chapter&nbsp;41.&nbsp;Transactions QuickStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="data-quickstart"></a>Chapter&nbsp;40.&nbsp;Data Access QuickStart</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10704"></a>40.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The data access quick start demonstrates the API usage of
+    AdoTemplate (both generic and non-generic versions) as well as the use of
+    the object based data access classes contained in Spring.Data.Objects. It
+    uses the Northwind database and is located under the directory
+    examples/DataAccessQuickStart.</p>
+
+    <p>The quick start contains pseudo DAO objects and a collection of
+    NUnit tests to exercise them rather than a full blown application. To run
+    the tests from within VS.NET install <a class="ulink" href="http://www.testdriven.net/" target="_top">TestDriven.NET</a>, <a class="ulink" href="http://www.jetbrains.com/resharper/" target="_top">ReSharper</a>, or an
+    equivalent . The listing of DAO classes and the parts of Spring.Data that
+    they demonstrate is shown below.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p><code class="literal">CommandCallbackDao</code> - Use of the
+        ICommandCallback and CommandCallbackDelegate</p>
+      </li><li>
+        <p><code class="literal">ResultSetExtractorDao</code> - Use of
+        IResultSetExtractor and ResultSetExtractorDelegate</p>
+      </li><li>
+        <p><code class="literal">RowCallbackDao</code> - Use of IRowCallback and
+        RowCallbackDelegate</p>
+      </li><li>
+        <p><code class="literal">RowMapperDao</code> - Use of IRowMapper and
+        RowMapperDelegate</p>
+      </li><li>
+        <p><code class="literal">QueryForObject</code> - Use of QueryForObject
+        method.</p>
+      </li><li>
+        <p><code class="literal">StoredProcDao</code> - Use of
+        Spring.Data.Objects.StoredProcedure</p>
+      </li></ul></div>
+
+    <p>The are simple domain objects in the Spring.DataQuickStart.Domain
+    namespace, collections of which are generally returned from the DAO
+    methods.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>To follow this Data Access QuickStart load the solution file found
+      in the directory
+      <code class="literal">&lt;spring-install-dir&gt;\examples\Spring\Spring.DataQuickStart</code></p>
+    </td></tr></table></div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e10733"></a>40.1.1.&nbsp;Database configuration</h3></div></div></div>
+      
+
+      <p>To get started running the 'unit test' you should configure the
+      database connection string. The listing in
+      DataQuickStart.GenericTemplate.ExampleTests.xml is shown below</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:db</span>=<span style="color: #0000FF">"http://www.springframework.net/database"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;db:provider</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"dbProvider"</span> 
+                <span style="color: #FF0000">provider</span>=<span style="color: #0000FF">"SqlServer-1.1"</span> 
+                <span style="color: #FF0000">connectionString</span>=<span style="color: #0000FF">"Data Source=(local);Database=Northwind;User ID=springqa;Password=springqa;Trusted_Connection=False"</span><span style="color: #A31515">/&gt;</span>
+
+
+  <span style="color: #A31515">&lt;!</span> <span style="color: #FF0000">--</span> <span style="color: #FF0000">other</span> <span style="color: #FF0000">definitions</span> <span style="color: #FF0000">not</span> <span style="color: #FF0000">shown</span> 
+
+
+<span style="color: #FF0000">&lt;/objects&gt;</span></pre>
+
+      <p>You should change the value of the provider element to correspond
+      to you database and the connection string as appropriate. Please refer
+      to the documentation on the <a class="link" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider">DbProvider</a>
+      abstraction for details particular to your database configuration. You
+      should also install the Northwind database, which is available for
+      SqlServer 2005 from this <a class="ulink" href="http://www.microsoft.com/downloads/details.aspx?FamilyID=06616212-0356-46a0-8da2-eebc53a68034&amp;DisplayLang=en" target="_top">download
+      location</a>. The minimal schema to support other database providers
+      may be supported in the future.</p>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e10740"></a>40.1.1.1.&nbsp;AdoTemplate Configuration</h4></div></div></div>
+        
+
+        <p>The various DAO objects refer to an instance of AdoTemplate
+        which is responsible for performing data access operations. This is
+        declared in ExampleTest.xml as shown below</p>
+
+        <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"adoTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Generic.AdoTemplate, Spring.Data"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DbProvider"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"dbProvider"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DataReaderWrapperType"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.Data.Support.NullMappingDataReader, Spring.Data"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+</pre>
+
+        <p>The property DbProvider refers to the database configuration you
+        previously defined. Also the property DataReaderWrapper is set to the
+        NullMappingDataReader that ships with Spring. This provides convenient
+        default values for null values returned from the database. To read
+        more about AdoTemplate, refer to the chapter, <a class="link" href="ado.html" title="Chapter&nbsp;20.&nbsp;Data access using ADO.NET">Data
+        access using ADO.NET</a>.</p>
+      </div>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e10746"></a>40.1.2.&nbsp;CommandCallback</h3></div></div></div>
+      
+
+      <p>The code that exercises the use of a CommandCallback is shown
+      below</p>
+
+      <pre class="programlisting">        [Test]
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> CallbackDaoTest()
+        {
+            CommandCallbackDao commandCallbackDao = ctx[<span style="color: #000000">"commandCallbackDao"</span>] <span style="color: #0000FF">as</span> CommandCallbackDao;
+            <span style="color: #0000FF">int</span> count = commandCallbackDao.FindCountWithPostalCode(<span style="color: #000000">"1010"</span>);
+            Assert.AreEqual(3, count);
+        }</pre>
+
+      <p>The configuration of the CommandCallbackDao is shown below</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"commandCallbackDao"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.DataQuickStart.Dao.GenericTemplate.CommandCallbackDao, Spring.DataQuickStart"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AdoTemplate"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"adoTemplate"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>This the minimal configuration required for a DAO object,
+      typically DAO objects in your application will include other
+      configuraiton information, for example properties to specify the maximum
+      size of the result set returned etc. The implementation of the
+      FindCountWithPostalCode is shown below</p>
+
+      <pre class="programlisting">        <span style="color: #0000FF">public</span> <span style="color: #0000FF">virtual</span> <span style="color: #0000FF">int</span> FindCountWithPostalCodeWithDelegate(<span style="color: #0000FF">string</span> postalCode)
+        {
+            <i style="color: #008000">// Using anonymous delegates allows you to easily reference the</i>
+            <i style="color: #008000">// surrounding parameters for use with the DbCommand processing.</i>
+
+            <span style="color: #0000FF">return</span> AdoTemplate.Execute&lt;<span style="color: #0000FF">int</span>&gt;(<span style="color: #0000FF">delegate</span>(DbCommand command)
+                   {
+                       <i style="color: #008000">// Do whatever you like with the DbCommand... downcast to get </i>
+                       <i style="color: #008000">// provider specific funtionality if necesary.</i>
+                                                    
+                       command.CommandText = cmdText;
+                         
+                       DbParameter p = command.CreateParameter();
+                       p.ParameterName = <span style="color: #000000">"@PostalCode"</span>;
+                       p.Value = postalCode;
+                       command.Parameters.Add(p);
+
+                       <span style="color: #0000FF">return</span> (<span style="color: #0000FF">int</span>)command.ExecuteScalar();
+
+                   });
+
+        }</pre>
+
+      <p>Anonymous delegates are used to specify the implementation of the
+      callback function that passes in a DbCommand object. You can then use
+      the DbCommand object as you see fit to access the database. If you are
+      using Spring's delcarative transaction management features then this
+      DbCommand would have its transaction and connection properties based on
+      the context of the surrounding transaction. All resource management for
+      the DbCommand are handled for you by the framework, as well as error
+      reporting on error etc. If you execute the test, it will pass, assuming
+      you haven't modified any data in the Northwind database from its raw
+      installation.</p>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="springair.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tx-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;39.&nbsp;SpringAir - Reference Application&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;41.&nbsp;Transactions QuickStart</td></tr></table></div></body></html>

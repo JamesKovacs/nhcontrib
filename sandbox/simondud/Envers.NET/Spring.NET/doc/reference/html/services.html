@@ -1,0 +1,205 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;26.&nbsp;.NET Enterprise Services</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-services.html" title="Part&nbsp;IV.&nbsp;Services"><link rel="prev" href="remoting.html" title="Chapter&nbsp;25.&nbsp;.NET Remoting"><link rel="next" href="webservices.html" title="Chapter&nbsp;27.&nbsp;Web Services"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="services"></a>Chapter&nbsp;26.&nbsp;.NET Enterprise Services</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="services-introduction"></a>26.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Spring's .NET Enterprise Services support allows you to export a
+    'plain .NET object' as a .NET Remoted object. By "plain .NET object" we
+    mean classes that do not inherit from a specific infrastructure base class
+    such as ServicedComponent..</p>
+
+    <p>You can leverage the IoC container to configure the exporter and
+    service endpoints. You may also opt to not use the IoC container to
+    configure the objects and use Spring's .NET Enterprise Services classes
+    Programatically, as you would with any third party library.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="services-servicedcomponents"></a>26.2.&nbsp;Serviced Components</h2></div></div></div>
+    
+
+    <p>Services components in .NET are able to use COM+ services such as
+    declarative and distributed transactions, role based security, object
+    pooling messaging. To access these services your class needs to derive
+    from the class
+    <code class="literal">System.EnterpriseServices.ServicedComponent</code>, adorn
+    your class and assemblies with relevant attributes, and configure your
+    application by registering your serviced components with the COM+ catalog.
+    The overall landscape of accessing and using COM+ services within .NET
+    goes by the name .NET Enterprise Services.</p>
+
+    <p>Many of these services can be provided without the need to derive
+    from a ServicedComponent though the use of Spring's Aspect-Oriented
+    Programming functionality. Nevertheless, you may be interested in
+    exporting your class as a serviced component and having client access that
+    component in a location transparent manner. By using Spring's
+    <code class="literal">ServicedComponentExporter</code>,
+    <code class="literal">EnterpriseServicesExporter</code> and
+    <code class="literal">ServicedComponentFactory</code> you can easily create and
+    consume serviced components without having your class inherit from
+    <code class="literal">ServicedComponent</code> and automate the manual deployment
+    process that involves strongly signing your assembly and using the
+    <code class="literal">regsvcs</code> utility.</p>
+
+    <p>Note that the following sections do not delve into the details of
+    programming .NET Enterprise Services. An excellent reference for such
+    information is Christian Nagel's "Enterprise Services with the .NET
+    Framework" Spring.NET includes an example of using these classes, the
+    'calculator' example. More information can be found in the section, .<a class="link" href="remoting-quickstart.html#entsvc-example" title="37.6.&nbsp;.NET Enterprise Services Example">NET Enterprise Services example.</a></p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="services-serverside"></a>26.3.&nbsp;Server Side</h2></div></div></div>
+    
+
+    <p>One of the main challenges for the exporting of a serviced component
+    to the host is the need for them to be contained within a physical
+    assembly on the file system in order to be registered with the COM+
+    Services. To make things more complicated, this assembly has to be
+    strongly named before it can be successfully registered.</p>
+
+    <p>Spring provides two classes that allow all of this to happen.
+    </p><div class="itemizedlist"><ul type="disc"><li>
+           
+
+          <code class="literal">Spring.Enterprise.ServicedComponentExporter</code>
+
+           is responsible for exporting a single component and making sure that it derives from ServicedComponent class. It also allows you to specify class-level and method-level attributes for the component in order to define things such as transactional behavior, queuing, etc. 
+        </li><li>
+           
+
+          <code class="literal">Spring.Enterprise.EnterpriseServicesExporter</code>
+
+           corresponds to a COM+ application, and it allows you to specify list of components that should be included in the application, as well as the application name and other assembly-level attributes 
+        </li></ul></div>
+
+    <p>Let's say that we have a simple service interface and implementation
+    class, such as these:</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">namespace</span> MyApp.Services
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IUserManager
+    {
+        User GetUser(<span style="color: #0000FF">int</span> userId);
+        <span style="color: #0000FF">void</span> SaveUser(User user);
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SimpleUserManager : IUserManager
+    {
+        <span style="color: #0000FF">private</span> IUserDao userDao;
+        <span style="color: #0000FF">public</span> IUserDao UserDao
+        {
+            <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> userDao; }
+            <span style="color: #0000FF">set</span> { userDao = <span style="color: #0000FF">value</span>; }
+        }
+
+        <span style="color: #0000FF">public</span> User GetUser(<span style="color: #0000FF">int</span> userId)
+        {
+            <span style="color: #0000FF">return</span> UserDao.FindUser(userId);
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> SaveUser(User user)
+        {
+            <span style="color: #0000FF">if</span> (user.IsValid)
+            {
+                UserDao.SaveUser(user);
+            }
+        }
+    }
+} </pre>
+
+    <p>And the corresponding object definition for it in the application
+    context config file:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"userManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyApp.Services.SimpleUserManager"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"UserDao"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"userDao"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>Let's say that we want to expose user manager as a serviced
+    component so we can leverage its support for transactions. First we need
+    to export our service using the exporter
+    <code class="literal">ServicedComponentExporter</code> as shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"MyApp.EnterpriseServices.UserManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Enterprise.ServicedComponentExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"userManager"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TypeAttributes"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.TransactionAttribute, System.EnterpriseServices"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MemberAttributes"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;dictionary&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"*"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;list&gt;</span>
+                    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.AutoCompleteAttribute, System.EnterpriseServices"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/list&gt;</span>
+            <span style="color: #A31515">&lt;/entry&gt;</span>
+        <span style="color: #A31515">&lt;/dictionary&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>The exporter defined above will create a composition proxy for our
+    SimpleUserManager class that extends <code class="literal">ServicedComponent</code>
+    and delegates method calls to SimpleUserManager instance. It will also
+    adorn the proxy class with a <code class="literal">TransactionAtribute</code> and
+    all methods with an <code class="literal">AutoCompleteAttribute</code>.</p>
+
+    <p>The next thing we need to do is configure an exporter for the COM+
+    application that will host our new component:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"MyComponentExporter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Enterprise.EnterpriseServicesExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ApplicationName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"My COM+ Application"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Description"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"My enterprise services application."</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AccessControl"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.EnterpriseServices.ApplicationAccessControlAttribute, System.EnterpriseServices"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AccessChecksLevel"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"ApplicationComponent"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Roles"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>Admin : Administrator role<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>User : User role<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>Manager : Administrator role<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Components"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">object</span>=<span style="color: #0000FF">"MyApp.EnterpriseServices.UserManager"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Assembly"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyComPlusApp"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>This exporter will put all proxy classes for the specified list of
+    components into the specified assembly, sign the assembly, and register it
+    with the specified COM+ application name. If application does not exist it
+    will create it and configure it using values specified for Description,
+    AccessControl and Roles properties.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="services-clientside"></a>26.4.&nbsp;Client Side</h2></div></div></div>
+    
+
+    <p>Because serviced component classes are dynamically generated and
+    registered, you cannot instantiate them in your code using the new
+    operator. Instead, you need to use
+    <code class="literal">Spring.Enterprise.ServicedComponentFactory</code>
+    definition, which also allows you to specify the configuration template
+    for the component as well as the name of the remote server the component
+    is running on, if necessary. An example is shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"enterpriseUserManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Enterprise.ServicedComponentFactory, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyApp.EnterpriseServices.UserManager"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Template"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"userManager"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>You can then inject this instance of the IUserManager into a client
+    class and use it just like you would use original SimpleUserManager
+    implementation. As you can see, by coding your services as plain .Net
+    objects, against well defined service interfaces, you gain easy
+    pluggability for your service implementation though this configuration,
+    while keeping the core business logic in a technology agnostic PONO, i.e.
+    Plain Ordinary .Net Object.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="remoting.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="webservices.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;25.&nbsp;.NET Remoting&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;27.&nbsp;Web Services</td></tr></table></div></body></html>

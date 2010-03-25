@@ -1,0 +1,1139 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;11.&nbsp;Expression Evaluation</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="misc.html" title="Chapter&nbsp;10.&nbsp;Spring.NET miscellanea"><link rel="next" href="validation.html" title="Chapter&nbsp;12.&nbsp;Validation Framework"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="expressions"></a>Chapter&nbsp;11.&nbsp;Expression Evaluation</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expressions-introduction"></a>11.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The Spring.Expressions namespace provides a powerful expression
+    language for querying and manipulating an object graph at runtime. The
+    language supports setting and getting of property values, property
+    assignment, method invocation, accessing the context of arrays,
+    collections and indexers, logical and arithmetic operators, named
+    variables, and retrieval of objects by name from Spring's IoC container.
+    It also supports list projection and selection, as well as common list
+    aggregators.</p>
+
+    <p>The functionality provided in this namespace serves as the
+    foundation for a variety of other features in Spring.NET such as enhanced
+    property evaluation in the XML based configuration of the IoC container, a
+    Data Validation framework, and a Data Binding framework for ASP.NET. You
+    will likely find other cool uses for this library in your own work where
+    run-time evaluation of criteria based on an object's state is required.
+    For those with a Java background, the Spring.Expressions namespace
+    provides functionality similar to the Java based Object Graph Navigation
+    Language, <a class="ulink" href="http://www.ognl.org/" target="_top">OGNL</a>.</p>
+
+    <p>This chapter covers the features of the expression language using an
+    Inventor and Inventor's Society class as the target objects for expression
+    evaluation. The class declarations and the data used to populate them are
+    listed at the end of the chapter in section <a class="xref" href="expressions.html#expressions-classes" title="11.4.&nbsp;Classes used in the examples">Section&nbsp;11.4, &#8220;Classes used in the examples&#8221;</a>. These classes are blatantly taken from
+    the NUnit tests for the Expressions namespace which you can refer to for
+    additional example usage.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expressions-evaluating"></a>11.2.&nbsp;Evaluating Expressions</h2></div></div></div>
+    
+
+    <p>The simplest, but not the most efficient way to perform expression
+    evaluation is by using one of the static convenience methods of the
+    <code class="literal">ExpressionEvaluator</code> class:</p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">object</span> GetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression);
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">object</span> GetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression, IDictionary variables)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> SetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression, <span style="color: #0000FF">object</span> newValue)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> SetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression, IDictionary variables, <span style="color: #0000FF">object</span> newValue)</pre><p>
+    The first argument is the 'root' object that the expression string (2nd
+    argument) will be evaluated against. The third argument is used to support
+    variables in the expression and will be discussed later. Simple usage to
+    get the value of an object property is shown below using the
+    <code class="literal">Inventor</code> class. You can find the class listing in
+    section <a class="xref" href="expressions.html#expressions-classes" title="11.4.&nbsp;Classes used in the examples">Section&nbsp;11.4, &#8220;Classes used in the examples&#8221;</a>. </p><pre class="programlisting">Inventor tesla = <span style="color: #0000FF">new</span> Inventor(<span style="color: #000000">"Nikola Tesla"</span>, <span style="color: #0000FF">new</span> DateTime(1856, 7, 9), <span style="color: #000000">"Serbian"</span>);
+
+tesla.PlaceOfBirth.City = <span style="color: #000000">"Smiljan"</span>;
+
+<span style="color: #0000FF">string</span> evaluatedName = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"Name"</span>);
+
+<span style="color: #0000FF">string</span> evaluatedCity = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"PlaceOfBirth.City"</span>));</pre><p>
+    The value of 'evaluatedName' is 'Nikola Tesla' and that of 'evaluatedCity'
+    is 'Smiljan'. A period is used to navigate the nested properties of the
+    object. Similarly to set the property of an object, say we want to rewrite
+    history and change Tesla's city of birth, we would simply add the
+    following line </p><pre class="programlisting">ExpressionEvaluator.SetValue(tesla, <span style="color: #000000">"PlaceOfBirth.City"</span>, <span style="color: #000000">"Novi Sad"</span>);</pre>
+
+    <p>A much better way to evaluate expressions is to parse them once and
+    then evaluate as many times as you want
+    using<code class="literal">Expression</code>class. Unlike
+    <code class="literal">ExpressionEvaluator</code>, which parses expression every
+    time you invoke one of its methods, <code class="literal">Expression</code>
+    class will cache the parsed expression for increased performance. The
+    methods of this class are listed below: </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> IExpression Parse(<span style="color: #0000FF">string</span> expression)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">object</span> Get(<span style="color: #0000FF">object</span> context, IDictionary variables)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> Set(<span style="color: #0000FF">object</span> context, IDictionary variables, <span style="color: #0000FF">object</span> newValue)</pre><p>
+    The retrieval of the Name property in the previous example using the
+    Expression class is shown below </p><pre class="programlisting">IExpression exp = Expression.Parse(<span style="color: #000000">"Name"</span>);
+
+<span style="color: #0000FF">string</span> evaluatedName = (<span style="color: #0000FF">string</span>) exp.GetValue(tesla, <span style="color: #0000FF">null</span>);</pre>
+
+    <p>The difference in performance between the two approaches, when
+    evaluating the same expression many times, is several orders of magnitude,
+    so you should only use convenience methods of the
+    <code class="literal">ExpressionEvaluator</code> class when you are doing
+    one-off expression evaluations. In all other cases you should parse the
+    expression first and then evaluate it as many times as you need.</p>
+
+    <p>There are a few exception classes to be aware of when using the
+    <code class="literal">ExpressionEvaluator</code>. These are
+    <code class="literal">InvalidPropertyException</code>, when you refer to a
+    property that doesn't exist,
+    <code class="literal">NullValueInNestedPathException</code>, when a null value
+    is encountered when traversing through the nested property list, and
+    <code class="literal">ArgumentException</code> and
+    <code class="literal">NotSupportedException</code> when you pass in values that
+    are in error in some other manner.</p>
+
+    <p>The expression language is based on a grammar and uses <a class="ulink" href="http://www.antlr.org/" target="_top">ANTLR</a> to construct the lexer and
+    parser. Errors relating to bad syntax of the language will be caught at
+    this level of the language implementation. For those interested in the
+    digging deeper into the implementation, the grammar file is named
+    Expression.g and is located in the src directory of the namespace. As a
+    side note, the release version of the ANTLR DLL included with Spring.NET
+    was signed with the Spring.NET key, which means that you should always use
+    the included version of <code class="literal">antlr.runtime.dll</code> within your
+    application. Upcoming releases of ANTLR will provide strongly signed
+    assemblies, which will remove this requirement.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expressions-language-ref"></a>11.3.&nbsp;Language Reference</h2></div></div></div>
+    
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-literals"></a>11.3.1.&nbsp;Literal expressions</h3></div></div></div>
+      
+
+      <p>The types of literal expressions supported are strings, dates,
+      numeric values (int, real, and hex), boolean and null. String are
+      delimited by single quotes. To put a single quote itself in a string use
+      the backslash character. The following listing shows simple usage of
+      literals. Typically they would not be used in isolation like this, but
+      as part of a more complex expression, for example using a literal on one
+      side of a logical comparison operator. </p><pre class="programlisting"><span style="color: #0000FF">string</span> helloWorld = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'Hello World'"</span>); <i style="color: #008000">// evals to "Hello World"</i>
+
+<span style="color: #0000FF">string</span> tonyPizza  = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'Tony\\'s Pizza'"</span>); <i style="color: #008000">// evals to "Tony's Pizza"</i>
+
+<span style="color: #0000FF">double</span> avogadrosNumber = (<span style="color: #0000FF">double</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"6.0221415E+23"</span>);
+
+<span style="color: #0000FF">int</span> maxValue = (<span style="color: #0000FF">int</span>)  ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"0x7FFFFFFF"</span>);  <i style="color: #008000">// evals to 2147483647</i>
+
+DateTime birthday = (DateTime) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"date('1974/08/24')"</span>);
+
+DateTime exactBirthday =
+  (DateTime) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">" date('19740824T131030', 'yyyyMMddTHHmmss')"</span>);
+
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"true"</span>);
+
+<span style="color: #0000FF">object</span> nullValue = ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"null"</span>);</pre><p>
+      Note that the extra backslash character in Tony's Pizza is to satisfy C#
+      escape syntax. Numbers support the use of the negative sign, exponential
+      notation, and decimal points. By default real numbers are parsed using
+      <code class="literal">Double.Parse</code> unless the format character "M" or
+      "F" is supplied, in which case <code class="literal">Decimal.Parse</code> and
+      <code class="literal">Single.Parse</code> would be used respectfully. As shown
+      above, if two arguments are given to the date literal then
+      <code class="literal">DateTime.ParseExact</code> will be used. Note that all
+      parse methods of classes that are used internally reference the
+      <code class="literal">CultureInfo.InvariantCulture</code>.</p>
+    </div>
+
+    
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-properties"></a>11.3.2.&nbsp;Properties, Arrays, Lists, Dictionaries, Indexers</h3></div></div></div>
+      
+
+      <p>As shown in the previous example in <a class="xref" href="expressions.html#expressions-evaluating" title="11.2.&nbsp;Evaluating Expressions">Section&nbsp;11.2, &#8220;Evaluating Expressions&#8221;</a>, navigating through properties is
+      easy, just use a period to indicate a nested property value. The
+      instances of <code class="literal">Inventor</code> class,
+      <span class="emphasis"><em>pupin</em></span> and <span class="emphasis"><em>tesla</em></span>, were
+      populated with data listed in section <a class="xref" href="expressions.html#expressions-classes" title="11.4.&nbsp;Classes used in the examples">Section&nbsp;11.4, &#8220;Classes used in the examples&#8221;</a>. To navigate "down" and get Tesla's
+      year of birth and Pupin's city of birth the following expressions are
+      used </p><pre class="programlisting"><span style="color: #0000FF">int</span> year = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"DOB.Year"</span>));  <i style="color: #008000">// 1856</i>
+
+<span style="color: #0000FF">string</span> city = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(pupin, <span style="color: #000000">"PlaCeOfBirTh.CiTy"</span>);  <i style="color: #008000">// "Idvor"</i></pre><p>
+      For the sharp-eyed, that isn't a typo in the property name for place of
+      birth. The expression uses mixed cases to demonstrate that the
+      evaluation is case insensitive.</p>
+
+      <p>The contents of arrays and lists are obtained using square bracket
+      notation. </p><pre class="programlisting"><i style="color: #008000">// Inventions Array</i>
+<span style="color: #0000FF">string</span> invention = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"Inventions[3]"</span>); <i style="color: #008000">// "Induction motor"</i>
+
+<i style="color: #008000">// Members List</i>
+<span style="color: #0000FF">string</span> name = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members[0].Name"</span>); <i style="color: #008000">// "Nikola Tesla"</i>
+
+<i style="color: #008000">// List and Array navigation</i>
+<span style="color: #0000FF">string</span> invention = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members[0].Inventions[6]"</span>) <i style="color: #008000">// "Wireless communication"</i></pre>
+
+      <p>The contents of dictionaries are obtained by specifying the
+      literal key value within the brackets. In this case, because keys for
+      the <span class="emphasis"><em>Officers</em></span> dictionary are strings, we can specify
+      string literal.</p><pre class="programlisting"><i style="color: #008000">// Officer's Dictionary</i>
+Inventor pupin = (Inventor) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers['president']"</span>;
+
+<span style="color: #0000FF">string</span> city = (<span style="color: #0000FF">string</span>) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers['president'].PlaceOfBirth.City"</span>); <i style="color: #008000">// "Idvor"</i>
+
+ExpressionEvaluator.SetValue(ieee, <span style="color: #000000">"Officers['advisors'][0].PlaceOfBirth.Country"</span>, <span style="color: #000000">"Croatia"</span>);</pre>
+
+      <p>You may also specify non literal values in place of the quoted
+      literal values by using another expression inside the square brackets
+      such as variable names or static properties/methods on other types.
+      These features are discussed in other sections.</p>
+
+      <p>Indexers are similarly referenced using square brackets. The
+      following is a small example that shows the use of indexers.
+      Multidimensional indexers are also supported. </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> Bar
+{
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span>[] numbers = <span style="color: #0000FF">new</span> <span style="color: #0000FF">int</span>[] {1, 2, 3};
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> <span style="color: #0000FF">this</span>[<span style="color: #0000FF">int</span> index]
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> numbers[index];}
+        <span style="color: #0000FF">set</span> { numbers[index] = <span style="color: #0000FF">value</span>; }
+    }
+}
+
+Bar b = <span style="color: #0000FF">new</span> Bar();
+
+<span style="color: #0000FF">int</span> val = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(bar, <span style="color: #000000">"[1]"</span>) <i style="color: #008000">// evaluated to 2</i>
+
+ExpressionEvaluator.SetValue(bar, <span style="color: #000000">"[1]"</span>, 3);  <i style="color: #008000">// set value to 3</i></pre>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3131"></a>11.3.2.1.&nbsp;Defining Arrays, Lists and Dictionaries Inline</h4></div></div></div>
+        
+
+        <p>In addition to accessing arrays, lists and dictionaries by
+        navigating the graph for the context object, Spring.NET Expression
+        Language allows you to define them inline, within the expression.
+        Inline lists are defined by simply enclosing a comma separated list of
+        items with curly brackets:</p><pre class="programlisting">{1, 2, 3, 4, 5}
+{'abc', 'xyz'}</pre><p> If you want to ensure that a strongly typed
+        array is initialized instead of a weakly typed list, you can use array
+        initializer instead: </p><pre class="programlisting"><span style="color: #0000FF">new</span> <span style="color: #0000FF">int</span>[] {1, 2, 3, 4, 5}
+<span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[] {<span style="color: #000000">'abc'</span>, <span style="color: #000000">'xyz'</span>}</pre>
+
+        <p>Dictionary definition syntax is a bit different: you need to use
+        a # prefix to tell expression parser to expect key/value pairs within
+        the brackets and to specify a comma separated list of key/value pairs
+        within the brackets:</p><pre class="programlisting">#{'key1' : 'Value 1', 'today' : DateTime.Today}
+#{1 : 'January', 2 : 'February', 3 : 'March', ...}</pre>
+
+        <p>Arrays, lists and dictionaries created this way can be used
+        anywhere where arrays, lists and dictionaries obtained from the object
+        graph can be used, which we will see later in the examples.</p>
+
+        <p>Keep in mind that even though examples above use literals as
+        array/list elements and dictionary keys and values, that's only to
+        simplify the examples -- you can use any valid expression wherever
+        literals are used.</p>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-methods"></a>11.3.3.&nbsp;Methods</h3></div></div></div>
+      
+
+      <p>Methods are invoked using typical C# programming syntax. You may
+      also invoke methods on literals.</p>
+
+      <pre class="programlisting"><i style="color: #008000">//string literal</i>
+<span style="color: #0000FF">char</span>[] chars = (<span style="color: #0000FF">char</span>[]) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'test'.ToCharArray(1, 2)"</span>))  <i style="color: #008000">// 't','e'</i>
+
+<i style="color: #008000">//date literal</i>
+<span style="color: #0000FF">int</span> year = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"date('1974/08/24').AddYears(31).Year"</span>) <i style="color: #008000">// 2005</i>
+
+<i style="color: #008000">// object usage, calculate age of tesla navigating from the IEEE society.</i>
+
+ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members[0].GetAge(date('2005-01-01')"</span>) <i style="color: #008000">// 149 (eww..a big anniversary is coming up ;)</i></pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-operators"></a>11.3.4.&nbsp;Operators</h3></div></div></div>
+      
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="expressions-relational"></a>11.3.4.1.&nbsp;Relational operators</h4></div></div></div>
+        
+
+        <p>The relational operators; equal, not equal, less than, less than
+        or equal, greater than, and greater than or equal are supported using
+        standard operator notation. These operators take into account if the
+        object implements the <code class="literal">IComparable</code> interface.
+        Enumerations are also supported but you will need to register the
+        enumeration type, as described in Section <a class="xref" href="expressions.html#expressions-typeregistration" title="11.3.8.&nbsp;Type Registration">Section&nbsp;11.3.8, &#8220;Type Registration&#8221;</a>, in order to use an
+        enumeration value in an expression if it is not contained in the
+        mscorlib.</p>
+
+        <pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"2 == 2"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"date('1974-08-24') != DateTime.Today"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"2 &lt; -5.0"</span>) <i style="color: #008000">// false</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"DateTime.Today &lt;= date('1974-08-24')"</span>) <i style="color: #008000">// false</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'Test' &gt;= 'test'"</span>) <i style="color: #008000">// true</i></pre>
+
+        <p>Enumerations can be evaluated as shown below </p><pre class="programlisting">FooColor fColor = <span style="color: #0000FF">new</span> FooColor();
+
+ExpressionEvaluator.SetValue(fColor, <span style="color: #000000">"Color"</span>, KnownColor.Blue);
+
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(fColor, <span style="color: #000000">"Color == KnownColor.Blue"</span>); <i style="color: #008000">//true</i></pre><p>
+        Where FooColor is the following class. </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> FooColor
+{
+    <span style="color: #0000FF">private</span> KnownColor knownColor;
+
+    <span style="color: #0000FF">public</span> KnownColor Color
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> knownColor;}
+        <span style="color: #0000FF">set</span> { knownColor = <span style="color: #0000FF">value</span>; }
+    }
+}</pre>
+
+        <p>In addition to standard relational operators, Spring.NET
+        Expression Language supports some additional, very useful operators
+        that were "borrowed" from SQL, such as <span class="emphasis"><em>in</em></span>,
+        <span class="emphasis"><em>like</em></span> and <span class="emphasis"><em>between</em></span>, as well as
+        <span class="emphasis"><em>is</em></span> and <span class="emphasis"><em>matches</em></span> operators,
+        which allow you to test if object is of a specific type or if the
+        value matches a regular expression.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"3 in {1, 2, 3, 4, 5}"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'Abc' like '[A-Z]b*'"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'Abc' like '?'"</span>)  <i style="color: #008000">// false</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 between {1, 5}"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'efg' between {'abc', 'xyz'}"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'xyz' is int"</span>)  <i style="color: #008000">// false</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 2, 3, 4, 5} is IList"</span>)  <i style="color: #008000">// true</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'5.0067' matches '^-?\\d+(\\.\\d{2})?$'"</span>))  <i style="color: #008000">// false</i>
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">@"'5.00' matches '^-?\d+(\.\d{2})?$'"</span>)  <i style="color: #008000">// true</i></pre><p>Note
+        that the Visual Basic and not SQL syntax is used for the
+        <span class="emphasis"><em>like</em></span> operator pattern string.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="expressions-logical"></a>11.3.4.2.&nbsp;Logical operators</h4></div></div></div>
+        
+
+        <p>The logical operators that are supported are
+        <span class="emphasis"><em>and</em></span>, <span class="emphasis"><em>or</em></span>, and
+        <span class="emphasis"><em>not</em></span>. Their use is demonstrated
+        below</p><pre class="programlisting"><i style="color: #008000">// AND</i>
+<span style="color: #0000FF">bool</span> falseValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"true and false"</span>); <i style="color: #008000">//false</i>
+
+<span style="color: #0000FF">string</span> expression = <span style="color: #000000">@"IsMember('Nikola Tesla') and IsMember('Mihajlo Pupin')"</span>;
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(ieee, expression);  <i style="color: #008000">//true</i>
+
+<i style="color: #008000">// OR</i>
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"true or false"</span>);  <i style="color: #008000">//true</i>
+
+<span style="color: #0000FF">string</span> expression = <span style="color: #000000">@"IsMember('Nikola Tesla') or IsMember('Albert Einstien')"</span>;
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(ieee, expression); <i style="color: #008000">// true</i>
+
+<i style="color: #008000">// NOT</i>
+<span style="color: #0000FF">bool</span> falseValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"!true"</span>);
+
+<i style="color: #008000">// AND and NOT</i>
+<span style="color: #0000FF">string</span> expression = <span style="color: #000000">@"IsMember('Nikola Tesla') and !IsMember('Mihajlo Pupin')"</span>;
+<span style="color: #0000FF">bool</span> falseValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(ieee, expression);</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="expressions-bitwise"></a>11.3.4.3.&nbsp;Bitwise operators</h4></div></div></div>
+        
+
+        <p>The bitwise operators that are supported are
+        <span class="emphasis"><em>and</em></span>, <span class="emphasis"><em>or</em></span>, <span class="emphasis"><em>xor</em></span> and <span class="emphasis"><em>not</em></span>. Their use is demonstrated below.
+Note, that the logical and bitwise operators are the same and their interpretation depends if you pass in integral values or boolean values.
+</p><pre class="programlisting"><i style="color: #008000">// AND</i>
+<span style="color: #0000FF">int</span> result = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 and 3"</span>); <i style="color: #008000">// 1 &amp; 3</i>
+
+<i style="color: #008000">// OR</i>
+<span style="color: #0000FF">int</span> result = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 or 3"</span>);  <i style="color: #008000">// 1 | 3</i>
+
+<i style="color: #008000">// XOR</i>
+<span style="color: #0000FF">int</span> result = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 xor 3"</span>);  <i style="color: #008000">// 1 ^ 3</i>
+
+<i style="color: #008000">// NOT</i>
+<span style="color: #0000FF">int</span> result = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"!1"</span>); <i style="color: #008000">// ~1</i>
+</pre><p>
+        </p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="expressions-math"></a>11.3.4.4.&nbsp;Mathematical operators</h4></div></div></div>
+        
+
+        <p>The addition operator can be used on numbers, strings and dates.
+        Subtraction can be used on numbers and dates. Multiplication and
+        division can be used only on numbers. Other mathematical operators
+        supported are modulus (%) and exponential power (^). Standard operator
+        precedence is enforced. These operators are demonstrated below
+        </p><pre class="programlisting"><i style="color: #008000">// Addition</i>
+<span style="color: #0000FF">int</span> two = (<span style="color: #0000FF">int</span>)ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 + 1"</span>); <i style="color: #008000">// 2</i>
+
+String testString = (String)ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"'test' + ' ' + 'string'"</span>); <i style="color: #008000">//'test string'</i>
+
+DateTime dt = (DateTime)ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"date('1974-08-24') + 5"</span>); <i style="color: #008000">// 8/29/1974</i>
+
+<i style="color: #008000">// Subtraction</i>
+
+<span style="color: #0000FF">int</span> four = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 - -3"</span>); <i style="color: #008000">//4</i>
+
+Decimal dec = (Decimal) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1000.00m - 1e4"</span>); <i style="color: #008000">// 9000.00</i>
+
+TimeSpan ts = (TimeSpan) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"date('2004-08-14') - date('1974-08-24')"</span>); <i style="color: #008000">//10948.00:00:00</i>
+
+<i style="color: #008000">// Multiplication</i>
+
+<span style="color: #0000FF">int</span> six = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"-2 * -3"</span>); <i style="color: #008000">// 6</i>
+
+<span style="color: #0000FF">int</span> twentyFour = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"2.0 * 3e0 * 4"</span>); <i style="color: #008000">// 24</i>
+
+<i style="color: #008000">// Division</i>
+
+<span style="color: #0000FF">int</span> minusTwo = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"6 / -3"</span>); <i style="color: #008000">// -2</i>
+
+<span style="color: #0000FF">int</span> one = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"8.0 / 4e0 / 2"</span>); <i style="color: #008000">// 1</i>
+
+<i style="color: #008000">// Modulus</i>
+
+<span style="color: #0000FF">int</span> three = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"7 % 4"</span>); <i style="color: #008000">// 3</i>
+
+<span style="color: #0000FF">int</span> one = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"8.0 % 5e0 % 2"</span>); <i style="color: #008000">// 1</i>
+
+<i style="color: #008000">// Exponent</i>
+
+<span style="color: #0000FF">int</span> sixteen = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"-2 ^ 4"</span>); <i style="color: #008000">// 16</i>
+
+<i style="color: #008000">// Operator precedence</i>
+
+<span style="color: #0000FF">int</span> minusFortyFive = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1+2-3*8^2/2/2"</span>); <i style="color: #008000">// -45</i>
+</pre>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-assignment"></a>11.3.5.&nbsp;Assignment</h3></div></div></div>
+      
+
+      <p>Setting of a property is done by using the assignment operator.
+      This would typically be done within a call to
+      <code class="literal">GetValue</code> since in the simple case
+      <code class="literal">SetValue</code> offers the same functionality. Assignment in
+      this manner is useful when combining multiple operators in an expression
+      list, discussed in the next section. Some examples of assignment are
+      shown below </p><pre class="programlisting">Inventor inventor = <span style="color: #0000FF">new</span> Inventor();
+String aleks = (String) ExpressionEvaluator.GetValue(inventor, <span style="color: #000000">"Name = 'Aleksandar Seovic'"</span>);
+DateTime dt = (DateTime) ExpressionEvaluator.GetValue(inventor, <span style="color: #000000">"DOB = date('1974-08-24')"</span>);
+
+<i style="color: #008000">//Set the vice president of the society</i>
+Inventor tesla = (Inventor) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers['vp'] = Members[0]"</span>);</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-explist"></a>11.3.6.&nbsp;Expression lists</h3></div></div></div>
+      
+
+      <p>Multiple expressions can be evaluated against the same context
+      object by separating them with a semicolon and enclosing the entire
+      expression within parentheses. The value returned is the value of the
+      last expression in the list. Examples of this are shown below
+      </p><pre class="programlisting"><i style="color: #008000">//Perform property assignments and then return Name property.</i>
+
+String pupin = (String) ExpressionEvaluator.GetValue(ieee.Members,
+  <span style="color: #000000">"( [1].PlaceOfBirth.City = 'Beograd'; [1].PlaceOfBirth.Country = 'Serbia'; [1].Name )"</span>));
+
+<i style="color: #008000">// pupin = "Mihajlo Pupin"</i></pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-types"></a>11.3.7.&nbsp;Types</h3></div></div></div>
+      
+
+      <p>In many cases, you can reference types by simply specifying type
+      name:</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"1 is int"</span>)
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"DateTime.Today"</span>)
+
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"new string[] {'abc', 'efg'}"</span>)</pre>
+
+      <p>This is possible for all standard types from
+      <code class="literal">mscorlib</code>, as well as for any other type that is
+      registered with the <code class="literal">TypeRegistry</code> as described in the
+      next section.</p>
+
+      <p>For all other types, you need to use special
+      <code class="literal">T(typeName)</code> expression:</p><pre class="programlisting">Type dateType = (Type) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"T(System.DateTime)"</span>)
+
+Type evalType = (Type) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"T(Spring.Expressions.ExpressionEvaluator, Spring.Core)"</span>)
+
+<span style="color: #0000FF">bool</span> trueValue = (<span style="color: #0000FF">bool</span>) ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"T(System.DateTime) == DOB.GetType()"</span>)</pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The implementation delegates to Spring's
+        <code class="literal">ObjectUtils.ResolveType</code> method for the actual
+        type resolution, which means that the types used within expressions
+        are resolved in the exactly the same way as the types specified in
+        Spring configuration files.</p>
+      </td></tr></table></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-typeregistration"></a>11.3.8.&nbsp;Type Registration</h3></div></div></div>
+      
+
+      <p>To refer to a type within an expression that is not in the
+      mscorlib you need to register it with the
+      <code class="literal">TypeRegistry</code>. This will allow you to refer to a
+      shorthand name of the type within your expressions. This is commonly
+      used in expression that use the new operator or refer to a static
+      properties of an object. Example usage is shown below.</p>
+
+      <pre class="programlisting">TypeRegistry.RegisterType(<span style="color: #000000">"Society"</span>, <span style="color: #0000FF">typeof</span>(Society));
+
+Inventor pupin = (Inventor) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers[Society.President]"</span>);</pre>
+
+      <p>Alternatively, you can register types using
+      <code class="literal">typeAliases</code> configuration section.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-ctor"></a>11.3.9.&nbsp;Constructors</h3></div></div></div>
+      
+
+      <p>Constructors can be invoked using the new operator. For classes
+      outside mscorlib you will need to register your types so they can be
+      resolved. Examples of using constructors are shown below:
+      </p><pre class="programlisting"><i style="color: #008000">// simple ctor</i>
+DateTime dt = (DateTime) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"new DateTime(1974, 8, 24)"</span>);
+
+<i style="color: #008000">// Register Inventor type then create new inventor instance within Add method inside an expression list.</i>
+<i style="color: #008000">// Then return the new count of the Members collection.</i>
+
+TypeRegistry.RegisterType(<span style="color: #0000FF">typeof</span>(Inventor));
+<span style="color: #0000FF">int</span> three = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(ieee.Members, <span style="color: #000000">"{ Add(new Inventor('Aleksandar Seovic', date('1974-08-24'), 'Serbian')); Count}"</span>));
+
+</pre>
+
+      <p>As a convenience, Spring.NET also allows you to define named
+      constructor arguments, which are used to set object's properties after
+      instantiation, similar to the way standard .NET attributes work. For
+      example, you could create an instance of the <code class="literal">Inventor</code>
+      class and set its <code class="literal">Inventions</code> property in a single
+      statement:</p><pre class="programlisting">
+Inventor aleks = (Inventor) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"new Inventor('Aleksandar Seovic', date('1974-08-24'), 'Serbian', Inventions = {'SPELL'})"</span>);
+</pre><p>The only rule you have to follow is that named arguments
+      should be specified <span class="emphasis"><em>after</em></span> standard constructor
+      arguments, just like in the .NET attributes.</p>
+
+      <p>While we are on the subject, Spring.NET Expression Language also
+      provides a convenient syntax for .NET attribute instance creation.
+      Instead of using standard constructor syntax, you can use a somewhat
+      shorter and more familiar syntax to create an instance of a .NET
+      attribute class:</p><pre class="programlisting">
+WebMethodAttribute webMethod = (WebMethodAttribute) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"@[WebMethod(true, CacheDuration = 60, Description = 'My Web Method')]"</span>);
+</pre><p>As you can see, with the exception of the
+      <code class="literal">@</code> prefix, syntax is exactly the same as in C#.</p>
+
+      <p>Slightly different syntax is not the only thing that
+      differentiates an attribute expression from a standard constructor
+      invocation expression. In addition to that, attribute expression uses
+      slightly different type resolution mechanism and will attempt to load
+      both the specified type name and the specified type name with an
+      <code class="literal">Attribute</code> suffix, just like the C# compiler.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-variables"></a>11.3.10.&nbsp;Variables</h3></div></div></div>
+      
+
+      <p>Variables can referenced in the expression using the syntax
+      <code class="literal">#</code><span class="emphasis"><em>variableName</em></span>. The variables are
+      passed in and out of the expression using the dictionary parameter in
+      <code class="literal">ExpressionEvaluator</code>'s <code class="literal">GetValue</code>
+      or <code class="literal">SetValue</code> methods. </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">object</span> GetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression, IDictionary variables)
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> SetValue(<span style="color: #0000FF">object</span> root, <span style="color: #0000FF">string</span> expression, IDictionary variables, <span style="color: #0000FF">object</span> newValue)</pre><p>
+      The variable name is the key value of the dictionary. Example usage is
+      shown below; </p><pre class="programlisting">IDictionary vars = <span style="color: #0000FF">new</span> Hashtable();
+vars[<span style="color: #000000">"newName"</span>] = <span style="color: #000000">"Mike Tesla"</span>;
+ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"Name = #newName"</span>, vars));</pre><p>
+      You can also use the dictionary as a place to store values of the object
+      as they are evaluated inside the expression. For example to change
+      Tesla's first name back again and keep the old value; </p><pre class="programlisting">ExpressionEvaluator.GetValue(tesla, <span style="color: #000000">"{ #oldName = Name; Name = 'Nikola Tesla' }"</span>, vars);
+String oldName = (String)vars[<span style="color: #000000">"oldName"</span>]; <i style="color: #008000">// Mike Tesla</i></pre><p>
+      Variable names can also be used inside indexers or maps instead of
+      literal values. For example; </p><pre class="programlisting">vars[<span style="color: #000000">"prez"</span>] = <span style="color: #000000">"president"</span>;
+Inventor pupin = (Inventor) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers[#prez]"</span>, vars);</pre>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="expressions-this"></a>11.3.10.1.&nbsp;The '#this' and '#root' variables</h4></div></div></div>
+        
+
+        <p>There are two special variables that are always defined and can
+        be references within the expression: <code class="literal">#this</code> and
+        <code class="literal">#root</code>.</p>
+
+        <p>The <code class="literal">#this</code> variable can be used to explicitly
+        refer to the context for the node that is currently being
+        evaluated:</p><pre class="programlisting"><i style="color: #008000">// sets the name of the president and returns its instance</i>
+ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers['president'].( #this.Name = 'Nikola Tesla'; #this )"</span>)</pre>
+
+        <p>Similarly, the <code class="literal">#root</code> variable allows you to
+        refer to the root context for the expression:</p><pre class="programlisting"><i style="color: #008000">// removes president from the Officers dictionary and returns removed instance</i>
+ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers['president'].( #root.Officers.Remove('president'); #this )"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-ternary"></a>11.3.11.&nbsp;Ternary Operator (If-Then-Else)</h3></div></div></div>
+      
+
+      <p>You can use the ternary operator for performing if-then-else
+      conditional logic inside the expression. A minimal example is;
+      </p><pre class="programlisting">String aTrueString  = (String) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"false ? 'trueExp' : 'falseExp'"</span>) <i style="color: #008000">// trueExp</i>
+</pre><p> In this case, the boolean false results in returning the
+      string value 'trueExp'. A less artificial example is shown below
+      </p><pre class="programlisting">ExpressionEvaluator.SetValue(ieee, <span style="color: #000000">"Name"</span>, <span style="color: #000000">"IEEE"</span>);
+IDictionary vars = <span style="color: #0000FF">new</span> Hashtable();
+vars[<span style="color: #000000">"queryName"</span>] = <span style="color: #000000">"Nikola Tesla"</span>;
+
+<span style="color: #0000FF">string</span> expression = <span style="color: #000000">@"IsMember(#queryName)
+                      ? #queryName + ' is a member of the ' + Name + ' Society'
+                      : #queryName + ' is not a member of the ' + Name + ' Society'"</span>;
+
+String queryResultString = (String) ExpressionEvaluator.GetValue(ieee, expression, vars));
+
+<i style="color: #008000">// queryResultString = "Nikola Tesla is a member of the IEEE Society"</i></pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e3254"></a>11.3.12.&nbsp;List Projection and Selection</h3></div></div></div>
+      
+
+      <p>List projection and selection are very powerful expression
+      language features that allow you to transform the source list into
+      another list by either <span class="emphasis"><em>projecting</em></span> across its
+      "columns", or <span class="emphasis"><em>selecting</em></span> from its "rows". In other
+      words, projection can be thought of as a column selector in a SQL SELECT
+      statement, while selection would be comparable to the WHERE
+      clause.</p>
+
+      <p>For example, let's say that we need a list of the cities where our
+      inventors were born. This could be easily obtained by projecting on the
+      <code class="literal">PlaceOfBirth.City</code> property: </p><pre class="programlisting">IList placesOfBirth = (IList) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.!{PlaceOfBirth.City}"</span>)  <i style="color: #008000">// { 'Smiljan', 'Idvor' }</i>
+</pre><p>Or we can get the list of officers' names:</p><pre class="programlisting">IList officersNames = (IList) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Officers.Values.!{Name}"</span>)  <i style="color: #008000">// { 'Nikola Tesla', 'Mihajlo Pupin' }</i>
+</pre>
+
+      <p>As you can see from the examples, projection uses
+      <code class="literal">!{</code><span class="emphasis"><em>projectionExpression</em></span><code class="literal">}</code>
+      syntax and will return a new list of the same length as the original
+      list but typically with the elements of a different type.</p>
+
+      <p>On the other hand, selection, which uses
+      <code class="literal">?{</code><span class="emphasis"><em>projectionExpression</em></span><code class="literal">}</code>
+      syntax, will filter the list and return a new list containing a subset
+      of the original element list. For example, selection would allow us to
+      easily get a list of Serbian inventors:</p><pre class="programlisting">IList serbianInventors = (IList) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.?{Nationality == 'Serbian'}"</span>)  <i style="color: #008000">// { tesla, pupin }</i>
+</pre><p>Or to get a list of inventors that invented
+      sonar:</p><pre class="programlisting">IList sonarInventors = (IList) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.?{'Sonar' in Inventions}"</span>)  <i style="color: #008000">// { pupin }</i>
+</pre><p>Or we can combine selection and projection to get a list of
+      sonar inventors' names:</p><pre class="programlisting">IList sonarInventorsNames = (IList) ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.?{'Sonar' in Inventions}.!{Name}"</span>)  <i style="color: #008000">// { 'Mihajlo Pupin' }</i>
+</pre>
+
+      <p>As a convenience, Spring.NET Expression Language also supports a
+      special syntax for selecting the first or last match. Unlike regular
+      selection, which will return an empty list if no matches are found,
+      first or last match selection expression will either return an instance
+      of the matched element, or <code class="literal">null</code> if no matching
+      elements were found. In order to return a first match you should prefix
+      your selection expression with <code class="literal">^{</code> instead of
+      <code class="literal">?{</code>, and to return last match you should use
+      <code class="literal">${</code> prefix:</p><pre class="programlisting">ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.^{Nationality == 'Serbian'}.Name"</span>)  <i style="color: #008000">// 'Nikola Tesla'</i>
+ExpressionEvaluator.GetValue(ieee, <span style="color: #000000">"Members.${Nationality == 'Serbian'}.Name"</span>)  <i style="color: #008000">// 'Mihajlo Pupin'</i>
+</pre><p>Notice that we access the <code class="literal">Name</code> property
+      directly on the selection result, because an actual matched instance is
+      returned by the first and last match expression instead of a filtered
+      list.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-processors"></a>11.3.13.&nbsp;Collection Processors and Aggregators</h3></div></div></div>
+      
+
+      <p>In addition to list projection and selection, Spring.NET
+      Expression Language also supports several collection processors, such as
+      <code class="literal">distinct</code>, <code class="literal">nonNull</code> and
+      <code class="literal">sort</code>, as well as a number of commonly used
+      aggregators, such as <code class="literal">max</code>, <code class="literal">min</code>,
+      <code class="literal">count</code>, <code class="literal">sum</code> and
+      <code class="literal">average</code>.</p>
+
+      <p>The difference between processors and aggregators is that
+      processors return a new or transformed collection, while aggregators
+      return a single value. Other than that, they are very similar -- both
+      processors and aggregators are invoked on a collection node using
+      standard method invocation expression syntax, which makes them very
+      simple to use and allows easy chaining of multiple processors.</p>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3293"></a>11.3.13.1.&nbsp;Count Aggregator</h4></div></div></div>
+        
+
+        <p>The count aggregator is a safe way to obtain a number of items
+        in a collection. It can be applied to a collection of any type,
+        including arrays, which helps eliminate the decision on whether to use
+        <code class="literal">Count</code> or <code class="literal">Length</code> property
+        depending on the context. Unlike its standard .NET counterparts, count
+        aggregator can also be invoked on the <code class="literal">null</code> context
+        without throwing a <code class="literal">NullReferenceException</code>. It
+        will simply return zero in this case, which makes it much safer than
+        standard .NET properties within larger expression.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -3}.count()"</span>)  <i style="color: #008000">// 3</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"count()"</span>)  <i style="color: #008000">// 0</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3301"></a>11.3.13.2.&nbsp;Sum Aggregator</h4></div></div></div>
+        
+
+        <p>The sum aggregator can be used to calculate a total for the list
+        of numeric values. If numbers within the list are not of the same type
+        or precision, it will automatically perform necessary conversion and
+        the result will be the highest precision type. If any of the
+        collection elements is not a number, this aggregator will throw an
+        <code class="literal">InvalidArgumentException</code>.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -3, 10}.sum()"</span>)  <i style="color: #008000">// 13 (int)</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{5, 5.8, 12.2, 1}.sum()"</span>)  <i style="color: #008000">// 24.0 (double)</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3306"></a>11.3.13.3.&nbsp;Average Aggregator</h4></div></div></div>
+        
+
+        <p>The average aggregator will return the average for the
+        collection of numbers. It will use the same type coercion rules, as
+        the sum aggregator in order to be as precise as possible. Just like
+        the sum aggregator, if any of the collection elements is not a number,
+        it will throw an
+        <code class="literal">InvalidArgumentException</code>.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -4, 10}.average()"</span>)  <i style="color: #008000">// 3</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -2, 10}.average()"</span>)  <i style="color: #008000">// 3.5</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3311"></a>11.3.13.4.&nbsp;Minimum Aggregator</h4></div></div></div>
+        
+
+        <p>The minimum aggregator will return the smallest item in the
+        list. In order to determine what "the smallest" actually means, this
+        aggregator relies on the assumption that the collection items are of
+        the uniform type and that they implement the
+        <code class="literal">IComparable</code> interface. If that is not the case,
+        this aggregator will throw an
+        <code class="literal">InvalidArgumentException</code>.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -3, 10}.min()"</span>)  <i style="color: #008000">// -3</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{'abc', 'efg', 'xyz'}.min()"</span>)  <i style="color: #008000">// 'abc'</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3317"></a>11.3.13.5.&nbsp;Maximum Aggregator</h4></div></div></div>
+        
+
+        <p>The maximum aggregator will return the largest item in the list.
+        In order to determine what "the largest" actually means, this
+        aggregator relies on the assumption that the collection items are of
+        the uniform type and that they implement
+        <code class="literal">IComparable</code> interface. If that is not the case,
+        this aggregator will throw an
+        <code class="literal">InvalidArgumentException</code>.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 5, -3, 10}.max()"</span>)  <i style="color: #008000">// 10</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{'abc', 'efg', 'xyz'}.max()"</span>)  <i style="color: #008000">// 'xyz'</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3323"></a>11.3.13.6.&nbsp;Non-null Processor</h4></div></div></div>
+        
+
+        <p>A non-null processor is a very simple collection processor that
+        eliminates all <code class="literal">null</code> values from the
+        collection.</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{ 'abc', 'xyz', null, 'abc', 'def', null}.nonNull()"</span>)  <i style="color: #008000">// { 'abc', 'xyz', 'abc', 'def' }</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{ 'abc', 'xyz', null, 'abc', 'def', null}.nonNull().distinct().sort()"</span>)  <i style="color: #008000">// { 'abc', 'def', 'xyz' }</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3328"></a>11.3.13.7.&nbsp;Distinct Processor</h4></div></div></div>
+        
+
+        <p>A distinct processor is very useful when you want to ensure that
+        you don't have duplicate items in the collection. It can also accept
+        an optional <code class="literal">Boolean</code> argument that will determine
+        whether <code class="literal">null</code> values should be included in the
+        results. The default is <code class="literal">false</code>, which means that
+        they will not be included. </p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{ 'abc', 'xyz', 'abc', 'def', null, 'def' }.distinct(true).sort()"</span>)  <i style="color: #008000">// { null, 'abc', 'def', 'xyz' }</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{ 'abc', 'xyz', 'abc', 'def', null, 'def' }.distinct(false).sort()"</span>)  <i style="color: #008000">// { 'abc', 'def', 'xyz' }</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3335"></a>11.3.13.8.&nbsp;Sort Processor</h4></div></div></div>
+        
+
+        <p>The sort processor can be used to sort uniform collections of
+        elements that implement <code class="literal">IComparable</code>.</p>
+
+        <pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1.2, 5.5, -3.3}.sort()"</span>)  <i style="color: #008000">// { -3.3, 1.2, 5.5 }</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{ 'abc', 'xyz', 'abc', 'def', null, 'def' }.sort()"</span>)  <i style="color: #008000">// { null, 'abc', 'abc', 'def', 'def', 'xyz' }</i>
+</pre>
+
+        <p>The sort processor also accepts a boolean value as an argument
+        to determine sort order, sort(false) will sort the collection in
+        decending order.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3341"></a>11.3.13.9.&nbsp;Type Conversion Processor</h4></div></div></div>
+        
+
+        <p>The convert processor can be used to convert a collection of
+        elements to a given Type.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">object</span>[] arr = <span style="color: #0000FF">new</span> <span style="color: #0000FF">object</span>[] { <span style="color: #000000">"0"</span>, 1, 1.1m, <span style="color: #000000">"1.1"</span>, 1.1f };
+<span style="color: #0000FF">decimal</span>[] result = (<span style="color: #0000FF">decimal</span>[]) ExpressionEvaluator.GetValue(arr, <span style="color: #000000">"convert(decimal)"</span>);
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3345"></a>11.3.13.10.&nbsp;Reverse Processor</h4></div></div></div>
+        
+
+        <p>The reverse processor returns the reverse order of elements in
+        the list</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">object</span>[] arr = <span style="color: #0000FF">new</span> <span style="color: #0000FF">object</span>[] { <span style="color: #000000">"0"</span>, 1, 2.1m, <span style="color: #000000">"3"</span>, 4.1f };
+<span style="color: #0000FF">object</span>[] result = <span style="color: #0000FF">new</span> ArrayList( (ICollection) ExpressionEvaluator.GetValue(arr, <span style="color: #000000">"reverse()"</span>) ).ToArray(); <i style="color: #008000">// { 4.1f, "3", 2.1m, 1, "0" }            </i></pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3349"></a>11.3.13.11.&nbsp;OrderBy Processor</h4></div></div></div>
+        
+
+        <p>Collections can be ordered in three ways, an expression, a SpEL
+        lamda expreression, or a delegate.</p>
+
+        <pre class="programlisting"><i style="color: #008000">// orderBy expression</i>
+IExpression exp = Expression.Parse(<span style="color: #000000">"orderBy('ToString()')"</span>);
+<span style="color: #0000FF">object</span>[] input = <span style="color: #0000FF">new</span> <span style="color: #0000FF">object</span>[] { <span style="color: #000000">'b'</span>, 1, 2.0, <span style="color: #000000">"a"</span> };
+<span style="color: #0000FF">object</span>[] ordered = exp.GetValue(input);  <i style="color: #008000">// { 1, 2.0, "a", 'b' }</i>
+
+
+<i style="color: #008000">// SpEL lambda expressions</i>
+IExpression exp = Expression.Parse(<span style="color: #000000">"orderBy({|a,b| $a.ToString().CompareTo($b.ToString())})"</span>);
+<span style="color: #0000FF">object</span>[] input = <span style="color: #0000FF">new</span> <span style="color: #0000FF">object</span>[] { <span style="color: #000000">'b'</span>, 1, 2.0, <span style="color: #000000">"a"</span> };
+<span style="color: #0000FF">object</span>[] ordered = exp.GetValue(input);  <i style="color: #008000">// { 1, 2.0, "a", 'b' }</i>
+
+Hashtable vars = <span style="color: #0000FF">new</span> Hashtable();
+Expression.RegisterFunction( <span style="color: #000000">"compare"</span>, <span style="color: #000000">"{|a,b| $a.ToString().CompareTo($b.ToString())}"</span>, vars);
+exp = Expression.Parse(<span style="color: #000000">"orderBy(#compare)"</span>);
+ordered = exp.GetValue(input, vars);  <i style="color: #008000">// { 1, 2.0, "a", 'b' }</i>
+
+<i style="color: #008000">// .NET delegate</i>
+<span style="color: #0000FF">private</span> <span style="color: #0000FF">delegate</span> <span style="color: #0000FF">int</span> CompareCallback(<span style="color: #0000FF">object</span> x, <span style="color: #0000FF">object</span> y);
+<span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> CompareObjects(<span style="color: #0000FF">object</span> x, <span style="color: #0000FF">object</span> y)
+{
+  <span style="color: #0000FF">if</span> (x == y) <span style="color: #0000FF">return</span> 0;
+  <span style="color: #0000FF">return</span> x.ToString().CompareTo(<span style="color: #000000">""</span>+y);
+}
+
+Hashtable vars = <span style="color: #0000FF">new</span> Hashtable();
+vars[<span style="color: #000000">"compare"</span>] = <span style="color: #0000FF">new</span> CompareCallback(CompareObjects);
+
+IExpression exp = Expression.Parse(<span style="color: #000000">"orderBy(#compare)"</span>);
+<span style="color: #0000FF">object</span>[] input = <span style="color: #0000FF">new</span> <span style="color: #0000FF">object</span>[] { <span style="color: #000000">'b'</span>, 1, 2.0, <span style="color: #000000">"a"</span> };
+<span style="color: #0000FF">object</span>[] ordered = exp.GetValue(input);  <i style="color: #008000">// { 1, 2.0, "a", 'b' }</i>
+</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3353"></a>11.3.13.12.&nbsp;User Defined Collection Processor</h4></div></div></div>
+        
+
+        <p>You can register your own collection processor for use in
+        evaluation a collection. Here is an example of a ICollectionProcessor
+        implementation that sums only the even numbers of an integer
+        list</p>
+
+        <pre class="programlisting">        <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> IntEvenSumCollectionProcessor : ICollectionProcessor
+        {
+            <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Process(ICollection source, <span style="color: #0000FF">object</span>[] args)
+            {
+                <span style="color: #0000FF">object</span> total = 0d;
+                <span style="color: #0000FF">foreach</span> (<span style="color: #0000FF">object</span> item <span style="color: #0000FF">in</span> source)
+                {
+                    <span style="color: #0000FF">if</span> (item != <span style="color: #0000FF">null</span>)
+                    {
+                        <span style="color: #0000FF">if</span> (NumberUtils.IsInteger(item))
+                        {
+                            <span style="color: #0000FF">if</span> ((<span style="color: #0000FF">int</span>)item % 2 == 0)
+                            {
+                                total = NumberUtils.Add(total, item);
+                            }
+                        }
+                        <span style="color: #0000FF">else</span>
+                        {
+                            <span style="color: #0000FF">throw</span> <span style="color: #0000FF">new</span> ArgumentException(<span style="color: #000000">"Sum can only be calculated for a collection of numeric values."</span>);
+                        }
+                    }
+                }
+
+                <span style="color: #0000FF">return</span> total;
+            }
+        }
+
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DoWork()
+        {
+            Hashtable vars = <span style="color: #0000FF">new</span> Hashtable();
+            vars[<span style="color: #000000">"EvenSum"</span>] = <span style="color: #0000FF">new</span> IntEvenSumCollectionProcessor();
+            <span style="color: #0000FF">int</span> result = (<span style="color: #0000FF">int</span>)ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"{1, 2, 3, 4}.EvenSum()"</span>, vars));  <i style="color: #008000">// 6</i>
+        }</pre>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-object-references"></a>11.3.14.&nbsp;Spring Object References</h3></div></div></div>
+      
+
+      <p>Expressions can refer to objects that are declared in Spring's
+      application context using the syntax
+      <code class="literal">@(</code><span class="emphasis"><em>contextName</em></span><code class="literal">:</code><span class="emphasis"><em>objectName</em></span><code class="literal">)</code>.
+      If no contextName is specified the default root context name
+      (<code class="literal">Spring.RootContext</code>) is used. Using the application
+      context defined in the MovieFinder example from <a class="xref" href="quickstarts.html" title="Chapter&nbsp;35.&nbsp;IoC Quickstarts">Chapter&nbsp;35, <i>IoC Quickstarts</i></a>, the following expression returns the number of
+      movies directed by Roberto Benigni. </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main()
+{
+  . . .
+
+<i style="color: #008000">// Retrieve context defined in the spring/context section of</i>
+<i style="color: #008000">// the standard .NET configuration file.</i>
+IApplicationContext ctx = ContextRegistry.GetContext();
+
+<span style="color: #0000FF">int</span> numMovies = (<span style="color: #0000FF">int</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>,
+                      <span style="color: #000000">"@(MyMovieLister).MoviesDirectedBy('Roberto Benigni').Length"</span>);
+
+  . . .
+}</pre><p> The variable numMovies is evaluated to 2 in this
+      example.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressions-lamda"></a>11.3.15.&nbsp;Lambda Expressions</h3></div></div></div>
+      
+
+      <p>A somewhat advanced, but a very powerful feature of Spring.NET
+      Expression Language are lambda expressions. Lambda expressions allow you
+      to define inline functions, which can then be used within your
+      expressions just like any other function or method. You may also use
+      .NET delegates as described in the next section.</p>
+
+      <p>The syntax for defining lambda expressions is:</p>
+
+      <p><code class="literal">#</code><span class="emphasis"><em>functionName</em></span><code class="literal"> =
+      {|</code><span class="emphasis"><em>argList</em></span><code class="literal">|
+      </code><span class="emphasis"><em>functionBody</em></span><code class="literal"> }</code></p>
+
+      <p>For example, you could define a <code class="literal">max</code> function
+      and call it like this:</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"(#max = {|x,y| $x &gt; $y ? $x : $y }; #max(5,25))"</span>, <span style="color: #0000FF">new</span> Hashtable())  <i style="color: #008000">// 25</i></pre>
+
+      <p>As you can see, any arguments defined for the expression can be
+      referenced within the function body using a <span class="emphasis"><em>local
+      variable</em></span> syntax,
+      <code class="literal">$</code><span class="emphasis"><em>varName</em></span>. Invocation of the
+      function defined using lambda expression is as simple as specifying the
+      comma-separated list of function arguments in parentheses, after the
+      function name.</p>
+
+      <p>Lambda expressions can be recursive, which means that you can
+      invoke the function within its own body:</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"(#fact = {|n| $n &lt;= 1 ? 1 : $n * #fact($n-1) }; #fact(5))"</span>, <span style="color: #0000FF">new</span> Hashtable())  <i style="color: #008000">// 120</i></pre>
+
+      <p>Notice that in both examples above we had to specify a
+      <code class="literal">variables</code> parameter for the
+      <code class="literal">GetValue</code> method. This is because lambda expressions
+      are actually nothing more than parameterized variables and we need
+      variables dictionary in order to store them. If you don't specify a
+      valid <code class="literal">IDictionary</code> instance for the
+      <code class="literal">variables</code> parameter, you will get a runtime
+      exception.</p>
+
+      <p>Also, in both examples above we used an expression list in order
+      to define and invoke a function in a single expression. However, more
+      likely than not, you will want to define your functions once and then
+      use them within as many expressions as you need. Spring.NET provides an
+      easy way to pre-register your lambda expressions by exposing a static
+      <code class="literal">Expression.RegisterFunction</code> method, which takes
+      function name, lambda expression and variables dictionary to register
+      function in as parameters:</p><pre class="programlisting">IDictionary vars = <span style="color: #0000FF">new</span> Hashtable();
+Expression.RegisterFunction(<span style="color: #000000">"sqrt"</span>, <span style="color: #000000">"{|n| Math.Sqrt($n)}"</span>, vars);
+Expression.RegisterFunction(<span style="color: #000000">"fact"</span>, <span style="color: #000000">"{|n| $n &lt;= 1 ? 1 : $n * #fact($n-1)}"</span>, vars);</pre><p>Once
+      the function registration is done, you can simply evaluate an expression
+      that uses these functions, making sure that the <code class="literal">vars</code>
+      dictionary is passed as a parameter to expression evaluation
+      engine:</p><pre class="programlisting">ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#fact(5)"</span>, vars)  <i style="color: #008000">// 120</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#sqrt(9)"</span>, vars)  <i style="color: #008000">// 3</i></pre>
+
+      <p>Finally, because lambda expressions are treated as variables, they
+      can be assigned to other variables or passed as parameters to other
+      lambda expressions. In the following example we are defining a delegate
+      function that accepts function <code class="literal">f</code> as the first
+      argument and parameter <code class="literal">n</code> that will be passed to
+      function <code class="literal">f</code> as the second. Then we invoke the
+      functions registered in the previous example, as well as the lambda
+      expression defined inline, through our delegate:</p><pre class="programlisting">Expression.RegisterFunction(<span style="color: #000000">"delegate"</span>, <span style="color: #000000">"{|f, n| $f($n) }"</span>, vars);
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#delegate(#sqrt, 4)"</span>, vars)  <i style="color: #008000">// 2</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#delegate(#fact, 5)"</span>, vars)  <i style="color: #008000">// 120</i>
+ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#delegate({|n| $n ^ 2 }, 5)"</span>, vars)  <i style="color: #008000">// 25</i></pre><p>While
+      this particular example is not particularly useful, it does demonstrate
+      that lambda expressions are indeed treated as nothing more than
+      parameterized variables, which is important to remember.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e3404"></a>11.3.16.&nbsp;Delegate Expressions</h3></div></div></div>
+      
+
+      <p>Delegate expressions allow you to refer to .NET delegates which
+      can then be used within your expressions just like any other function or
+      method.</p>
+
+      <p>For example, you can define a max delegate and call it like
+      this</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">private</span> <span style="color: #0000FF">delegate</span> <span style="color: #0000FF">double</span> DoubleFunctionTwoArgs(<span style="color: #0000FF">double</span> arg1, <span style="color: #0000FF">double</span> arg2);
+
+<span style="color: #0000FF">private</span> <span style="color: #0000FF">double</span> Max(<span style="color: #0000FF">double</span> arg1, <span style="color: #0000FF">double</span> arg2)
+{
+  <span style="color: #0000FF">return</span> Math.Max(arg1, arg2);
+}
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DoWork()
+{
+  Hashtable vars = <span style="color: #0000FF">new</span> Hashtable();
+  vars[<span style="color: #000000">"max"</span>] = <span style="color: #0000FF">new</span> DoubleFunctionTwoArgs(Max);
+  <span style="color: #0000FF">double</span> result = (<span style="color: #0000FF">double</span>) ExpressionEvaluator.GetValue(<span style="color: #0000FF">null</span>, <span style="color: #000000">"#max(5,25)"</span>, vars);  <i style="color: #008000">// 25</i>
+}</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e3409"></a>11.3.17.&nbsp;Null Context</h3></div></div></div>
+      
+
+      <p>If you do not specify a root object, i.e. pass in null, then the
+      expressions evaluated either have to be literal values, i.e.
+      ExpressionEvaluator.GetValue(null, "2 + 3.14"), refer to classes that
+      have static methods or properties, i.e.
+      ExpressionEvaluator.GetValue(null, "DateTime.Today"), create new
+      instances of objects, i.e. ExpressionEvaluator.GetValue(null, "new
+      DateTime(2004, 8, 14)") or refer to other objects such as those in the
+      variable dictionary or in the IoC container. The latter two usages will
+      be discussed later.</p>
+    </div>
+  </div>
+
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expressions-classes"></a>11.4.&nbsp;Classes used in the examples</h2></div></div></div>
+    
+
+    <p>The following simple classes are used to demonstrate the
+    functionality of the expression language.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> Inventor
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Name;
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Nationality;
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span>[] Inventions;
+    <span style="color: #0000FF">private</span> DateTime dob;
+    <span style="color: #0000FF">private</span> Place pob;
+
+    <span style="color: #0000FF">public</span> Inventor() : <span style="color: #0000FF">this</span>(<span style="color: #0000FF">null</span>, DateTime.MinValue, <span style="color: #0000FF">null</span>)
+    {}
+
+    <span style="color: #0000FF">public</span> Inventor(<span style="color: #0000FF">string</span> name, DateTime dateOfBirth, <span style="color: #0000FF">string</span> nationality)
+    {
+        <span style="color: #0000FF">this</span>.Name = name;
+        <span style="color: #0000FF">this</span>.dob = dateOfBirth;
+        <span style="color: #0000FF">this</span>.Nationality = nationality;
+        <span style="color: #0000FF">this</span>.pob = <span style="color: #0000FF">new</span> Place();
+    }
+
+    <span style="color: #0000FF">public</span> DateTime DOB
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> dob; }
+        <span style="color: #0000FF">set</span> { dob = <span style="color: #0000FF">value</span>; }
+    }
+
+    <span style="color: #0000FF">public</span> Place PlaceOfBirth
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> pob; }
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> GetAge(DateTime on)
+    {
+        <i style="color: #008000">// not very accurate, but it will do the job ;-)</i>
+        <span style="color: #0000FF">return</span> on.Year - dob.Year;
+    }
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> Place
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> City;
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Country;
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> Society
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Name;
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> Advisors = <span style="color: #000000">"advisors"</span>;
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">string</span> President = <span style="color: #000000">"president"</span>;
+
+    <span style="color: #0000FF">private</span> IList members = <span style="color: #0000FF">new</span> ArrayList();
+    <span style="color: #0000FF">private</span> IDictionary officers = <span style="color: #0000FF">new</span> Hashtable();
+
+    <span style="color: #0000FF">public</span> IList Members
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> members; }
+    }
+
+    <span style="color: #0000FF">public</span> IDictionary Officers
+    {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> officers; }
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">bool</span> IsMember(<span style="color: #0000FF">string</span> name)
+    {
+        <span style="color: #0000FF">bool</span> found = <span style="color: #0000FF">false</span>;
+        <span style="color: #0000FF">foreach</span> (Inventor inventor <span style="color: #0000FF">in</span> members)
+        {
+            <span style="color: #0000FF">if</span> (inventor.Name == name)
+            {
+                found = <span style="color: #0000FF">true</span>;
+                <span style="color: #0000FF">break</span>;
+            }
+        }
+        <span style="color: #0000FF">return</span> found;
+    }
+}</pre>
+
+    <p>The code listings in this chapter use instances of the data
+    populated with the following information.</p>
+
+    <pre class="programlisting">Inventor tesla = <span style="color: #0000FF">new</span> Inventor(<span style="color: #000000">"Nikola Tesla"</span>, <span style="color: #0000FF">new</span> DateTime(1856, 7, 9), <span style="color: #000000">"Serbian"</span>);
+tesla.Inventions = <span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[]
+    {
+        <span style="color: #000000">"Telephone repeater"</span>, <span style="color: #000000">"Rotating magnetic field principle"</span>,
+        <span style="color: #000000">"Polyphase alternating-current system"</span>, <span style="color: #000000">"Induction motor"</span>,
+        <span style="color: #000000">"Alternating-current power transmission"</span>, <span style="color: #000000">"Tesla coil transformer"</span>,
+        <span style="color: #000000">"Wireless communication"</span>, <span style="color: #000000">"Radio"</span>, <span style="color: #000000">"Fluorescent lights"</span>
+    };
+tesla.PlaceOfBirth.City = <span style="color: #000000">"Smiljan"</span>;
+
+Inventor pupin = <span style="color: #0000FF">new</span> Inventor(<span style="color: #000000">"Mihajlo Pupin"</span>, <span style="color: #0000FF">new</span> DateTime(1854, 10, 9), <span style="color: #000000">"Serbian"</span>);
+pupin.Inventions = <span style="color: #0000FF">new</span> <span style="color: #0000FF">string</span>[] {<span style="color: #000000">"Long distance telephony &amp; telegraphy"</span>, <span style="color: #000000">"Secondary X-Ray radiation"</span>, <span style="color: #000000">"Sonar"</span>};
+pupin.PlaceOfBirth.City = <span style="color: #000000">"Idvor"</span>;
+pupin.PlaceOfBirth.Country = <span style="color: #000000">"Serbia"</span>;
+
+Society ieee = <span style="color: #0000FF">new</span> Society();
+ieee.Members.Add(tesla);
+ieee.Members.Add(pupin);
+ieee.Officers[<span style="color: #000000">"president"</span>] = pupin;
+ieee.Officers[<span style="color: #000000">"advisors"</span>] = <span style="color: #0000FF">new</span> Inventor[] {tesla, pupin};</pre>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="misc.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="validation.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;10.&nbsp;Spring.NET miscellanea&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;12.&nbsp;Validation Framework</td></tr></table></div></body></html>

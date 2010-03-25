@@ -1,0 +1,426 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;44.&nbsp;NMS QuickStart</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="quartz-quickstart.html" title="Chapter&nbsp;43.&nbsp;Quartz QuickStart"><link rel="next" href="ems-quickstart.html" title="Chapter&nbsp;45.&nbsp;TIBCO EMS QuickStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="nms-quickstart"></a>Chapter&nbsp;44.&nbsp;NMS QuickStart</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11023"></a>44.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The NMS quick start application demonstrates how to use asynchronous
+    messaging to implement a system for purchasing a stock. To purchase a
+    stock, a client application will send a stock request message containing
+    the information about the stock, i.e. ticker symbol, quantity, etc. The
+    client request message will be received by the server where it will
+    perform business processing on the request, for example to determine if
+    the user has sufficient credit to purchase the stock or if the user is
+    even allowed to make the purchase due to existing account restrictions.
+    These are typically external processes as well. Usually the server
+    application will persist state about the request and forward it on to an
+    execute venue where the actual execution of the stock request is
+    performed. In addition, market data for the stock will be sent from the
+    server process to the client. The high level exchange of information is
+    shown below.</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart.jpg" width="405"></div>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>To follow this NMS QuickStart load the solution file found in the
+      directory
+      <code class="literal">&lt;spring-install-dir&gt;\examples\Spring\Spring.NmsQuickStart</code></p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11032"></a>44.2.&nbsp;Message Destinations</h2></div></div></div>
+    
+
+    <p>To implement this flow using messaging the following queues and
+    topics will be used. All requests from the client to the server will be
+    sent on the queue named APP.STOCK.REQUEST. Responses to the requests will
+    be sent from the server to the client on a queue unique to each client. In
+    this example the queue name is of the form APP.STOCK.&lt;UserName&gt;, and
+    more specifically is configured to be APP.STOCK.JOE. Market data does not
+    need to be delivered to an individual client as many client applications
+    are interested in this shared information. As such, the server will send
+    market data information on a topic named APP.STOCK.MARKETDATA. The
+    messaging communication between the server and the execution venue is not
+    included as part of the application. An local implementation of the
+    service interface that represents the execution venue is used instead of
+    one based on messaging or another middleware technology. The messaging
+    flow showing the queues and topics used is shown below.</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart-msg-destinations.jpg" width="405"></div>
+
+    <p>Queues are shown in red and topics in green.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="nms-gateways"></a>44.3.&nbsp;Gateways</h2></div></div></div>
+    
+
+    <p>Gateways represent the service operation to send a message. The
+    client will send a stock request to the server based on the contract
+    defined by the <code class="literal">IStockService</code> interface .</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IStockService
+    {
+        <span style="color: #0000FF">void</span> Send(TradeRequest tradeRequest);
+    }</pre>
+
+    <p>The server will send market data to the clients based on the
+    contract defined by the <code class="literal">IMarketDataService</code>
+    interface.</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMarketDataService
+    {
+        <span style="color: #0000FF">void</span> SendMarketData();
+    }</pre>
+
+    <p>The market data gateway has no method parameters as it is assumed
+    that implementations will manage the data to send internally. The
+    <code class="literal">TradeRequest</code> object is one of the data objects that
+    will be exchanged in the application and is discussed in the next
+    section.</p>
+
+    <p>The use of interfaces allows for multiple implementations to be
+    created. Implementations that use messaging to communicate will be based
+    on the Spring's <code class="literal">NmsGateway</code> class and will be discussed
+    later. stub or mock implementations can be used for testing
+    purposes.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="nms-messagedata"></a>44.4.&nbsp;Message Data</h2></div></div></div>
+    
+
+    <p>The <code class="literal">TradeRequest</code> object shown above contains all
+    the information required to process a stock order. To promote the
+    interoperability of this data across different platforms the
+    <code class="literal">TradeRequest</code> class is generated from an XML Schema
+    using Microsoft's Schema Definition Tool (xsd.exe). The schema for trade
+    request is shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;xs:schema</span> <span style="color: #FF0000">xmlns:xs</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema"</span> <span style="color: #FF0000">elementFormDefault</span>=<span style="color: #0000FF">"qualified"</span> 
+           <span style="color: #FF0000">targetNamespace</span>=<span style="color: #0000FF">"http://www.springframework.net/nms/common/2008-08-05"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TradeRequest"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+      <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Ticker"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Quantity"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:long"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Price"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:decimal"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"OrderType"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AccountName"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"BuyRequest"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:boolean"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"UserName"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"RequestID"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+  <span style="color: #A31515">&lt;/xs:element&gt;</span>
+
+<span style="color: #A31515">&lt;/xs:schema&gt;</span>
+</pre>
+
+    <p>Running xsd.exe on this schema will result in a class that contains
+    properties for each of the element names. A partial code listing of the
+    TradeRequest class is shown below</p>
+
+    <pre class="programlisting"><i style="color: #008000">//     This code was generated by a tool.</i>
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">partial</span> <span style="color: #0000FF">class</span> TradeRequest {
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Ticker {
+            <span style="color: #0000FF">get</span> {
+                <span style="color: #0000FF">return</span> <span style="color: #0000FF">this</span>.tickerField;
+            }
+            <span style="color: #0000FF">set</span> {
+                <span style="color: #0000FF">this</span>.tickerField = <span style="color: #0000FF">value</span>;
+            }
+        }
+        
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">long</span> Quantity {
+            <span style="color: #0000FF">get</span> {
+                <span style="color: #0000FF">return</span> <span style="color: #0000FF">this</span>.quantityField;
+            }
+            <span style="color: #0000FF">set</span> {
+                <span style="color: #0000FF">this</span>.quantityField = <span style="color: #0000FF">value</span>;
+            }
+        }
+      
+      <i style="color: #008000">// Additional properties not shown for brevity.</i>
+
+    }</pre>
+
+    <p>The schema and the <code class="literal">TradeRequest</code> class are located
+    in the project <code class="literal">Spring.NmsQuickStart.Common</code>. This common
+    project will be shared between the server and client for
+    convenience.</p>
+
+    <p>When sending a response back to the client the type
+    <code class="literal">TradeResponse</code> will be used. The schema for the
+    <code class="literal">TradeResponse</code> is shown below</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;xs:schema</span> <span style="color: #FF0000">xmlns:xs</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema"</span> <span style="color: #FF0000">elementFormDefault</span>=<span style="color: #0000FF">"qualified"</span> 
+           <span style="color: #FF0000">targetNamespace</span>=<span style="color: #0000FF">"http://www.springframework.net/nms/common/2008-08-05"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TradeResponse"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+      <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Ticker"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Quantity"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:integer"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Price"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:decimal"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"OrderType"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Error"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:boolean"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ErrorMessage"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+  <span style="color: #A31515">&lt;/xs:element&gt;</span>
+
+<span style="color: #A31515">&lt;/xs:schema&gt;</span></pre>
+
+    <p>The <code class="literal">TradeResponse</code> type also generated from a
+    schema using xsd.exe. A partial code listing is shown below</p>
+
+    <pre class="programlisting"><i style="color: #008000">//     This code was generated by a tool.</i>
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">partial</span> <span style="color: #0000FF">class</span> TradeResponse {
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">string</span> Ticker {
+            <span style="color: #0000FF">get</span> {
+                <span style="color: #0000FF">return</span> <span style="color: #0000FF">this</span>.tickerField;
+            }
+            <span style="color: #0000FF">set</span> {
+                <span style="color: #0000FF">this</span>.tickerField = <span style="color: #0000FF">value</span>;
+            }
+        }
+        
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">long</span> Quantity {
+            <span style="color: #0000FF">get</span> {
+                <span style="color: #0000FF">return</span> <span style="color: #0000FF">this</span>.quantityField;
+            }
+            <span style="color: #0000FF">set</span> {
+                <span style="color: #0000FF">this</span>.quantityField = <span style="color: #0000FF">value</span>;
+            }
+        }
+
+      <i style="color: #008000">// Additional properties not shown for brevity.</i>
+
+    }</pre>
+
+    <p>The market data information will be sent using a Hashtable data
+    structure.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="nms-handlers"></a>44.5.&nbsp;Message Handlers</h2></div></div></div>
+    
+
+    <p>When the <code class="literal">TradeRequest</code> message is received by the
+    server, it will be handled by the class
+    <code class="literal">Spring.NmsQuickStart.Server.Handlers.StockAppHandler
+    </code>shown below</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> StockAppHandler
+    {
+        <span style="color: #0000FF">private</span> IExecutionVenueService executionVenueService;
+
+        <span style="color: #0000FF">private</span> ICreditCheckService creditCheckService;
+
+        <span style="color: #0000FF">private</span> ITradingService tradingService;
+        
+        <span style="color: #0000FF">public</span> TradeResponse Handle(TradeRequest tradeRequest)
+        {
+            TradeResponse tradeResponse;
+            IList errors = <span style="color: #0000FF">new</span> ArrayList();
+            <span style="color: #0000FF">if</span> (creditCheckService.CanExecute(tradeRequest, errors))
+            {
+                tradeResponse = executionVenueService.ExecuteTradeRequest(tradeRequest);
+                tradingService.ProcessTrade(tradeRequest, tradeResponse);
+            }
+            <span style="color: #0000FF">else</span>
+            {
+                tradeResponse = <span style="color: #0000FF">new</span> TradeResponse();
+                tradeResponse.Error = <span style="color: #0000FF">true</span>;
+                tradeResponse.ErrorMessage = errors[0].ToString();
+            }
+            <span style="color: #0000FF">return</span> tradeResponse;
+        }
+    }</pre>
+
+    <p>The stub implementations of the services, located in the namespace
+    <code class="literal">Spring.NmsQuickStart.Server.Services.Stubs</code>, will result
+    in always sending back a error-free trade response message. A realistic
+    implementation would likely have the execution venue and trading service
+    be remote services and the trading service could be implemented as a local
+    transactional service layer that uses spring's declarative transaction
+    management features.</p>
+
+    <p>The client will receive a TradeResponse message as well as a
+    Hashtable of data representing the market data. The message handle for the
+    client is the class Spring.NmsQuickStart.Client.Handlers.StockAppHandler
+    and is shown below.</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> StockAppHandler
+    {
+
+        <i style="color: #008000">// definition of stockController omitted for brevity.</i>
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Handle(Hashtable data)
+        {
+            <i style="color: #008000">// forward to controller to update view</i>
+            stockController.UpdateMarketData(data);
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Handle(TradeResponse tradeResponse)
+        {
+            <i style="color: #008000">// forward to controller to update view</i>
+            stockController.UpdateTrade(tradeResponse);
+        }
+    }</pre>
+
+    <p>What is important to note about these handlers is that they contain
+    no messaging API artifacts. As such you can write unit and integration
+    tests against these classes independent of the middleware. The missing
+    link between the messaging world and the objects processed by the message
+    handlers are message converters. Spring's messaging helper classes, i.e.
+    SimpleMessageListenerContainer and NmsTemplate use message converters to
+    pass data to the handlers and to send data via messaging for gateway
+    implementations</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11081"></a>44.6.&nbsp;Message Converters</h2></div></div></div>
+    
+
+    <p>The implementation of IMessageConverter used is
+    <code class="literal">Spring.NmsQuickStart.Common.Converters.XmlMessageConverter</code>.
+    This converter adds the ability to marshal and unmarshal objects to and
+    from XML strings. It also uses Spring's
+    <code class="literal">SimpleMessageConverter</code> to convert Hashtables, strings,
+    and byte arrays. In order to pass information about the serialized type,
+    type information is put in the message properties. The type information
+    can be either the class name or an integer value identifying the type. In
+    systems where the client and server are deployed together and are tightly
+    coupled, sharing the class name is a convenient shortcut. The alternative
+    is to register a type for a given integer value. The XML configuration
+    used to configure these objects is shown below</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"XmlMessageConverter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.NmsQuickStart.Common.Converters.XmlMessageConverter, Spring.NmsQuickStart.Common"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TypeMapper"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"TypeMapper"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TypeMapper"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.NmsQuickStart.Common.Converters.TypeMapper, Spring.NmsQuickStart.Common"</span><span style="color: #A31515">&gt;</span>
+    <i style="color: #008000">&lt;!-- use simple configuation style --&gt;</i>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultNamespace"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.NmsQuickStart.Common.Data"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultAssemblyName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.NmsQuickStart.Common"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>This configuration is common between the server and the
+    client.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11088"></a>44.7.&nbsp;Messaging Infrastructure</h2></div></div></div>
+    
+
+    <p>The implementations of the gateway interfaces inherit from Spring's
+    helper class <code class="literal">NmsGatewaySupport</code> in order to get easy
+    access to a NmsTemplate for sending. The implementation of the
+    <code class="literal">IStockService</code> interface is shown below</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> NmsStockServiceGateway : NmsGatewaySupport, IStockService
+    {
+        <span style="color: #0000FF">private</span> IDestination defaultReplyToQueue;
+        
+        <span style="color: #0000FF">public</span> IDestination DefaultReplyToQueue
+        {
+            <span style="color: #0000FF">set</span> { defaultReplyToQueue = <span style="color: #0000FF">value</span>; }
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Send(TradeRequest tradeRequest)
+        {                                                        <i style="color: #008000">// post process message</i>
+            NmsTemplate.ConvertAndSendWithDelegate(tradeRequest, <span style="color: #0000FF">delegate</span>(IMessage message)
+                                                                     {
+                                                                         message.NMSReplyTo = defaultReplyToQueue;
+                                                                         message.NMSCorrelationID = <span style="color: #0000FF">new</span> Guid().ToString();
+                                                                         <span style="color: #0000FF">return</span> message;
+                                                                     });
+        }        
+    }</pre>
+
+    <p>The <code class="literal">Send</code> method is using NmsTemplate's
+    <code class="literal">ConvertAndSendWithDelegate(object obj,
+    MessagePostProcessorDelegate messagePostProcessorDelegate)</code>
+    method. The anonymous delegate allows you to modify the message
+    properties, such as NMSReplyTo and NMSCorrelationID after the message has
+    been converted from an object but before it has been sent. The use of an
+    anonymous delegate allows makes it very easy to apply any post processing
+    logic to the converted message.</p>
+
+    <p>The object definition for the
+    <code class="literal">NmsStockServiceGateway</code> is shown below along with its
+    dependent object definitions of NmsTemplate and the
+    ConnectionFactory.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"StockServiceGateway"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.NmsQuickStart.Client.Gateways.NmsStockServiceGateway, Spring.NmsQuickStart.Client"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"NmsTemplate"</span>  <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"NmsTemplate"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultReplyToQueue"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Apache.NMS.ActiveMQ.Commands.ActiveMQQueue, Apache.NMS.ActiveMQ"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"APP.STOCK.JOE"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"NmsTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Nms.Core.NmsTemplate, Spring.Messaging.Nms"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"ConnectionFactory"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultDestinationName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"APP.STOCK.REQUEST"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageConverter"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"XmlMessageConverter"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Apache.NMS.ActiveMQ.ConnectionFactory, Apache.NMS.ActiveMQ"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">index</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:61616"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre><p>In this example the 'raw'
+    <code class="literal">Apache.NMS.ActiveMQ.ConnectionFactory </code>connection
+    factory was used. It would be more efficient resource wise to use Spring's
+    <code class="literal">CachingConnectionFactory</code> wrapper class so that
+    connections will not be open and closed for each message send as well as
+    allowing for the caching of other intermediate NMS API objects such as
+    sessions and message producers.</p>
+
+    <p>A similar configuration is used on the server to configure the class
+    <code class="literal">Spring.NmsQuickStart.Server.Gateways.MarketDataServiceGateway
+    </code>that implements the <code class="literal">IMarketDataService</code>
+    interface.</p>
+
+    <p>Since the client is also a consumer of messages, on the topic
+    APP.STOCK.MARKETDATA and the queue APP.STOCK.JOE (for Trader Joe!), two
+    message listener containers are defined as shown below.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;nms:listener-container</span> <span style="color: #FF0000">connection-factory</span>=<span style="color: #0000FF">"ConnectionFactory"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;nms:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.JOE"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;nms:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.MARKETDATA"</span> <span style="color: #FF0000">pubsub-domain</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/nms:listener-container&gt;</span></pre>
+
+    <p>Refer to the <a class="link" href="messaging.html" title="Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS">messages reference
+    docs</a> for all the available attributes to configure the container
+    and also the section on <a class="link" href="xsd-config.html#xsd-config-body-schemas-nms" title="B.2.6.&nbsp;The nms messaging schema">registering the NMS schema</a>
+    with Spring..</p>
+
+    <p>On the server we define a message listener container for the queue
+    APP.STOCK.REQUEST but set the concurrency property to 10 so that 10
+    threads will be consuming messages from the queue.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;nms:listener-container</span> <span style="color: #FF0000">connection-factory</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">concurrency</span>=<span style="color: #0000FF">"</span><span class="bold"><strong>10</strong></span>"&gt;
+    <span style="color: #A31515">&lt;nms:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.REQUEST"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/nms:listener-container&gt;</span></pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11114"></a>44.8.&nbsp;Running the application</h2></div></div></div>
+    
+
+    <p>To run both the client and server make sure that you select
+    'Multiple Startup Projects' within VS.NET. The GUI has a button to make a
+    hardcoded trade request and show confirmation in a text box. A text area
+    is used to display the market data. There is a 'Get Portfolio' button that
+    is not implemented at the moment. A picture of the GUI after it has been
+    running for a while and trade has been sent and responded to is shown
+    below</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart-gui.png"></div>
+
+    <p></p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="quartz-quickstart.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ems-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;43.&nbsp;Quartz QuickStart&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;45.&nbsp;TIBCO EMS QuickStart</td></tr></table></div></body></html>

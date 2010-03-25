@@ -1,0 +1,546 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;30.&nbsp;Message Oriented Middleware - TIBCO EMS</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-integration.html" title="Part&nbsp;V.&nbsp;Integration"><link rel="prev" href="messaging.html" title="Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS"><link rel="next" href="msmq.html" title="Chapter&nbsp;31.&nbsp;Message Oriented Middleware - MSMQ"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="messaging-ems"></a>Chapter&nbsp;30.&nbsp;Message Oriented Middleware - TIBCO EMS</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e8733"></a>30.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The bulk of the documentation for Spring's JMS support , independent
+    of vendor, is described in the chapter <a class="xref" href="messaging.html" title="Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS">Chapter&nbsp;29, <i>Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS</i></a>. While
+    that chapter refers to classes that are part of Spring's ActiveMQ
+    integration, those classes have counter parts as part of Spring's TIBCO
+    EMS integration. For example,
+    <code class="literal">Spring.Messaging.Nms.Core.NmsTemplate</code> and
+    <code class="literal">Spring.Messaging.Ems.Core.EmsTemplate</code>. This chapter
+    fills in some of the gaps in taking that approach by describing Spring.NET
+    features that are specific to its integration with TIBCO EMS and showing
+    some examples using the TIBCO EMS integration.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>A complete sample application using Spring's EMS integration
+      classes is in the distribution under the directory
+      <code class="literal">examples\Spring\Spring.EmsQuickStart</code>. Documentation
+      for the Quickstart is available <a class="link" href="ems-quickstart.html" title="Chapter&nbsp;45.&nbsp;TIBCO EMS QuickStart">here</a>.</p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e8743"></a>30.2.&nbsp;Interface based APIs</h2></div></div></div>
+    
+
+    <p>The TIBCO EMS APIs are not interface based. What this means is that
+    the class <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">TIBCO.EMS.Session</span> does not inherit from
+    an <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">ISession</span> interface. The lack of interfaces makes
+    it impossible to apply traditional approahces to support caching of
+    Connections, Sessions, MessageProducers, and MessageProducers. Also, in
+    some cases Java like setter methods were used instead of standard .NET
+    properties making it difficult to configure those classes using dependency
+    injection. (For example, see
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmssslSystemStoreInfo.SetCertificateStoreLocation()</span>).
+    For these reasons it was decided to create a 'mirror' API of the TIBCO EMS
+    API that is interface based. In the namespace
+    <code class="literal">Spring.Messaging.Ems.Common</code> are interfaces such as
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IConnectionFactory</span>,
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IConnection</span>,
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">ISession</span>,
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">IMessageProducer</span>, etc as well as their
+    implementation classes <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsConnectionFactory</span>,
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsConnection</span>, <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsSession</span>,
+    etc. The interfaces mirror all the operations that are on the standard
+    TIBCO EMS classes so you should feel right as home when programming
+    against these classes.</p>
+
+    <p>Typically users of Spring.NET do not need to programmatically
+    interact with these classes, instead using methods of
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsTemplate</span> to syncrhonously send and consume
+    messages and a <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">SimpleMessageListenerContainer</span> to
+    asynchronously consume messages. It will be common to configure an
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">Spring.Messaging.Ems.Common.ConnectionFactory</span> using
+    dependency injection. The following sections show some example usage. You
+    can also set or get the underlying 'native' TIBCO EMS object, such as the
+    TIBCO.EMS.ConnectionFactory using a property 'NativeConnectionFactory'
+    Each class in the Spring.Messaging.Ems.Common namespace has a similar
+    'Native' property, for example NativeSession, NativeMessageProducer if you
+    need access the raw TIBCO EMS class.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e8761"></a>30.3.&nbsp;Using Spring's EMS based Messaging</h2></div></div></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8763"></a>30.3.1.&nbsp;Overivew</h3></div></div></div>
+      
+
+      <p>In the namespace Spring.Messaging.Ems.Core is the class
+      EmsTemplate. This is the main class you will use to send messages and to
+      receive messages synchronously. In the namespace
+      Spring.Messaging.Ems.Listener is the class
+      SimpleMessageListenerContainer. This is the main class you will use to
+      recieve messages asynchronously.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8766"></a>30.3.2.&nbsp;Connections</h3></div></div></div>
+      
+
+      <p>To create a
+      <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">Spring.Messaging.Ems.Common.ConnectionFactory</span> use
+      the following object definition</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"emsConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Common.EmsConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"serverUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"clientId"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"SpringEMSClient"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptCount"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptDelay"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"100"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptTimeout"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"1000"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Please refer to the API documentation for other properties you way
+      want to set, in particular for those relating to SSL.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8772"></a>30.3.3.&nbsp;Caching Messaging Resources</h3></div></div></div>
+      
+
+      <p>While TIBCO EMS provides thread safe access to EMS Sessions (above
+      and beyond what is specified in the JMS specification), Spring provides
+      two implementations of the IConnectionFactory infrastructure to manage
+      the use of intermediate objects when following the 'standard' API walk
+      of</p>
+
+      <pre class="programlisting">IConnectionFactory-&gt;IConnection-&gt;ISession-&gt;IMessageProducer-&gt;Send</pre>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e8776"></a>30.3.3.1.&nbsp;SingleConnectionFactory</h4></div></div></div>
+        
+
+        <p><code class="literal">Spring.Messaging.Ems.Connections.SingleConnectionFactory
+        </code>will return the same connection on all calls to
+        <code class="methodname">CreateConnection</code> and ignore calls to
+        Close.</p>
+
+        <p>You can configure a SingleConnectionFactory as you would an
+        <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsConnectionFactory</span>.</p>
+      </div>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e8783"></a>30.3.3.2.&nbsp;CachingConnectionFactory</h4></div></div></div>
+        
+
+        <p><code class="literal">Spring.Messaging.Ems.Connections.CachingConnectionFactory</code>
+        extends the functionality of SingleConnectionFactory and adds the
+        caching of Sessions, MessageProducers, and MessageConsumers. See the
+        documentation for ActiveMQ CachingConnectionFactory for some
+        additional information <a class="link" href="messaging.html#activemq-using-caching-cachingconnectionfactory" title="29.2.3.2.&nbsp;CachingConnectionFactory">here</a>.</p>
+
+        <p>An example configuration is shown below</p>
+
+        <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"connectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Connections.CachingConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"SessionCacheSize"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetConnectionFactory"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"emsConnectionFactory"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+        <p>Notice that the property TargetConnectionFactory refers to
+        'emsConnectionFactory' defined in the previous section. This
+        connection factory implementation also set the ReconnectOnException
+        property to true by default allowing for automatic recovery of the
+        underlying Connection.</p>
+
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+          <p>The CachingConnectionFactory requires explicit closing of all
+          Sessions obtained from its shared Connection. This is the usual
+          recommendation for native EMS access code anyway and Spring EMS code
+          follows this recommendation. However, with the
+          CachingConnectionFactory, its use is mandatory in order to actually
+          allow for Session reuse.</p>
+        </td></tr></table></div>
+
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+          <p>MessageConsumers obtained from a cached Session won't get
+          closed until the Session will eventually be removed from the pool.
+          This may lead to semantic side effects in some cases. For a durable
+          subscriber, the logical Session.Close() call will also close the
+          subscription. Re-registering a durable consumer for the same
+          subscription on the same Session handle is not supported; close and
+          reobtain a cached Session first.</p>
+        </td></tr></table></div>
+
+        <p>To avoid accidentally referring to the ConnectionFactory that
+        does not support caching, (emsConnectionFactory), you should use an
+        inner object definition as shown below.</p>
+
+        <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"connectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Connections.CachingConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"SessionCacheSize"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetConnectionFactory"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Common.EmsConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"serverUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"clientId"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"SpringEMSClient"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptCount"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptDelay"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"100"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnAttemptTimeout"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"1000"</span><span style="color: #A31515"> /&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8797"></a>30.3.4.&nbsp;Dynamic Destination Management</h3></div></div></div>
+      
+
+      <p>The <a class="link" href="messaging.html#activemq-using-destination-mgmt" title="29.2.4.&nbsp;Dynamic Destination Management">section</a>
+      in the ActiveMQ documentation covers the use of Dynamic Destination
+      mangement for TIBCO as well.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8801"></a>30.3.5.&nbsp;Accessing Admistrated objects via JNDI</h3></div></div></div>
+      
+
+      <p>TIBCO provides an implementation of JNDI to retrieve admistrive
+      objects in .NET. You can retrieve TIBCO
+      <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">Destinations</span> and
+      <code class="literal">ConnectionFactories</code> from the JNDI registry. To
+      provide ease of access to these JNDI managed objects in a Spring
+      application context the class <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">JndiFactoryObject</span>
+      is used. This allows you look configure the location of the JNDI
+      registry and to retrieve objects by name. The objects are retrieved from
+      JNDI at application startup. </p>
+
+      <p>These retrieved objetcts from JNDI in turn can be dependency
+      injected into other collaborating objects such as Spring's
+      <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">CachingConnectionFactory</span> (for connections) or
+      EmsTemplate (for destinations). Here is an example to retrieve a TIBCO
+      ConnectionFactory object from the JNDI registry.</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"jndiEmsConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Jndi.JndiLookupFactoryObject, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"JndiName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"TopicConnectionFactory"</span><span style="color: #A31515">/&gt;</span>   
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"JndiProperties[LookupContext.PROVIDER_URL]"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tibjmsnaming://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>JndiLookupFactory object implements the IFactoryObject interface,
+      so the type that is associated with the name 'jndiConnectionFactory' is
+      not JndiLookupFactoryObject, but the type returned from this factory's
+      'GetType' method, in this case the type of what was retrieved from
+      JNDI.</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The dictionary JndiProperties is set using Spring Expression
+        language syntax for the property name. This provides a shortcut to the
+        more verbose &lt;dictionary/&gt; element. To enable this functionality
+        a the TIBCO.EMS.LookupContext was registered under the name
+        'LookupContext' in Spring's TypeRegistry.</p>
+      </td></tr></table></div>
+
+      <p>The use of this object retrieved from JNDI to configure Spring's
+      CachingConnectionFactory set the property TargetConnectionFactory as
+      shown below </p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"cachingJndiConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Connections.CachingConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"SessionCacheSize"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetConnectionFactory"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Common.EmsConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"jndiEmsConnectionFactory"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Other useful properties and features of JndiLookupFactoryObject
+      are</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">JndiContextType</code> : This is an enumeration
+          that can have either the value JMS or LDAP. These translate to
+          configuring JNDI context with the constants
+          LookupContextFactory.TIBJMS_NAMING_CONT or
+          LookupContextFactory.LDAP_CONTEXT for use with EMS's own JNDI
+          registry or an LDAP directory respectively. The default is set use
+          LookupContextFactory.TIBJMS_NAMING_CONT. The type JndiContextType is
+          also registered in Spring's TypeRegistry so that you can use a SpEL
+          expression to set the value as shown below.</p>
+
+          <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"jndiEmsConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Jndi.JndiLookupFactoryObject, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"JndiName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"TopicConnectionFactory"</span><span style="color: #A31515">/&gt;</span>   
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"JndiProperties[LookupContext.PROVIDER_URL]"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tibjmsnaming://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"JndiContextType"</span> <span style="color: #FF0000">expression</span>=<span style="color: #0000FF">"JndiContextType.JMS"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ExpectedType"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"TIBCO.EMS.ConnectionFactory"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+          <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+            <p>The <code class="literal">TargetConnectionFactory</code> is of the
+            Spring wrapper type
+            <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">Spring.Messaging.Ems.Common.IConnectionFactory</span>.
+            You can pass into Spring's implementation of that interface,
+            <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">Spring.Messaging.Ems.Common.EmsConnectionFactory</span>,
+            the 'raw' TIBCO EMS type,
+            <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">TIBCO.EMS.ConnectionFactory</span>.</p>
+          </td></tr></table></div>
+        </li><li>
+          <p><code class="literal">ExpectedType</code>: This is a property of the
+          type System.Type. You can set the type that the located JNDI object
+          is supposed to be assignable to, if any. It's use is shown in the
+          previous XML configuraiton listing.</p>
+        </li><li>
+          <p><code class="literal">JndiLookupContext</code>: This is a property of
+          the type <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">TIBCO.EMS.ILookupContext</span>. If you
+          create a custom implementation of
+          <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">ILookupContext</span> (for example one that
+          performs lazy caching), assign this property instead of configuring
+          the property <code class="literal">JndiContextType.</code></p>
+        </li><li>
+          <p><code class="literal">DefaultObject</code>: Sets a reference to an
+          instance of an object to fall back to if the JNDI lookup fails. The
+          default is not to have a fallback object.</p>
+        </li></ul></div>
+
+      <p></p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8840"></a>30.3.6.&nbsp;MessageListenerContainers</h3></div></div></div>
+      
+
+      <p>Spring's MessageListenerContainer's are used to process messages
+      asynchronously and concurrently. MessageListenerContainers are described
+      more in <a class="link" href="messaging.html#activemq-listener-containers" title="29.2.5.&nbsp;Message Listener Containers">this</a>
+      section. </p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8844"></a>30.3.7.&nbsp;Transaction Management</h3></div></div></div>
+      
+
+      <p>Spring provides an implementation of the
+      IPlatformTransactionManager interface for managing TiBCO messaging
+      transactions. The class is <code class="literal">EmsTransactionManager</code> and
+      it manages transactions for a single ConnectionFactory. Please refer to
+      <a class="link" href="messaging.html#activemq-using-txmgmt" title="29.2.6.&nbsp;Transaction Management">this</a> section for addtional
+      information on messaging based transaction managers.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e8849"></a>30.3.8.&nbsp;Sending a Message</h3></div></div></div>
+      
+
+      <p>The class Spring.Messaging.Ems.Core.EmsTemplate contains several
+      convenience methods to send a message. These methods are identical to
+      those described in the ActiveMQ documentation <a class="link" href="messaging.html#activemq-sending-messages" title="29.3.&nbsp;Sending a Message">section</a> aside from the use of
+      type destination type TIBCO.EMS.Destination instead of
+      Apache.NMS.IDestination and switching of the namespace from Apache.NMS
+      to Spring.Messaging.Ems.Common. </p>
+
+      <p>Shown below is the code example for a SimplePublisher using
+      Spring's TIBCO EMS classes. This does now show the 'one-liner' send
+      methods but one that gives you direct access to the ISession to create
+      the message however you wish.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">using</span> Spring.Messaging.Ems.Common;
+<span style="color: #0000FF">using</span> TIBCO.EMS;
+
+<span style="color: #0000FF">namespace</span> Spring.Messaging.Ems.Core
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SimplePublisher
+    {
+        <span style="color: #0000FF">private</span> EmsTemplate emsTemplate;
+
+        <span style="color: #0000FF">public</span> SimplePublisher()
+        {
+            emsTemplate = <span style="color: #0000FF">new</span> EmsTemplate(<span style="color: #0000FF">new</span> EmsConnectionFactory(<span style="color: #000000">"tcp://localhost:7222"</span>));
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Publish(<span style="color: #0000FF">string</span> ticker, <span style="color: #0000FF">double</span> price)
+        {
+            emsTemplate.SendWithDelegate(<span style="color: #000000">"APP.STOCK.MARKETDATA"</span>,
+                          <span style="color: #0000FF">delegate</span>(ISession session)
+                          {
+                              MapMessage message = session.CreateMapMessage();
+                              message.SetString(<span style="color: #000000">"TICKER"</span>, ticker);
+                              message.SetDouble(<span style="color: #000000">"PRICE"</span>, price);
+                              message.Priority = 5;
+                              <span style="color: #0000FF">return</span> message;
+                          });
+        }
+    }
+}</pre>
+
+      <p>A more DI friendly implementation would be to expose a EmsTemplate
+      property or to inherit from Spring's EmsGatewaySupport base class which
+      provides a IConnectionFactory property that will instantiate a
+      EmsTemplate instance that is made available via the property
+      EmsTemplate.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">using</span> Spring.Messaging.Ems.Common;
+<span style="color: #0000FF">using</span> TIBCO.EMS;
+
+<span style="color: #0000FF">namespace</span> Spring.Messaging.Ems.Core
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SimpleGateway : EmsGatewaySupport
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Publish(<span style="color: #0000FF">string</span> ticker, <span style="color: #0000FF">double</span> price)
+        {
+            EmsTemplate.SendWithDelegate(<span style="color: #000000">"APP.STOCK.MARKETDATA"</span>,
+                          <span style="color: #0000FF">delegate</span>(ISession session)
+                          {
+                              MapMessage message = session.CreateMapMessage();
+                              message.SetString(<span style="color: #000000">"TICKER"</span>, ticker);
+                              message.SetDouble(<span style="color: #000000">"PRICE"</span>, price);
+                              message.Priority = 5;
+                              <span style="color: #0000FF">return</span> message;
+                          });
+        }
+    }
+}</pre>
+
+      <p>Where the ConnectionFactory is injected using the
+      configuration.</p>
+
+      <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"simpleGateway"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Core.SimpleGateway, Spring.Messaging.Ems.Integration.Tests"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"connectionFactory"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ems-messageconverters"></a>30.4.&nbsp;Using MessageConverters</h2></div></div></div>
+    
+
+    <p>In order to facilitate the sending of domain model objects, the
+    <code class="literal">EmsTemplate</code> has various send methods that take a .NET
+    object as an argument for a message's data content. The overloaded methods
+    <code class="literal">ConvertAndSend</code> and <code class="literal">ReceiveAndConvert</code>
+    in <code class="literal">NmsTemplate</code> delegate the conversion process to an
+    instance of the <code class="literal">IMessageConverter</code> interface. Please
+    refer to <a class="link" href="messaging.html#activemq-messageconverter" title="29.3.1.&nbsp;Using MessageConverters">this</a> section for
+    more information on MessageConverters.</p>
+
+    <p>Example code that uses the <code class="literal">EmsTemplate's</code>
+    <code class="literal">ConvertAndSendWithDelegate</code>, which allows access to the
+    message after it has been converted but before it has been sent is shown
+    below. For examples of using other <code class="literal">ConvertAndSend</code>
+    methods see the section referred to in the previous paragraph.</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> PublishUsingDict(<span style="color: #0000FF">string</span> ticker, <span style="color: #0000FF">double</span> price)
+{
+  IDictionary marketData = <span style="color: #0000FF">new</span> Hashtable();
+  marketData.Add(<span style="color: #000000">"TICKER"</span>, ticker);
+  marketData.Add(<span style="color: #000000">"PRICE"</span>, price);
+  EmsTemplate.ConvertAndSendWithDelegate(<span style="color: #000000">"APP.STOCK.MARKETDATA"</span>, marketData, 
+           <span style="color: #0000FF">delegate</span>(Message message)
+           { 
+             message.Priority = 5;
+             message.CorrelationID = <span style="color: #0000FF">new</span> Guid().ToString();
+             <span style="color: #0000FF">return</span> message;
+           });
+}&nbsp;</pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ems-session-producer"></a>30.5.&nbsp;Session and Producer Callback</h2></div></div></div>
+    
+
+    <p>Please refer to <a class="link" href="messaging.html#messaging-session-callback" title="29..&nbsp;Session and Producer Callback">this</a> section for more
+    information on Session and Producer Callbacks.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ems-receive"></a>30.6.&nbsp;Receiving a messages</h2></div></div></div>
+    
+
+    <p>There are two ways to receive messages, synchronously and
+    asynchronously. To recieve messages synchronously use EmsTemplate, to
+    recieve asynchronously use a MessageListenerContainer.</p>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-sync"></a>30.6.1.&nbsp;Synchronous Reception</h3></div></div></div>
+      
+
+      <p>Please refer to <a class="link" href=""><a name="activemq-sync-receive"></a>this</a> section for using
+      EmsTemplate's overloaded Recieve methods.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-async"></a>30.6.2.&nbsp;Asynchronous Reception </h3></div></div></div>
+      
+
+      <p>Please refer to <a class="link" href=""><a name="activemq-async-reception"></a>this</a> section for an
+      introduction to Spring's MessageListenerContainers. The TIBCO EMS
+      namespace to create an instance of a message listener container is shown
+      below.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">using</span> Common.Logging;
+<span style="color: #0000FF">using</span> TIBCO.EMS;
+
+<span style="color: #0000FF">namespace</span> Spring.Messaging.Ems.Core
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SimpleMessageListener : IMessageListener
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">readonly</span> ILog LOG = LogManager.GetLogger(<span style="color: #0000FF">typeof</span>(SimpleMessageListener));
+
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> messageCount;
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> MessageCount
+        {
+            <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> messageCount; }
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> OnMessage(Message message)
+        {           
+            messageCount++;
+            LOG.Debug(<span style="color: #000000">"Message listener count = "</span> + messageCount);
+            TextMessage textMessage = message <span style="color: #0000FF">as</span> TextMessage;
+            <span style="color: #0000FF">if</span> (textMessage != <span style="color: #0000FF">null</span>)
+            {
+                LOG.Info(<span style="color: #000000">"Message Text = "</span> + textMessage.Text);
+            } <span style="color: #0000FF">else</span>
+            {
+                LOG.Warn(<span style="color: #000000">"Can not process message of type "</span> message.GetType());
+            }
+        }
+    }
+}</pre><p>And the configuration to create 10 threads that process
+      message off the queue named "APP.STOCK.REQUEST". See this section for
+      more details about the message listener container.</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span style="color: #FF0000">xmlns:ems</span>=<span style="color: #0000FF">"http://www.springframework.net/ems"</span><span style="color: #A31515">&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"connectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Connections.CachingConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"SessionCacheSize"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetConnectionFactory"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Common.EmsConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"serverUrl"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"clientId"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"SpringEMSClient"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"simpleMessageListener"</span> 
+          <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Core.SimpleMessageListener, Spring.Messaging.Ems.Integration.Tests"</span><span style="color: #A31515">/&gt;</span>
+	  
+  
+  <span style="color: #A31515">&lt;ems:listener-container</span> <span style="color: #FF0000">connection-factory</span>=<span style="color: #0000FF">"connectionFactory"</span> <span style="color: #FF0000">concurrency</span>=<span style="color: #0000FF">"10"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;ems:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"simpleMessageListener"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.REQUEST"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/ems:listener-container&gt;</span>
+  
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-session-aware"></a>30.6.3.&nbsp;The ISessionAwareMessageListener interface</h3></div></div></div>
+      
+
+      <p><a name="ems-sessionaware"></a>Refer to <a class="link" href="messaging.html#activemq-sessionaware" title="29.5.3.&nbsp;The ISessionAwareMessageListener interface">this</a> section for more information
+      on the use of this interface.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-message-adapter"></a>30.6.4.&nbsp;MessageListenerAdapter</h3></div></div></div>
+      
+
+      <p>Refer to <a class="link" href="messaging.html#message-listener-adapter" title="29.5.4.&nbsp;MessageListenerAdapater">this</a>
+      section for more information on this feature and change code/XML
+      references of 'Nms' to 'Ems'.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-msg-tx"></a>30.6.5.&nbsp;Processing messages within a messaging transaction</h3></div></div></div>
+      
+
+      <p>Refer to <a class="link" href="messaging.html#activemq-msg-tx" title="29.5.5.&nbsp;Processing messages within a messaging transaction">this</a> section for
+      more information about this type of message processing.</p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ems-namespace"></a>30.6.6.&nbsp;Messaging Namespace support</h3></div></div></div>
+      
+
+      <p>To use the EMS namespace you will need to reference the Ems
+      schema. Please refer to <a class="link" href="messaging.html#activemq-namespace" title="29.5.6.&nbsp;Messaging Namespace support">this</a>
+      section for more information on configuring message listener containers.
+      Change references of 'Nms' to 'Ems' in that section.</p>
+    </div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="messaging.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="msmq.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;31.&nbsp;Message Oriented Middleware - MSMQ</td></tr></table></div></body></html>

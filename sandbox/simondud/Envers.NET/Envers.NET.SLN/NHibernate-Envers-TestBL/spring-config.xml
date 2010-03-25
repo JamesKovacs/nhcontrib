@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net"
+         xmlns:tx="http://www.springframework.net/tx"
+         xmlns:db="http://www.springframework.net/database">
+  <!-- Property placeholder configurer for database settings -->
+
+  <object type="Spring.Objects.Factory.Config.PropertyPlaceholderConfigurer, Spring.Core">
+    <property name="ConfigSections" value="databaseSettings"/>
+  </object>
+
+  <db:provider
+   id="DbProvider"
+   provider="SqlServerCe-3.5.1"
+   connectionString="Data Source=NHibernatePOC.sdf"/>
+
+  <object id="ExecutingAssembly" type="Envers.Net.Model.Util.ExecutingAssemblyFactoryObject, APDRP_NHibernatePOC"/>
+
+  <object id="NHibernateSessionFactory" type="Envers.Net.Utils.AttributesSessionFactoryObject" singleton="true" lazy-init="true">
+    <property name="DbProvider" ref="DbProvider"/>
+    <property name="Assembly" ref="ExecutingAssembly"/>
+    <property name="HibernateProperties">
+      <dictionary>
+        <entry key="dialect" value="NHibernate.Dialect.MsSqlCeDialect"/>
+        <entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>
+        <entry key="connection.driver_class" value="NHibernate.Driver.SqlServerCeDriver"/>
+        <entry key="hbm2ddl.auto" value="create"/>
+        <entry key="connection.release_mode" value="on_close"/>
+        <entry key="show_sql" value="true"/>
+      </dictionary>
+    </property>
+    <property name="EventListeners">
+      <dictionary>
+        <entry key="PostInsert" value-ref="enversEventListener"/>
+        <entry key="PostUpdate" value-ref="enversEventListener"/>
+        <entry key="PostDelete" value-ref="enversEventListener"/>
+        <entry key="PostCollectionRecreate" value-ref="enversEventListener"/>
+        <entry key="PreCollectionRemove" value-ref="enversEventListener"/>
+        <entry key="PreCollectionUpdate" value-ref="enversEventListener"/>
+        </dictionary>
+    </property>
+  </object>
+
+  <object id="enversEventListener" type="NHibernate.Envers.Event.AuditEventListener, Envers.NET"/>
+
+  <object id="PersonRepository" type="Envers.Net.Repository.Repository&lt;Envers.Net.Model.Person>" lazy-init="true">
+    <property name="SessionFactory" ref="NHibernateSessionFactory"/>
+  </object>
+  <object id="AddressRepository" type="Envers.Net.Repository.Repository&lt;Envers.Net.Model.Address>" lazy-init="true">
+    <property name="SessionFactory" ref="NHibernateSessionFactory"/>
+  </object>
+
+</objects>

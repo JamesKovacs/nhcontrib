@@ -1,0 +1,268 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;28.&nbsp;Windows Communication Foundation (WCF)</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-services.html" title="Part&nbsp;IV.&nbsp;Services"><link rel="prev" href="webservices.html" title="Chapter&nbsp;27.&nbsp;Web Services"><link rel="next" href="spring-integration.html" title="Part&nbsp;V.&nbsp;Integration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="wcf"></a>Chapter&nbsp;28.&nbsp;Windows Communication Foundation (WCF)</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="wcf-introduction"></a>28.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Spring's WCF support allows you to configure your WCF services via
+    dependency injection and add additional behavior to them using
+    Aspect-Oriented programming (AOP).</p>
+
+    <p>For those who would like to get their feet wet right way, check out
+    the WcfQuickStart application in the examples directory.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="wcf-di"></a>28.2.&nbsp;Configuring WCF services via Dependency Injection</h2></div></div></div>
+    
+
+    <p>The technical approach used to perform dependency injection is based
+    on dynamically creating an implementation of your service interface (a
+    dynamic proxy) that retrieves a configured instance of your service type
+    from the Spring container. This dynamic proxy is then the final service
+    type that is hosted.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>An alternative implementation approach that uses extensibility
+        points in WCF to delegate to Spring to create and configure your WCF
+        service was tried but proved to be limited in its range of
+        applicability. This approach was first taken (afaik) by Oran Dennison
+        on his <a class="link" href="http://orand.blogspot.com/2006/10/wcf-service-dependency-injection.html" target="_top">blog</a>
+        and several other folks on the web since then. The issue in using this
+        approach is that if the service is configured to be a singleton, for
+        example using
+        <code class="literal">[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single)]
+        </code>then the invocation of the IInstanceProvider is
+        short-circuited. See the notes on the MSDN class documentation <a class="link" href="http://msdn.microsoft.com/en-us/library/system.servicemodel.dispatcher.iinstanceprovider.aspx" target="_top">here</a>.
+        While this would be the preferred approach, no acceptable work around
+        was found.</p>
+      </td></tr></table></div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="wcf-di-proxy"></a>28.2.1.&nbsp;Dependency Injection</h3></div></div></div>
+      
+
+      <p>In this approach you develop your WCF services as you would
+      normally do. For example here is a sample service type taken from the
+      quickstart example.</p>
+
+      <pre class="programlisting">    [ServiceContract(Namespace = <span style="color: #000000">"http://Spring.WcfQuickStart"</span>)]
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICalculator
+    {
+        [OperationContract]
+        <span style="color: #0000FF">double</span> Add(<span style="color: #0000FF">double</span> n1, <span style="color: #0000FF">double</span> n2);
+        [OperationContract]
+        <span style="color: #0000FF">double</span> Subtract(<span style="color: #0000FF">double</span> n1, <span style="color: #0000FF">double</span> n2);
+        [OperationContract]
+        <span style="color: #0000FF">double</span> Multiply(<span style="color: #0000FF">double</span> n1, <span style="color: #0000FF">double</span> n2);
+        [OperationContract]
+        <span style="color: #0000FF">double</span> Divide(<span style="color: #0000FF">double</span> n1, <span style="color: #0000FF">double</span> n2);
+        [OperationContract]
+        <span style="color: #0000FF">string</span> GetName();
+    }</pre>
+
+      <p>The implementation for the methods is fairly obvious but an
+      additional property, <code class="literal">SleepInSeconds</code>, is present. This
+      is the property we will configure via dependency injection. Here is a
+      partial listing of the implementation</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CalculatorService : ICalculator
+    {
+        <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> sleepInSeconds;
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> SleepInSeconds
+        {
+            <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> sleepInSeconds; }
+            <span style="color: #0000FF">set</span> { sleepInSeconds = <span style="color: #0000FF">value</span>; }
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">double</span> Add(<span style="color: #0000FF">double</span> n1, <span style="color: #0000FF">double</span> n2)
+        {
+            Thread.Sleep(sleepInSeconds*1000);
+            <span style="color: #0000FF">return</span> n1 + n2;
+
+        }
+
+
+        <i style="color: #008000">//  additional implementation not shown for brevity</i>
+
+    }</pre>
+
+      <p>To configure this object with Spring, provide the XML
+      configuration metadata as shown below as you would with any Spring
+      managed object.</p>
+
+      <pre class="programlisting">      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculator"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.WcfQuickStart.CalculatorService, Spring.WcfQuickStart.ServerApp"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"SleepInSeconds"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+</pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The object must be declared as a 'prototype' object, i.e. not a
+        singleton, in order to interact correctly with WCF instancing.</p>
+      </td></tr></table></div>
+
+      <p>To host this service type in a standalone application define an
+      instance of a
+      <code class="literal">Spring.ServiceModel.Activation.ServiceHostFactoryObject</code>
+      and set is property <code class="literal">TargetName</code> to the id value of the
+      previously defined service type.
+      <code class="literal">ServiceHostFactoryObject</code> is a Spring
+      <code class="literal">IFactoryObject</code> implementation. (See <a class="link" href="objects.html#objects-factory-lifecycle-factoryobject" title="5.9.3.&nbsp;Customizing instantiation logic using IFactoryObjects">here</a> for more
+      information on <code class="literal">IFactoryObjects</code> and their interaction
+      with the container.) The <code class="literal">ServiceHostFactoryObject</code>
+      will create an instance of
+      <code class="literal">Spring.ServiceModel.Activation.SpringServiceHost</code> that
+      will be the ServiceHost instance associated with your service type. This
+      configuration for this step is shown below.</p>
+
+      <pre class="programlisting">      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"calculatorServiceHost"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.ServiceModel.Activation.ServiceHostFactoryObject, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"calculator"</span><span style="color: #A31515"> /&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Additional service configuration can be done declaratively in the
+      standard App.config file as shown below</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;system.serviceModel&gt;</span>
+  <span style="color: #A31515">&lt;services&gt;</span>
+    <span style="color: #A31515">&lt;service</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"calculator"</span> <span style="color: #FF0000">behaviorConfiguration</span>=<span style="color: #0000FF">"DefaultBehavior"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;host&gt;</span> ... <span style="color: #A31515">&lt;/host&gt;</span>
+      <span style="color: #A31515">&lt;endpoint&gt;</span> ... <span style="color: #A31515">&lt;/endpoint&gt;</span>
+    <span style="color: #A31515">&lt;/service&gt;</span>
+    ...
+  <span style="color: #A31515">&lt;/services&gt;</span>
+
+<span style="color: #A31515">&lt;/system.serviceModel&gt;</span></pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>It is important that the name of the service in the WCF
+        declarative configuration section match the name of the Spring object
+        definition</p>
+      </td></tr></table></div>
+
+      <p><code class="literal">Spring.ServiceModel.Activation.SpringServiceHost
+      </code>is where the dynamic proxy for your service type is generated.
+      This dynamic proxy will implement a single 'WCF' interface, the same on
+      that your service type implements. The implementation of the service
+      interface methods on the proxy will delegate to a wrapped 'target'
+      object which is the object instance retrieved by name from the Spring
+      container using the Spring API,
+      <code class="literal">ApplicationContext.GetObject(name)</code>. Since the object
+      retrieved in this manner is fully configured, your WCF service is as
+      well.</p>
+
+      <p>Outside of a standalone application you can also use the class
+      <code class="literal">Spring.ServiceModel.Activation.ServiceHostFactory</code>
+      (which inherits from
+      <code class="literal">System.ServiceModel.Activation.ServiceHostFactory</code>) to
+      host your services so that they can be configured via dependency
+      injection. To use the dynamic proxy approached described here you should
+      still refer to the name of the service as the name of the object
+      definition used to configure the service type in the Spring
+      container.</p>
+
+      <p>There are not many disadvantages to this approach other than the
+      need to specify the service name as the name of the object definition in
+      the Spring container and to ensure that singleton=false is used in the
+      object definition. You can also use
+      <code class="literal">Spring.ServiceModel.Activation.ServiceHostFactory</code> to
+      host your service inside IIS but should still refer to the service by
+      the name of the object in the Spring container.</p>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="wcf-aop"></a>28.3.&nbsp;Apply AOP advice to WCF services</h2></div></div></div>
+    
+
+    <p>In either approach to performing dependency injection you can apply
+    additional AOP advice to your WCF services in the same way as you have
+    always done in Spring. The following configuration shows how to apply some
+    simple performance monitoring advice to all services in the
+    <code class="literal">Spring.WcfQuickStart</code> namespace and is taken from the
+    QuickStart example.</p>
+
+    <pre class="programlisting">      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"serviceOperation"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.SdkRegularExpressionMethodPointcut, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"pattern"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.WcfQuickStart.*"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+      
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"perfAdvice"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.WcfQuickStart.SimplePerformanceInterceptor, Spring.WcfQuickStart.ServerApp"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Prefix"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Service Layer Performance"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+      
+      <span style="color: #A31515">&lt;aop:config&gt;</span>
+        <span style="color: #A31515">&lt;aop:advisor</span> <span style="color: #FF0000">pointcut-ref</span>=<span style="color: #0000FF">"serviceOperation"</span> <span style="color: #FF0000">advice-ref</span>=<span style="color: #0000FF">"perfAdvice"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/aop:config&gt;</span></pre>
+
+    <p>The aop:config section implicitly uses Spring's autoproxying
+    features to add additional behavior to any objects defined in the
+    container that match the pointcut criteria.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e8150"></a>28.4.&nbsp;Creating client side proxies declaratively</h2></div></div></div>
+    
+
+    <p>To create a client side proxy based on the use of
+    ChannelFactory&lt;T&gt;, you can use this rather ugly 'boiler plate' XML
+    snippit that takes uses Spring's support for calling factory methods on
+    object instances.</p>
+
+    <pre class="programlisting">  <i style="color: #008000">&lt;!-- returns ChannelFactory&lt;ICalculator&gt;("calculatorEndpoint").CreateChannel() --&gt;</i>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"serverAppCalculator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.WcfQuickStart.ICalculator, Spring.WcfQuickStart.ClientApp"</span>
+          <span style="color: #FF0000">factory-object</span>=<span style="color: #0000FF">"serverAppCalculatorChannelFactory"</span>
+          <span style="color: #FF0000">factory-method</span>=<span style="color: #0000FF">"CreateChannel"</span><span style="color: #A31515"> /&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"serverAppCalculatorChannelFactory"</span>
+          <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.ServiceModel.ChannelFactory&amp;lt;Spring.WcfQuickStart.ICalculator&gt;, System.ServiceModel"</span><span style="color: #A31515">&gt;</span>
+
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"endpointConfigurationName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"serverAppCalculatorEndpoint"</span><span style="color: #A31515"> /&gt;</span>
+
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>This will be shortened using a custom namespce in a future release</p>
+    </td></tr></table></div>
+
+    <p>The value 'serverAppCalculatorEndpoint' refers to the name of an
+    enpoints in the &lt;client&gt; section of the standard WCF configuration
+    inside of App.config.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e8157"></a>28.5.&nbsp;Exporting PONOs as WCF Services</h2></div></div></div>
+    
+
+    <p>Much like the approach taken for .asmx web services Spring provides
+    an exporter that will add <code class="literal">[ServiceContract] </code>and
+    <code class="literal">[OperationContract]</code> attributes by default to all public
+    interface methods on a given (PONO) class. The exporter class is
+    <code class="literal">Spring.ServiceModel.ServiceExporter</code> and has various
+    options to fine-tune what interfaces are exported and the specific
+    attributes that get applied to each method and on that class. Here is a
+    simple example</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"HelloWorldExporter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.ServiceModel.ServiceExporter, Spring.Services"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TargetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"HelloWorld"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MemberAttributes"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;dictionary&gt;</span>
+            <span style="color: #A31515">&lt;entry</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"SayHelloWorld"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.ServiceModel.OperationContractAttribute, System.ServiceModel"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"IsOneWay"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+                    <i style="color: #008000">&lt;!-- configure any other OperationContractAttribute properties here --&gt;</i>
+                <span style="color: #A31515">&lt;/object&gt;</span>
+            <span style="color: #A31515">&lt;/entry&gt;</span>
+        <span style="color: #A31515">&lt;/dictionary&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <p>Spring does not provide any means to add<code class="literal">
+    [DataContract]</code> or <code class="literal">[DataMember]</code> attributes to
+    method arguments of your service operations. As such, either you will do
+    that yourself or you may choose to use a serializer other than
+    DataContractSerializer, for example one that relies on method arguments
+    that implement the <code class="literal">ISerializable</code> interface, having the
+    <code class="literal">[Serializable]</code> attribute, or are serializable via the
+    XmlSerializer. Use the latter serializers is a good way to migrate from an
+    existing RCP based approach, such as using .NET remoting, to WCF in order
+    to take advantage of the WCF runtime and avoid editing much existing code.
+    You can then incrementally refactor and/or create new operations that use
+    <code class="literal">DataContractSerializer</code>.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="webservices.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spring-integration.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;27.&nbsp;Web Services&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;V.&nbsp;Integration</td></tr></table></div></body></html>

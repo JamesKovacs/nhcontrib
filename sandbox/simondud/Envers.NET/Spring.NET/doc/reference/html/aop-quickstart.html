@@ -1,0 +1,1075 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;36.&nbsp;AOP QuickStart</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="quickstarts.html" title="Chapter&nbsp;35.&nbsp;IoC Quickstarts"><link rel="next" href="remoting-quickstart.html" title="Chapter&nbsp;37.&nbsp;Portable Service Abstraction Quick Start"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="aop-quickstart"></a>Chapter&nbsp;36.&nbsp;AOP QuickStart</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-quickstart-introduction"></a>36.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This is an introductory guide to Aspect Oriented Programming (AOP)
+    with Spring.NET.</p>
+
+    <p>This guide assumes little to no prior experience of having
+    <span class="emphasis"><em>used</em></span> Spring.NET AOP on the part of the reader.
+    However, it <span class="emphasis"><em>does</em></span> assume a certain familiarity with
+    the terminology of AOP in general. It is probably better if you have read
+    (or at least have skimmed through) the AOP section of the reference
+    documentation beforehand, so that you are familiar with a) just what AOP
+    is, b) what problems AOP is addressing, and c) what the AOP concepts of
+    <code class="literal">advice</code>, <code class="literal">pointcut</code>, and
+    <code class="literal">joinpoint</code> actually mean... this guide spends absolutely
+    zero time defining those terms. Having said all that, if you are the kind
+    of developer who learns best by example, then by all means follow along...
+    you can always consult the reference documentation as the need arises (see
+    <a class="xref" href="aop.html#aop-introduction-defn" title="13.1.1.&nbsp;AOP concepts">Section&nbsp;13.1.1, &#8220;AOP concepts&#8221;</a>).</p>
+
+    <p><span class="emphasis"><em> The examples in this guide are <span class="bold"><strong>intentionally</strong></span> simplistic. One of the core aims of
+    this guide is to get you up and running with Spring.NET's flavor of AOP in
+    as short a time as possible. Having to comprehend even a simple object
+    model in order to understand the AOP examples would not be conducive to
+    learning Spring.NET AOP. It is left as an exercise for the reader to take
+    the concepts learned from this guide and apply them to his or her own code
+    base. Again, having said all of that, this guide concludes with a number
+    of cookbook-style AOP 'recipes' that illustrate the application of
+    Spring.NET's AOP offering in a real world context; additionally, the
+    Spring.NET reference application contains a number of Spring.NET AOP
+    aspects particular to it's own domain model (see <a class="xref" href="springair.html" title="Chapter&nbsp;39.&nbsp;SpringAir - Reference Application">Chapter&nbsp;39, <i>SpringAir - Reference Application</i></a>). </em></span></p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>To follow this AOP QuickStart load the solution file found in the
+      directory
+      <code class="literal">&lt;spring-install-dir&gt;\examples\Spring\Spring.AopQuickStart</code></p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-quickstart-basics"></a>36.2.&nbsp;The basics</h2></div></div></div>
+    
+
+    <p>This initial section introduces the basics of defining and then
+    applying some simple advice.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-basics-advice"></a>36.2.1.&nbsp;Applying advice</h3></div></div></div>
+      
+
+      <p>Lets see (a very basic) example of using Spring.NET AOP. The
+      following example code simply applies advice that writes the details of
+      an advised method call to the system console. Admittedly, this is not a
+      particularly compelling or even useful application of AOP, but having
+      worked through the example, you will then hopefully be able to see how
+      to apply your own custom advice to perform useful work (transaction
+      management, auditing, security enforcement, thread safety, etc).</p>
+
+      <p>Before looking at the AOP code proper lets quickly look at the
+      domain classes that are the target of the advice (in Spring.NET AOP
+      terminology, an instance of the following class is going to be the
+      <span class="emphasis"><em>advised object</em></span>.</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICommand 
+{
+    <span style="color: #0000FF">object</span> Execute(<span style="color: #0000FF">object</span> context);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ServiceCommand : ICommand
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Execute(<span style="color: #0000FF">object</span> context)
+    {
+        Console.Out.WriteLine(<span style="color: #000000">"Service implementation : [{0}]"</span>, context);
+        <span style="color: #0000FF">return</span> <span style="color: #0000FF">null</span>;
+    }
+}</pre>
+
+      <p>Find below the advice that is going to be applied to the
+      <code class="literal">object Execute(object context)</code> method of the
+      <code class="literal">ServiceCommand</code> class. As you can see, this is an
+      example of <span class="emphasis"><em>around advice</em></span> (see <a class="xref" href="aop.html#aop-introduction-advice-types" title="13.3.2.&nbsp;Advice types">Section&nbsp;13.3.2, &#8220;Advice types&#8221;</a>).</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ConsoleLoggingAroundAdvice : IMethodInterceptor
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Invoke(IMethodInvocation invocation)
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"Advice executing; calling the advised method..."</span>); <a name="aop-quickstart-basics-advice-around-1"></a><img src="images/callouts/1.png" alt="1" border="0">
+            <span style="color: #0000FF">object</span> returnValue = invocation.Proceed(); <a name="aop-quickstart-basics-advice-around-2"></a><img src="images/callouts/2.png" alt="2" border="0"> <a name="aop-quickstart-basics-advice-around-3"></a><img src="images/callouts/3.png" alt="3" border="0">
+            Console.Out.WriteLine(<span style="color: #000000">"Advice executed; advised method returned "</span> + returnValue); <a name="aop-quickstart-basics-advice-around-4"></a><img src="images/callouts/4.png" alt="4" border="0">
+            <span style="color: #0000FF">return</span> returnValue; <a name="aop-quickstart-basics-advice-around-5"></a><img src="images/callouts/5.png" alt="5" border="0">
+        }
+    }</pre>
+
+      <div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#aop-quickstart-basics-advice-around-1"><img src="images/callouts/1.png" alt="1" border="0"></a> </p></td><td valign="top" align="left">
+           Some simple code that merely prints out the fact that the advice is executing. 
+        </td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#aop-quickstart-basics-advice-around-2"><img src="images/callouts/2.png" alt="2" border="0"></a> </p></td><td valign="top" align="left">
+           The advised method is invoked. 
+        </td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#aop-quickstart-basics-advice-around-3"><img src="images/callouts/3.png" alt="3" border="0"></a> </p></td><td valign="top" align="left">
+           The return value is captured in the 
+
+          <code class="literal">returnValue</code>
+
+           variable. 
+        </td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#aop-quickstart-basics-advice-around-4"><img src="images/callouts/4.png" alt="4" border="0"></a> </p></td><td valign="top" align="left">
+           The value of the captured 
+
+          <code class="literal">returnValue</code>
+
+           is printed out. 
+        </td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#aop-quickstart-basics-advice-around-5"><img src="images/callouts/5.png" alt="5" border="0"></a> </p></td><td valign="top" align="left">
+           The previously captured 
+
+          <code class="literal">returnValue</code>
+
+           is returned. 
+        </td></tr></table></div>
+
+      <p>So thus far we have three artifacts: an interface
+      (<code class="literal">ICommand</code>); an implementation of said interface
+      (<code class="literal">ServiceCommand</code>); and some (trivial) advice
+      (encapsulated by the <code class="literal">ConsoleLoggingAroundAdvice</code>
+      class). All that remains is to actually apply the
+      <code class="literal">ConsoleLoggingAroundAdvice</code> advice to the invocation
+      of the <code class="literal">Execute()</code> method of the
+      <code class="literal">ServiceCommand</code> class. Lets look at how to effect this
+      programmatically...</p>
+
+      <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingAroundAdvice());
+    ICommand command = (ICommand) factory.GetProxy();
+    command.Execute(<span style="color: #000000">"This is the argument"</span>);</pre>
+
+      <p>The result of executing the above snippet of code will look
+      something like this...</p>
+
+      <pre class="programlisting">    Advice executing; calling the advised method...
+    Service implementation : [This is the argument]
+    Advice executed; advised method returned </pre>
+
+      <p>The output shows that the advice (the
+      <code class="literal">Console.Out</code> statements from the
+      <code class="literal">ConsoleLoggingAroundAdvice</code> was applied
+      <span class="emphasis"><em>around</em></span> the invocation of the advised method.</p>
+
+      <p>So what is happening here? The fact that the preceding code used a
+      class called <code class="literal">ProxyFactory</code> may have clued you in. The
+      constructor for the <code class="literal">ProxyFactory</code> class took as an
+      argument the object that we wanted to advise (in this case, an instance
+      of the <code class="literal">ServiceCommand</code> class). We then added some
+      advice (a <code class="literal">ConsoleLoggingAroundAdvice</code> instance) using
+      the <code class="literal">AddAdvice()</code> method of the
+      <code class="literal">ProxyFactory</code> instance. We then called the
+      <code class="literal">GetProxy()</code> method of the
+      <code class="literal">ProxyFactory</code> instance which gave us a proxy... an
+      (AOP) proxy that proxied the target object (the
+      <code class="literal">ServiceCommand</code> instance), and called the advice (a
+      single instance of the <code class="literal">ConsoleLoggingAroundAdvice</code> in
+      this case). When we invoked the <code class="literal">Execute(object
+      context)</code> method of the proxy, the advice was
+      <code class="literal">'applied'</code> (executed), as can be seen from the
+      attendant output.</p>
+
+      <p>The following image shows a graphical view of the flow of
+      execution through a Spring.NET AOP proxy.</p>
+
+      <div class="mediaobject"><img src="images/aop-chain.png"></div>
+
+      <p>One thing to note here is that the AOP proxy that was returned
+      from the call to the <code class="literal">GetProxy()</code> method of the
+      <code class="literal">ProxyFactory</code> instance was cast to the
+      <code class="literal">ICommand</code> interface that the
+      <code class="literal">ServiceCommand</code> target object implemented. This is
+      very important... currently, Spring.NET's AOP implementation mandates
+      the use of an interface for advised objects. In short, this means that
+      in order for your classes to leverage Spring.NET's AOP support, those
+      classes that you wish to use with Spring.NET AOP <span class="bold"><strong>must</strong></span> implement at least one interface. In
+      practice this restriction is not as onerous as it sounds... in any case,
+      it is <span class="emphasis"><em>generally</em></span> good practice to program to
+      interfaces anyway (support for applying advice to classes that do not
+      implement any interfaces is planned for a future point release of
+      Spring.NET AOP).</p>
+
+      <p>The remainder of this guide is concerned with fleshing out some of
+      the finer details of Spring.NET AOP, but basically speaking, that's
+      about it.</p>
+
+      <p>As a first example of fleshing out one of those finer details,
+      find below some Spring.NET XML configuration that does
+      <span class="emphasis"><em>exactly</em></span> the same thing as the previous example; it
+      should also be added that this declarative style approach to Spring.NET
+      AOP is preferred to the programmatic style.</p>
+
+      <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"consoleLoggingAroundAdvice"</span>
+            <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingAroundAdvice"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>consoleLoggingAroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <pre class="programlisting">    ICommand command = (ICommand) ctx[<span style="color: #000000">"myServiceObject"</span>];
+    command.Execute();</pre>
+
+      <p>Some comments are warranted concerning the above XML configuration
+      snippet. Firstly, note that the
+      <code class="literal">ConsoleLoggingAroundAdvice</code> is itself a plain vanilla
+      object, and is eligible for configuration just like any other class...
+      if the advice itself needed to be injected with any dependencies, any
+      such dependencies could be injected as normal.</p>
+
+      <p>Secondly, notice that the object definition corresponding to the
+      object that is retrieved from the IoC container is a
+      <code class="literal">ProxyFactoryObject</code>. The
+      <code class="literal">ProxyFactoryObject</code> class is an implementation of the
+      <code class="literal">IFactoryObject</code> interface;
+      <code class="literal">IFactoryObject</code> implementations are treated specially
+      by the Spring.NET IoC container... in this specific case, it is not a
+      reference to the <code class="literal">ProxyFactoryObject</code> instance itself
+      that is returned, but rather the object that the
+      <code class="literal">ProxyFactoryObject</code> produces. In this case, it will be
+      an advised instance of the <code class="literal">ServiceCommand</code>
+      class.</p>
+
+      <p>Thirdly, notice that the target of the
+      <code class="literal">ProxyFactoryObject</code> is an instance of the
+      <code class="literal">ServiceCommand</code> class; this is the object that is
+      going to be advised (i.e. invocations of its methods are going to be
+      intercepted). This object instance is defined as an inner object
+      definition... this is the preferred idiom for using the
+      <code class="literal">ProxyFactoryObject</code>, as it means that other objects
+      cannot acquire a reference to the raw object, but rather only the
+      advised object.</p>
+
+      <p>Finally, notice that the advice that is to be applied to the
+      target object is referred to by its object name in the list of the names
+      of interceptors for the <code class="literal">ProxyFactoryObject</code>'s
+      <code class="literal">interceptorNames</code> property. In this particular case,
+      there is only one instance of advice being applied... the
+      <code class="literal">ConsoleLoggingAroundAdvice</code> defined in an object
+      definition of the same name. The reason for using a list of object names
+      as opposed to references to the advice objects themselves is explained
+      in the reference documentation...</p>
+
+      <p><span class="emphasis"><em> '... if the <code class="literal">ProxyFactoryObject</code>'s
+      singleton property is set to false, it must be able to return
+      independent proxy instances. If any of the advisors is itself a
+      prototype, an independent instance would need to be returned, so it is
+      necessary to be able to obtain an instance of the prototype from the
+      context; holding a reference isn't sufficient.' </em></span></p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-basics-pointcuts"></a>36.2.2.&nbsp;Using Pointcuts - the basics</h3></div></div></div>
+      
+
+      <p>The advice that was applied in the previous section was rather
+      indiscriminate with regard to which methods on the advised object were
+      to be advised... the <code class="literal">ConsoleLoggingAroundAdvice</code>
+      simply intercepted <span class="bold"><strong>all</strong></span> methods (that
+      were part of an interface implementation) on the target object.</p>
+
+      <p>This is great for simple examples and suchlike, but not so great
+      when you only want certain methods of an object to be advised. For
+      example, you may only want those methods beginning with
+      <code class="literal">'Start'</code> to be advised; or you may only want those
+      methods that are called with specific runtime argument values to be
+      advised; or you may only want those methods that are decorated with a
+      <code class="literal">Lockable</code> attribute to be advised.</p>
+
+      <p>The mechanism that Spring.NET AOP uses to discriminate about where
+      advice is applied (i.e. which method invocations are intercepted) is
+      encapsulated by the <code class="literal">IPointcut</code> interface (see <a class="xref" href="aop.html#aop-pointcuts" title="13.2.&nbsp;Pointcut API in Spring.NET">Section&nbsp;13.2, &#8220;Pointcut API in Spring.NET&#8221;</a>). Spring.NET provides many out-of-the-box
+      implementations of the <code class="literal">IPointcut</code> interface... the
+      implementation that is used if none is explicitly supplied (as was the
+      case with the first example) is the canonical
+      <code class="literal">TruePointcut</code> : as the name suggests, this pointcut
+      always matches, and hence <span class="bold"><strong>all</strong></span> methods
+      that can be advised will be advised.</p>
+
+      <p>So let's change the configuration of the advice such that it is
+      only applied to methods that contain the letters
+      <code class="literal">'Do'</code>. We'll change the <code class="literal">ICommand</code>
+      interface (and it's attendant implementation) to accommodate
+      this...</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ICommand 
+    {
+        <span style="color: #0000FF">void</span> Execute();
+
+        <span style="color: #0000FF">void</span> DoExecute();
+    } 
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ServiceCommand : ICommand
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Execute()
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"Service implementation : Execute()..."</span>);
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> DoExecute()
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"Service implementation : DoExecute()..."</span>);
+        }
+    }</pre>
+
+      <p>Please note that the advice itself (encapsulated within the
+      <code class="literal">ConsoleLoggingAroundAdvice</code> class) does not need to
+      change; we are changing <span class="emphasis"><em>where</em></span> this advice is
+      applied, and not the advice itself.</p>
+
+      <p>Programmatic configuration of the advice, taking into account the
+      fact that we only want methods that contain the letters
+      <code class="literal">'Do'</code> to be advised, looks like this...</p>
+
+      <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvisor(<span style="color: #0000FF">new</span> DefaultPointcutAdvisor(
+        <span style="color: #0000FF">new</span> SdkRegularExpressionMethodPointcut(<span style="color: #000000">"Do"</span>),
+        <span style="color: #0000FF">new</span> ConsoleLoggingAroundAdvice()));
+    ICommand command = (ICommand) factory.GetProxy();
+    command.DoExecute();</pre>
+
+      <p>The result of executing the above snippet of code will look
+      something like this...</p>
+
+      <pre class="programlisting">    Intercepted call : about to invoke next item <span style="color: #0000FF">in</span> chain...
+    Service implementation...
+    Intercepted call : returned</pre>
+
+      <p>The output indicates that the advice was applied around the
+      invocation of the advised method, because the name of the method that
+      was executed contained the letters <code class="literal">'Do'</code>. Try changing
+      the pertinent code snippet to invoke the <code class="literal">Execute()</code>
+      method, like so...</p>
+
+      <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvisor(
+        <span style="color: #0000FF">new</span> DefaultPointcutAdvisor(
+            <span style="color: #0000FF">new</span> SdkRegularExpressionMethodPointcut(<span style="color: #000000">"Do"</span>),
+            <span style="color: #0000FF">new</span> ConsoleLoggingAroundAdvice()));
+    ICommand command = (ICommand) factory.GetProxy();
+
+    <i style="color: #008000">// note that there is no 'Do' in this method name</i>
+    command.Execute();</pre>
+
+      <p>Run the code snippet again; you will see that the advice will not
+      be applied : the pointcut is not matched (the method name does not
+      contain the letters <code class="literal">'Do'</code>), resulting in the following
+      (unadvised) output...</p>
+
+      <pre class="programlisting">Service implementation...</pre>
+
+      <p>XML configuration that accomplishes exactly the same thing as the
+      previous programmatic configuration example can be seen below...</p>
+
+      <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"consoleLoggingAroundAdvice"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.RegularExpressionMethodPointcutAdvisor"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"pattern"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Do"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"advice"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingAroundAdvice"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span>
+            <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>consoleLoggingAroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>You'll will perhaps have noticed that this treatment of pointcuts
+      introduced the concept of an <code class="literal">advisor</code> (see <a class="xref" href="aop.html#aop-advisors" title="13.4.&nbsp;Advisor API in Spring.NET">Section&nbsp;13.4, &#8220;Advisor API in Spring.NET&#8221;</a>). An advisor is nothing more the composition
+      of a pointcut (i.e. <span class="emphasis"><em>where</em></span> advice is going to be
+      applied), and the advice itself (i.e. <span class="emphasis"><em>what</em></span> is going
+      to happen at the interception point). The
+      <code class="literal">consoleLoggingAroundAdvice</code> object defines an advisor
+      that will apply the advice to all those methods of the advised object
+      that match the pattern <code class="literal">'Do'</code> (the pointcut). The
+      pattern to match against is supplied as a simple string value to the
+      <code class="literal">pattern</code> property of the
+      <code class="literal">RegularExpressionMethodPointcutAdvisor</code> class.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-quickstart-going-deeper"></a>36.3.&nbsp;Going deeper</h2></div></div></div>
+    
+
+    <p>The first section should (hopefully) have demonstrated the basics of
+    firstly defining advice, and secondly, of choosing where to apply that
+    advice using the notion of a pointcut. Of course, there is a great deal
+    more to Spring.NET AOP than the aforementioned single advice type and
+    pointcut. This section continues the exploration of Spring.NET AOP, and
+    describes the various advice and pointcuts that are available for you to
+    use (yes, there is more than one type of advice and pointcut).</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-going-deeper-other-advice-types"></a>36.3.1.&nbsp;Other types of Advice</h3></div></div></div>
+      
+
+      <p>The advice that was demonstrated and explained in the preceding
+      section is what is termed <span class="emphasis"><em>'around advice'</em></span>. The name
+      <span class="emphasis"><em>'around advice'</em></span> is used because the advice is
+      applied <span class="emphasis"><em>around</em></span> the target method invocation. In the
+      specific case of the <code class="literal">ConsoleLoggingAroundAdvice</code>
+      advice that was defined previously, the target was made available to the
+      advice as an <code class="literal">IMethodInvocation</code> object... a call was
+      made to the <code class="literal">Console</code> class before the target was
+      invoked, and a call was made to the <code class="literal">Console</code> class
+      after the target method invocation was invoked. The advice surrounded
+      the target, one could even say that the advice was totally 'around' the
+      target... hence the name, <span class="emphasis"><em>'around advice'</em></span>.</p>
+
+      <p><span class="emphasis"><em>'around advice'</em></span> provides one with the
+      opportunity to do things both <span class="bold"><strong>before</strong></span>
+      the target gets a chance to do anything, and <span class="bold"><strong>after</strong></span> the target has returned: one even gets a
+      chance to inspect (and possibly even totally change) the return
+      value.</p>
+
+      <p>Sometimes you don't need all that power though. If we stick with
+      the example of the <code class="literal">ConsoleLoggingAroundAdvice</code> advice,
+      what if one just wants to log the fact that a method was called? In that
+      case one doesn't need to do anything <span class="emphasis"><em>after</em></span> the
+      target method invocation is to be invoked, nor do you need access to the
+      return value of the target method invocation. In fact, you only want to
+      do something <span class="emphasis"><em>before</em></span> the target is to be invoked (in
+      this case, print out a message to the system <code class="literal">Console</code>
+      detailing the name of the method). In the tradition of good programming
+      that says one should use only what one needs and no more, Spring.NET has
+      another type of advice that one can use... if one only wants to do
+      something <span class="emphasis"><em>before</em></span> the target method invocation is
+      invoked, why bother with having to manually call the
+      <code class="literal">Proceed()</code> method? The most expedient solution simply
+      is to use <span class="emphasis"><em>'before advice'</em></span>.</p>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-before-advice"></a>36.3.1.1.&nbsp;Before advice</h4></div></div></div>
+        
+
+        <p><span class="emphasis"><em>'before advice'</em></span> is just that... it is
+        advice that runs <span class="emphasis"><em>before</em></span> the target method
+        invocation is invoked. One does not get access to the target method
+        invocation itself, and one cannot return a value... this is a good
+        thing, because it means that you cannot inadvertently forget to call
+        the <code class="literal">Proceed()</code> method on the target, and it also
+        means that you cannot inadvertently forget to return the return value
+        of the target method invocation. If you don't need to inspect or
+        change the return value, or even do anything after the successful
+        execution of the target method invocation, then <span class="emphasis"><em>'before
+        advice'</em></span> is just what you need.</p>
+
+        <p><span class="emphasis"><em>'before advice'</em></span> in Spring.NET is defined by
+        the <code class="literal">IMethodBeforeAdvice</code> interface in the
+        <code class="literal">Spring.Aop</code> namespace. Lets just dive in with an
+        example... we'll use the same scenario as before to keep things
+        simple. Let's define the <span class="emphasis"><em>'before advice'</em></span>
+        implementation first.</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ConsoleLoggingBeforeAdvice : IMethodBeforeAdvice
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Before(MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target)
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"Intercepted call to this method : "</span> + method.Name);
+            Console.Out.WriteLine(<span style="color: #000000">"    The target is               : "</span> + target);
+            Console.Out.WriteLine(<span style="color: #000000">"    The arguments are           : "</span>);
+            <span style="color: #0000FF">if</span>(args != <span style="color: #0000FF">null</span>)
+            {
+                <span style="color: #0000FF">foreach</span> (<span style="color: #0000FF">object</span> arg <span style="color: #0000FF">in</span> args)
+                {
+                    Console.Out.WriteLine(<span style="color: #000000">"\t: "</span> + arg);
+                }
+            }
+        }
+    }</pre>
+
+        <p>Let's apply a single instance of the
+        <code class="literal">ConsoleLoggingBeforeAdvice</code> advice to the invocation
+        of the <code class="literal">Execute()</code> method of the
+        <code class="literal">ServiceCommand</code>. What follows is programmatic
+        configuration; as you can see, its pretty much identical to the
+        previous version... the only difference is that we're using our new
+        <span class="emphasis"><em>'before advice'</em></span> (encapsulated as an instance of
+        the <code class="literal">ConsoleLoggingBeforeAdvice</code> class).</p>
+
+        <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingBeforeAdvice());
+    ICommand command = (ICommand) factory.GetProxy();
+    command.Execute();</pre>
+
+        <p>The result of executing the above snippet of code will look
+        something like this...</p>
+
+        <pre class="programlisting">    Intercepted call to this method : Execute
+    The target is                   : Spring.Examples.AopQuickStart.ServiceCommand
+    The arguments are               :</pre>
+
+        <p>The output clearly indicates that the advice was applied
+        <span class="bold"><strong>before</strong></span> the invocation of the advised
+        method. Notice that in contrast to <span class="emphasis"><em>'around
+        advice'</em></span>, with <span class="emphasis"><em>'before advice'</em></span> there is
+        no chance of forgetting to call the <code class="literal">Proceed()</code>
+        method on the target, because one does not have access to the
+        <code class="literal">IMethodInvocation</code> (as is the case with
+        <span class="emphasis"><em>'around advice'</em></span>)... similarly, you cannot forget
+        to return the return value either.</p>
+
+        <p>If you can use <span class="emphasis"><em>'before advice'</em></span>, then do so.
+        The simpler programming model offered by <span class="emphasis"><em>'before
+        advice'</em></span> means that there is less to remember, and thus
+        potentially less things to get wrong.</p>
+
+        <p>Here is the Spring.NET XML configuration for applying our
+        <span class="emphasis"><em>'before advice'</em></span> declaratively...</p>
+
+        <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"beforeAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingBeforeAdvice"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>beforeAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-after-advice"></a>36.3.1.2.&nbsp;After advice</h4></div></div></div>
+        
+
+        <p>Just as <span class="emphasis"><em>'before advice'</em></span> defines advice that
+        executes <span class="bold"><strong>before</strong></span> an advised target,
+        <span class="emphasis"><em>'after advice'</em></span> is advice that executes <span class="bold"><strong>after</strong></span> a target has been executed.</p>
+
+        <p><span class="emphasis"><em>'after advice'</em></span> in Spring.NET is defined by
+        the <code class="literal">IAfterReturningAdvice</code> interface in the
+        <code class="literal">Spring.Aop</code> namespace. Again, lets just fire on
+        ahead with an example... again, we'll use the same scenario as before
+        to keep things simple.</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ConsoleLoggingAfterAdvice : IAfterReturningAdvice
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterReturning(
+            <span style="color: #0000FF">object</span> returnValue, MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target)
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"This method call returned successfully : "</span> + method.Name);
+            Console.Out.WriteLine(<span style="color: #000000">"    The target was                     : "</span> + target);
+            Console.Out.WriteLine(<span style="color: #000000">"    The arguments were                 : "</span>);
+            <span style="color: #0000FF">if</span>(args != <span style="color: #0000FF">null</span>)
+            {
+                <span style="color: #0000FF">foreach</span> (<span style="color: #0000FF">object</span> arg <span style="color: #0000FF">in</span> args)
+                {
+                    Console.Out.WriteLine(<span style="color: #000000">"\t: "</span> + arg);
+                }
+            }
+            Console.Out.WriteLine(<span style="color: #000000">"    The return value is                : "</span> + returnValue);
+        }
+    }</pre>
+
+        <p>Let's apply a single instance of the
+        <code class="literal">ConsoleLoggingAfterAdvice</code> advice to the invocation
+        of the <code class="literal">Execute()</code> method of the
+        <code class="literal">ServiceCommand</code>. What follows is programmatic
+        configuration; as you can, its pretty much identical to the
+        <span class="emphasis"><em>'before advice'</em></span> version (which in turn was pretty
+        much identical to the original <span class="emphasis"><em>'around advice'</em></span>
+        version)... the only real difference is that we're using our new
+        <span class="emphasis"><em>'after advice'</em></span> (encapsulated as an instance of
+        the <code class="literal">ConsoleLoggingAfterAdvice</code> class).</p>
+
+        <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingAfterAdvice());
+    ICommand command = (ICommand) factory.GetProxy();
+    command.Execute();</pre>
+
+        <p>The result of executing the above snippet of code will look
+        something like this...</p>
+
+        <pre class="programlisting">    This method call returned successfully : Execute
+    The target was                         : Spring.Examples.AopQuickStart.ServiceCommand
+    The arguments were                     :
+    The return value is                    : null</pre>
+
+        <p>The output clearly indicates that the advice was applied
+        <span class="bold"><strong>after</strong></span> the invocation of the advised
+        method. Again, it bears repeating that your real world development
+        will actually have an advice implementation that does something useful
+        after the invocation of an advised method. Notice that in contrast to
+        <span class="emphasis"><em>'around advice'</em></span>, with <span class="emphasis"><em>'after
+        advice'</em></span> there is no chance of forgetting to call the
+        <code class="literal">Proceed()</code> method on the target, because just like
+        <span class="emphasis"><em>'before advice'</em></span> you don't have access to the
+        <code class="literal">IMethodInvocation</code>... similarly, although you get
+        access to the return value of the target, you cannot forget to return
+        the return value either. You can however change the state of the
+        return value, typically by setting some of its properties, or by
+        calling methods on it.</p>
+
+        <p>The best-practice rule for <span class="emphasis"><em>'after advice'</em></span>
+        is much the same as it is for <span class="emphasis"><em>'before advice'</em></span>;
+        namely that if you can use <span class="emphasis"><em>'after advice'</em></span>, then
+        do so (in preference to using <span class="emphasis"><em>'around advice'</em></span>).
+        The simpler programming model offered by <span class="emphasis"><em>'after
+        advice'</em></span> means that there is less to remember, and thus less
+        things to get potentially wrong.</p>
+
+        <p>A possible use case for <span class="emphasis"><em>'after advice'</em></span>
+        would include performing access control checks on the return value of
+        an advised method invocation; consider the case of a service that
+        returns a list of document URI's... depending on the identity of the
+        (Windows) user that is running the program that is calling this
+        service, one could strip out those URI's that contain sensitive data
+        for which the user does not have sufficient privileges to access. That
+        is just one (real world) scenario... I'm sure you can think of plenty
+        more that are a whole lot more relevant to your own development
+        needs.</p>
+
+        <p>Here is the Spring.NET XML configuration for applying the
+        <span class="emphasis"><em>'after advice'</em></span> declaratively...</p>
+
+        <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"afterAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingAfterAdvice"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>afterAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-throws-advice"></a>36.3.1.3.&nbsp;Throws advice</h4></div></div></div>
+        
+
+        <p>So far we've covered <span class="emphasis"><em>'around advice'</em></span>,
+        <span class="emphasis"><em>'before advice'</em></span>, and <span class="emphasis"><em>'after
+        advice'</em></span>... these advice types will see you through most if
+        not all of your AOP needs. However, one of the remaining advice types
+        that Spring.NET has in its locker is <span class="emphasis"><em>'throws
+        advice'</em></span>.</p>
+
+        <p><span class="emphasis"><em>'throws advice'</em></span> is advice that executes
+        when an advised method invocation <span class="emphasis"><em>throws</em></span> an
+        exception.. hence the name. One basically applies the
+        <span class="emphasis"><em>'throws advice'</em></span> to a target object in much the
+        same way as any of the previously mentioned advice types. If during
+        the execution of ones application none of any of the advised methods
+        throws an exception, then the <span class="emphasis"><em>'throws advice'</em></span>
+        will never execute. However, if during the execution of your
+        application an advised method <span class="emphasis"><em>does</em></span> throw an
+        exception, then the <span class="emphasis"><em>'throws advice'</em></span> will kick in
+        and be executed. You can use <span class="emphasis"><em>'throws advice'</em></span> to
+        apply a common exception handling policy across the various objects in
+        your application, or to perform logging of every exception thown by an
+        advised method, or to alert (perhaps via email) the support team in
+        the case of particularly of critical exceptions... the list of
+        possible uses cases is of course endless.</p>
+
+        <p>The <span class="emphasis"><em>'throws advice'</em></span> type in Spring.NET is
+        defined by the <code class="literal">IThrowsAdvice</code> interface in the
+        <code class="literal">Spring.Aop</code> namespace... basically, one defines on
+        one's <span class="emphasis"><em>'throws advice'</em></span> implementation class what
+        types of exception are going to be handled. Lets take a quick look at
+        the <code class="literal">IThrowsAdvice</code> interface...</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IThrowsAdvice : IAdvice
+    {
+    }</pre>
+
+        <p>Yes, that is really it... it is a marker interface that has no
+        methods on it. You may be wondering how Spring.NET determines which
+        methods to call to effect the running of one's <span class="emphasis"><em>'throws
+        advice'</em></span>. An example would perhaps be illustrative at this
+        point, so here is some simple Spring.NET style <span class="emphasis"><em>'throws
+        advice'</em></span>...</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ConsoleLoggingThrowsAdvice : IThrowsAdvice
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing(Exception ex)
+        {
+            Console.Out.WriteLine(<span style="color: #000000">"Advised method threw this exception : "</span> + ex);
+        }
+    }</pre>
+
+        <p>Lets also change the implementation of the
+        <code class="literal">Execute()</code> method of the
+        <code class="literal">ServiceCommand</code> class such that it throws an
+        exception. This will allow the advice encapsulated by the above
+        <code class="literal">ConsoleLoggingThrowsAdvice</code> to kick in.</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> ServiceCommand : ICommand
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Execute()
+        {
+            <span style="color: #0000FF">throw</span> <span style="color: #0000FF">new</span> UnauthorizedAccessException();
+        }
+    }</pre>
+
+        <p>Let's programmatically apply the <span class="emphasis"><em>'throws
+        advice'</em></span> (an instance of our
+        <code class="literal">ConsoleLoggingThrowsAdvice</code>) to the invocation of
+        the <code class="literal">Execute()</code> method of the above
+        <code class="literal">ServiceCommand</code> class; to wit...</p>
+
+        <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingThrowsAdvice());
+    ICommand command = (ICommand) factory.GetProxy();
+    command.Execute();</pre>
+
+        <p>The result of executing the above snippet of code will look
+        something like this...</p>
+
+        <pre class="programlisting">    Advised method threw this exception : System.UnauthorizedAccessException:
+    Attempted to perform an unauthorized operation.</pre>
+
+        <p>As can be seen from the output, the
+        <code class="literal">ConsoleLoggingThrowsAdvice</code> kicked in when the
+        advised method invocation threw an exception. There are a number of
+        things to note about the <code class="literal">ConsoleLoggingThrowsAdvice</code>
+        advice class, so lets take them each in turn.</p>
+
+        <p>In Spring.NET, <span class="emphasis"><em>'throws advice'</em></span> means that
+        you have to define a class that implements the
+        <code class="literal">IThrowsAdvice</code> interface. Then, for each type of
+        exception that your <span class="emphasis"><em>'throws advice'</em></span> is going to
+        handle, you have to define a method with this signature...</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">void</span> AfterThrowing(Exception ex)</pre>
+
+        <p>Basically, your exception handling method has to be named
+        <code class="literal">AfterThrowing</code>. This name is important... your
+        exception handling method(s) absolutely must be called
+        <code class="literal">AfterThrowing</code>. If your handler method is not called
+        <code class="literal">AfterThrowing</code>, then your <span class="emphasis"><em>'throws
+        advice'</em></span> will <span class="bold"><strong>never</strong></span> be
+        called, it's as simple as that. Currently, this naming restriction is
+        not configurable (although it may well be opened up for configuration
+        in the future).</p>
+
+        <p>Your exception handling method must (at the very least) declare
+        a parameter that is an <code class="literal">Exception</code> type... this
+        parameter can be the root <code class="literal">Exception</code> class (as in
+        the case of the above example), or it can be an
+        <code class="literal">Exception</code> subclass if you only want to handle
+        certain types of exception. It is good practice to always make your
+        exception handling methods have an <code class="literal">Exception</code>
+        parameter that is the most specialized <code class="literal">Exception</code>
+        type possible... i.e. if you are applying <span class="emphasis"><em>'throws
+        advice'</em></span> to a method that could only ever throw
+        <code class="literal">ArgumentException</code>s, then declare the parameter of
+        your exception handling method as...</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">void</span> AfterThrowing(ArgumentException ex)</pre>
+
+        <p>Note that your exception handling method can have any return
+        type, but returning any value from a Spring.NET <span class="emphasis"><em>'throws
+        advice'</em></span> method would be a waste of time... the Spring.NET
+        AOP infrastructure will simply ignore the return value, so always
+        define the return type of your exception handling methods to be
+        <code class="literal">void</code>.</p>
+
+        <p>Finally, here is the Spring.NET XML configuration for applying
+        the <span class="emphasis"><em>'throws advice'</em></span> declaratively...</p>
+
+        <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"throwsAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingThrowsAdvice"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>throwsAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+        <p>One thing that cannot be done using <span class="emphasis"><em>'throws
+        advice'</em></span> is exception swallowing. It is not possible to
+        define an exception handling method in a <span class="emphasis"><em>'throws
+        advice'</em></span> implementation that will swallow any exception and
+        prevent said exception from bubbling up the call stack. The nearest
+        thing that one can do is define an exception handling method in a
+        <span class="emphasis"><em>'throws advice'</em></span> implementation that will wrap the
+        handled exception in another exception; one would then throw the
+        wrapped exception in the body of one's exception handling method. One
+        can use this to implement some sort of exception translation or
+        exception scrubbing policy, in which implementation specific
+        exceptions (such as <code class="literal">SqlException</code> or
+        <code class="literal">OracleException</code> exceptions being thrown by an
+        advised data access object) get replaced with a business exception
+        that has meaning to the service objects in one's business layer. A toy
+        example of this type of <span class="emphasis"><em>'throws advice'</em></span> can be
+        seen below.</p>
+
+        <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DataAccessExceptionScrubbingThrowsAdvice : IThrowsAdvice
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing (SqlException ex)
+        {
+            <i style="color: #008000">// business objects in higher level service layer need only deal with PersistenceException...</i>
+            <span style="color: #0000FF">throw</span> <span style="color: #0000FF">new</span> PersistenceException (<span style="color: #000000">"Cannot access persistent storage."</span>, ex.StackTrace);
+        }
+    }</pre>
+
+        <p><span class="emphasis"><em> Spring.NET's data access library already has this
+        kind of functionality (and is a whole lot more sophisticated)... the
+        above example is merely being used for illustrative purposes.
+        </em></span></p>
+
+        <p>This treatment of <span class="emphasis"><em>'throws advice'</em></span>, and of
+        Spring.NET's implementation of it is rather simplistic.
+        <span class="emphasis"><em>'throws advice'</em></span> features that have been omitted
+        include the fact that one can define exception handling methods that
+        permit access to the original object, method, and method arguments of
+        the advised method invocation that threw the original exception. This
+        is a quickstart guide though, and is not meant to be exhaustive... do
+        consult the <span class="emphasis"><em>'throws advice'</em></span> section of the
+        reference documentation, which describes how to declare an exception
+        handling method that gives one access to the above extra objects, and
+        how to declare multiple exception handling methods on the same
+        <code class="literal">IThrowsAdvice</code> implementation class (see <a class="xref" href="aop.html#aop-introduction-advice-types-throws" title="13.3.2.3.&nbsp;Throws advice">Section&nbsp;13.3.2.3, &#8220;Throws advice&#8221;</a>).</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-introduction-advice"></a>36.3.1.4.&nbsp;Introductions (mixins)</h4></div></div></div>
+        
+
+        <p>In a nutshell, introductions are all about adding new state and
+        behaviour to arbitrary objects... transparently and at runtime.
+        Introductions (also called mixins) allow one to emulate multiple
+        inheritance, typically with an eye towards applying crosscutting state
+        and operations to a wide swathe of objects in your application that
+        don't share the same inheritance hierarchy.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-layering-advice"></a>36.3.1.5.&nbsp;Layering advice</h4></div></div></div>
+        
+
+        <p>The examples shown so far have all demonstrated the application
+        of a single advice instance to an advised object. Spring.NET's flavor
+        of AOP would be pretty poor if one could only apply a single advice
+        instance per advised object... it is perfectly valid to apply multiple
+        advice to an advised object. For example, one might apply
+        transactional advice to a service object, and also apply a security
+        access checking advice to that same advised service object.</p>
+
+        <p>In the interests of keeping this section lean and tight, let's
+        simply apply <span class="emphasis"><em>all</em></span> of the advice types that have
+        been previously described to a single advised object... in this first
+        instance we'll just use the default pointcut which means that every
+        possible joinpoint will be advised, and you'll be able to see that the
+        various advice instances are applied in order.</p>
+
+        <p>Please do consult the class definitions for the following
+        previously defined advice types to see exactly what each advice type
+        implementation does... we're going to be using single instances of the
+        <code class="literal">ConsoleLoggingAroundAdvice</code>,
+        <code class="literal">ConsoleLoggingBeforeAdvice</code>,
+        <code class="literal">ConsoleLoggingAfterAdvice</code>, and
+        <code class="literal">ConsoleLoggingThrowsAdvice</code> advice to advise a
+        single instance of the <code class="literal">ServiceCommand</code> class.</p>
+
+        <p>You can find the following listing and executable application in
+        the AopQuickStart solution in the project
+        <code class="literal">Spring.AopQuickStart.Step1</code>.</p>
+
+        <pre class="programlisting">    ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(<span style="color: #0000FF">new</span> ServiceCommand());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingBeforeAdvice());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingAfterAdvice());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingThrowsAdvice());
+    factory.AddAdvice(<span style="color: #0000FF">new</span> ConsoleLoggingAroundAdvice());
+    ICommand command = (ICommand) factory.GetProxy();
+    command.Execute();</pre>
+
+        <p>Here is the Spring.NET XML configuration for declaratively
+        applying multiple advice.</p>
+
+        <p>You can find the following listing and executable application in
+        the AopQuickStart solution in the project
+        <code class="literal">Spring.AopQuickStart.Step2</code>.</p>
+
+        <pre class="programlisting">    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"throwsAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingThrowsAdvice"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"afterAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingAfterAdvice"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"beforeAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingBeforeAdvice"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"aroundAdvice"</span>
+	    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ConsoleLoggingAroundAdvice"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObject"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myServiceObjectTarget"</span>
+                <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.AopQuickStart.ServiceCommand"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>throwsAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>afterAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>beforeAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+                <span style="color: #A31515">&lt;value&gt;</span>aroundAdvice<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-quickstart-going-deeper-configuring-advice"></a>36.3.1.6.&nbsp;Configuring advice</h4></div></div></div>
+        
+
+        <p>In case it is not immediately apparent, remember that advice is
+        just a plain old .NET object (a PONO); advice can have constructors
+        that can take any number of parameters, and like any other .NET class,
+        advice can have properties. What this means is that one can leverage
+        the power of the Spring.NET IoC container to apply the IoC principle
+        to one's advice, and in so doing reap all the benefits of Dependency
+        Injection.</p>
+
+        <p>Consider the case of throws advice that needs to report (fatal)
+        exceptions to a first line support centre. The throws advice could
+        declare a dependency on a reporting service via a .NET property, and
+        the Spring.NET container could dependency inject the reporting service
+        dependency into the throws advice when it is being created; the
+        reporting dependency might be a simple Log4NET wrapper, or a Windows
+        EventLog wrapper, or a custom reporting exception reporting service
+        that sends detailed emails concerning the fatal exception.</p>
+
+        <p>Also bear in mind the fact that Spring.NET's AOP implementation
+        is quite independent of Spring.NET's IoC container. As you have seen,
+        the various examples used in this have illustrated both programmatic
+        and declarative AOP configuration (the latter being illustrated via
+        Spring.NET's IoC XML configuration mechanism).</p>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-going-deeper-attribute-pointcuts"></a>36.3.2.&nbsp;Using Attributes to define Pointcuts</h3></div></div></div>
+      
+
+      <p></p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-quickstart-cookbook"></a>36.4.&nbsp;The Spring.NET AOP Cookbook</h2></div></div></div>
+    
+
+    <p>The preceding treatment of Spring.NET AOP has (quite intentionally)
+    been decidedly simple. The overarching aim was to convey the concepts of
+    Spring.NET AOP... this section of the Spring.NET AOP guide contains a
+    number of real world examples of the application of Spring.NET AOP.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-cookbook-caching"></a>36.4.1.&nbsp;Caching</h3></div></div></div>
+      
+
+      <p>This example illustrates one of the more common usages of AOP...
+      caching.</p>
+
+      <p>Lets consider the scenario where we have some static reference
+      data that needs to be kept around for the duration of an application.
+      The data will almost never change over the uptime of an application, and
+      it exists only in the database to satisfy referential integrity amongst
+      the various relations in the database schema. An example of such static
+      (and typically immutable) reference data would be a collection of
+      <code class="literal">Country</code> objects (comprising a country name and a
+      code). What we would like to do is suck in the collection of
+      <code class="literal">Country</code> objects and then pin them in a cache. This
+      saves us having to hit the back end database again and again every time
+      we need to reference a country in our application (for example, to
+      populate dropdown controls in a Windows Forms desktop
+      application).</p>
+
+      <p>The Data Access Object (DAO) that will load the collection of
+      <code class="literal">Country</code> objects is called
+      <code class="literal">AdoCountryDao</code> (it is an implementation of the
+      data-access-technology agnostic DAO interface called
+      <code class="literal">ICountryDao</code>). The implementation of the
+      <code class="literal">AdoCountryDao</code> is quite simple, in that every time the
+      <code class="literal">FindAllCountries</code> instance method is called, an
+      instance will query the database for an <code class="literal">IDataReader</code>
+      and hydrate zero or more <code class="literal">Country</code> objects using the
+      returned data.</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdoCountryDao : ICountryDao
+    {
+        <span style="color: #0000FF">public</span> IList FindAllCountries ()
+        {
+            <i style="color: #008000">// implementation elided for clarity...</i>
+            <span style="color: #0000FF">return</span> countries;
+        }
+    }</pre>
+
+      <p>Ideally, what we would like to have happen is for the results of
+      the <span class="emphasis"><em>first</em></span> call to the
+      <code class="literal">FindAllCountries</code> instance method to be cached. We
+      would also like to do this in a non-invasive way, because caching is
+      something that we might want to apply at any number of points across the
+      codebase of our application. So, to address what we have identified as a
+      <span class="emphasis"><em>cross cutting concern</em></span>, we can use Spring.NET AOP to
+      implement the caching.</p>
+
+      <p>The mechanism that this example is going to use to identify (or
+      pick out) areas in our application that we would like to apply caching
+      to is a .NET <code class="literal">Attribute</code>. Spring.NET ships with a
+      number of useful custom .NET <code class="literal">Attribute</code>
+      implementations, one of which is the cunningly named
+      <code class="literal">CacheAttribute</code>. In the specific case of this example,
+      we are simply going to decorate the definition of the
+      <code class="literal">FindAllCountries</code> instance method with the
+      <code class="literal">CacheAttribute</code>.</p>
+
+      <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AdoCountryDao : ICountryDao
+    {
+        [Cache]
+        <span style="color: #0000FF">public</span> IList FindAllCountries ()
+        {
+            <i style="color: #008000">// implementation elided for clarity...</i>
+            <span style="color: #0000FF">return</span> countries;
+        }
+    }</pre>
+
+      <p>The SpringAir reference application that is packaged as part of
+      the Spring.NET distribution comes with a working example of caching
+      applied using Spring.NET AOP (see <a class="xref" href="springair.html" title="Chapter&nbsp;39.&nbsp;SpringAir - Reference Application">Chapter&nbsp;39, <i>SpringAir - Reference Application</i></a>).</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-cookbook-performance-monitoring-windows"></a>36.4.2.&nbsp;Performance Monitoring</h3></div></div></div>
+      
+
+      <p>This recipe show how easy it is to instrument the classes and
+      objects in an application for performance monitoring. The performance
+      monitoring implementation uses one of the (many) Windows performance
+      counters to display and track the performance data.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-quickstart-cookbook-retry"></a>36.4.3.&nbsp;Retry Rules</h3></div></div></div>
+      
+
+      <p>This final recipe describes a simple (but really quite useful)
+      aspect... retry logic. Using Spring.NET AOP, it is quite easy to
+      surround an operation such as a method that opens a connection to a
+      database with a (configurable) aspect that tries to obtain a database
+      connection any number of times in the event of a failure.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-quickstart-best-practices"></a>36.5.&nbsp;Spring.NET AOP Best Practices</h2></div></div></div>
+    
+
+    <p>Spring.NET AOP is an 80% AOP solution, in that it only tries to
+    solve the 80% of those cases where AOP is a good fit in a typical
+    enterprise application. This final section of the Spring.NET AOP guide
+    describes where Spring.NET AOP is typically useful (the 80%), as well as
+    where Spring.NET AOP is not a good fit (the 20%).</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="quickstarts.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="remoting-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;35.&nbsp;IoC Quickstarts&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;37.&nbsp;Portable Service Abstraction Quick Start</td></tr></table></div></body></html>

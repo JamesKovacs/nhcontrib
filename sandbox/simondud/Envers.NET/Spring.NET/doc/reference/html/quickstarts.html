@@ -1,0 +1,883 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;35.&nbsp;IoC Quickstarts</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="next" href="aop-quickstart.html" title="Chapter&nbsp;36.&nbsp;AOP QuickStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="quickstarts"></a>Chapter&nbsp;35.&nbsp;IoC Quickstarts</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9782"></a>35.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This chapter includes a grab bag of quickstart examples for using
+    the Spring.NET framework.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-moviefinder"></a>35.2.&nbsp;Movie Finder</h2></div></div></div>
+    
+
+    <p>The source material for this simple demonstration of Spring.NET's
+    IoC features is lifted straight from Martin Fowler's article that
+    discussed the ideas underpinning the IoC pattern. See <a class="ulink" href="http://martinfowler.com/articles/injection.html" target="_top">Inversion of Control
+    Containers and the Dependency Injection pattern</a> for more
+    information. The motivation for basing this quickstart example on said
+    article is because the article is pretty widely known, and most people who
+    are looking at IoC for the first time typically will have read the article
+    (at the time of writing a <a class="ulink" href="http://www.google.co.uk/search?q=ioc" target="_top">simple Google search for
+    'IoC'</a> yields the article in the first five results).</p>
+
+    <p>Fowler's article used the example of a search facility for movies to
+    illustrate IoC and Dependency Injection (DI). The article described how a
+    <code class="literal">MovieLister</code> object might receive a reference to an
+    implementation of the <code class="literal">IMovieFinder</code> interface (using
+    DI).</p>
+
+    <p>The <code class="literal">IMovieFinder</code> returns a list of all movies and
+    the <code class="literal">MovieLister</code> filters this list to return an array of
+    <code class="literal">Movie</code>objects that match a specified directors name.
+    This example demonstrates how the Spring.NET IoC container can be used to
+    supply an appropriate <code class="literal">IMovieFinder</code> implementation to an
+    arbitrary <code class="literal">MovieLister</code> instance.</p>
+
+    <p>The C# code listings for the MovieFinder application can be found in
+    the <code class="literal">examples/Spring/Spring.Examples.MovieFinder</code>
+    directory off the top level directory of the Spring.NET
+    distribution.</p>
+
+    <div class="mediaobject"><img src="images/movie-finder.gif"></div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="qs-mf-gettingstarted"></a>35.2.1.&nbsp;Getting Started - Movie Finder</h3></div></div></div>
+      
+
+      <p>The startup class for the MovieFinder example is the
+      <code class="literal">MovieApp</code> class, which is an ordinary .NET class with
+      a single application entry point... </p><pre class="programlisting"><span style="color: #0000FF">using</span> System;
+<span style="color: #0000FF">namespace</span> Spring.Examples.MovieFinder
+{
+  <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> MovieApp
+  {
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main ()
+    {
+    }
+  }
+}</pre>
+
+      <p>What we want to do is get a reference to an instance of the
+      <code class="literal">MovieLister</code> class... since this is a Spring.NET
+      example we'll get this reference from Spring.NET's IoC container, the
+      <code class="literal">IApplicationContext</code>. There are a number of ways to
+      get a reference to an <code class="literal">IApplicationContext</code> instance,
+      but for this example we'll be using an
+      <code class="literal">IApplicationContext</code> that is instantiated from a
+      custom configuration section in a standard .NET application config
+      file...</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+<span style="color: #A31515">&lt;configuration&gt;</span>
+    <span style="color: #A31515">&lt;configSections&gt;</span>
+        <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"context"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ContextHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.DefaultSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+        <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+    <span style="color: #A31515">&lt;/configSections&gt;</span>
+    <span style="color: #A31515">&lt;spring&gt;</span>
+        <span style="color: #A31515">&lt;context&gt;</span>
+            <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/context&gt;</span>
+        <span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;description&gt;</span>An  example that demonstrates simple IoC features.<span style="color: #A31515">&lt;/description&gt;</span>
+        <span style="color: #A31515">&lt;/objects&gt;</span>
+    <span style="color: #A31515">&lt;/spring&gt;</span>
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+
+      <p>The objects that will be used in the example application will be
+      configured as XML <code class="literal">&lt;object/&gt;</code> elements nested
+      inside the <code class="literal">&lt;objects/&gt;</code> element.</p>
+
+      <p>The body of the <code class="literal">Main</code> method in the
+      <code class="literal">MovieApp</code> class can now be fleshed out a little
+      further... </p><pre class="programlisting">
+<span style="color: #0000FF">using</span> System;
+<span style="color: #0000FF">using</span> Spring.Context;
+...
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main ()
+    {
+      IApplicationContext ctx = ContextRegistry.GetContext();
+    }
+...</pre><p>As can be seen in the above C# snippet, a
+      <code class="literal">using</code> statement has been added to the
+      <code class="literal">MovieApp</code> source. The
+      <code class="literal">Spring.Context</code> namespace gives the application access
+      to the <code class="literal">IApplicationContext</code> class that will serve as
+      the primary means for the application to access the IoC container. The
+      line of code... </p><pre class="programlisting">IApplicationContext ctx = ContextRegistry.GetContext();</pre><p>
+      ... retrieves a fully configured <code class="literal">IApplicationContext</code>
+      implementation that has been configured using the named
+      <code class="literal">&lt;objects/&gt;</code> section from the application config
+      file.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="qs-mf-firstobject"></a>35.2.2.&nbsp;First Object Definition</h3></div></div></div>
+      
+
+      <p>As yet, no objects have been defined in the application config
+      file, so let's do that now. The very miminal XML definition for the
+      <code class="literal">MovieLister</code> instance that we are going to use in the
+      application can be seen in the following XML snippet...</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieLister"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.MovieLister, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>Notice that the full, assembly-qualified name of the
+      <code class="literal">MovieLister</code> class has been specified in the
+      <code class="literal">type</code> attribute of the object definition, and that the
+      definition has been assigned the (unique) id of
+      <code class="literal">MyMovieLister</code>. Using this id, an instance of the
+      object so defined can be retrieved from the
+      <code class="literal">IApplicationContext</code> reference like so...</p>
+
+      <pre class="programlisting">...
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main ()
+    {
+      IApplicationContext ctx = ContextRegistry.GetContext();
+      MovieLister lister = (MovieLister) ctx.GetObject (<span style="color: #000000">"MyMovieLister"</span>);
+    }
+...</pre>
+
+      <p>The <code class="literal">lister</code> instance has not yet had an
+      appropriate implementation of the <code class="literal">IMovieFinder</code>
+      interface injected into it. Attempting to use the
+      <code class="literal">MoviesDirectedBy</code> method will most probably result in
+      a nasty <code class="literal">NullReferenceException</code> since the
+      <code class="literal">lister</code> instance does not yet have a reference to an
+      <code class="literal">IMovieFinder</code>. The XML configuration for the
+      <code class="literal">IMovieFinder</code> implementation that is going to be
+      injected into the <code class="literal">lister</code> instance looks like
+      this...</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieFinder"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.SimpleMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="qs-mf-setterinjection"></a>35.2.3.&nbsp;Setter Injection</h3></div></div></div>
+      
+
+      <p>What we want to do is inject the <code class="literal">IMovieFinder</code>
+      instance identified by the <code class="literal">MyMovieFinder</code> id into the
+      <code class="literal">MovieLister</code> instance identified by the
+      <code class="literal">MyMovieLister</code> id, which can be accomplished using
+      Setter Injection and the following XML... </p><pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieLister"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.MovieLister, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+        <i style="color: #008000">&lt;!-- using setter injection... --&gt;</i>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"movieFinder"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MyMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieFinder"</span>
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.SimpleMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+<span style="color: #A31515">&lt;/objects&gt;</span></pre><p>When the <code class="literal">MyMovieLister</code>
+      object is retrieved from (i.e. instantiated by) the
+      <code class="literal">IApplicationContext</code> in the application, the
+      Spring.NET IoC container will inject the reference to the
+      <code class="literal">MyMovieFinder</code> object into the
+      <code class="literal">MovieFinder</code> property of the
+      <code class="literal">MyMovieLister</code> object. The
+      <code class="literal">MovieLister</code> object that is referenced in the
+      application is then fully configured and ready to be used in the
+      application to do what is does best... list movies by director.
+      </p><pre class="programlisting">...
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main ()
+    {
+      IApplicationContext ctx = ContextRegistry.GetContext();
+      MovieLister lister = (MovieLister) ctx.GetObject (<span style="color: #000000">"MyMovieLister"</span>);
+      Movie[] movies = lister.MoviesDirectedBy(<span style="color: #000000">"Roberto Benigni"</span>);
+      Console.WriteLine (<span style="color: #000000">"\nSearching for movie...\n"</span>);
+      <span style="color: #0000FF">foreach</span> (Movie movie <span style="color: #0000FF">in</span> movies)
+      {
+          Console.WriteLine (
+              <span style="color: #0000FF">string</span>.Format (<span style="color: #000000">"Movie Title = '{0}', Director = '{1}'."</span>,
+              movie.Title, movie.Director));
+      }
+      Console.WriteLine (<span style="color: #000000">"\nMovieApp Done.\n\n"</span>);
+    }
+...</pre><p>To help ensure that the XML configuration of the
+      MovieLister class must specify a value for the MovieFinder property, you
+      can add the [Required] attribute to the MovieLister's MovieFinder
+      property. The example code shows uses this attribute. For more
+      information on using and configuring the [Required] attribute, refer to
+      this <a class="link" href="objects.html#object-factory-extension-opp-examplesrapp" title="5.9.1.2.&nbsp;Example: the RequiredAttributeObjectPostProcessor">section</a> of
+      the reference documentation.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="qs-mf-constructorinjection"></a>35.2.4.&nbsp;Constructor Injection</h3></div></div></div>
+      
+
+      <p>Let's define another implementation of the
+      <code class="literal">IMovieFinder</code> interface in the application config
+      file...</p><pre class="programlisting">...
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.ColonDelimitedMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+...</pre><p>This XML snippet describes an
+      <code class="literal">IMovieFinder</code> implementation that uses a colon
+      delimited text file as it's movie source. The C# source code for this
+      class defines a single constructor that takes a
+      <code class="literal">System.IO.FileInfo</code> as it's single constructor
+      argument. As this object definition currently stands, attempting to get
+      this object out of the <code class="literal">IApplicationContext</code> in the
+      application with a line of code like so... </p><pre class="programlisting">IMovieFinder finder = (IMovieFinder) ctx.GetObject (<span style="color: #000000">"AnotherMovieFinder"</span>);</pre><p>
+      will result in a fatal
+      <code class="literal">Spring.Objects.Factory.ObjectCreationException</code>,
+      because the
+      <code class="literal">Spring.Examples.MovieFinder.ColonDelimitedMovieFinder</code>
+      class does not have a default constructor that takes no arguments. If we
+      want to use this implementation of the <code class="literal">IMovieFinder</code>
+      interface, we will have to supply an appropriate constructor
+      argument...</p><pre class="programlisting">...
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.ColonDelimitedMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">index</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"movies.txt"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+...</pre>
+
+      <p>Unsurprisingly, the &lt;constructor-arg/&gt; element is used to
+      supply constructor arguments to the constructors of managed objects. The
+      Spring.NET IoC container uses the functionality offered by
+      <code class="literal">System.ComponentModel.TypeConverter</code>
+      specializations to convert the <code class="literal">movies.txt</code> string into
+      an instance of the <code class="literal">System.IO.FileInfo</code> that is
+      required by the single constructor of the
+      <code class="literal">Spring.Examples.MovieFinder.ColonDelimitedMovieFinder</code>
+      (see <a class="xref" href="objects-misc.html#objects-objects-conversion" title="6.3.&nbsp;Type conversion">Section&nbsp;6.3, &#8220;Type conversion&#8221;</a> for a more in depth
+      treatment concerning the automatic type conversion functionality offered
+      by Spring.NET).</p>
+
+      <p>So now we have two implementations of the
+      <code class="literal">IMovieFinder</code> interface that have been defined as
+      distinct object definitions in the config file of the example
+      application; if we wanted to, we could switch the implementation that
+      the <code class="literal">MyMovieLister</code> object uses like
+      so...</p><pre class="programlisting">...
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieLister"</span>
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.MovieLister, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- lets use the colon delimited implementation instead --&gt;</i>
+      <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"movieFinder"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MyMovieFinder"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.SimpleMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"AnotherMovieFinder"</span>
+      <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Examples.MovieFinder.ColonDelimitedMovieFinder, Spring.Examples.MovieFinder"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">index</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"movies.txt"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+...</pre>
+
+      <p>Note that there is no need to recompile the application to effect
+      this change of implementation... simply changing the application config
+      file and then restarting the application will result in the Spring.NET
+      IoC container injecting the colon delimited implementation of the
+      <code class="literal">IMovieFinder</code> interface into the
+      <code class="literal">MyMovieLister</code> object.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="qs-mf-summary"></a>35.2.5.&nbsp;Summary</h3></div></div></div>
+      
+
+      <p>This example application is quite simple, and admittedly it
+      doesn't do a whole lot. It does however demonstrate the basics of wiring
+      together an object graph using an intuitive XML format. These simple
+      features will get you through pretty much 80% of your object wiring
+      needs. The remaining 20% of the available configuration options are
+      there to cover corner cases such as factory methods, lazy
+      initialization, and suchlike (all of the configuration options are
+      described in detail in the <a class="xref" href="objects.html" title="Chapter&nbsp;5.&nbsp;The IoC container">Chapter&nbsp;5, <i>The IoC container</i></a>).</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9897"></a>35.2.6.&nbsp;Logging</h3></div></div></div>
+      
+
+      <p>Often enough the first use of Spring.NET is also a first
+      introduction to log4net. To kick start your understanding of log4net
+      this section gives a quick overview. The authoritative place for
+      information on log4net is the <a class="ulink" href="http://logging.apache.org/log4net/" target="_top">log4net website</a>. Other
+      good online tutorials are <a class="ulink" href="http://www.ondotnet.com/pub/a/dotnet/2003/06/16/log4net.html?page=1" target="_top">Using
+      log4net (OnDotNet article)</a> and <a class="ulink" href="http://haacked.com/archive/2005/03/07/2317.aspx" target="_top">Quick and Dirty
+      Guide to Configuring Log4Net For Web Applications</a>. Spring.NET is
+      using version 1.2.9 whereas most of the documentation out there is for
+      version 1.2.0. There have been some changes between the two so always
+      double check at the log4net web site for definitive information. Also
+      note that we are investigating using a "commons" logging library so that
+      Spring.NET will not be explicity tied to log4net but will be able to use
+      other logging packages such as NLog and Microsoft enterprise logging
+      application block.</p>
+
+      <p>The general usage pattern for log4net is to configure your
+      loggers, (either in App/Web.config or a seperate file), initialize
+      log4net in your main application, declare some loggers in code, and then
+      log log log. (Sing along...) We are using App.config to configure the
+      loggers. As such, we declare the log4net configuration section handler
+      as shown below </p><pre class="programlisting"><span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"log4net"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"log4net.Config.Log4NetConfigurationSectionHandler,log4net"</span><span style="color: #A31515"> /&gt;</span></pre><p>
+      The corresponding configuration section looks like this </p><pre class="programlisting">
+<span style="color: #A31515">&lt;log4net&gt;</span> 
+  <span style="color: #A31515">&lt;appender</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConsoleAppender"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"log4net.Appender.ConsoleAppender"</span><span style="color: #A31515">&gt;</span> 
+     <span style="color: #A31515">&lt;layout</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"log4net.Layout.PatternLayout"</span><span style="color: #A31515">&gt;</span> 
+        <span style="color: #A31515">&lt;conversionPattern</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"%date [%thread] %-5level %logger - %message%newline"</span><span style="color: #A31515"> /&gt;</span> 
+     <span style="color: #A31515">&lt;/layout&gt;</span> 
+  <span style="color: #A31515">&lt;/appender&gt;</span> 
+
+  <i style="color: #008000">&lt;!-- Set default logging level to DEBUG --&gt;</i>
+  <span style="color: #A31515">&lt;root&gt;</span> 
+     <span style="color: #A31515">&lt;level</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"DEBUG"</span><span style="color: #A31515"> /&gt;</span> 
+     <span style="color: #A31515">&lt;appender-ref</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"ConsoleAppender"</span><span style="color: #A31515"> /&gt;</span> 
+  <span style="color: #A31515">&lt;/root&gt;</span> 
+  
+  <i style="color: #008000">&lt;!-- Set logging for Spring to INFO.  Logger names in Spring correspond to the namespace --&gt;</i>
+  <span style="color: #A31515">&lt;logger</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Spring"</span><span style="color: #A31515">&gt;</span> 
+     <span style="color: #A31515">&lt;level</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"INFO"</span><span style="color: #A31515"> /&gt;</span> 
+  <span style="color: #A31515">&lt;/logger&gt;</span> 
+<span style="color: #A31515">&lt;/log4net&gt;</span> 
+      </pre><p> The appender is the output sink - in this case the
+      console. There are a large variety of output sinks such as files,
+      databases, etc. Refer to the log4net <a class="ulink" href="http://logging.apache.org/log4net/release/config-examples.html" target="_top">Config
+      Examples</a> for more information. Of interest as well is the
+      PatternLayout which defines exactly the information and format of what
+      gets logged. Usually this is the date, thread, logging level, logger
+      name, and then finally the log message. Refer to <a class="ulink" href="http://logging.apache.org/log4net/release/sdk/log4net.Layout.PatternLayout.html" target="_top">PatternLayout
+      Documentation</a> for information on how to customize.</p>
+
+      <p>The logging name is up to you to decide when you declare the
+      logger in code. In the case of this example we used the convention of
+      giving the logging name the name of the fully qualified class name.
+      </p><pre class="programlisting"><span style="color: #0000FF">private</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">readonly</span> ILog LOG = LogManager.GetLogger(<span style="color: #0000FF">typeof</span> (MovieApp));</pre><p>
+      Other conventions are to give the same logger name across multiple
+      classes that constitute a logical component or subsystem within the
+      application, for example a data access layer. One tip in selecting the
+      pattern layout is to shorten the logging name to only the last 2 parts
+      of the fully qualified name to avoid the message sneaking off to the
+      right too much (where can't see it) because of all the other information
+      logged that precedes it. Shortening the logging name is done using the
+      format %logger{2}.</p>
+
+      <p>To initialize the logging system add the following to the start of
+      your application </p><pre class="programlisting">XmlConfigurator.Configure();</pre><p>
+      Note that if you are using or reading information on version 1.2.0 this
+      used to be called DOMConfigurator.Configure();</p>
+
+      <p>The logger sections associate logger names with logging levels and
+      appenders. You have great flexibility to mix and match names, levels,
+      and appenders. In this case we have defined the root logger (using the
+      special tag root) to be at the debug level and have an console sink. We
+      can then specialize other loggers with different setting. In this case,
+      loggers that start with "Spring" in their name are logged at the info
+      level and also sent to the console. Setting the value of this logger
+      from INFO to DEBUG will show you detailed logging information as the
+      Spring container goes about its job of creating and configuring your
+      objects. Coincidentally, the example code itself uses Spring in the
+      logger name, so this logger also controls the output level you see from
+      running MainApp. Finally, you are ready to use the simple logger api to
+      log, i.e. </p><pre class="programlisting">LOG.Info(<span style="color: #000000">"Searching for movie..."</span>);</pre><p>
+      Logging exceptions is another common task, which can be done using the
+      error level </p><pre class="programlisting"><span style="color: #0000FF">try</span> {
+   <i style="color: #008000">//do work</i>
+{
+<span style="color: #0000FF">catch</span> (Exception e)
+{
+  LOG.Error(<span style="color: #000000">"Movie Finder is broken."</span>, e);
+}</pre>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="qs-appcontext-messagesource"></a>35.3.&nbsp;ApplicationContext and IMessageSource</h2></div></div></div>
+    
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9917"></a>35.3.1.&nbsp;Introduction</h3></div></div></div>
+      
+
+      <p>The example program <code class="literal">Spring.Examples.AppContext</code>
+      shows the use of the application context for text localization,
+      retrieving objects contained in ResourceSets, and applying the values of
+      embedded resource properties to an object. The values that are retrieved
+      are displayed in a window.</p>
+
+      <p>The application context configuration file contains an object
+      definition with the name <code class="literal">messageSource</code> of the type
+      <code class="literal">Spring.Context.Support.ResourceSetMessageSource</code> which
+      implements the interface <code class="literal">IMessageSource</code>. This
+      interface provides various methods for retrieving localized resources
+      such as text and images as described in <a class="xref" href="objects.html#context-functionality-messagesource" title="5.12.2.&nbsp;Using IMessageSource">Section&nbsp;5.12.2, &#8220;Using IMessageSource&#8221;</a>. When creating an
+      instance of IApplicationContext, an object with the name 'messageSource'
+      is searched for and used as the implementation for the context's
+      IMessageSource functionality.</p>
+
+      <p>The <code class="literal">ResourceSetMessageSource</code> takes a list of
+      ResourceManagers to define the collection of culture-specific resources.
+      The ResourceManager can be contructed in two ways. The first way is to
+      specifying a two part string consisting of the base resource name and
+      the containing assembly. In this example there is an embedded resource
+      file, Images.resx in the project. The second way is to use helper
+      factory class <code class="literal">ResourceManagerFactoryObject</code> that takes
+      a resource base name and assembly name as properties. This second way of
+      specifying a ResourceManager is useful if you would like direct access
+      to the ResourceManager in other parts of your application. In the
+      example program an embedded resource file, MyResource.resx and a Spanish
+      specific resource file, MyResources.es.resx are declared in this manner.
+      The corresponding XML fragment is shown below </p><pre class="programlisting">...
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"messageSource"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ResourceSetMessageSource, Spring.Core"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"resourceManagers"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;list&gt;</span>
+              <span style="color: #A31515">&lt;value&gt;</span>Spring.Examples.AppContext.Images, Spring.Examples.AppContext<span style="color: #A31515">&lt;/value&gt;</span>
+              <span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">object</span>=<span style="color: #0000FF">"myResourceManager"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/list&gt;</span>
+          <span style="color: #A31515">&lt;/property&gt;</span>
+        <span style="color: #A31515">&lt;/object&gt;</span>
+  
+        <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"myResourceManager"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Objects.Factory.Config.ResourceManagerFactoryObject, Spring.Core"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"baseName"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>Spring.Examples.AppContext.MyResource<span style="color: #A31515">&lt;/value&gt;</span>
+          <span style="color: #A31515">&lt;/property&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"assemblyName"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>Spring.Examples.AppContext<span style="color: #A31515">&lt;/value&gt;</span>
+          <span style="color: #A31515">&lt;/property&gt;</span>    
+        <span style="color: #A31515">&lt;/object&gt;</span>
+...</pre>
+
+      <p>The main application creates the application context and then
+      retrieves various resources via their key names. In the code all the key
+      names are declared as static fields in the class
+      <code class="literal">Keys.</code> The resource file Images.resx contains image
+      data under the key name <code class="literal">bubblechamber</code> (aka
+      Keys.BUBBLECHAMBER). The code <code class="literal">Image image =
+      (Image)ctx.GetResourceObject(Keys.BUBBLECHAMBER);</code> is used to
+      retrieve the image from the context. The resource files MyResource.resx
+      contains a text resource, <code class="literal">Hello {0} {1}</code> under the key
+      name <code class="literal">HelloMessage</code> (aka Keys.HELLO_MESSAGE) that can
+      be used for string text formatting purposes. The example code
+      </p><pre class="programlisting">
+<span style="color: #0000FF">string</span> msg = ctx.GetMessage(Keys.HELLO_MESSAGE,
+                            CultureInfo.CurrentCulture,
+                            <span style="color: #000000">"Mr."</span>, <span style="color: #000000">"Anderson"</span>);
+</pre><p> retrieves the text string and replaces the placeholders in
+      the string with the passed argument values resulting in the text, "Hello
+      Mr. Anderson". The current culture is used to select the resource file
+      MyResource.resx. If instead the Spanish culture is specified
+      </p><pre class="programlisting">
+CultureInfo spanishCultureInfo = <span style="color: #0000FF">new</span> CultureInfo(<span style="color: #000000">"es"</span>);
+<span style="color: #0000FF">string</span> esMsg = ctx.GetMessage(Keys.HELLO_MESSAGE,
+                              spanishCultureInfo,
+                              <span style="color: #000000">"Mr."</span>, <span style="color: #000000">"Anderson"</span>);
+</pre><p> Then the resource file MyResource.es.resx is used instead as
+      in standard .NET localization. Spring is simply delegating to .NET
+      ResourceManager to select the appropriate localized resource. The
+      Spanish version of the resource differs from the English one in that the
+      text under the key <code class="literal">HelloMessage</code> is <code class="literal">Hola {0}
+      {1}</code> resulting in the text <code class="literal">"Hola Mr.
+      Anderson"</code>.</p>
+
+      <p>As you can see in this example, the title "Mr." should not be used
+      in the case of the spanish localization. The title can be abstracted out
+      into a key of its own, called <code class="literal">FemaleGreeting</code> (aka
+      Keys.FEMALE_GREETING). The replacement value for the message argument
+      {0} can then be made localization aware by wrapping the key in a
+      convenience class DefaultMessageResolvable. The code </p><pre class="programlisting">
+<span style="color: #0000FF">string</span>[] codes = {Keys.FEMALE_GREETING};
+DefaultMessageResolvable dmr = <span style="color: #0000FF">new</span> DefaultMessageResolvable(codes, <span style="color: #0000FF">null</span>);
+
+msg = ctx.GetMessage(Keys.HELLO_MESSAGE,
+                     CultureInfo.CurrentCulture,
+                     dmr, <span style="color: #000000">"Anderson"</span>);
+</pre><p> will assign msg the value, Hello Mrs. Anderson, since the
+      value for the key <code class="literal">FemaleGreeting</code> in MyResource.resx
+      is 'Mrs.' Similarly, the code </p><pre class="programlisting">
+esMsg = ctx.GetMessage(Keys.HELLO_MESSAGE,
+                       spanishCultureInfo,
+                       dmr, <span style="color: #000000">"Anderson"</span>);
+</pre><p> will assign esMsg the value, Hola Senora Anderson, since the
+      value for the key <code class="literal">FemaleGreeting</code> in
+      MyResource.es.resx is 'Senora'.</p>
+
+      <p>Localization can also apply to objects and not just strings. The
+      .NET 1.1 framework provides the utility class ComponentResourceManager
+      that can apply multiple resource values to object properties in a
+      performant manner. (VS.NET 2005 makes heavy use of this class in the
+      code it generates for winform applications.) The example program has a
+      simple class, Person, that has an integer property Age and a string
+      property Name. The resource file, Person.resx contains key names that
+      follow the pattern, person.&lt;PropertyName&gt;. In this case it
+      contains person.Name and person.Age. The code to assign these resource
+      values to an object is shown below </p><pre class="programlisting">
+Person p = <span style="color: #0000FF">new</span> Person();
+ctx.ApplyResources(p, <span style="color: #000000">"person"</span>, CultureInfo.CurrentUICulture);
+</pre><p> While you could also use the Spring itself to set the
+      properties of these objects, the configuration of simple properties
+      using Spring will not take into account localization. It may be
+      convenient to combine approaches and use Spring to configure the
+      Person's object references while using IApplicationContext inside an
+      AfterPropertiesSet callback (see IInitializingObject) to set the
+      Person's culture aware properties.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9949"></a>35.4.&nbsp;ApplicationContext and IEventRegistry</h2></div></div></div>
+    
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9951"></a>35.4.1.&nbsp;Introduction</h3></div></div></div>
+      
+
+      <p>The example program
+      <code class="literal">Spring.Examples.EventRegistry</code> shows how to use the
+      application context to wire .NET events in a loosely coupled
+      manner.</p>
+
+      <p>Loosely coupled eventing is normally associated with Message
+      Oriented Middleware (MOM) where a daemon process acts as a message
+      broker between other independent processes. Processes communicate
+      indirectly with each other by sending messages though the message
+      broker. The process that initiates the communication is known as a
+      publisher and the process that receives the message is known as the
+      subscriber. By using an API specific to the middleware these processes
+      register themselves as either publishers or subscribers with the message
+      broker. The communication between the publisher and subscriber is
+      considered loosely coupled because neither the publisher nor subscriber
+      has a direct reference to each other, the messages broker acts as an
+      intermediary between the two processes. The
+      <code class="literal">IEventRegistry</code> is the analogue of the message broker
+      as applied to .NET events. Publishers are classes that invoke a .NET
+      event, subscribers are the classes that register interest in these
+      events, and the messages sent between them are instances of
+      System.EventArgs. The implementation of
+      <code class="literal">IEventRegistry</code> determines the exact semantics of the
+      notification style and coupling between subscribers and
+      publishers.</p>
+
+      <p>The <code class="literal">IApplicationContext</code> interface extends the
+      <code class="literal">IEventRegistry</code> interface and implementations of
+      <code class="literal">IApplicationContext</code> delegate the event registry
+      functionality to an instance of
+      <code class="literal">Spring.Objects.Events.Support.EventRegistry</code>.
+      <code class="literal">IEventRegistry</code> is a simple inteface with one publish
+      method and two subscribe methods. Refer to <a class="xref" href="objects.html#context-functionality-pubsub" title="5.12.4.&nbsp;Loosely coupled events">Section&nbsp;5.12.4, &#8220;Loosely coupled events&#8221;</a> for a reminder of their
+      signatures. The
+      <code class="literal">Spring.Objects.Events.Support.EventRegistry</code>
+      implementation is essentially a convenience to decouple the event wiring
+      process between publisher and subscribers. In this implementation, after
+      the event wiring is finished, publishers are directly coupled to the
+      subscribers via the standard .NET eventing mechanisms. Alternate
+      implementations could increase the decoupling further by having the
+      event registry subscribe to the events and be responsible for then
+      notifying the subscribers.</p>
+
+      <p>In this example the class <code class="literal">MyClientEventArgs</code> is
+      a subclass of <code class="literal">System.EventArgs</code> that defines a string
+      property EventMessage. The class <code class="literal">MyEventPublisher</code>
+      defines a public event with the delegate signature <code class="literal">void
+      SimpleClientEvent( object sender, MyClientEventArgs args )</code> The
+      method <code class="literal">void ClientMethodThatTriggersEvent1()</code> fires
+      this event. On the subscribing side, the class
+      <code class="literal">MyEventSubscriber</code> contains a method,
+      <code class="literal">HandleClientEvents</code> that matches the delegate
+      signature and has a boolean property which is set to true if this method
+      is called.</p>
+
+      <p>The publisher and subscriber classes are defined in an application
+      context configuration file but that is not required in order to
+      participate with the event registry. The main program,
+      <code class="literal">EventRegistryApp</code> creates the application context and
+      asks it for an instance of <code class="literal">MyEventPublisher</code> The
+      publisher is registered with the event registry via the call,
+      <code class="literal">ctx.PublishEvents( publisher )</code>. The event registry
+      keeps a reference to this publisher for later use to register any
+      subscribers that match its event signature. Two subscribers are then
+      created and one of them is wired to the publisher by calling the method
+      <code class="literal">ctx.Subscribe( subscriber, typeof(MyEventPublisher) )</code>
+      Specifying the type indicates that the subscriber should be registered
+      only to events from objects of the type
+      <code class="literal">MyEventPublisher</code>. This acts as a simple filtering
+      mechanism on the subscriber.</p>
+
+      <p>The publisher then fires the event using normal .NET eventing
+      semantics and the subscriber is called. The subscriber prints a message
+      to the console and sets a state variable to indicate it has been called.
+      The program then simply prints the state variable of the two
+      subscribers, showing that only one of them (the one that registered with
+      the event registry) was called.</p>
+    </div>
+  </div>
+
+    <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9981"></a>35.5.&nbsp;Pooling example</h2></div></div></div>
+    
+    <p>
+    The idea is to build an executor backed by a pool of 
+    <code class="literal">QueuedExecutor</code>: this will show how Spring.NET 
+    provides some useful low-level/high-quality reusable threading and 
+    pooling abstractions.
+    This executor will provide parallel executions (in our case 
+    <code class="literal">grep</code>-like file scans).  <span class="emphasis"><em>Note: This example
+    is not in the 1.0.0 release to its use of classes in the Spring.Threading
+    namespace scheduled for release in Spring 1.1. To access ths example 
+    please get the code from CVS <a class="ulink" href="http://opensource.atlassian.com/confluence/spring/display/NET/Project+Structure" target="_top">(instructions)</a> or from the download section of the 
+    Spring.NET website that contains an .zip with the full CVS tree.</em></span>
+    </p>
+    <p>
+    Some information on <code class="literal">QueuedExecutor</code> is helpful to 
+    better understand the implementation and to possibly disagree with it.
+    Keep in mind that the point is to show how to develop your own 
+    object-pool.
+    </p>
+    <p>
+    A <code class="literal">QueuedExecutor</code> is an executor where 
+    <code class="literal">IRunnable</code> instances are run serialy by a worker 
+    thread. When you <code class="literal">Execute</code> with a 
+    <code class="literal">QueuedExecutor</code>, your request is queued; at some 
+    point in the future your request will be taken and executed by the 
+    worker thread: in case of error the thread is terminated. 
+    However
+    this executor recreates its worker thread as needed.
+    </p>
+    <p>Last but not least, this executor can be shut down in 
+    a few different ways (please refer to the Spring.NET SDK documentation).    
+    Given its simplicity, it is very powerful.
+    </p>
+    <p>
+    The example project <code class="literal">Spring.Examples.Pool</code> provides 
+    an implementation of a pooled executor, backed by n instances of 
+    <code class="literal">Spring.Threading.QueuedExecutor</code>: please ignore 
+    the fact that <code class="literal">Spring.Threading</code> includes already a
+    very different implementation of a <code class="literal">PooledExecutor</code>:
+    here we wanto to use a pool of <code class="literal">QueuedExecutor</code>s.
+    </p>
+    <p>
+    This executor will be used to implement a parallel 
+    recursive <code class="literal">grep</code>-like console executable.
+    </p>
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e10004"></a>35.5.1.&nbsp;Implementing <code class="literal">Spring.Pool.IPoolableObjectFactory</code></h3></div></div></div>
+    
+    <p>
+    In order to use the <code class="literal">SimplePool</code> implementation,
+    the first thing to do is to implement the <code class="literal">IPoolableObjectFactory</code>
+    interface. This interface is intended to be implemented by objects 
+    that can create the type of objects that should be pooled.
+    The <code class="literal">SimplePool</code>
+    will call the lifecycle methods on <code class="literal">IPoolableObjectFactory</code> interface
+    (<code class="literal">MakeObject, ActivateObject, ValidateObject, PassivateObject, and DestroyObject</code>)
+    as appropriate when the pool is created, objects are borrowed and returned to the pool, and when
+    the pool is destroyed.
+    </p>    
+    <p>
+    In our case, as already said, we want to to implement a pool 
+    of <code class="literal">QueuedExecutor</code>. Ok, here the declaration:   
+    </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> QueuedExecutorPoolableFactory : IPoolableObjectFactory
+{</pre><p>
+    the first task a factory should do is to create objects:
+    </p><pre class="programlisting"><span style="color: #0000FF">object</span> IPoolableObjectFactory.MakeObject()
+{            
+    <i style="color: #008000">// to actually make this work as a pooled executor</i>
+    <i style="color: #008000">// use a bounded queue of capacity 1.</i>
+    <i style="color: #008000">// If we don't do this one of the queued executors</i>
+    <i style="color: #008000">// will accept all the queued IRunnables as, by default</i>
+    <i style="color: #008000">// its queue is unbounded, and the PooledExecutor</i>
+    <i style="color: #008000">// will happen to always run only one thread ...</i>
+    <span style="color: #0000FF">return</span> <span style="color: #0000FF">new</span> QueuedExecutor(<span style="color: #0000FF">new</span> BoundedBuffer(1));
+}</pre><p>
+    and should be also able to destroy them:
+    </p><pre class="programlisting"><span style="color: #0000FF">void</span> IPoolableObjectFactory.DestroyObject(<span style="color: #0000FF">object</span> o)
+{
+    <i style="color: #008000">// ah, self documenting code:</i>
+    <i style="color: #008000">// Here you can see that we decided to let the </i>
+    <i style="color: #008000">// executor process all the currently queued tasks.</i>
+    QueuedExecutor executor = o <span style="color: #0000FF">as</span> QueuedExecutor;
+    executor.ShutdownAfterProcessingCurrentlyQueuedTasks();
+}</pre><p>
+    </p>
+    <p>
+    When an object is taken from the pool, to satisfy a client request,
+    may be the object should be activated. We can possibly implement the
+    activation like this:
+    </p><pre class="programlisting"><span style="color: #0000FF">void</span> IPoolableObjectFactory.ActivateObject(<span style="color: #0000FF">object</span> o)
+{
+    QueuedExecutor executor = o <span style="color: #0000FF">as</span> QueuedExecutor;
+    executor.Restart();
+}</pre><p>
+    even if a <code class="literal">QueuedExecutor</code> restarts itself as 
+    needed and so a valid implementation could leave this method empty.
+    </p>
+    <p>
+    After activation, and before the pooled object can be succesfully 
+    returned to the client, it is validated (should the object be 
+    invalid, it will be discarded: this can lead to an empty unusable
+    pool
+    <sup>[<a name="d4e10022" href="#ftn.d4e10022" class="footnote">5</a>]</sup>).
+    Here we check that the worker thread exists:
+    </p><pre class="programlisting"><span style="color: #0000FF">bool</span> IPoolableObjectFactory.ValidateObject(<span style="color: #0000FF">object</span> o)
+{
+    QueuedExecutor executor = o <span style="color: #0000FF">as</span> QueuedExecutor;
+    <span style="color: #0000FF">return</span> executor.Thread != <span style="color: #0000FF">null</span>;
+}</pre><p>
+    </p>
+    <p>
+    Passivation, symmetrical to activation, is the process a pooled 
+    object is subject to when the object is returned to the pool. In our 
+    case we simply do nothing:
+    </p><pre class="programlisting"><span style="color: #0000FF">void</span> IPoolableObjectFactory.PassivateObject(<span style="color: #0000FF">object</span> o)
+{
+}</pre><p>
+    </p>
+    <p>
+    At this point, creating a pool is simply a matter of creating an 
+    <code class="literal">SimplePool</code> as in:
+    </p><pre class="programlisting">pool = <span style="color: #0000FF">new</span> SimplePool(<span style="color: #0000FF">new</span> QueuedExecutorPoolableFactory(), size);</pre><p>
+    </p>
+    </div>
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e10030"></a>35.5.2.&nbsp;Being smart using pooled objects</h3></div></div></div>
+    
+    <p>
+    Taking advantage of the <code class="literal">using</code> keyword seems
+    to be very important in these <code class="literal">c#</code> days, so we 
+    implement a very simple helper (<code class="literal">PooledObjectHolder</code>)
+    that can allow us to do things like:
+    </p><pre class="programlisting"><span style="color: #0000FF">using</span> (PooledObjectHolder holder = PooledObjectHolder.UseFrom(pool))
+{
+    QueuedExecutor executor = (QueuedExecutor) holder.Pooled;
+    executor.Execute(runnable);
+}</pre><p>
+    without worrying about obtaining and returning an object from/to the 
+    pool.
+    </p>
+    <p>
+    Here is the implementation:
+    </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> PooledObjectHolder : IDisposable
+{
+    IObjectPool pool;
+    <span style="color: #0000FF">object</span> pooled;
+
+    <b>/// &lt;summary&gt;</b>
+    <b>/// Builds a new &lt;see cref="PooledObjectHolder"/&gt;</b>
+    <b>/// trying to borrow an object form it</b>
+    <b>/// &lt;/summary&gt;</b>
+    <b>/// &lt;param name="pool"&gt;&lt;/param&gt;</b>
+    <span style="color: #0000FF">private</span> PooledObjectHolder(IObjectPool pool)
+    {
+        <span style="color: #0000FF">this</span>.pool = pool;
+        <span style="color: #0000FF">this</span>.pooled = pool.BorrowObject();
+    }
+
+    <b>/// &lt;summary&gt;</b>
+    <b>/// Allow to access the borrowed pooled object</b>
+    <b>/// &lt;/summary&gt;</b>
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Pooled
+    {
+        <span style="color: #0000FF">get</span>
+        {
+            <span style="color: #0000FF">return</span> pooled;
+        }
+    }
+
+    <b>/// &lt;summary&gt;</b>
+    <b>/// Returns the borrowed object to the pool</b>
+    <b>/// &lt;/summary&gt;</b>
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Dispose()
+    {
+        pool.ReturnObject(pooled);
+    }
+
+    <b>/// &lt;summary&gt;</b>
+    <b>/// Creates a new &lt;see cref="PooledObjectHolder"/&gt; for the </b>
+    <b>/// given pool.</b>
+    <b>/// &lt;/summary&gt;</b>
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> PooledObjectHolder UseFrom(IObjectPool pool)
+    {
+        <span style="color: #0000FF">return</span> <span style="color: #0000FF">new</span> PooledObjectHolder(pool);
+    }
+}</pre><p>
+    </p>
+    <p>
+    Please don't forget to destroy all the pooled istances once you have 
+    finished! How? Well using something like this in 
+    <code class="literal">PooledQueuedExecutor</code>:
+    </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Stop ()
+{
+    <i style="color: #008000">// waits for all the grep-task to have been queued ...</i>
+    <span style="color: #0000FF">foreach</span> (ISync sync <span style="color: #0000FF">in</span> syncs)
+    {
+        sync.Acquire();
+    }
+    pool.Close();
+}</pre><p>
+    </p>
+    </div>
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e10042"></a>35.5.3.&nbsp;Using the executor to do a parallel <code class="literal">grep</code></h3></div></div></div>
+    
+    <p>
+    The use of the just built executor is quite straigtforward but a 
+    little tricky if we want to really exploit the pool.
+    </p><pre class="programlisting"><span style="color: #0000FF">private</span> PooledQueuedExecutor executor;
+
+<span style="color: #0000FF">public</span> ParallelGrep(<span style="color: #0000FF">int</span> size)
+{
+    executor = <span style="color: #0000FF">new</span> PooledQueuedExecutor(size);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Recurse(<span style="color: #0000FF">string</span> startPath, <span style="color: #0000FF">string</span> filePattern, <span style="color: #0000FF">string</span> regexPattern)
+{            
+    <span style="color: #0000FF">foreach</span> (<span style="color: #0000FF">string</span> file <span style="color: #0000FF">in</span> Directory.GetFiles(startPath, filePattern))
+    {
+        executor.Execute(<span style="color: #0000FF">new</span> Grep(file, regexPattern));
+    }
+    <span style="color: #0000FF">foreach</span> (<span style="color: #0000FF">string</span> directory <span style="color: #0000FF">in</span> Directory.GetDirectories(startPath))
+    {
+        Recurse(directory, filePattern, regexPattern);
+    }
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Stop()
+{
+    executor.Stop();
+}</pre><p>
+    </p>
+    <p>
+      </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">static</span> <span style="color: #0000FF">void</span> Main(<span style="color: #0000FF">string</span>[] args)
+{
+    <span style="color: #0000FF">if</span> (args.Length &lt; 3)
+    {
+        Console.Out.WriteLine(<span style="color: #000000">"usage: {0} regex directory file-pattern [pool-size]"</span>, Assembly.GetEntryAssembly().CodeBase);
+        Environment.Exit(1);
+    }
+
+    <span style="color: #0000FF">string</span> regexPattern = args[0];
+    <span style="color: #0000FF">string</span> startPath = args[1];
+    <span style="color: #0000FF">string</span> filePattern = args[2];
+    <span style="color: #0000FF">int</span> size = 10;
+    <span style="color: #0000FF">try</span>
+    {
+        size = Int32.Parse(args[3]);
+    }
+    <span style="color: #0000FF">catch</span>
+    {
+    }
+    Console.Out.WriteLine (<span style="color: #000000">"pool size {0}"</span>, size);
+
+    ParallelGrep grep = <span style="color: #0000FF">new</span> ParallelGrep(size);
+    grep.Recurse(startPath, filePattern, regexPattern);
+    grep.Stop();
+}</pre><p>
+    </p>
+    </div>
+  </div>
+
+
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e10049"></a>35.6.&nbsp;AOP</h2></div></div></div>
+    
+
+    <p>Refer to <a class="xref" href="aop-quickstart.html" title="Chapter&nbsp;36.&nbsp;AOP QuickStart">Chapter&nbsp;36, <i>AOP QuickStart</i></a>.</p>
+  </div>
+<div class="footnotes"><br><hr width="100" align="left"><div class="footnote">
+    <p><sup>[<a name="ftn.d4e10022" href="#d4e10022" class="para">5</a>] </sup>You may think that we can provide a smarter 
+    implementation and you are probably right. However, it is not so 
+    difficult to create a new pool in case the old one became unusable.
+    It could not be your preferred choice but surely it leverages 
+    simplicity and object immutability
+    </p>
+    </div></div></div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="spring-quickstarts.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="aop-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;VII.&nbsp;Quickstart applications&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;36.&nbsp;AOP QuickStart</td></tr></table></div></body></html>

@@ -1,0 +1,526 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Appendix&nbsp;D.&nbsp;Spring.NET's spring-objects.xsd</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-appendices.html" title="Part&nbsp;IX.&nbsp;Appendices"><link rel="prev" href="extensible-xml.html" title="Appendix&nbsp;C.&nbsp;Extensible XML authoring"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="appendix" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="springobjectsxsd"></a>Appendix&nbsp;D.&nbsp;Spring.NET's <code class="literal">spring-objects.xsd</code></h2></div></div></div>
+  
+  <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<span style="color: #A31515">&lt;xs:schema</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> <span style="color: #FF0000">xmlns:xs</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema"</span> <span style="color: #FF0000">xmlns:vs</span>=<span style="color: #0000FF">"http://schemas.microsoft.com/Visual-Studio-Intellisense"</span> <span style="color: #FF0000">targetNamespace</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> <span style="color: #FF0000">elementFormDefault</span>=<span style="color: #0000FF">"qualified"</span> <span style="color: #FF0000">attributeFormDefault</span>=<span style="color: #0000FF">"unqualified"</span> <span style="color: #FF0000">vs:friendlyname</span>=<span style="color: #0000FF">"Spring.NET Configuration"</span> <span style="color: #FF0000">vs:ishtmlschema</span>=<span style="color: #0000FF">"false"</span> <span style="color: #FF0000">vs:iscasesensitive</span>=<span style="color: #0000FF">"true"</span> <span style="color: #FF0000">vs:requireattributequotes</span>=<span style="color: #0000FF">"true"</span> <span style="color: #FF0000">vs:defaultnamespacequalifier</span>=<span style="color: #0000FF">""</span> <span style="color: #FF0000">vs:defaultnsprefix</span>=<span style="color: #0000FF">""</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>
+            Spring Objects XML Schema Definition
+            Based on Spring Beans DTD, authored by Rod Johnson &amp;amp; Juergen Hoeller
+            
+            Author: Griffin Caprio
+            
+            This defines a simple and consistent way of creating a namespace
+            of managed objects configured by a Spring XmlObjectFactory.
+            This document type is used by most Spring functionality, including
+            web application contexts, which are based on object factories.
+            
+            Each object element in this document defines an object.
+            Typically the object type (System.Type is specified, along with plain vanilla
+            object properties.
+            
+            Object instances can be "singletons" (shared instances) or "prototypes"
+            (independent instances).
+            
+            References among objects are supported, i.e. setting an object property
+            to refer to another object in the same factory or an ancestor factory.
+            
+            As alternative to object references, "inner object definitions" can be used.
+            Singleton flags and names of such "inner object" are always ignored:
+            Inner object are anonymous prototypes.
+            
+            There is also support for lists, dictionaries, and sets.
+        <span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>Defines a base type for any required string.  Defines a string with a minimum length of 0<span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:simpleType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"nonNullString"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;xs:minLength</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"0"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+    <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>
+            Element containing informative text describing the purpose of the enclosing
+            element. Always optional.
+            Used primarily for user documentation of XML object definition documents.
+        <span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:simpleType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"description"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"nonNullString"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"valueObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:simpleContent&gt;</span>
+            <span style="color: #A31515">&lt;xs:extension</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/xs:extension&gt;</span>
+        <span style="color: #A31515">&lt;/xs:simpleContent&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"expression"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"property"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"property"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"2"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+      <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <i style="color: #008000">&lt;!--
+         Defines a reference to another object in this factory or an external
+         factory (parent or included factory).
+    --&gt;</i>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objectReference"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"local"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:IDREF"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parent"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             References must specify a name of the target object.
+             The "object" attribute can reference any name from any object in the context,
+             to be checked at runtime.
+             Local references, using the "local" attribute, have to use object ids;
+             they can be checked by this DTD, thus should be preferred for references
+             within the same object factory XML file.
+        --&gt;</i>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <i style="color: #008000">&lt;!-- Defines a reference to another object or a type. --&gt;</i>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objectOrClassReference"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"local"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:IDREF"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objectList"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;xs:choice&gt;</span>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"vanillaObject"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Defines a reference to another object in this factory or an external
+                     factory (parent or included factory).
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"objectReference"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Defines a string property value, which must also be the id of another
+                     object in this factory or an external factory (parent or included factory).
+                     While a regular 'value' element could instead be used for the same effect,
+                     using idref in this case allows validation of local object ids by the xml
+                     parser, and name completion by helper tools.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"idref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"objectReference"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     A objectList can contain multiple inner object, ref, collection, or value elements.
+                     Lists are untyped, pending generics support, although references will be
+                     strongly typed.
+                     A objectList can also map to an array type. The necessary conversion
+                     is automatically performed by AbstractObjectFactory.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"list"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+                        <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"element-type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+                <span style="color: #A31515">&lt;/xs:element&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     A set can contain multiple inner object, ref, collection, or value elements.
+                     Sets are untyped, pending generics support, although references will be
+                     strongly typed.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"set"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+                        <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+                <span style="color: #A31515">&lt;/xs:element&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     A Spring map is a mapping from a string key to object (a .NET IDictionary).
+                     Maps may be empty.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"dictionary"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"objectMap"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Name-values elements differ from map elements in that values must be strings.
+                     Name-values may be empty.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name-values"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"objectNameValues"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Contains a string representation of a property value.
+                     The property may be a string, or may be converted to the
+                     required type using the System.ComponentModel.TypeConverter
+                     machinery. This makes it possible for application developers
+                     to write custom TypeConverter implementations that can
+                     convert strings to objects.
+                     
+                     Note that this is recommended for simple objects only.
+                     Configure more complex objects by setting properties to references
+                     to other objects.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"valueObject"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Contains a string representation of an expression.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"expression"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"expression"</span><span style="color: #A31515">/&gt;</span>
+                <i style="color: #008000">&lt;!--
+                     Denotes a .NET null value. Necessary because an empty "value" tag
+                     will resolve to an empty String, which will not be resolved to a
+                     null value unless a special TypeConverter does so.
+                --&gt;</i>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"null"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/xs:choice&gt;</span>
+        <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+    <span style="color: #A31515">&lt;/xs:group&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objectNameValues"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+            <i style="color: #008000">&lt;!--
+                 The "value" attribute is the string value of the property. The "key"
+                 attribute is the name of the property.
+            --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"add"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">mixed</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"key"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"delimiters"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+            <span style="color: #A31515">&lt;/xs:element&gt;</span>
+        <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"importElement"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"resource"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"aliasElement"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"alias"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objectMap"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"mapEntryElement"</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"entry"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"key-type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value-type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"mapEntryElement"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"mapKeyElement"</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"key"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"key"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"expression"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"key-ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value-ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"mapKeyElement"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>Defines constructor argument.<span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"lookupMethod"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"constructorArgument"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+              The constructor-arg tag can have an optional named parameter attribute,
+              to specify a named parameter in the constructor argument list.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+              The constructor-arg tag can have an optional index attribute,
+              to specify the exact index in the constructor argument list. Only needed
+              to avoid ambiguities, e.g. in case of 2 arguments of the same type.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"index"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+       <i style="color: #008000">&lt;!--
+              The constructor-arg tag can have an optional type attribute,
+              to specify the exact type of the constructor argument. Only needed
+              to avoid ambiguities, e.g. in case of 2 single argument constructors
+              that can both be converted from a String.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"expression"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>Defines property.<span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"property"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:group</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"objectList"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!-- The property name attribute is the name of the objects property. --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"value"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"expression"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>Defines a single named object.<span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:complexType</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"vanillaObject"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+            <i style="color: #008000">&lt;!--
+                 Object definitions can specify zero or more constructor arguments.
+                 They correspond to either a specific index of the constructor argument list
+                 or are supposed to be matched generically by type.
+                 This is an alternative to "autowire constructor".
+            --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"constructor-arg"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"constructorArgument"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+            <i style="color: #008000">&lt;!--
+                 Object definitions can have zero or more properties.
+                 Spring supports primitives, references to other objects in the same or
+                 related factories, lists, dictionaries and properties.
+            --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"property"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"property"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+            <i style="color: #008000">&lt;!--
+                 Object definitions can specify zero or more lookup-methods.
+            --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"lookup-method"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"lookupMethod"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+            <i style="color: #008000">&lt;!-- Object definitions can have zero or more replaced-methods. --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"replaced-method"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+                    <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+                        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"arg-type"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">&gt;</span>
+                             <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+                                  <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"match"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+                             <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+                        <span style="color: #A31515">&lt;/xs:element&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"replacer"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+            <span style="color: #A31515">&lt;/xs:element&gt;</span>
+            <i style="color: #008000">&lt;!-- Object definitions can have zero or more subscriptions. --&gt;</i>
+            <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"listener"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+                    <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+                        <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ref"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"objectOrClassReference"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+                    <i style="color: #008000">&lt;!-- The event(s) the object is interested in. --&gt;</i>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"event"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+                    <i style="color: #008000">&lt;!-- The name or name pattern of the method that will handle the event(s). --&gt;</i>
+                    <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"method"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+            <span style="color: #A31515">&lt;/xs:element&gt;</span>
+        <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Objects can be identified by an id, to enable reference checking.
+             There are constraints on a valid XML id: if you want to reference your object
+             in .NET code using a name that's illegal as an XML id, use the optional
+             "name" attribute. If neither given, the object type name is used as id.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"id"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:ID"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional. Can be used to create one or more aliases illegal in an id.
+             Multiple aliases can be separated by any number of spaces or commas.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Each object definition must specify the full, assembly qualified of the type,
+             or the name of the parent object from which the type can be worked out.
+             
+             Note that a child object definition that references a parent will just
+             add respectively override property values and be able to change the
+             singleton status. It will inherit all of the parent's other parameters
+             like lazy initialization or autowire settings.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"type"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parent"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Is this object "abstract", i.e. not meant to be instantiated itself but
+             rather just serving as parent for concrete child object definitions?
+             Default is false. Specify true to tell the object factory to not try to
+             instantiate that particular object in any case.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"abstract"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:boolean"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Is this object a "singleton" (one shared instance, which will
+             be returned by all calls to GetObject() with the id),
+             or a "prototype" (independent instance resulting from each call to
+             getObject(). Default is singleton.
+             
+             Singletons are most commonly used, and are ideal for multi-threaded
+             service objects.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"singleton"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:boolean"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional attribute controlling the scope of singleton instances. It is
+             only applicable to ASP.Net web applications and it has no effect on prototype
+             objects. Applications other than ASP.Net web applications simply ignore this attribute.
+             It has 3 possible values:
+             1. "application"
+             Default object scope. Objects defined with application scope will behave like
+             traditional singleton objects. Same instance will be returned from every call
+             to IApplicationContext.GetObject()
+             
+             2. "session"
+             Objects with this scope will be stored within user's HTTP session. Session scope
+             is typically used for objects such as shopping cart, user profile, etc.
+             
+             3. "request"
+             Object with this scope will be initialized for each HTTP request, but unlike with prototype
+             objects, same instance will be returned from all calls to IApplicationContext.GetObject()
+             within the same HTTP request. For example, if one ASP page forwards request to another using
+             Server.Transfer method, they can easily share the state by configuring dependency to the same
+             request-scoped object.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"scope"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"application"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"application"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"session"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"request"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+            <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+        <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Is this object to be lazily initialized?
+             If false, it will get instantiated on startup by object factories
+             that perform eager initialization of singletons.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"lazy-init"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+            <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+        <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional attribute controlling whether to "autowire" object properties.
+             This is an automagical process in which object references don't need to be coded
+             explicitly in the XML object definition file, but Spring works out dependencies.
+             
+             There are 5 modes:
+             
+             1. "no"
+             The traditional Spring default. No automagical wiring. Object references
+             must be defined in the XML file via the &lt;ref&gt; element. We recommend this
+             in most cases as it makes documentation more explicit.
+             
+             2. "byName"
+             Autowiring by property name. If a object of class Cat exposes a dog property,
+             Spring will try to set this to the value of the object "dog" in the current factory.
+             
+             3. "byType"
+             Autowiring if there is exactly one object of the property type in the object factory.
+             If there is more than one, a fatal error is raised, and you can't use byType
+             autowiring for that object. If there is none, nothing special happens - use
+             dependency-check="objects" to raise an error in that case.
+             
+             4. "constructor"
+             Analogous to "byType" for constructor arguments. If there isn't exactly one object
+             of the constructor argument type in the object factory, a fatal error is raised.
+             
+             5. "autodetect"
+             Chooses "constructor" or "byType" through introspection of the object class.
+             If a default constructor is found, "byType" gets applied.
+             
+             The latter two are similar to PicoContainer and make object factories simple to
+             configure for small namespaces, but doesn't work as well as standard Spring
+             behaviour for bigger applications.
+             
+             Note that explicit dependencies, i.e. "property" and "constructor-arg" elements,
+             always override autowiring. Autowire behaviour can be combined with dependency
+             checking, which will be performed after all autowiring has been completed.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"autowire"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"no"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"byName"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"byType"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"constructor"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"autodetect"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+            <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+        <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional attribute controlling whether to check whether all this
+             objects dependencies, expressed in its properties, are satisfied.
+             Default is no dependency checking.
+             
+             "simple" type dependency checking includes primitives and String
+             "object" includes collaborators (other objects in the factory)
+             "all" includes both types of dependency checking
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"dependency-check"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"none"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"objects"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"simple"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"all"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"default"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+            <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+        <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+        <i style="color: #008000">&lt;!--
+             The names of the objects that this object depends on being initialized.
+             The object factory will guarantee that these objects get initialized before.
+             
+             Note that dependencies are normally expressed through object properties or
+             constructor arguments. This property should just be necessary for other kinds
+             of dependencies like statics (*ugh*) or database preparation on startup.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"depends-on"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional attribute for the name of the custom initialization method
+             to invoke after setting object properties. The method must have no arguments,
+             but may throw any exception.
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"init-method"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <i style="color: #008000">&lt;!--
+             Optional attribute for the name of the custom destroy method to invoke
+             on object factory shutdown. The method must have no arguments,
+             but may throw any exception. Note: Only invoked on singleton objects!
+        --&gt;</i>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"destroy-method"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"factory-method"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"factory-object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"nonNullString"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    
+    <span style="color: #A31515">&lt;xs:annotation&gt;</span>
+        <span style="color: #A31515">&lt;xs:documentation&gt;</span>The document root.  At least one object definition is required.<span style="color: #A31515">&lt;/xs:documentation&gt;</span>
+    <span style="color: #A31515">&lt;/xs:annotation&gt;</span>
+    <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;xs:complexType&gt;</span>
+            <span style="color: #A31515">&lt;xs:sequence&gt;</span>
+                <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"description"</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"1"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;xs:choice</span> <span style="color: #FF0000">minOccurs</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">maxOccurs</span>=<span style="color: #0000FF">"unbounded"</span><span style="color: #A31515">&gt;</span>
+                    <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"import"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"importElement"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"alias"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"aliasElement"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"object"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"vanillaObject"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;xs:any</span> <span style="color: #FF0000">namespace</span>=<span style="color: #0000FF">"##other"</span> <span style="color: #FF0000">processContents</span>=<span style="color: #0000FF">"strict"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;/xs:choice&gt;</span>
+            <span style="color: #A31515">&lt;/xs:sequence&gt;</span>
+            <i style="color: #008000">&lt;!--
+                 Default values for all object definitions. Can be overridden at
+                 the "object" level. See those attribute definitions for details.
+            --&gt;</i>
+            <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"default-lazy-init"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xs:boolean"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"default-dependency-check"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"none"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                    <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"none"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"objects"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"simple"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"all"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+                <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+            <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+            <span style="color: #A31515">&lt;xs:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"default-autowire"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span> <span style="color: #FF0000">default</span>=<span style="color: #0000FF">"no"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;xs:simpleType&gt;</span>
+                    <span style="color: #A31515">&lt;xs:restriction</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"xs:string"</span><span style="color: #A31515">&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"no"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"byName"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"byType"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"constructor"</span><span style="color: #A31515">/&gt;</span>
+                        <span style="color: #A31515">&lt;xs:enumeration</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"autodetect"</span><span style="color: #A31515">/&gt;</span>
+                    <span style="color: #A31515">&lt;/xs:restriction&gt;</span>
+                <span style="color: #A31515">&lt;/xs:simpleType&gt;</span>
+            <span style="color: #A31515">&lt;/xs:attribute&gt;</span>
+        <span style="color: #A31515">&lt;/xs:complexType&gt;</span>
+    <span style="color: #A31515">&lt;/xs:element&gt;</span>
+    
+<span style="color: #A31515">&lt;/xs:schema&gt;</span>
+</pre>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="extensible-xml.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">Appendix&nbsp;C.&nbsp;Extensible XML authoring&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div></body></html>

@@ -1,0 +1,420 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Appendix&nbsp;B.&nbsp;XML Schema-based configuration</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-appendices.html" title="Part&nbsp;IX.&nbsp;Appendices"><link rel="prev" href="classic-spring.html" title="Appendix&nbsp;A.&nbsp;Classic Spring Usage"><link rel="next" href="extensible-xml.html" title="Appendix&nbsp;C.&nbsp;Extensible XML authoring"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="appendix" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="xsd-config"></a>Appendix&nbsp;B.&nbsp;XML Schema-based configuration</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xsd-config-introduction"></a>B.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>This appendix details the use of XML Schema-based configuration in
+    Spring.</p>
+
+    <p>The <span class="emphasis"><em>'classic' </em></span>
+    <code class="literal">&lt;object/&gt;</code>-based schema is good, but its
+    generic-nature comes with a price in terms of configuration overhead.
+    Creating a custom XML Schema-based configuration makes Spring XML
+    configuration files substantially clearer to read. In addition, it allows
+    you to express the intent of an object definition.</p>
+
+    <p>The key thing to remember is that creating custom schema tags work
+    best for infrastructure or integration objects: for example, AOP,
+    collections, transactions, integration with 3rd-party frameworks, etc.,
+    while the existing object tags are best suited to application-specific
+    objects, such as DAOs, service layer objects, etc.</p>
+
+    <p>Please note the fact that the XML configuration mechanism is totally
+    customisable and extensible. This means you can write your own
+    domain-specific configuration tags that would better represent your
+    application's domain; the process involved in doing so is covered in the
+    appendix entitled <a class="xref" href="extensible-xml.html" title="Appendix&nbsp;C.&nbsp;Extensible XML authoring">Appendix&nbsp;C, <i>Extensible XML authoring</i></a>.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xsd-config-body"></a>B.2.&nbsp;XML Schema-based configuration</h2></div></div></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-referencing"></a>B.2.1.&nbsp;Referencing the schemas</h3></div></div></div>
+      
+
+      <p>As a reminder, you reference the standard objects schema as shown
+      below</p>
+
+      <pre class="programlisting">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span style="color: #FF0000">xsi:schemaLocation</span>=<span style="color: #0000FF">"http://www.springframework.net http://www.springframework.net/schema/objects/spring-objects-1.1.xsd"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation"> &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>The <code class="literal">'xsi:schemaLocation'</code> fragment is not
+        actually required, but can be included to reference a local copy of a
+        schema (which can be useful during development) and assumes the XML
+        editor will look to that location and load the schema.</p>
+      </td></tr></table></div>
+
+      <p>The above Spring XML configuration fragment is boilerplate that
+      you can copy and paste (!) and then plug
+      <code class="literal">&lt;object/&gt;</code> definitions into like you have always
+      done. However, the entire point of using custom schema tags is to make
+      configuration easier.</p>
+
+      <p>The rest of this chapter gives an overview of custom XML Schema
+      based configuration that are included with the release.</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-tx"></a>B.2.2.&nbsp;The <code class="literal">tx</code> (transaction) schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">tx</code> tags deal with configuring objects in
+      Spring's comprehensive support for transactions. These tags are covered
+      in the chapter entitled <a class="xref" href="transaction.html" title="Chapter&nbsp;17.&nbsp;Transaction management">Chapter&nbsp;17, <i>Transaction management</i></a>.</p>
+
+      <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/admons/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top">
+        <p>You are strongly encouraged to look at the
+        <code class="filename">'spring-tx-1.1.xsd'</code> file that ships with the
+        Spring distribution. This file is (of course), the XML Schema for
+        Spring's transaction configuration, and covers all of the various tags
+        in the <code class="literal">tx</code> namespace, including attribute defaults
+        and suchlike. This file is documented inline, and thus the information
+        is not repeated here in the interests of adhering to the DRY (Don't
+        Repeat Yourself) principle.</p>
+      </td></tr></table></div>
+
+      <p>In the interest of completeness, to use the tags in the
+      <code class="literal">tx</code> schema, you need to have the following preamble at
+      the top of your Spring XML configuration file; the emboldened text in
+      the following snippet references the correct schema so that the tags in
+      the <code class="literal">tx</code> namespace are available to you.</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+      <span style="color: #FF0000">xmlns:aop</span>=<span style="color: #0000FF">"http://www.springframework.net/aop"</span>
+      <span style="color: #FF0000">xmlns:tx</span>=<span style="color: #0000FF">"http://www.springframework.net/tx"</span><span style="color: #A31515">&gt;</span>
+  
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;tx/&gt; transaction definitions here --&gt;</i>
+
+  <i style="color: #008000">&lt;!-- &lt;aop/&gt; AOP definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>Often when using the tags in the <code class="literal">tx</code> namespace
+        you will also be using the tags from the <code class="literal">aop</code>
+        namespace (since the declarative transaction support in Spring is
+        implemented using AOP). The above XML snippet contains the relevant
+        lines needed to reference the <code class="literal">aop</code> schema so that
+        the tags in the <code class="literal">aop</code> namespace are available to
+        you.</p>
+      </td></tr></table></div>
+
+      <p>You will also need to configure the AOP and Transaction namespace
+      parsers in the main .NET application configuration file as shown
+      below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>   
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Config.AopNamespaceParser, Spring.Aop"</span><span style="color: #A31515"> /&gt;</span>
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Transaction.Config.TxNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-aop"></a>B.2.3.&nbsp;The <code class="literal">aop</code> schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">aop</code> tags deal with configuring all things
+      AOP in Spring. These tags are comprehensively covered in the chapter
+      entitled <a class="xref" href="aop.html" title="Chapter&nbsp;13.&nbsp;Aspect Oriented Programming with Spring.NET">Chapter&nbsp;13, <i>Aspect Oriented Programming with Spring.NET</i></a>.</p>
+
+      <p>In the interest of completeness, to use the tags in the
+      <code class="literal">aop</code> schema, you need to have the following preamble
+      at the top of your Spring XML configuration file; the emboldened text in
+      the following snippet references the correct schema so that the tags in
+      the <code class="literal">aop</code> namespace are available to you.</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:aop</span>=<span style="color: #0000FF">"http://www.springframework.net/aop"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;aop/&gt; AOP definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>You will also need to configure the AOP namespace parser in the
+      main .NET application configuration file as shown below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>   
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Config.AopNamespaceParser, Spring.Aop"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-db"></a>B.2.4.&nbsp;The <code class="literal">db</code> schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">db</code> tags deal with creating
+      <code class="literal">IDbProvider</code> instances for a given database client
+      library. The following snippet references the correct schema so that the
+      tags in the <code class="literal">db</code> namespace are available to you. The
+      tags are comprehensively covered in the chapter entitled <a class="xref" href="dbprovider.html" title="Chapter&nbsp;19.&nbsp;DbProvider">Chapter&nbsp;19, <i>DbProvider</i></a>.</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:db</span>=<span style="color: #0000FF">"http://www.springframework.net/db"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;db/&gt; database definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>You will also need to configure the Database namespace parser in
+      the main .NET application configuration file as shown below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>      
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.Config.DatabaseNamespaceParser, Spring.Data"</span><span style="color: #A31515"> /&gt;</span> 
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-remoting"></a>B.2.5.&nbsp;The <code class="literal">remoting</code> schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">remoting</code> tags are for use when you want to
+      export an existing POCO object as a .NET remoted object or to create a
+      client side .NET remoting proxy. The tags are comprehensively covered in
+      the chapter <a class="xref" href="remoting.html" title="Chapter&nbsp;25.&nbsp;.NET Remoting">Chapter&nbsp;25, <i>.NET Remoting</i></a></p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:r</span>=<span style="color: #0000FF">"http://www.springframework.net/remoting"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;r/&gt; remoting definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>You will also need to configure the remoting namespace parser in
+      the main .NET application configuration file as shown below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>     
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Remoting.Config.RemotingNamespaceParser, Spring.Services"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-nms"></a>B.2.6.&nbsp;The <code class="literal">nms</code> messaging schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">nms</code> tags are for use when you want to
+      configure Spring's messaging support. The tags are comprehensively
+      covered in the chapter <a class="xref" href="messaging.html" title="Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS">Chapter&nbsp;29, <i>Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS</i></a></p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:r</span>=<span style="color: #0000FF">"http://www.springframework.net/nms"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;nms/&gt; remoting definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>You will also need to configure the remoting namespace parser in
+      the main .NET application configuration file as shown below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>     
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Nms.Config.NmsNamespaceParser, Spring.Messaging.Nms"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-validation"></a>B.2.7.&nbsp;The <code class="literal">validation</code> schema</h3></div></div></div>
+      
+
+      <p>The <code class="literal">validation</code> tags are for use when you want
+      definte <code class="literal">IValidator</code> object instances. The tags are
+      comprehensively covered in the chapter <a class="xref" href="validation.html" title="Chapter&nbsp;12.&nbsp;Validation Framework">Chapter&nbsp;12, <i>Validation Framework</i></a></p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span> 
+        <span style="color: #FF0000">xmlns:v</span>=<span style="color: #0000FF">"http://www.springframework.net/validation"</span><span style="color: #A31515">&gt;</span>
+
+<em class="lineannotation"><span class="lineannotation">  &lt;!-- <code class="literal">&lt;object/&gt;</code> definitions here --&gt;</span></em>
+
+  <i style="color: #008000">&lt;!-- &lt;v/&gt; valdiation definitions here --&gt;</i>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+      <p>You will also need to configure the validation namespace parser in
+      the main .NET application configuration file as shown below</p>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+        <p>As of Spring.NET 1.2.0 it is no longer necessary to explicitly
+	configure the namespace parsers that come with Spring
+	via a custom section in App.config.  You will still need to register custom namespace
+	parsers if you are writing your own.</p>
+      </td></tr></table></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- other Spring config sections handler like context, typeAliases, etc not shown for brevity --&gt;</i>     
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Validation.Config.ValidationNamespaceParser, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span> 
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="xsd-config-body-schemas-objects"></a>B.2.8.&nbsp;The <code class="literal">objects</code> schema</h3></div></div></div>
+      
+
+      <p>Last but not least we have the tags in the
+      <code class="literal">objects</code> schema. Examples of the various tags in the
+      <code class="literal">objects</code> schema are not shown here because they are
+      quite comprehensively covered in the section entitled <a class="xref" href="objects.html#object-factory-properties-detailed" title="5.3.2.&nbsp;Dependencies and configuration in detail">Section&nbsp;5.3.2, &#8220;Dependencies and configuration in detail&#8221;</a> (and indeed in that
+      entire <a class="link" href="objects.html" title="Chapter&nbsp;5.&nbsp;The IoC container">chapter</a>).</p>
+
+      <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+       <span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span style="color: #FF0000">xsi:schemaLocation</span>=<span style="color: #0000FF">"http://www.springframework.net http://www.springframework.net/schema/objects/spring-objects-1.1.xsd"</span><span style="color: #A31515">&gt;</span>
+
+    <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"foo"</span> <span style="color: #FF0000">class</span>=<span style="color: #0000FF">"X.Y.Foo, X"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Rick"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xsd-config-setup"></a>B.3.&nbsp;Setting up your IDE</h2></div></div></div>
+    
+
+    <p>To setup VS.NET to provide intellisence while editing XML file for
+    your custom XML schemas you will need to copy your XSD files to an
+    appropriate VS.NET directory. Refer to the following chapter for details,
+    <a class="xref" href="vsnet.html" title="Chapter&nbsp;34.&nbsp;Visual Studio.NET Integration">Chapter&nbsp;34, <i>Visual Studio.NET Integration</i></a></p>
+
+    <p>For SharpDevelop, follow the directions on the "<a class="ulink" href="http://community.sharpdevelop.net/blogs/mattward/articles/FeatureTourEditingXml.aspx" target="_top">Editing
+    XML</a>" product documentation.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="classic-spring.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="extensible-xml.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Appendix&nbsp;A.&nbsp;Classic Spring Usage&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Appendix&nbsp;C.&nbsp;Extensible XML authoring</td></tr></table></div></body></html>

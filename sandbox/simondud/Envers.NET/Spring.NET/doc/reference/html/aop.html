@@ -1,0 +1,2476 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;13.&nbsp;Aspect Oriented Programming with Spring.NET</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="validation.html" title="Chapter&nbsp;12.&nbsp;Validation Framework"><link rel="next" href="aop-aspect-library.html" title="Chapter&nbsp;14.&nbsp;Aspect Library"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="aop"></a>Chapter&nbsp;13.&nbsp;Aspect Oriented Programming with Spring.NET</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-introduction-concepts"></a>13.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p><span class="emphasis"><em>Aspect-Oriented Programming</em></span>
+    (<span class="emphasis"><em>AOP</em></span>) complements OOP by providing another way of
+    thinking about program structure. Whereas OO decomposes applications into
+    a hierarchy of objects, AOP decomposes programs into
+    <span class="emphasis"><em>aspects</em></span> or <span class="emphasis"><em>concerns</em></span>. This
+    enables the modularization of concerns such as transaction management that
+    would otherwise cut across multiple objects (such concerns are often
+    termed <span class="emphasis"><em>crosscutting</em></span> concerns).</p>
+
+    <p>One of the key components of Spring.NET is the <span class="emphasis"><em>AOP
+    framework</em></span>. While the Spring.NET IoC container does not depend
+    on AOP, meaning you don't need to use AOP if you don't want to, AOP
+    complements Spring.NET IoC to provide a very capable middleware
+    solution.</p>
+
+    <p>AOP is used in Spring.NET:</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>To provide declarative enterprise services, especially as a
+        replacement for COM+ declarative services. The most important such
+        service is <span class="emphasis"><em>declarative transaction management</em></span>,
+        which builds on Spring.NET's transaction abstraction. This
+        functionality is planed for an upcoming release of Spring.NET</p>
+      </li><li>
+        <p>To allow users to implement custom aspects, complementing their
+        use of OOP with AOP.</p>
+      </li></ul></div>
+
+    <p>Thus you can view Spring.NET AOP as either an enabling technology
+    that allows Spring.NET to provide declarative transaction management
+    without COM+; or use the full power of the Spring.NET AOP framework to
+    implement custom aspects.</p>
+
+    <p>For those who would like to hit the ground running and start
+    exploring how to use Spring's AOP functionality, head on over to <a class="xref" href="aop-quickstart.html" title="Chapter&nbsp;36.&nbsp;AOP QuickStart">Chapter&nbsp;36, <i>AOP QuickStart</i></a>.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-introduction-defn"></a>13.1.1.&nbsp;AOP concepts</h3></div></div></div>
+      
+
+      <p>Let us begin by defining some central AOP concepts. These terms
+      are not Spring.NET-specific. Unfortunately, AOP terminology is not
+      particularly intuitive. However, it would be even more confusing if
+      Spring.NET used its own terminology.</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><span class="emphasis"><em>Aspect</em></span>: A modularization of a concern for
+          which the implementation might otherwise cut across multiple
+          objects. Transaction management is a good example of a crosscutting
+          concern in enterprise applications. Aspects are implemented using
+          Spring.NET as Advisors or interceptors.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Joinpoint</em></span>: Point during the execution of
+          a program, such as a method invocation or a particular exception
+          being thrown.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Advice</em></span>: Action taken by the AOP framework
+          at a particular joinpoint. Different types of advice include
+          "around," "before" and "throws" advice. Advice types are discussed
+          below. Many AOP frameworks, including Spring.NET, model an advice as
+          an <span class="emphasis"><em>interceptor</em></span>, maintaining a chain of
+          interceptors "around" the joinpoint.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Pointcut</em></span>: A set of joinpoints specifying
+          when an advice should fire. An AOP framework must allow developers
+          to specify pointcuts: for example, using regular expressions.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Introduction</em></span>: Adding methods or fields to
+          an advised class. Spring.NET allows you to introduce new interfaces
+          to any advised object. For example, you could use an introduction to
+          make any object implement an <code class="literal">IAuditable</code>
+          interface, to simplify the tracking of changes to an object's
+          state.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Target object</em></span>: Object containing the
+          joinpoint. Also referred to as <span class="emphasis"><em>advised</em></span> or
+          <span class="emphasis"><em>proxied</em></span> object.</p>
+        </li><li>
+          <p><span class="emphasis"><em>AOP proxy</em></span>: Object created by the AOP
+          framework, including advice. In Spring.NET, an AOP proxy is a
+          dynamic proxy that uses IL code generated at runtime.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Weaving</em></span>: Assembling aspects to create an
+          advised object. This can be done at compile time (using the
+          Gripper-Loom.NET compiler, for example), or at runtime. Spring.NET
+          performs weaving at runtime.</p>
+        </li></ul></div>
+
+      <p>Different advice types include:</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><span class="emphasis"><em>Around advice</em></span>: Advice that surrounds a
+          joinpoint such as a method invocation. This is the most powerful
+          kind of advice. Around advice will perform custom behaviour before
+          and after the method invocation. They are responsible for choosing
+          whether to proceed to the joinpoint or to shortcut executing by
+          returning their own return value or throwing an exception.</p>
+        </li><li>
+          <p><span class="emphasis"><em>Before advice</em></span>: Advice that executes
+          before a joinpoint, but which does not have the ability to prevent
+          execution flow proceeding to the joinpoint (unless it throws an
+          exception).</p>
+        </li><li>
+          <p><span class="emphasis"><em>Throws advice</em></span>: Advice to be executed if a
+          method throws an exception. Spring.NET provides strongly typed
+          throws advice, so you can write code that catches the exception (and
+          subclasses) you're interested in, without needing to cast from
+          Exception.</p>
+        </li><li>
+          <p><span class="emphasis"><em>After returning advice</em></span>: Advice to be
+          executed after a joinpoint completes normally: for example, if a
+          method returns without throwing an exception.</p>
+        </li></ul></div>
+
+      <p>Spring.NET provides a full range of advice types. We recommend
+      that you use the least powerful advice type that can implement the
+      required behaviour. For example, if you need only to update a cache with
+      the return value of a method, you are better off implementing an after
+      returning advice than an around advice, although an around advice can
+      accomplish the same thing. Using the most specific advice type provides
+      a simpler programming model with less potential for errors. For example,
+      you don't need to invoke the <code class="literal">proceed()</code> method on the
+      <code class="literal">IMethodInvocation</code> used for around advice, and hence
+      can't fail to invoke it.</p>
+
+      <p>The pointcut concept is the key to AOP, distinguishing AOP from
+      older technologies offering interception. Pointcuts enable advice to be
+      targeted independently of the OO hierarchy. For example, an around
+      advice providing declarative transaction management can be applied to a
+      set of methods spanning multiple objects. Thus pointcuts provide the
+      structural element of AOP.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-introduction-Spring.NET-defn"></a>13.1.2.&nbsp;Spring.NET AOP capabilities</h3></div></div></div>
+      
+
+      <p>Spring.NET AOP is implemented in pure C#. There is no need for a
+      special compilation process - all weaving is done at runtime. Spring.NET
+      AOP does not need to control or modify the way in which assemblies are
+      loaded, nor does it rely on unmanaged APIs, and is thus suitable for use
+      in any CLR environment.</p>
+
+      <p>Spring.NET currently supports interception of method invocations.
+      Field interception is not implemented, although support for field
+      interception could be added without breaking the core Spring.NET AOP
+      APIs.</p>
+
+      <p class="remark"><i><span class="remark">Field interception arguably violates OO encapsulation. We don't
+      believe it is wise in application development.</span></i></p>
+
+      <p>Spring.NET provides classes to represent pointcuts and different
+      advice types. Spring.NET uses the term <span class="emphasis"><em>advisor</em></span> for
+      an object representing an aspect, including both an advice and a
+      pointcut targeting it to specific joinpoints.</p>
+
+      <p>Different advice types are <code class="literal">IMethodInterceptor</code>
+      (from the AOP Alliance interception API); and the advice interfaces
+      defined in the <code class="literal">Spring.Aop</code> namespace. All advices must
+      implement the <code class="literal">AopAlliance.Aop.IAdvice</code> tag interface.
+      Advices supported out the box are <code class="literal">IMethodInterceptor</code>
+      ; <code class="literal">IThrowsAdvice</code>; <code class="literal">IBeforeAdvice</code>;
+      and <code class="literal">IAfterReturningAdvice</code>. We'll discuss advice types
+      in detail below.</p>
+
+      <p>Spring.NET provides a .NET translation of the Java interfaces
+      defined by the <a class="ulink" href="http://aopalliance.sourceforge.NET/" target="_top">
+          <span class="emphasis"><em>AOP Alliance</em></span>
+        </a>. Around advice must implement the AOP Alliance
+      <code class="literal">AopAlliance.Interceptr.IMethodInterceptor</code> interface.
+      Whilst there is wide support for the AOP Alliance in Java, Spring.NET is
+      currently the only .NET AOP framework that makes use of these
+      interfaces. In the short term, this will provide a consistent
+      programming model for those doing development in both .NET and Java, and
+      in the longer term, we hope to see more .NET projects adopt the AOP
+      Alliance interfaces.</p>
+
+      <p class="remark"><i><span class="remark">The aim of Spring.NET AOP support is not to provide a
+      comprehensive AOP implementation on par with the functionality available
+      in AspectJ. However, Spring.NET AOP provides an excellent solution to
+      most problems in .NET applications that are amenable to AOP.</span></i></p>
+
+      <p class="remark"><i><span class="remark">Thus, it is common to see Spring.NET's AOP functionality used in
+      conjunction with a Spring.NET IoC container. AOP advice is specified
+      using normal object definition syntax (although this allows powerful
+      "autoproxying" capabilities); advice and pointcuts are themselves
+      managed by Spring.NET IoC.</span></i></p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-introduction-proxies"></a>13.1.3.&nbsp;AOP Proxies in Spring.NET</h3></div></div></div>
+      
+
+      <p>Spring.NET generates AOP proxies at runtime using classes from the
+      System.Reflection.Emit namespace to create necessary IL code for the
+      proxy class. This results in proxies that are very efficient and do not
+      impose any restrictions on the inheritance hierarchy.</p>
+
+      <p>Another common approach to AOP proxy implementation in .NET is to
+      use ContextBoundObject and the .NET remoting infrastructure as an
+      interception mechanism. We are not very fond of ContextBoundObject
+      approach because it requires classes that need to be proxied to inherit
+      from the ContextBoundObject either directly or indirectly. In our
+      opinion this an unnecessary restriction that influences how you should
+      design your object model and also excludes applying AOP to "3rd party"
+      classes that are not under your direct control. Context-bound proxies
+      are also an order of magnitude slower than IL-generated proxies, due to
+      the overhead of the context switching and .NET remoting
+      infrastructure.</p>
+
+      <p>Spring.NET AOP proxies are also "smart" - in that because proxy
+      configuration is known during proxy generation, the generated proxy can
+      be optimized to invoke target methods via reflection only when necessary
+      (i.e. when there are advices applied to the target method). In all other
+      cases the target method will be called directly, thus avoiding
+      performance hit caused by the reflective invocation.</p>
+
+      <p>Finally, Spring.NET AOP proxies will never return a raw reference
+      to a target object. Whenever a target method returns a raw reference to
+      a target object (i.e. "return this;"), AOP proxy will recognize what
+      happened and will replace the return value with a reference to itself
+      instead.</p>
+
+      <p>The current implementation of the AOP proxy generator uses object
+      composition to delegate calls from the proxy to a target object, similar
+      to how you would implement a classic Decorator pattern. This means that
+      classes that need to be proxied have to implement one or more
+      interfaces, which is in our opinion not only a less-intruding
+      requirement than ContextBoundObject inheritance requirements, but also a
+      good practice that should be followed anyway for the service classes
+      that are most common targets for AOP proxies.</p>
+
+      <p>In a future release we will implement proxies using inheritance,
+      which will allow you to proxy classes without interfaces as well and
+      will remove some of the remaining raw reference issues that cannot be
+      solved using composition-based proxies.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-pointcuts"></a>13.2.&nbsp;Pointcut API in Spring.NET</h2></div></div></div>
+    
+
+    <p>Let's look at how Spring.NET handles the crucial pointcut
+    concept.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-pointcut-concepts"></a>13.2.1.&nbsp;Concepts</h3></div></div></div>
+      
+
+      <p>Spring.NET's pointcut model enables pointcut reuse independent of
+      advice types. It's possible to target different advice using the same
+      pointcut.</p>
+
+      <p>The <code class="literal">Spring.Aop.IPointcut</code> interface is the
+      central interface, used to target advices to particular types and
+      methods. The complete interface is shown below:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IPointcut
+{
+    ITypeFilter TypeFilter { <span style="color: #0000FF">get</span>; }
+
+    IMethodMatcher MethodMatcher { <span style="color: #0000FF">get</span>; }
+}</pre>
+
+      <p>Splitting the <code class="literal">IPointcut</code> interface into two
+      parts allows reuse of type and method matching parts, and fine-grained
+      composition operations (such as performing a "union" with another method
+      matcher).</p>
+
+      <p>The <code class="literal">ITypeFilter</code> interface is used to restrict
+      the pointcut to a given set of target classes. If the
+      <code class="literal">Matches()</code> method always returns true, all target
+      types will be matched:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ITypeFilter
+{
+    <span style="color: #0000FF">bool</span> Matches(Type type);
+}</pre>
+
+      <p>The <code class="literal">IMethodMatcher</code> interface is normally more
+      important. The complete interface is shown below:</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMethodMatcher
+{
+    <span style="color: #0000FF">bool</span> IsRuntime { <span style="color: #0000FF">get</span>; }
+
+    <span style="color: #0000FF">bool</span> Matches(MethodInfo method, Type targetType);
+
+    <span style="color: #0000FF">bool</span> Matches(MethodInfo method, Type targetType, <span style="color: #0000FF">object</span>[] args);
+}</pre>
+
+      <p>The <code class="literal">Matches(MethodInfo, Type) </code>method is used to
+      test whether this pointcut will ever match a given method on a target
+      type. This evaluation can be performed when an AOP proxy is created, to
+      avoid the need for a test on every method invocation. If the 2-argument
+      matches method returns true for a given method, and the
+      <code class="literal">IsRuntime</code> property for the
+      <code class="literal">IMethodMatcher</code> returns true, the 3-argument matches
+      method will be invoked on every method invocation. This enables a
+      pointcut to look at the arguments passed to the method invocation
+      immediately before the target advice is to execute.</p>
+
+      <p>Most <code class="literal">IMethodMatchers</code> are static, meaning that
+      their <code class="literal">IsRuntime</code> property returns false. In this case,
+      the 3-argument <code class="literal">Matches</code> method will never be
+      invoked.</p>
+
+      <p class="remark"><i><span class="remark">Whenever possible, try to make pointcuts static... this allows
+      the AOP framework to cache the results of pointcut evaluation when an
+      AOP proxy is created.</span></i></p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-pointcut-operations"></a>13.2.2.&nbsp;Operations on pointcuts</h3></div></div></div>
+      
+
+      <p>Spring.NET supports operations on pointcuts: notably,
+      <span class="emphasis"><em>union</em></span> and <span class="emphasis"><em>intersection</em></span>.</p>
+
+      <p>Union means the methods that either pointcut matches.</p>
+
+      <p>Intersection means the methods that both pointcuts match.</p>
+
+      <p>Union is usually more useful.</p>
+
+      <p>Pointcuts can be composed using the static methods in the
+      <span class="emphasis"><em>Spring.Aop.Support.Pointcuts</em></span> class, or using the
+      <span class="emphasis"><em>ComposablePointcut</em></span> class in the same
+      namespace.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-convenience-impls"></a>13.2.3.&nbsp;Convenience pointcut implementations</h3></div></div></div>
+      
+
+      <p>Spring.NET provides several convenient pointcut implementations.
+      Some can be used out of the box; others are intended to be subclassed in
+      application-specific pointcuts.</p>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-static-pointcuts"></a>13.2.3.1.&nbsp;Static pointcuts</h4></div></div></div>
+        
+
+        <p>Static pointcuts are based on method and target class, and
+        cannot take into account the method's arguments. Static pointcuts are
+        sufficient--and best--for most usages. It's possible for Spring.NET to
+        evaluate a static pointcut only once, when a method is first invoked:
+        after that, there is no need to evaluate the pointcut again with each
+        method invocation.</p>
+
+        <p>Let's consider some static pointcut implementations included
+        with Spring.NET.</p>
+
+        <div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="aop-regularexpression-pointcut"></a>13.2.3.1.1.&nbsp;Regular expression pointcuts</h5></div></div></div>
+           
+
+          
+
+           
+
+          <p>One obvious way to specify static pointcuts is using regular
+          expressions. Several AOP frameworks besides Spring.NET make this
+          possible. The
+          <code class="literal">Spring.Aop.Support.SdkRegularExpressionMethodPointcut</code>
+          class is a generic regular expression pointcut, that uses the
+          regular expression classes from the .NET BCL.</p>
+
+           
+
+          <p>Using this class, you can provide a list of pattern Strings.
+          If any of these is a match, the pointcut will evaluate to true (so
+          the result is effectively the union of these pointcuts.). The
+          matching is done against the full class name so you can use this
+          pointcut if you would like to apply advice to all the classes in a
+          particular namespace.</p>
+
+           
+
+          <p>The usage is shown below:</p>
+
+           
+
+          <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"settersAndAbsquatulatePointcut"</span> 
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.SdkRegularExpressionMethodPointcut, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"patterns"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*set.*<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*absquatulate<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+           
+
+          <p>As a convenience, Spring provides the
+          <code class="literal">RegularExpressionMethodPointcutAdvisor</code> class that
+          allows us to reference an <code class="literal">IAdvice</code> instance as
+          well as defining the pointcut rules (remember that an
+          <code class="literal">IAdvice</code> instance can be an interceptor, before
+          advice, throws advice etc.) This simplifies wiring, as the one
+          object serves as both pointcut and advisor, as shown below:</p>
+
+           
+
+          <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"settersAndAbsquatulateAdvisor"</span> 
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.RegularExpressionMethodPointcutAdvisor, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"advice"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">local</span>=<span style="color: #0000FF">"objectNameOfAopAllianceInterceptor"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"patterns"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*set.*<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*absquatulate<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+           
+
+          <p>The <code class="literal">RegularExpressionMethodPointcutAdvisor</code>
+          class can be used with any <code class="literal">Advice</code> type.</p>
+
+           If you only have one pattern you can use the property name 
+
+          <code class="literal">pattern</code>
+
+           and specify a single value instead of using the property name 
+
+          <code class="literal">patterns</code>
+
+           and specifying a list. 
+
+          <p>You may also specify a <code class="literal">Regex</code> object from
+          the <code class="literal">System.Text.RegularExpressions</code> namespace. The
+          built in <code class="literal">RegexConverter</code> class will perform the
+          conversion. See <a class="xref" href="objects-misc.html#object-objects-builtin-converters" title="6.4.&nbsp;Built-in TypeConverters">Section&nbsp;6.4, &#8220;Built-in TypeConverters&#8221;</a>
+          for more information on Spring's build in type converters. The Regex
+          object is created as any other object within the IoC container.
+          Using an inner-object definition for the Regex object is a handy way
+          to keep the definition close to the PointcutAdvisor declaration.
+          Note that the class
+          <code class="literal">SdkRegularExpressionMethodPointcut</code> has a
+          <code class="methodname">DefaultOptions</code> property to set the regular
+          expression options if they are not explicitly specified in the
+          constructor.</p>
+
+           
+        </div>
+
+        <div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="aop-attribute-pointcut"></a>13.2.3.1.2.&nbsp;Attribute pointcuts</h5></div></div></div>
+          
+
+          <p>Pointcuts can be specified by matching an attribute type that
+          is associated with a method. Advice associated with this pointcut
+          can then read the metadata associated with the attribute to
+          configure itself. The class
+          <code class="literal">AttributeMatchMethodPointcut</code> provides this
+          functionality. Sample usage that will match all methods that have
+          the attribute <code class="literal">Spring.Attributes.CacheAttribute</code> is
+          shown below. </p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"cachePointcut"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.AttributeMatchMethodPointcut, Spring.Aop"</span><span style="color: #A31515">&gt;</span> 
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Attribute"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.Attributes.CacheAttribute, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+          <p>This can be used with a
+          <code class="literal">DefaultPointcutAdvisor</code> as shown
+          below</p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"cacheAspect"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.DefaultPointcutAdvisor, Spring.Aop"</span><span style="color: #A31515">&gt;</span> 
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Pointcut"</span><span style="color: #A31515">&gt;</span> 
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.AttributeMatchMethodPointcut, Spring.Aop"</span><span style="color: #A31515">&gt;</span> 
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Attribute"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Spring.Attributes.CacheAttribute, Spring.Core"</span><span style="color: #A31515">/&gt;</span>        
+      <span style="color: #A31515">&lt;/object&gt;</span> 
+  <span style="color: #A31515">&lt;/property&gt;</span> 
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Advice"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"aspNetCacheAdvice"</span><span style="color: #A31515">/&gt;</span> 
+<span style="color: #A31515">&lt;/object&gt;</span> </pre><p> where aspNetCacheAdvice is an implementation
+          of an <code class="literal">IMethodInterceptor</code> that caches method
+          return values. See the SDK docs for
+          <code class="literal">Spring.Aop.Advice.CacheAdvice</code> for more
+          information on this particular advice.</p>
+
+          <p>As a convenience the class
+          <code class="literal">AttributeMatchMethodPointcutAdvisor</code> is provided
+          to defining an attribute based Advisor as a somewhat shorter
+          alternative to using the generic DefaultPointcutAdvisor. An example
+          is shown below.</p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"AspNetCacheAdvice"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.AttributeMatchMethodPointcutAdvisor, Spring.Aop"</span><span style="color: #A31515">&gt;</span> 
+   <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"advice"</span><span style="color: #A31515">&gt;</span> 
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Aspect.AspNetCacheAdvice, Aspect"</span><span style="color: #A31515">/&gt;</span> 
+   <span style="color: #A31515">&lt;/property&gt;</span> 
+   <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"attribute"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Framework.AspNetCacheAttribute, Framework"</span><span style="color: #A31515"> /&gt;</span> 
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-dynamic-pointucts"></a>13.2.3.2.&nbsp;Dynamic Pointcuts</h4></div></div></div>
+        
+
+        <p>Dynamic pointcuts are costlier to evaluate than static
+        pointcuts. They take into account method
+        <span class="emphasis"><em>arguments</em></span>, as well as static information. This
+        means that they must be evaluated with every method invocation; the
+        result cannot be cached, as arguments will vary.</p>
+
+        <p>The main example is the <code class="literal">control flow</code>
+        pointcut.</p>
+
+        <div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="d4e3899"></a>13.2.3.2.1.&nbsp;Control Flow Pointcuts</h5></div></div></div>
+          
+
+          <p>Spring.NET control flow pointcuts are conceptually similar to
+          AspectJ <span class="emphasis"><em>cflow</em></span> pointcuts, although less
+          powerful. (There is currently no way to specify that a pointcut
+          executes below another pointcut.). A control flow pointcut is
+          dynamic because it is evaluated against the current call stack for
+          each method invocation. For example, if method ClassA.A() calls
+          ClassB.B() then the execution of ClassB.B() has occurred in
+          ClassA.A()'s control flow. A control flow pointcut allows advice to
+          be applied to the method ClassA.A() but only when called from
+          ClassB.B() and not when ClassA.A() is executed from another call
+          stack. Control flow pointcuts are specified using the
+          <code class="literal">Spring.Aop.Support.ControlFlowPointcut
+          </code>class.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+              <p>Control flow pointcuts are significantly more expensive to
+              evaluate at runtime than even other dynamic pointcuts.</p>
+            </td></tr></table></div>
+
+          <p>When using control flow point cuts some attention should be
+          paid to the fact that at runtime the JIT compiler can inline the
+          methods, typically for increased performance, but with the
+          consequence that the method no longer appears in the current call
+          stack. This is because inlining takes the callee's IL code and
+          inserts it into the caller's IL code effectively removing the method
+          call. The information returned from
+          <code class="literal">System.Diagnostics.StackTrace</code>, used in the
+          implementation of <code class="literal">ControlFlowPointcut</code> is subject
+          to these optimizations and therefore a control flow pointcut will
+          not match if the method has been inlined.</p>
+
+          <p>Generally speaking, a method will be a candidate for inlining
+          when its code is 'small', just a few lines of code (less than 32
+          bytes of IL). For some interesting reading on this process read
+          David Notario's blog entries (<a class="ulink" href="http://blogs.msdn.com/davidnotario/archive/2004/10/28/248953.aspx" target="_top">JIT
+          Optimizations I</a> and <a class="ulink" href="http://blogs.msdn.com/davidnotario/archive/2004/11/01/250398.aspx" target="_top">JIT
+          Optimizations II</a>). Additionally, when an assembly is
+          compiled with a Release configuration the assembly metadata
+          instructs the CLR to enable JIT optimizations. When compiled with a
+          Debug configuration the CLR will disable (some?) these
+          optimizations. Empirically, method inlining is turned off in a Debug
+          configuration.</p>
+
+          <p>The way to ensure that your control flow pointcut will not be
+          overlooked because of method inlining is to apply the
+          <code class="literal">System.Runtime.CompilerServices.MethodImplAttribute</code>
+          attribute with the value
+          <code class="literal">MethodImplOptions.NoInlining</code>. In this (somewhat
+          artificial) simple example, if the code is compiled in release mode
+          it will not match a control flow pointcut for the method
+          "GetAge".</p>
+
+          <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> GetAge(IPerson person)
+{
+    <span style="color: #0000FF">return</span> person.GetAge();
+}</pre>
+
+          <p>However, applying the attributes as shown below will prevent
+          the method from being inlined even in a release build.</p>
+
+          <pre class="programlisting">[MethodImpl(MethodImplOptions.NoInlining)] 
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> GetAge(IPerson person)
+{
+    <span style="color: #0000FF">return</span> person.GetAge();
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e3918"></a>13.2.4.&nbsp;Custom pointcuts</h3></div></div></div>
+      
+
+      <p>Because pointcuts in Spring.NET are .NET types, rather than
+      language features (as in AspectJ) it is possible to declare custom
+      pointcuts, whether static or dynamic. However, there is no support out
+      of the box for the sophisticated pointcut expressions that can be coded
+      in the AspectJ syntax. However, custom pointcuts in Spring.NET can be as
+      arbitrarily complex as any object model.</p>
+
+      <p>Spring.NET provides useful pointcut superclasses to help you to
+      implement your own pointcuts.</p>
+
+      <p>Because static pointcuts are the most common and generally useful
+      pointcut type, you'll probably subclass
+      <code class="literal">StaticMethodMatcherPointcut</code>, as shown below. This
+      requires you to implement just one abstract method (although it is
+      possible to override other methods to customize behaviour):</p>
+
+      <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> TestStaticPointcut : StaticMethodMatcherPointcut {
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">bool</span> Matches(MethodInfo method, Type targetType) {
+        <i style="color: #008000">// return true if custom criteria match</i>
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-advice-types"></a>13.3.&nbsp;Advice API in Spring.NET</h2></div></div></div>
+    
+
+    <p>Let's now look at how Spring.NET AOP handles advice.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-introduction-advice-lifecycle"></a>13.3.1.&nbsp;Advice Lifecycle</h3></div></div></div>
+      
+
+      <p>Spring.NET advices can be shared across all advised objects, or
+      unique to each advised object. This corresponds to
+      <span class="emphasis"><em>per-class</em></span> or <span class="emphasis"><em>per-instance</em></span>
+      advice.</p>
+
+      <p>Per-class advice is used most often. It is appropriate for generic
+      advice such as transaction advisors. These do not depend on the state of
+      the proxied object or add new state; they merely act on the method and
+      arguments.</p>
+
+      <p>Per-instance advice is appropriate for introductions, to support
+      mixins. In this case, the advice adds state to the proxied
+      object.</p>
+
+      <p>It's possible to use a mix of shared and per-instance advice in
+      the same AOP proxy.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-introduction-advice-types"></a>13.3.2.&nbsp;Advice types</h3></div></div></div>
+      
+
+      <p>Spring.NET provides several advice types out of the box, and is
+      extensible to support arbitrary advice types. Let us look at the basic
+      concepts and standard advice types.</p>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3939"></a>13.3.2.1.&nbsp;Interception Around Advice</h4></div></div></div>
+        
+
+        <p>The most fundamental advice type in Spring.NET is
+        <span class="emphasis"><em>interception around advice</em></span>.</p>
+
+        <p>Spring.NET is compliant with the AOP Alliance interface for
+        around advice using method interception. Around advice is implemented
+        using the following interface:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMethodInterceptor : IInterceptor
+{
+    <span style="color: #0000FF">object</span> Invoke(IMethodInvocation invocation);
+}</pre>
+
+        <p>The <code class="literal">IMethodInvocation</code> argument to the
+        <code class="literal">Invoke()</code> method exposes the method being invoked;
+        the target joinpoint; the AOP proxy; and the arguments to the method.
+        The <code class="literal">Invoke()</code> method should return the invocation's
+        result: the return value of the joinpoint.</p>
+
+        <p>A simple <code class="literal">IMethodInterceptor</code> implementation
+        looks as follows:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DebugInterceptor : IMethodInterceptor {
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Invoke(IMethodInvocation invocation) {
+        Console.WriteLine(<span style="color: #000000">"Before: invocation=[{0}]"</span>, invocation);
+        <span style="color: #0000FF">object</span> rval = invocation.Proceed();
+        Console.WriteLine(<span style="color: #000000">"Invocation returned"</span>);
+        <span style="color: #0000FF">return</span> rval;
+    }
+}</pre>
+
+        <p>Note the call to the IMethodInvocation's
+        <code class="literal">Proceed()</code> method. This proceeds down the
+        interceptor chain towards the joinpoint. Most interceptors will invoke
+        this method, and return its return value. However, an
+        IMethodInterceptor, like any around advice, can return a different
+        value or throw an exception rather than invoke the
+        <code class="literal">Proceed()</code> method. However, you don't want to do
+        this without good reason!</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e3955"></a>13.3.2.2.&nbsp;Before advice</h4></div></div></div>
+        
+
+        <p>A simpler advice type is a <span class="bold"><strong>before
+        advice</strong></span>. This does not need an
+        <code class="literal">IMethodInvocation</code> object, since it will only be
+        called before entering the method.</p>
+
+        <p>The main advantage of a before advice is that there is no need
+        to invoke the <code class="literal">Proceed()</code>method, and therefore no
+        possibility of inadvertently failing to proceed down the interceptor
+        chain.</p>
+
+        <p>The <code class="literal">IMethodBeforeAdvice</code> interface is shown
+        below.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IMethodBeforeAdvice : IBeforeAdvice
+{
+    <span style="color: #0000FF">void</span> Before(MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target);
+}</pre>
+
+        <p>Note the return type is <code class="literal">void</code>. Before advice
+        can insert custom behaviour before the joinpoint executes, but cannot
+        change the return value. If a before advice throws an exception, this
+        will abort further execution of the interceptor chain. The exception
+        will propagate back up the interceptor chain. If it is unchecked, or
+        on the signature of the invoked method, it will be passed directly to
+        the client; otherwise it will be wrapped in an unchecked exception by
+        the AOP proxy.</p>
+
+        <p>An example of a before advice in Spring.NET, which counts all
+        methods that return normally:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CountingBeforeAdvice : IMethodBeforeAdvice {
+
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> count;
+    
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Before(MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target) {
+        ++count;
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Count  {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> count; }
+    }
+}</pre>
+
+        <p class="remark"><i><span class="remark">Before advice can be used with any pointcut.</span></i></p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-introduction-advice-types-throws"></a>13.3.2.3.&nbsp;Throws advice</h4></div></div></div>
+        
+
+        <p>Throws advice is invoked after the return of the joinpoint if
+        the joinpoint threw an exception. The
+        <code class="literal">Spring.Aop.IThrowsAdvice</code> interface does not contain
+        any methods: it is a tag interface identifying that the implementing
+        advice object implements one or more typed throws advice methods.
+        These throws advice methods must be of the form:</p>
+
+        <pre class="programlisting">AfterThrowing([MethodInfo method, Object[] args, Object target], Exception subclass)</pre>
+
+        <p>Throws-advice methods must be named
+        <code class="literal">'AfterThrowing'</code>. The return value will be ignored
+        by the Spring.NET AOP framework, so it is typically
+        <code class="literal">void</code>. With regard to the method arguments, only the
+        last argument is required. Thus there are <span class="emphasis"><em>exactly</em></span>
+        one <span class="emphasis"><em>or</em></span> four arguments, depending on whether the
+        advice method is interested in the method, method arguments and the
+        target object.</p>
+
+        <p>The following method snippets show examples of throws
+        advice.</p>
+
+        <p>This advice will be invoked if a
+        <code class="literal">RemotingException</code> is thrown (including
+        subclasses):</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> RemoteThrowsAdvice : IThrowsAdvice {
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing(RemotingException ex) {
+        <i style="color: #008000">// Do something with remoting exception</i>
+    }
+}</pre>
+
+        <p>The following advice is invoked if a
+        <code class="literal">SqlException</code> is thrown. Unlike the above advice, it
+        declares 4 arguments, so that it has access to the invoked method,
+        method arguments and target object:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SqlExceptionThrowsAdviceWithArguments : IThrowsAdvice {
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing(MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target, SqlException ex) {
+        <i style="color: #008000">// Do something will all arguments</i>
+    }
+}</pre>
+
+        <p>The final example illustrates how these two methods could be
+        used in a single class, which handles both
+        <code class="literal">RemotingException</code> and
+        <code class="literal">SqlException</code>. Any number of throws advice methods
+        can be combined in a single class, as can be seen in the following
+        example.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CombinedThrowsAdvice : IThrowsAdvice {
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing(RemotingException ex)  {
+        <i style="color: #008000">// Do something with remoting exception</i>
+    }
+ 
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterThrowing(MethodInfo method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target, SqlException ex) {
+        <i style="color: #008000">// Do something will all arguments</i>
+    }
+}</pre>
+
+        <p>Finally, it is worth stating that throws advice is only applied
+        to the actual exception being thrown. What does this mean? Well, it
+        means that if you have defined some throws advice that handles
+        <code class="literal">RemotingException</code>s, the applicable
+        <code class="literal">AfterThrowing</code> method will <span class="bold"><strong>only</strong></span> be invoked if the type of the thrown
+        exception is <code class="literal">RemotingException</code>... if a
+        <code class="literal">RemotingException</code> has been thrown and subsequently
+        wrapped inside another exception before the exception bubbles up to
+        the throws advice interceptor, then the throws advice that handles
+        <code class="literal">RemotingException</code>s will <span class="bold"><strong>never</strong></span> be called. Consider a business method
+        that is advised by throws advice that handles
+        <code class="literal">RemotingException</code>s; if during the course of a
+        method invocation said business method throws a RemoteException... and
+        subsequently wraps said <code class="literal">RemotingException</code> inside a
+        business-specific <code class="literal">BadConnectionException</code> (see the
+        code snippet below) before throwing the exception, then the throws
+        advice will never be able to respond to the
+        <code class="literal">RemotingException</code>... because all the throws advice
+        sees is a <code class="literal">BadConnectionException</code>. The fact that the
+        <code class="literal">RemotingException</code> is wrapped up inside the
+        <code class="literal">BadConnectionException</code> is immaterial.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> BusinessMethod()
+    {
+        <span style="color: #0000FF">try</span>
+        {
+            <i style="color: #008000">// do some business operation...</i>
+        }
+        <span style="color: #0000FF">catch</span> (RemotingException ex)
+        {
+            <span style="color: #0000FF">throw</span> <span style="color: #0000FF">new</span> BadConnectionException(<span style="color: #000000">"Couldn't connect."</span>, ex);
+        }
+    }</pre>
+
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+           Please note that throws advice can be used with any pointcut. 
+        </td></tr></table></div>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4008"></a>13.3.2.4.&nbsp;After Returning advice</h4></div></div></div>
+        
+
+        <p>An after returning advice in Spring.NET must implement the
+        <code class="literal">Spring.Aop.IAfterReturningAdvice</code> interface, shown
+        below:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAfterReturningAdvice : IAdvice
+{
+  <span style="color: #0000FF">void</span> AfterReturning(<span style="color: #0000FF">object</span> returnValue, MethodBase method, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target);
+}</pre>
+
+        <p>An after returning advice has access to the return value (which
+        it cannot modify), invoked method, methods arguments and
+        target.</p>
+
+        <p>The following after returning advice counts all successful
+        method invocations that have not thrown exceptions:</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> CountingAfterReturningAdvice : IAfterReturningAdvice {
+    <span style="color: #0000FF">private</span> <span style="color: #0000FF">int</span> count;
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> AfterReturning(<span style="color: #0000FF">object</span> returnValue, MethodBase m, <span style="color: #0000FF">object</span>[] args, <span style="color: #0000FF">object</span> target) {
+        ++count;
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">int</span> Count  {
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> count; }
+    }
+}</pre>
+
+        <p>This advice doesn't change the execution path. If it throws an
+        exception, this will be thrown up the interceptor chain instead of the
+        return value.</p>
+
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+           Please note that after-returning advice can be used with any pointcut. 
+        </td></tr></table></div>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-advice-ordering"></a>13.3.2.5.&nbsp;Advice Ordering</h4></div></div></div>
+        
+
+        <p>When multiple pieces of advice want to run on the same joinpoint
+        the precedence is determined by having the advice implement the
+        IOrdered interface or by specifying order information on an
+        advisor.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4021"></a>13.3.2.6.&nbsp;Introduction advice</h4></div></div></div>
+         
+
+        
+
+         
+
+        <p>Spring.NET allows you to add new methods and properties to an
+        advised class. This would typically be done when the functionality you
+        wish to add is a crosscutting concern and want to introduce this
+        functionality as a change to the static structure of the class
+        hierarchy. For example, you may want to cast objects to the
+        introduction interface in your code. Introductions are also a means to
+        emulate multiple inheritance.</p>
+
+         
+
+        <p>Introduction advice is defined by using a normal interface
+        declaration that implements the tag interface
+        <code class="literal">IAdvice</code>. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">The need for implementing this
+        marker interface will likely be removed in future versions.</td></tr></table></div><p> As
+        an example, consider the interface <code class="literal">IAuditable</code> that
+        describes the last modified time of an object.</p>
+
+         
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAuditable : IAdvice
+{
+    DateTime LastModifiedDate
+    {
+        <span style="color: #0000FF">get</span>;
+        <span style="color: #0000FF">set</span>;
+    }
+}</pre>
+
+         where 
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAdvice
+{        
+}</pre>
+
+         
+
+        <p>Access to the advised object can be obtained by implementing the
+        interface <code class="literal">ITargetAware</code> </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ITargetAware
+{
+  IAopProxy TargetProxy
+  {
+    <span style="color: #0000FF">set</span>;
+  }
+}</pre><p> with the <code class="literal">IAopProxy</code> reference providing a
+        layer of indirection through which the advised object can be accessed.
+        </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAopProxy
+{
+  <span style="color: #0000FF">object</span> GetProxy();
+}</pre>
+
+         
+
+        <p>A simple class that demonstrates this functionality is shown
+        below. </p><pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAuditable : IAdvice, ITargetAware
+{
+    DateTime LastModifiedDate
+    {
+        <span style="color: #0000FF">get</span>;
+        <span style="color: #0000FF">set</span>;
+    }
+}</pre>
+
+         
+
+        <p>A class that implements this interface is shown below.</p>
+
+         
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AuditableMixin : IAuditable
+{
+    <span style="color: #0000FF">private</span> DateTime date;
+    <span style="color: #0000FF">private</span> IAopProxy targetProxy;
+
+    <span style="color: #0000FF">public</span> AuditableMixin()
+    {
+      date = <span style="color: #0000FF">new</span> DateTime();
+    }
+
+    <span style="color: #0000FF">public</span> DateTime LastModifiedDate
+    {
+       <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> date; }
+       <span style="color: #0000FF">set</span> { date = <span style="color: #0000FF">value</span>; }
+    }
+
+    <span style="color: #0000FF">public</span> IAopProxy TargetProxy
+    {
+       <span style="color: #0000FF">set</span> { targetProxy = <span style="color: #0000FF">value</span>; }
+    }
+}</pre>
+
+         
+
+        <p>Introduction advice is not associated with a pointcut, since it
+        applies at the class and not the method level. As such, introductions
+        use their own subclass of the interface <code class="literal">IAdvisor</code>,
+        namely <code class="literal">IIntroductionAdvisor</code>, to specify the types
+        that the introduction can be applied to.</p>
+
+         
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IIntroductionAdvisor : IAdvisor
+{
+    ITypeFilter TypeFilter { <span style="color: #0000FF">get</span>; }
+    
+    Type[] Interfaces { <span style="color: #0000FF">get</span>; }
+
+    <span style="color: #0000FF">void</span> ValidateInterfaces();
+}</pre>
+
+         
+
+        <p>The <code class="literal">TypeFilter</code> property returns the filter
+        that determines which target classes this introduction should apply
+        to.</p>
+
+         
+
+        <p>The <code class="literal">Interfaces</code> property returns the
+        interfaces introduced by this advisor.</p>
+
+         
+
+        <p>The <code class="literal">ValidateInterfaces()</code> method is used
+        internally to see if the introduced interfaces can be implemented by
+        the introduction advice.</p>
+
+         
+
+        <p>Spring.NET provides a default implementation of this interface
+        (the <code class="literal">DefaultIntroductionAdvisor</code> class) that should
+        be sufficient for the majority of situations when you need to use
+        introductions. The most simple implementation of an introduction
+        advisor is a subclass that simply passes a new instance the base
+        constructor. Passing a new instance is important since we want a new
+        instance of the mixin classed used for each advised object.</p>
+
+         
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> AuditableAdvisor : DefaultIntroductionAdvisor
+{
+  <span style="color: #0000FF">public</span> AuditableAdvisor() : <span style="color: #0000FF">base</span>(<span style="color: #0000FF">new</span> AuditableMixin())
+  {
+  }
+}</pre>
+
+         
+
+        <p>Other constructors let you explicitly specify the interfaces of
+        the class that will be introduced. See the SDK documentation for more
+        details.</p>
+
+         
+
+        <p>We can apply this advisor Programatically, using the
+        <code class="literal">IAdvised.AddIntroduction(),</code> method, or (the
+        recommended way) in XML configuration using the
+        <code class="literal">IntroductionNames</code> property on
+        <code class="literal">ProxyFactoryObject</code>, which will be discussed
+        later.</p>
+
+         
+
+        <p class="remark"><i><span class="remark">Unlike the AOP implementation in the Spring Framework for
+        Java, introduction advice in Spring.NET is not implemented as a
+        specialized type of interception advice. The advantage of this
+        approach is that introductions are not kept in the interceptor chain,
+        which allows some significant performance optimizations. When a method
+        is called that has no interceptors, a direct call is used instead of
+        reflection regardless of whether the target method is on the target
+        object itself or one of the introductions. This means that introduced
+        methods perform the same as target object methods, which could be
+        useful for adding introductions to fine grained objects. The
+        disadvantage is that if the mixin functionality would benefit from
+        having access to the calling stack, it is not available. Introductions
+        with this functionality will be addressed in a future version of
+        Spring.NET AOP.</span></i></p>
+
+         
+      </div>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-advisors"></a>13.4.&nbsp;Advisor API in Spring.NET</h2></div></div></div>
+    
+
+    <p>In Spring.NET, an advisor is a modularization of an aspect. Advisors
+    typically incorporate both an advice and a pointcut.</p>
+
+    <p>Apart from the special case of introductions, any advisor can be
+    used with any advice. The
+    <code class="literal">Spring.Aop.Support.DefaultPointcutAdvisor</code> class is the
+    most commonly used advisor implementation. For example, it can be used
+    with a <code class="literal">IMethodInterceptor</code>,
+    <code class="literal">IBeforeAdvice</code> or <code class="literal">IThrowsAdvice</code> and
+    any pointcut definition.</p>
+
+    <p>Other convenience implementations provided are:
+    <code class="literal">AttributeMatchMethodPointcutAdvisor</code> shown in usage
+    previously in <a class="xref" href="aop.html#aop-attribute-pointcut" title="13.2.3.1.2.&nbsp;Attribute pointcuts">Section&nbsp;13.2.3.1.2, &#8220;Attribute pointcuts&#8221;</a> for use with
+    attribute based pointcuts.
+    <code class="literal">RegularExpressionMethodPointcutAdvisor</code> that will apply
+    pointcuts based on the matching a regular expression to method
+    names.</p>
+
+    <p>It is possible to mix advisor and advice types in Spring.NET in the
+    same AOP proxy. For example, you could use a interception around advice,
+    throws advice and before advice in one proxy configuration: Spring.NET
+    will automatically create the necessary interceptor chain.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-proxyfactoryobject"></a>13.5.&nbsp;Using the ProxyFactoryObject to create AOP proxies</h2></div></div></div>
+    
+
+    <p>If you're using the Spring.NET IoC container for your business
+    objects - generally a good idea - you will want to use one of Spring.NET's
+    AOP-specific <code class="literal">IFactoryObject</code> implementations (remember
+    that a factory object introduces a layer of indirection, enabling it to
+    create objects of a different type - <a class="xref" href="objects.html#objects-advancedproperty-setting" title="5.3.9.&nbsp;Setting a reference using the members of other objects and classes.">Section&nbsp;5.3.9, &#8220;Setting a reference using the members of other objects and
+      classes.&#8221;</a>).</p>
+
+    <p>The basic way to create an AOP proxy in Spring.NET is to use the
+    <code class="literal">Spring.Aop.Framework.ProxyFactoryObject</code> class. This
+    gives complete control over ordering and application of the pointcuts and
+    advice that will apply to your business objects. However, there are
+    simpler options that are preferable if you don't need such control.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-pfb-1"></a>13.5.1.&nbsp;Basics</h3></div></div></div>
+      
+
+      <p>The <code class="literal">ProxyFactoryObject</code>, like other Spring.NET
+      <code class="literal">IFactoryObject</code> implementations, introduces a level of
+      indirection. If you define a <code class="literal">ProxyFactoryObject</code> with
+      name <code class="literal">foo</code>, what objects referencing
+      <code class="literal">foo</code> see is not the
+      <code class="literal">ProxyFactoryObject</code> instance itself, but an object
+      created by the <code class="literal">ProxyFactoryObject's</code> implementation of
+      the <code class="literal">GetObject() </code>method. This method will create an
+      AOP proxy wrapping a target object.</p>
+
+      <p>One of the most important benefits of using a
+      <code class="literal">ProxyFactoryObject</code> or other IoC-aware classes that
+      create AOP proxies, is that it means that advice and pointcuts can also
+      be managed by IoC. This is a powerful feature, enabling certain
+      approaches that are hard to achieve with other AOP frameworks. For
+      example, an advice may itself reference application objects (besides the
+      target, which should be available in any AOP framework), benefiting from
+      all the pluggability provided by Dependency Injection.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-pfb-2"></a>13.5.2.&nbsp;ProxyFactoryObject Properties</h3></div></div></div>
+      
+
+      <p>Like most <code class="literal">IFactoryObject</code> implementations
+      provided with Spring.NET, the <code class="literal">ProxyFactoryObject</code> is
+      itself a Spring.NET configurable object. Its properties are used
+      to:</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p>Specify the target object that is to be proxied.</p>
+        </li><li>
+          <p>Specify the advice that is to be applied to the proxy.</p>
+        </li></ul></div>
+
+      <p>Some key properties are inherited from the
+      <code class="literal">Spring.Aop.Framework.ProxyConfig</code> class: this class is
+      the superclass for all AOP proxy factories in Spring.NET. Some of the
+      key properties include:</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">ProxyTargetType</code>: a boolean value that
+          should be set to true if the target class is to be proxied directly,
+          as opposed to just proxying the interfaces exposed on the target
+          class.</p>
+        </li><li>
+          <p><code class="literal">Optimize</code>: whether to apply aggressive
+          optimization to created proxies. Don't use this setting unless you
+          understand how the relevant AOP proxy handles optimization. The
+          exact meaning of this flag will differ between proxy implementations
+          and will generally result in a trade off between proxy creation time
+          and runtime performance. Optimizations may be ignored by certain
+          proxy implementations and may be disabled silently based on the
+          value of other properties such as
+          <code class="literal">ExposeProxy</code>.</p>
+        </li><li>
+          <p><code class="literal">IsFrozen</code>: whether advice changes should be
+          disallowed once the proxy factory has been configured. The default
+          is false.</p>
+        </li><li>
+          <p><code class="literal">ExposeProxy</code>: whether the current proxy
+          should be exposed via the <code class="literal">AopContext</code> so that it
+          can be accessed by the target. (It's available via the
+          <code class="literal">IMethodInvocation</code> without the need for the
+          <code class="literal">AopContext</code>.) If a target needs to obtain the
+          proxy and <code class="literal">ExposeProxy</code> is <code class="literal">true</code>,
+          the target can use the <code class="literal">AopContext.CurrentProxy</code>
+          property.</p>
+        </li><li>
+          <p><code class="literal">AopProxyFactory</code>: the implementation of
+          <code class="literal">IAopProxyFactory</code> to use when generating a proxy.
+          Offers a way of customizing whether to use remoting proxies, IL
+          generation or any other proxy strategy. The default implementation
+          will use IL generation to create composition-based proxies.</p>
+        </li></ul></div>
+
+      <p>Other properties specific to the
+      <code class="literal">ProxyFactoryObject</code> class include:</p>
+
+      <div class="itemizedlist"><ul type="disc"><li>
+          <p><code class="literal">ProxyInterfaces</code>: the array of
+          <code class="literal">string</code> interface names we're proxying.</p>
+        </li><li>
+          <p><code class="literal">InterceptorNames</code>: <code class="literal">string</code>
+          array of <code class="literal">IAdvisor</code>, interceptor or other advice
+          names to apply. Ordering is significant... first come, first served
+          that is. The first interceptor in the list will be the first to be
+          able to interceptor the invocation (assuming it concerns a regular
+          MethodInterceptor or BeforeAdvice).</p>
+
+          <p>The names are object names in the current container, including
+          objectnames from container hierarchies. You can't mention object
+          references here since doing so would result in the
+          <code class="literal">ProxyFactoryObject</code> ignoring the singleton setting
+          of the advise.</p>
+        </li><li>
+          <p><code class="literal">IntroductionNames</code>: The names of objects in
+          the container that will be used as introductions to the target
+          object. If the object referred to by name does not implement the
+          <code class="literal">IIntroductionAdvisor</code> it will be passed to the
+          default constructor of <code class="literal">DefaultIntroductionAdvisor</code>
+          and all of the objects interfaces will be added to the target
+          object. Objects that implement the
+          <code class="literal">IIntroductionAdvisor</code> interface will be used as
+          is, giving you a finer level of control over what interfaces you may
+          want to expose and the types for which they will be matched
+          against.</p>
+        </li><li>
+          <p><code class="literal">IsSingleton</code>: whether or not the factory
+          should return a single proxy object, no matter how often the
+          <code class="literal">GetObject()</code> method is called. Several
+          <code class="literal">IFactoryObject</code> implementations offer such a
+          method. The default value is <code class="literal">true</code>. If you would
+          like to be able to apply advice on a per-proxy object basis, use a
+          <code class="literal">IsSingleton</code> value of <code class="literal">false</code> and
+          a <code class="literal">IsFrozen</code> value of <code class="literal">false</code>. If
+          you want to use stateful advice--for example, for stateful
+          mixins--use prototype advices along with a
+          <code class="literal">IsSingleton</code> value of
+          <code class="literal">false</code>.</p>
+        </li></ul></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-proxying-interfaces"></a>13.5.3.&nbsp;Proxying Interfaces</h3></div></div></div>
+      
+
+      <p>Let's look at a simple example of
+      <code class="literal">ProxyFactoryObject</code> in action. This example involves:
+      </p><div class="itemizedlist"><ul type="disc"><li>
+            <p>A target object that will be proxied. This is the
+            "personTarget" object definition in the example below.</p>
+          </li><li>
+            <p>An <code class="literal">IAdvisor</code> and an
+            <code class="literal">IInterceptor</code> used to provide advice.</p>
+          </li><li>
+            <p>An AOP proxy object definition specifying the target object
+            (the personTarget object) and the interfaces to proxy, along with
+            the advices to apply.</p>
+          </li></ul></div>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"personTarget"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.Person, MyCompany"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Tony"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"age"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"51"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myCustomInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.MyCustomInterceptor, MyCompany"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"customProperty"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"configuration string"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"debugInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Advice.DebugAdvice, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"person"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"proxyInterfaces"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyCompany.MyApp.IPerson"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"personTarget"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>debugInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>myCustomInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Note that the <code class="literal">InterceptorNames</code> property takes a
+      list of <code class="literal">strings</code>: the object names of the interceptor
+      or advisors in the current context. Advisors, interceptors, before,
+      after returning and throws advice objects can be used. The ordering of
+      advisors is significant.</p>
+
+      <p class="remark"><i><span class="remark">You might be wondering why the list doesn't hold object
+      references. The reason for this is that if the
+      <code class="literal">ProxyFactoryObject's</code> singleton property is set to
+      false, it must be able to return independent proxy instances. If any of
+      the advisors is itself a prototype, an independent instance would need
+      to be returned, so it's necessary to be able to obtain an instance of
+      the prototype from the context; holding a reference isn't
+      sufficient.</span></i></p>
+
+      <p>The "person" object definition above can be used in place of an
+      <code class="literal">IPerson</code> implementation, as follows:</p>
+
+      <pre class="programlisting">IPerson person = (IPerson) factory.GetObject(<span style="color: #000000">"person"</span>);</pre>
+
+      <p>Other objects in the same IoC context can express a strongly typed
+      dependency on it, as with an ordinary .NET object:</p>
+
+      <p>
+        </p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"personUser"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.PersonUser, MyCompany"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"person"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"person"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre><p>
+      </p>
+
+      <p>The <code class="literal">PersonUser</code> class in this example would
+      expose a property of type <code class="literal">IPerson</code>. As far as it's
+      concerned, the AOP proxy can be used transparently in place of a "real"
+      person implementation. However, its type would be a proxy type. It would
+      be possible to cast it to the <code class="literal">IAdvised</code> interface
+      (discussed below).</p>
+
+      <p>It's possible to conceal the distinction between target and proxy
+      using an anonymous <span class="emphasis"><em>inline object</em></span>, as follows. (for
+      more information on inline objects see <a class="xref" href="objects.html#objects-inline-object" title="5.3.2.3.&nbsp;Inner objects">Section&nbsp;5.3.2.3, &#8220;Inner objects&#8221;</a>.) Only the
+      <code class="literal">ProxyFactoryObject</code> definition is different; the
+      advice is included only for completeness:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myCustomInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.MyCustomInterceptor, MyCompany"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"customProperty"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"configuration string"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"debugInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Advice.DebugAdvice, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"person"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"proxyInterfaces"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyCompany.MyApp.IPerson"</span><span style="color: #A31515">/&gt;</span>
+
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- Instead of using a reference to target, just use an inline object --&gt;</i>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyApp.Person, MyCompany"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"name"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Tony"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"age"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"51"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>debugInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>myCustomInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>This has the advantage that there's only one object of type
+      <code class="literal">Person</code>: useful if we want to prevent users of the
+      application context obtaining a reference to the un-advised object, or
+      need to avoid any ambiguity with Spring IoC
+      <span class="emphasis"><em>autowiring</em></span>. There's also arguably an advantage in
+      that the ProxyFactoryObject definition is self-contained. However, there
+      are times when being able to obtain the un-advised target from the
+      factory might actually be an <span class="emphasis"><em>advantage</em></span>: for
+      example, in certain test scenarios.</p>
+    </div>
+
+    <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4197"></a>13.5.1.&nbsp;Applying advice on a per-proxy basis.</h4></div></div></div>
+      
+
+      <p>Let's look at an example of configuring the proxy objects
+      retrieved from <code class="literal">ProxyFactoryObject</code>.</p>
+
+      <pre class="programlisting">
+          <i style="color: #008000">&lt;!-- create the object to reference --&gt;</i>
+          <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"RealObjectTarget"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyRealObject"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+          <i style="color: #008000">&lt;!-- create the proxied object for everyone to use--&gt;</i>
+          <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"MyObject"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"proxyInterfaces"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"MyInterface"</span><span style="color: #A31515"> /&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"isSingleton"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">/&gt;</span>
+          <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"RealObjectTarget"</span><span style="color: #A31515"> /&gt;</span>
+          <span style="color: #A31515">&lt;/object&gt;</span>
+        </pre><p>If you are using a prototype as the target you must
+      set the <code class="literal">TargetName</code> property with the name/object id
+      of your object and not use the property <code class="literal">Target</code> with a
+      reference to that object. This will then allow a new proxy to be created
+      around a new prototype target instance.</p>
+
+      <p>Consider the above Spring.Net object configuration. Notice that
+      the <code class="literal">IsSingleton</code> property of the
+      <code class="literal">ProxyFactoryObject</code> instance is set to false. This
+      means that each proxy object will be unique. Thus, you can configure
+      each proxy object with its' own individual advice(s) using the following
+      syntax </p><pre class="programlisting">
+<i style="color: #008000">// Will return un-advised instance of proxy object</i>
+MyInterface myProxyObject1 = (MyInterface)ctx.GetObject(<span style="color: #000000">"MyObject"</span>);
+
+<i style="color: #008000">// myProxyObject1 instance now has an advice attached to it.</i>
+IAdvised advised = (IAdvised)myProxyObject1;
+advised.AddAdvice( <span style="color: #0000FF">new</span> DebugAdvice() );
+
+<i style="color: #008000">// Will return a new, un-advised instance of proxy object</i>
+MyInterface myProxyObject2 = (MyInterface)ctx.GetObject(<span style="color: #000000">"MyObject"</span>);
+</pre>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e4209"></a>13.5.4.&nbsp;Proxying Classes</h3></div></div></div>
+      
+
+      <p>What if you need to proxy a class, rather than one or more
+      interfaces?</p>
+
+      <p>Imagine that in our example above, there was no
+      <code class="literal">IPerson</code> interface, rather we needed to advise a class
+      called <code class="literal">Person</code> that didn't implement any business
+      interface. In this case the <code class="literal">ProxyFactoryObject</code> will
+      proxy all public virtual methods and properties if no interfaces are
+      explicitly specified or if no interfaces are found to be present on the
+      target object. One can configure Spring.NET to force the use of class
+      proxies, rather than interface proxies, by setting the
+      <code class="literal">ProxyTargetType</code> property on the
+      <code class="literal">ProxyFactoryObject</code> above to true.</p>
+
+      <p>Class proxying works by generating a subclass of the target class
+      at runtime. Spring.NET configures this generated subclass to delegate
+      method calls to the original target: the subclass is used to implement
+      the <span class="emphasis"><em>Decorator</em></span> pattern, weaving in the
+      advice.</p>
+
+      <p>Class proxying should generally be transparent to users. However,
+      there is an important issue to consider:
+      <span class="emphasis"><em>Non-<code class="literal">virtual</code> methods can't be advised, as
+      they can't be overridden.</em></span> This may be a limiting factor when
+      using existing code as it has been common practice not to declare
+      methods as virtual by default.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e4223"></a>13.5.5.&nbsp;Concise proxy definitions</h3></div></div></div>
+      
+
+      <p>Especially when defining transactional proxies, if you do not make
+      use of the transaction namespace, you may end up with many similar proxy
+      definitions. The use of parent and child object definitions, along with
+      inner object definitions, can result in much cleaner and more concise
+      proxy definitions.</p>
+
+      <p>First a parent, template, object definition is created for the
+      proxy:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"txProxyTemplate"</span>  <span style="color: #FF0000">abstract</span>=<span style="color: #0000FF">"true"</span>
+            <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Transaction.Interceptor.TransactionProxyFactoryObject, Spring.Data"</span><span style="color: #A31515">&gt;</span>
+        
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"PlatformTransactionManager"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"adoTransactionManager"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TransactionAttributes"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;name-values&gt;</span>
+                <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"*"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"PROPAGATION_REQUIRED"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/name-values&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+    <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>This will never be instantiated itself, so may actually be
+      incomplete. Then each proxy which needs to be created is just a child
+      object definition, which wraps the target of the proxy as an inner
+      object definition, since the target will never be used on its own
+      anyway.</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"testObjectManager"</span> <span style="color: #FF0000">parent</span>=<span style="color: #0000FF">"txProxyTemplate"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.TestObjectManager, Spring.Data.Integration.Tests"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TestObjectDao"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"testObjectDao"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span> 
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>It is of course possible to override properties from the parent
+      template, such as in this case, the transaction propagation
+      settings:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"testObjectManager"</span> <span style="color: #FF0000">parent</span>=<span style="color: #0000FF">"txProxyTemplate"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Target"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Data.TestObjectManager, Spring.Data.Integration.Tests"</span><span style="color: #A31515">&gt;</span>
+                <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TestObjectDao"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"testObjectDao"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/object&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span> 
+        <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"TransactionAttributes"</span><span style="color: #A31515">&gt;</span>
+            <span style="color: #A31515">&lt;name-values&gt;</span>
+                <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"Save*"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"PROPAGATION_REQUIRED"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"Delete*"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"PROPAGATION_REQUIRED"</span><span style="color: #A31515">/&gt;</span>
+                <span style="color: #A31515">&lt;add</span> <span style="color: #FF0000">key</span>=<span style="color: #0000FF">"Find*"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"PROPAGATION_REQUIRED,readonly"</span><span style="color: #A31515">/&gt;</span>
+            <span style="color: #A31515">&lt;/name-values&gt;</span>
+        <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Note that in the example above, we have explicitly marked the
+      parent object definition as abstract by using the abstract attribute, as
+      described previously, so that it may not actually ever be instantiated.
+      Application contexts (but not simple object factories) will by default
+      pre-instantiate all singletons. It is therefore important (at least for
+      singleton object) that if you have a (parent) object definition which
+      you intend to use only as a template, and this definition specifies a
+      class, you must make sure to set the abstract attribute to true,
+      otherwise the application context will actually try to pre-instantiate
+      it.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-proxy-mechanism"></a>13.6.&nbsp;Proxying mechanisms</h2></div></div></div>
+    
+
+    <p>Spring creates AOP proxies built at runtime through the use of the
+    TypeBuilder API.</p>
+
+    <p>Two types of proxies can be created, composition based or
+    inheritance based. If the target object implements at least one interface
+    then a composition based proxy will be created, otherwise an inheritance
+    based proxy will be created.</p>
+
+    <p>The composition based proxy is implemented by creating a type that
+    implements all the interfaces specified on the target object. The actual
+    class name of this dynamic type is 'GUID' like. A private field holds the
+    target object and the dynamic type implementation will first execute any
+    advice before or after making the target object method call on the target
+    object.</p>
+
+    <p>The inheritance based mechanism creates a dynamic type where that
+    inherits from the target type. This lets you downcast to the target type
+    if needed. Please note that in both cases a target method implementation
+    that calls other methods on the target object will not be advised. To
+    force inheritance based proxies you should either set the
+    <code class="literal">ProxyTargetType</code> to true property of a ProxyFactory or
+    set the XML namespace element <code class="literal">proxy-target-type = true</code>
+    when using an AOP schema based configuration.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>An important alternative approach to inheritance based proxies is
+      disucssed in the next section.</p>
+    </td></tr></table></div>
+
+    <p>In .NET 2.0 you can define the assembly level attribute,
+    InternalsVisibleTo, to allow access of internal interfaces/classes to
+    specified 'friend' assemblies. If you need to create an AOP proxy on an
+    internal class/interface add the following code, [assembly:
+    InternalsVisibleTo("Spring.Proxy")] and [assembly:
+    InternalsVisibleTo("Spring.DynamicReflection")] to your to AssemblyInfo
+    file.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-inheritancebasedaopconfigurer"></a>13.6.1.&nbsp;InheritanceBasedAopConfigurer</h3></div></div></div>
+      
+
+      <p>There is an important limitation in the inheritance based proxy as
+      described above, all methods that manipulate the state of the object
+      should be declared as virtual. Otherwise some method invocations get
+      directed to the private 'target' field member and others to the base
+      class. Winform object are an example of case where this approach does
+      not apply. To address this limitation, a new post-processing mechanism
+      was introduced in version 1.2 that creates a proxy type without the
+      private 'target' field. Interception advice is added directly in the
+      method body before invoking the base class method.</p>
+
+      <p>To use this new inheritance based proxy described in the note
+      above, declare an instance of the InheritanceBasedAopConfigurer, and
+      IObjectFactoryPostProcessor, in yoru configuraiton file. Here is an
+      example.</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.AutoProxy.InheritanceBasedAopConfigurer, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ObjectNames"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;list&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>Form*<span style="color: #A31515">&lt;/value&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>Control*<span style="color: #A31515">&lt;/value&gt;</span>
+      <span style="color: #A31515">&lt;/list&gt;</span>
+  <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"InterceptorNames"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;list&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>debugInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+      <span style="color: #A31515">&lt;/list&gt;</span>
+  <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"debugInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.DebugInterceptor, AopPlay"</span><span style="color: #A31515">/&gt;</span></pre>
+
+      <p>This configuraiton style is similar to the autoproxy by name
+      approach described <a class="link" href="aop.html#aop-nameautoproxy" title="13.9.1.1.&nbsp;ObjectNameAutoProxyCreator">here</a> and is
+      particuarly appropriate when you want to apply advice to WinForm
+      classes.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-prog"></a>13.7.&nbsp;Creating AOP Proxies Programatically with the ProxyFactory</h2></div></div></div>
+    
+
+    <p>It's easy to create AOP proxies Programatically using Spring.NET.
+    This enables you to use Spring.NET AOP without dependency on Spring.NET
+    IoC.</p>
+
+    <p>The following listing shows creation of a proxy for a target object,
+    with one interceptor and one advisor. The interfaces implemented by the
+    target object will automatically be proxied:</p>
+
+    <pre class="programlisting">ProxyFactory factory = <span style="color: #0000FF">new</span> ProxyFactory(myBusinessInterfaceImpl);
+factory.AddAdvice(myMethodInterceptor);
+factory.AddAdvisor(myAdvisor);
+IBusinessInterface tb = (IBusinessInterface) factory.GetProxy();</pre>
+
+    <p>The first step is to construct an object of type
+    <code class="literal">Spring.Aop.Framework.ProxyFactory</code>. You can create this
+    with a target object, as in the above example, or specify the interfaces
+    to be proxied in an alternate constructor.</p>
+
+    <p>You can add interceptors or advisors, and manipulate them for the
+    life of the <code class="literal">ProxyFactory.</code></p>
+
+    <p>There are also convenience methods on
+    <code class="literal">ProxyFactory</code> (inherited from
+    <code class="literal">AdvisedSupport</code>) allowing you to add other advice types
+    such as before and throws advice. <code class="literal">AdvisedSupport</code> is the
+    superclass of both <code class="literal">ProxyFactory</code> and
+    <code class="literal">ProxyFactoryObject</code>.</p>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+       Integrating AOP proxy creation with the IoC framework is best practice in most applications. We recommend that you externalize configuration from .NET code with AOP, as in general. 
+    </td></tr></table></div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-advised-objects"></a>13.8.&nbsp;Manipulating Advised Objects</h2></div></div></div>
+    
+
+    <p>However you create AOP proxies, you can manipulate them using the
+    <code class="literal">Spring.Aop.Framework.IAdvised</code> interface. Any AOP proxy
+    can be cast to this interface, whatever other interfaces it implements.
+    This interface includes the following methods and properties:</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IAdvised
+{    
+    IAdvisor[] Advisors {	<span style="color: #0000FF">get</span>; }
+    
+    IIntroductionAdvisor[] Introductions { <span style="color: #0000FF">get</span>; }
+	
+    <span style="color: #0000FF">void</span>  AddInterceptor(IInterceptor interceptor);
+	
+    <span style="color: #0000FF">void</span>  AddInterceptor(<span style="color: #0000FF">int</span> pos, IInterceptor interceptor);		
+
+    <span style="color: #0000FF">void</span>  AddAdvisor(IAdvisor advisor);
+
+    <span style="color: #0000FF">void</span>  AddAdvisor(<span style="color: #0000FF">int</span> pos, IAdvisor advisor);
+		
+    <span style="color: #0000FF">void</span>  AddIntroduction(IIntroductionAdvisor advisor);
+		
+    <span style="color: #0000FF">void</span>  AddIntroduction(<span style="color: #0000FF">int</span> pos, IIntroductionAdvisor advisor);    
+
+    <span style="color: #0000FF">int</span> IndexOf(IAdvisor advisor);
+
+    <span style="color: #0000FF">int</span> IndexOf(IIntroductionAdvisor advisor);
+
+    <span style="color: #0000FF">bool</span> RemoveAdvisor(IAdvisor advisor);
+
+    <span style="color: #0000FF">void</span> RemoveAdvisor(<span style="color: #0000FF">int</span> index);
+	
+    <span style="color: #0000FF">bool</span> RemoveInterceptor(IInterceptor interceptor);
+
+    <span style="color: #0000FF">bool</span> RemoveIntroduction(IIntroductionAdvisor advisor);
+	
+    <span style="color: #0000FF">void</span> RemoveIntroduction(<span style="color: #0000FF">int</span> index);
+
+    <span style="color: #0000FF">void</span> ReplaceIntroduction(<span style="color: #0000FF">int</span> index, IIntroductionAdvisor advisor);
+
+    <span style="color: #0000FF">bool</span> ReplaceAdvisor(IAdvisor a, IAdvisor b);
+}</pre>
+
+    <p>The <code class="literal">Advisors</code> property will return an
+    <code class="literal">IAdvisor</code> for every advisor, interceptor or other advice
+    type that has been added to the factory. If you added an
+    <code class="literal">IAdvisor</code>, the returned advisor at this index will be
+    the object that you added. If you added an interceptor or other advice
+    type, Spring.NET will have wrapped this in an advisor with a
+    <code class="literal">IPointcut</code> that always returns <code class="literal">true</code>.
+    Thus if you added an <code class="literal">IMethodInterceptor</code>, the advisor
+    returned for this index will be a
+    <code class="literal">DefaultPointcutAdvisor</code> returning your
+    <code class="literal">IMethodInterceptor</code> and an <code class="literal">IPointcut</code>
+    that matches all types and methods.</p>
+
+    <p>The <code class="literal">AddAdvisor()</code> methods can be used to add any
+    <code class="literal">IAdvisor</code>. Usually this will be the generic
+    <code class="literal">DefaultPointcutAdvisor</code>, which can be used with any
+    advice or pointcut (but not for introduction).</p>
+
+    <p>By default, it's possible to add or remove advisors or interceptors
+    even once a proxy has been created. The only restriction is that it's
+    impossible to add or remove an introduction advisor, as existing proxies
+    from the factory will not show the interface change. (You can obtain a new
+    proxy from the factory to avoid this problem.)</p>
+
+    <p class="remark"><i><span class="remark">It's questionable whether it's advisable (no pun intended) to
+    modify advice on a business object in production, although there are no
+    doubt legitimate usage cases. However, it can be very useful in
+    development: for example, in tests. I have sometimes found it very useful
+    to be able to add test code in the form of an interceptor or other advice,
+    getting inside a method invocation I want to test. (For example, the
+    advice can get inside a transaction created for that method: for example,
+    to run SQL to check that a database was correctly updated, before marking
+    the transaction for roll back.)</span></i></p>
+
+    <p>Depending on how you created the proxy, you can usually set a
+    <code class="literal">Frozen</code> flag, in which case the
+    <code class="literal">IAdvised</code> <code class="literal">IsFrozen</code> property will
+    return <code class="literal">true</code>, and any attempts to modify advice through
+    addition or removal will result in an
+    <code class="literal">AopConfigException</code>. The ability to freeze the state of
+    an advised object is useful in some cases: For example, to prevent calling
+    code removing a security interceptor.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-autoproxy"></a>13.9.&nbsp;Using the "autoproxy" facility</h2></div></div></div>
+    
+
+    <p>So far we've considered explicit creation of AOP proxies using a
+    <code class="literal">ProxyFactoryObject</code> or similar factory objects. For
+    applications that would like create many AOP proxies, say across all the
+    classes in a service layer, this approach can lead to a lengthy
+    configuration file. To simplify the creation of many AOP proxies Spring
+    provides "autoproxy" capabilities that will automatically proxy object
+    definitions based on higher level criteria that will group together
+    multiple objects as candidates to be proxied.</p>
+
+    <p>This functionality is built on Spring "object post-processor"
+    infrastructure, which enables modification of any object definition as the
+    container loads. Refer to <a class="xref" href="objects.html#objects-factory-customizing" title="5.9.1.&nbsp;Customizing objects with IObjectPostProcessors">Section&nbsp;5.9.1, &#8220;Customizing objects with
+      IObjectPostProcessors&#8221;</a>
+    for general information on object post-processors.</p>
+
+    <p>In this model, you set up some special object definitions in your
+    XML object definition file configuring the auto proxy infrastructure. This
+    allows you just to declare the targets eligible for autoproxying: you
+    don't need to use <code class="literal">ProxyFactoryObject</code>.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>Using an autoproxy creator that refers to specific objects in
+        the current context.</p>
+      </li><li>
+        <p>A special case of autoproxy creation that deserves to be
+        considered separately; autoproxy creation driven by source-level
+        attributes.</p>
+      </li></ul></div>
+
+    <p>Autoproxying in general has the advantage of making it impossible
+    for callers or dependencies to obtain an un-advised object. Calling
+    GetObject("MyBusinessObject1") on an ApplicationContext will return an AOP
+    proxy, not the target business object. The "inline object" idiom shown
+    earlier in <a class="xref" href="aop.html#aop-proxying-interfaces" title="13.5.3.&nbsp;Proxying Interfaces">Section&nbsp;13.5.3, &#8220;Proxying Interfaces&#8221;</a> also offers this
+    benefit.)</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-autoproxy-choices"></a>13.9.1.&nbsp;Autoproxy object definitions</h3></div></div></div>
+      
+
+      <p>The namespace <code class="literal">Spring.Aop.Framework.AutoProxy</code>
+      provides generic autoproxy infrastructure, should you choose to write
+      your own autoproxy implementations, as well as several out-of-the-box
+      implementations. Two implementations are provided,
+      <code class="literal">ObjectNameAutoProxyCreator</code> and
+      <code class="literal">DefaultAdvisorAutoProxyCreator</code>. These are discussed
+      in the following sections.</p>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-nameautoproxy"></a>13.9.1.1.&nbsp;ObjectNameAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>The <code class="literal">ObjectNameAutoProxyCreator</code> automatically
+        creates AOP proxies for object with names matching literal values or
+        wildcards. The pattern matching expressions supported are of the form
+        "*name", "name*", and "*name*" and exact name matching, i.e. "name".
+        The following simple classes are used to demonstrate this autoproxy
+        functionality.</p>
+
+        <pre class="programlisting"><span style="color: #0000FF">public</span> <span style="color: #0000FF">enum</span> Language
+{
+    English = 1,
+    Portuguese = 2,
+    Italian = 3
+}
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> IHelloWorldSpeaker
+{
+   <span style="color: #0000FF">void</span> SayHello();
+}
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> HelloWorldSpeaker : IHelloWorldSpeaker
+{
+    <span style="color: #0000FF">private</span> Language language;
+
+    <span style="color: #0000FF">public</span> Language Language
+    {
+        <span style="color: #0000FF">set</span> { language = <span style="color: #0000FF">value</span>; }
+        <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> language; }
+    }
+
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> SayHello()
+    {
+        <span style="color: #0000FF">switch</span> (language)
+        {
+            <span style="color: #0000FF">case</span> Language.English:
+                Console.WriteLine(<span style="color: #000000">"Hello World!"</span>);
+                <span style="color: #0000FF">break</span>;
+            <span style="color: #0000FF">case</span> Language.Portuguese:
+                Console.WriteLine(<span style="color: #000000">"Oi Mundo!"</span>);
+                <span style="color: #0000FF">break</span>;
+            <span style="color: #0000FF">case</span> Language.Italian:
+                Console.WriteLine(<span style="color: #000000">"Ciao Mondo!"</span>);
+                <span style="color: #0000FF">break</span>;
+        }
+    }
+}
+
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> DebugInterceptor : IMethodInterceptor
+{
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">object</span> Invoke(IMethodInvocation invocation)
+    {
+        Console.WriteLine(<span style="color: #000000">"Before: "</span> + invocation.Method.ToString());
+        <span style="color: #0000FF">object</span> rval = invocation.Proceed();
+        Console.WriteLine(<span style="color: #000000">"After:  "</span> + invocation.Method.ToString());
+        <span style="color: #0000FF">return</span> rval;
+    }
+
+}</pre>
+
+        <p>The following XML is used to automatically create an AOP proxy
+        and apply a Debug interceptor to object definitions whose names match
+        "English*" and "PortugueseSpeaker".</p>
+
+        <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"ProxyCreator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.AutoProxy.ObjectNameAutoProxyCreator, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ObjectNames"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;list&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>English*<span style="color: #A31515">&lt;/value&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>PortugeseSpeaker<span style="color: #A31515">&lt;/value&gt;</span>
+      <span style="color: #A31515">&lt;/list&gt;</span>
+  <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"InterceptorNames"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;list&gt;</span>
+          <span style="color: #A31515">&lt;value&gt;</span>debugInterceptor<span style="color: #A31515">&lt;/value&gt;</span>
+      <span style="color: #A31515">&lt;/list&gt;</span>
+  <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"debugInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.DebugInterceptor, AopPlay"</span><span style="color: #A31515">/&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"EnglishSpeakerOne"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.HelloWorldSpeaker, AopPlay"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Language"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"English"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"EnglishSpeakerTwo"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.HelloWorldSpeaker, AopPlay"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Language"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"English"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"PortugeseSpeaker"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.HelloWorldSpeaker, AopPlay"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Language"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Portuguese"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+            
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"ItalianSpeakerOne"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.HelloWorldSpeaker, AopPlay"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"Language"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Italian"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+        <p>As with <code class="literal">ProxyFactoryObject</code>, there is an
+        InterceptorNames property rather than a list of interceptors, to allow
+        correct behavior for prototype advisors. Named "interceptors" can be
+        advisors or any advice type.</p>
+
+        <p>The same advice will be applied to all matching objects. Note
+        that if advisors are used (rather than the interceptor in the above
+        example), the pointcuts may apply differently to different
+        objects.</p>
+
+        <p>Running the following simple program demonstrates the
+        application of the AOP interceptor.</p>
+
+        <pre class="programlisting">
+IApplicationContext ctx = ContextRegistry.GetContext();
+IDictionary speakerDictionary = ctx.GetObjectsOfType(<span style="color: #0000FF">typeof</span>(IHelloWorldSpeaker));
+<span style="color: #0000FF">foreach</span> (DictionaryEntry entry <span style="color: #0000FF">in</span> speakerDictionary)
+{
+    <span style="color: #0000FF">string</span> name = (<span style="color: #0000FF">string</span>)entry.Key;
+    IHelloWorldSpeaker worldSpeaker = (IHelloWorldSpeaker)entry.Value;
+    Console.Write(name + <span style="color: #000000">" says; "</span>);
+    worldSpeaker.SayHello(); 
+}
+</pre>
+
+        <p>The output is shown below</p>
+
+        <pre class="programlisting">ItalianSpeakerOne says; Ciao Mondo!
+EnglishSpeakerTwo says; Before: Void SayHello()
+Hello World!
+After:  Void SayHello()
+PortugeseSpeaker says; Before: Void SayHello()
+Oi Mundo!
+After:  Void SayHello()
+EnglishSpeakerOne says; Before: Void SayHello()
+Hello World!
+After:  Void SayHello()</pre>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="aop-advisorautoproxy"></a>13.9.1.2.&nbsp;DefaultAdvisorAutoProxyCreator</h4></div></div></div>
+         
+
+        
+
+         
+
+        <p>A more general and extremely powerful auto proxy creator is
+        <code class="literal">DefaultAdvisorAutoProxyCreator</code>. This will
+        automatically apply eligible advisors in the current application
+        context, without the need to include specific object names in the
+        autoproxy advisor's object definition. It offers the same merit of
+        consistent configuration and avoidance of duplication as
+        <code class="literal">ObjectNameAutoProxyCreator</code>.</p>
+
+         
+
+        <p>Using this mechanism involves:</p>
+
+         
+
+        <div class="itemizedlist"><ul type="disc"><li>
+            <p>Specifying a
+            <code class="literal">DefaultAdvisorAutoProxyCreator</code> object
+            definition</p>
+          </li><li>
+            <p>Specifying any number of Advisors in the same or related
+            contexts. Note that these <span class="emphasis"><em>must</em></span> be Advisors,
+            not just interceptors or other advices. This is necessary because
+            there must be a pointcut to evaluate, to check the eligibility of
+            each advice to candidate object definitions.</p>
+          </li></ul></div>
+
+         
+
+        <p>The <code class="literal">DefaultAdvisorAutoProxyCreator</code> will
+        automatically evaluate the pointcut contained in each advisor, to see
+        what (if any) advice it should apply to each object defined in the
+        application context.</p>
+
+         
+
+        <p>This means that any number of advisors can be applied
+        automatically to each business object. If no pointcut in any of the
+        advisors matches any method in a business object, the object will not
+        be proxied.</p>
+
+         
+
+        <p>The <code class="literal">DefaultAdvisorAutoProxyCreator</code> is very
+        useful if you want to apply the same advice consistently to many
+        business objects. Once the infrastructure definitions are in place,
+        you can simply add new business objects without including specific
+        proxy configuration. You can also drop in additional aspects very
+        easily--for example, tracing or performance monitoring aspects--with
+        minimal change to configuration.</p>
+
+         
+
+        <p>The following example demonstrates the use of
+        <code class="literal">DefaultAdvisorAutoProxyCreator</code>. Expanding on the
+        previous example code used to demonstrate
+        <code class="literal">ObjectNameAutoProxyCreator</code> we will add a new class,
+        <code class="literal">SpeakerDao</code>, that acts as a Data Access Object to
+        find and store <code class="literal">IHelloWorldSpeaker</code> objects.
+        </p><pre class="programlisting">
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">interface</span> ISpeakerDao
+{
+    IList FindAll();
+
+    IHelloWorldSpeaker Save(IHelloWorldSpeaker speaker);
+}
+
+<span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> SpeakerDao : ISpeakerDao
+{
+    <span style="color: #0000FF">public</span> System.Collections.IList FindAll()
+    {
+        Console.WriteLine(<span style="color: #000000">"Finding speakers..."</span>);
+	<i style="color: #008000">// just a demo...fake the retrieval.</i>
+        Thread.Sleep(10000);
+        HelloWorldSpeaker speaker = <span style="color: #0000FF">new</span> HelloWorldSpeaker();
+        speaker.Language = Language.Portuguese;
+
+        IList list = <span style="color: #0000FF">new</span> ArrayList();
+        list.Add(speaker);
+        <span style="color: #0000FF">return</span> list;
+    }
+
+    <span style="color: #0000FF">public</span> IHelloWorldSpeaker Save(IHelloWorldSpeaker speaker)
+    {
+        Console.WriteLine(<span style="color: #000000">"Saving speaker..."</span>);
+        <i style="color: #008000">// just a demo...not really saving...</i>
+        <span style="color: #0000FF">return</span> speaker;
+    }
+
+}
+</pre>
+
+         The XML configuration specifies two Advisors, that is, the combination of advice (the behavior to add) and a pointcut (where the behavior should be applied). A 
+
+        <code class="literal">RegularExpressionMethodPointcutAdvisor</code>
+
+         is used as a convenience to specify the pointcut as a regular expression that matches methods names. Other pointcuts of your own creation could be used, in which case a 
+
+        <code class="literal">DefaultPointcutAdvisor</code>
+
+         would be used to define the Advisor. The object definitions for these advisors, advice, and SpeakerDao object are shown below 
+
+        <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"SpeachAdvisor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.RegularExpressionMethodPointcutAdvisor, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"advice"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"debugInterceptor"</span><span style="color: #A31515">/&gt;</span>            
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"patterns"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*Say.*<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"AdoAdvisor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.RegularExpressionMethodPointcutAdvisor, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"advice"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"timingInterceptor"</span><span style="color: #A31515">/&gt;</span>            
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"patterns"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;list&gt;</span>
+            <span style="color: #A31515">&lt;value&gt;</span>.*Find.*<span style="color: #A31515">&lt;/value&gt;</span>
+        <span style="color: #A31515">&lt;/list&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+    
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+// Advice
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"debugInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.DebugInterceptor, AopPlay"</span><span style="color: #A31515">/&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"timingInterceptor"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.TimingInterceptor, AopPlay"</span><span style="color: #A31515">/&gt;</span>
+
+// Speaker DAO Object - has 'FindAll' Method.
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"speakerDao"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"AopPlay.SpeakerDao, AopPlay"</span><span style="color: #A31515">/&gt;</span>
+
+// HelloWorldSpeaker objects as previously listed.
+
+</pre>
+
+         
+
+        <p>Adding an instance of
+        <code class="literal">DefaultAdvisorAutoProxyCreator</code> to the configuration
+        file </p><pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"ProxyCreator"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.AutoProxy.DefaultAdvisorAutoProxyCreator, Spring.Aop"</span><span style="color: #A31515">/&gt;</span></pre><p>
+        will apply the debug interceptor on all objects in the context that
+        have a method that contains the text "Say" and apply the timing
+        interceptor on objects in the context that have a method that contains
+        the text "Find". Running the following code demonstrates this
+        behavior. Note that the "Save" method of SpeakerDao does not have any
+        advice applied to it.</p>
+
+         
+
+        <pre class="programlisting">
+IApplicationContext ctx = ContextRegistry.GetContext();
+IDictionary speakerDictionary = ctx.GetObjectsOfType(<span style="color: #0000FF">typeof</span>(IHelloWorldSpeaker));
+<span style="color: #0000FF">foreach</span> (DictionaryEntry entry <span style="color: #0000FF">in</span> speakerDictionary)
+{
+    <span style="color: #0000FF">string</span> name = (<span style="color: #0000FF">string</span>)entry.Key;
+    IHelloWorldSpeaker worldSpeaker = (IHelloWorldSpeaker)entry.Value;
+    Console.Write(name + <span style="color: #000000">" says; "</span>);
+    worldSpeaker.SayHello(); 
+}
+ISpeakerDao dao = (ISpeakerDao)ctx.GetObject(<span style="color: #000000">"speakerDao"</span>);
+IList speakerList = dao.FindAll();
+IHelloWorldSpeaker speaker = dao.Save(<span style="color: #0000FF">new</span> HelloWorldSpeaker());
+</pre>
+
+         
+
+        <p>This produces the following output</p>
+
+         
+
+        <pre class="programlisting">
+ItalianSpeakerOne says; Before: Void SayHello()
+Ciao Mondo!
+After:  Void SayHello()
+EnglishSpeakerTwo says; Before: Void SayHello()
+Hello World!
+After:  Void SayHello()
+PortugeseSpeaker says; Before: Void SayHello()
+Oi Mundo!
+After:  Void SayHello()
+EnglishSpeakerOne says; Before: Void SayHello()
+Hello World!
+After:  Void SayHello()
+Finding speakers...
+Elapsed time = 00:00:10.0154745
+Saving speaker...
+</pre>
+
+         
+
+        <p>The DefaultAdvisorAutoProxyCreator offers support for filtering
+        (using a naming convention so that only certain advisors are
+        evaluated, allowing use of multiple, differently configured,
+        AdvisorAutoProxyCreators in the same factory) and ordering. Advisors
+        can implement the <code class="literal">Spring.Core.IOrdered</code> interface to
+        ensure correct ordering if this is an issue. The default is
+        unordered.</p>
+
+         
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4364"></a>13.9.1.3.&nbsp;PointcutFilteringAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>An AutoProxyCreator that identified objects to proxy by matching
+        a specified <code class="literal">IPointcut</code>.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4368"></a>13.9.1.4.&nbsp;TypeNameAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>An AutoProxyCreator that identifies objects to proxy by matching
+        their <code class="literal">Type.FullName</code> against a list of
+        patterns.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4372"></a>13.9.1.5.&nbsp;AttributeAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>An AutoProxyCreator, that identifies objects to be proxied by
+        checking any System.Attribute defined on a given type and that types
+        interfaces.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4375"></a>13.9.1.6.&nbsp;AbstractFilteringAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>The base class for AutoProxyCreator implementations that mark
+        objects eligible for proxying based on arbitrary criteria.</p>
+      </div>
+
+      <div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d4e4378"></a>13.9.1.7.&nbsp;AbstractAutoProxyCreator</h4></div></div></div>
+        
+
+        <p>This is the superclass of DefaultAdvisorAutoProxyCreator. You
+        can create your own autoproxy creators by subclassing this class, in
+        the unlikely event that advisor definitions offer insufficient
+        customization to the behavior of the framework
+        <code class="literal">DefaultAdvisorAutoProxyCreator</code>.</p>
+      </div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-autoproxy-metadata"></a>13.9.2.&nbsp;Using attribute-driven auto-proxying</h3></div></div></div>
+      
+
+      <p>A particularly important type of autoproxying is driven by
+      attributes. The programming model is similar to using Enterprise
+      Services with ServicedComponents.</p>
+
+      <p>In this case, you use the
+      <code class="literal">DefaultAdvisorAutoProxyCreator</code>, in combination with
+      Advisors that understand attributes. The Advisor pointcut is identified
+      by the presence of .NET attribute in the source code and it is
+      configured via the data and/or methods of the attribute. This is a
+      powerful alternative to identifying the advisor pointcut and advice
+      configuration through traditional property configuration, either
+      programmatic or through XML based configuration.</p>
+
+      <p>Several of the aspect provided with Spring use attribute driven
+      autoproxying. The most prominent example is <a class="link" href="transaction.html" title="Chapter&nbsp;17.&nbsp;Transaction management">Transaction</a> support.</p>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-namespace"></a>13.10.&nbsp;Using AOP Namespace</h2></div></div></div>
+    
+
+    <p>The AOP namespace allows you to define an advisor, i.e pointcut + 1
+    piece of advice, in a more declarative manner. Under the covers the
+    DefaultAdvisorAutoProxyCreator is being used. Here is an example,</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+		<span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span>
+		<span style="color: #FF0000">xmlns:aop</span>=<span style="color: #0000FF">"http://www.springframework.net/aop"</span><span style="color: #A31515">&gt;</span>
+
+	<span style="color: #A31515">&lt;aop:config&gt;</span>
+
+		<span style="color: #A31515">&lt;aop:advisor</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"getDescriptionAdvisor"</span> <span style="color: #FF0000">pointcut-ref</span>=<span style="color: #0000FF">"getDescriptionCalls"</span> <span style="color: #FF0000">advice-ref</span>=<span style="color: #0000FF">"getDescriptionCounter"</span><span style="color: #A31515">/&gt;</span>
+
+	<span style="color: #A31515">&lt;/aop:config&gt;</span>
+
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"getDescriptionCalls"</span> 
+		<span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Support.SdkRegularExpressionMethodPointcut, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+		<span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"patterns"</span><span style="color: #A31515">&gt;</span>
+			<span style="color: #A31515">&lt;list&gt;</span>
+				<span style="color: #A31515">&lt;value&gt;</span>.*GetDescription.*<span style="color: #A31515">&lt;/value&gt;</span>
+			<span style="color: #A31515">&lt;/list&gt;</span>
+		<span style="color: #A31515">&lt;/property&gt;</span>
+	<span style="color: #A31515">&lt;/object&gt;</span>
+	
+	
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"getDescriptionCounter"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.CountingBeforeAdvice, Spring.Aop.Tests"</span><span style="color: #A31515">/&gt;</span>
+
+	<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"testObject"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Objects.TestObject, Spring.Core.Tests"</span><span style="color: #A31515">/&gt;</span>
+
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+    <p>In this example, the TestObject, which implements the interface
+    ITestObject, is having AOP advice applied to it. The method
+    GetDescription() is specified as a regular expression pointcut. The
+    aop:config tag and subsequent child tag, aop:advisor, brings together the
+    pointcut with the advice.</p>
+
+    <p>In order to have Spring.NET recognise the aop namespace, you need to
+    declare the namespace parser in the main Spring.NET configuration section.
+    For convenience this is shown below. Please refer to the section titled
+    <a class="link" href="objects.html#context-configuration" title="5.11.&nbsp;Configuration of IApplicationContext">context configuration</a>
+    for more extensive information..</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"context"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ContextHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.DefaultSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+        
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span> 
+        
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+
+    <span style="color: #A31515">&lt;parsers&gt;</span> 
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Config.AopNamespaceParser, Spring.Aop"</span><span style="color: #A31515"> /&gt;</span> 
+    <span style="color: #A31515">&lt;/parsers&gt;</span>
+                                            
+        
+    <span style="color: #A31515">&lt;context&gt;</span>
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515">/&gt;</span>       
+    <span style="color: #A31515">&lt;/context&gt;</span>     
+
+    <span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+        ...
+    <span style="color: #A31515">&lt;/objects&gt;</span>
+
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span>
+        </pre>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-targetsource"></a>13.11.&nbsp;Using TargetSources</h2></div></div></div>
+    
+
+    <p>Spring.NET offers the concept of a
+    <span class="emphasis"><em>TargetSource</em></span>, expressed in the
+    <code class="literal">Spring.Aop.ITargetSource</code> interface. This interface is
+    responsible for returning the "target object" implementing the joinpoint.
+    The <code class="literal">TargetSource</code> implementation is asked for a target
+    instance each time the AOP proxy handles a method invocation.</p>
+
+    <p>Developers using Spring.NET AOP don't normally need to work directly
+    with TargetSources, but this provides a powerful means of supporting
+    pooling, hot swappable and other sophisticated targets. For example, a
+    pooling TargetSource can return a different target instance for each
+    invocation, using a pool to manage instances.</p>
+
+    <p>If you do not specify a TargetSource, a default implementation is
+    used that wraps a local object. The same target is returned for each
+    invocation (as you would expect).</p>
+
+    <p>Let's look at the standard target sources provided with Spring.NET,
+    and how you can use them.</p>
+
+    <p class="remark"><i><span class="remark">When using a custom target source, your target will usually need
+    to be a prototype rather than a singleton object definition. This allows
+    Spring.NET to create a new target instance when required.</span></i></p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-ts-swap"></a>13.11.1.&nbsp;Hot swappable target sources</h3></div></div></div>
+      
+
+      <p>The
+      <code class="literal">org.Spring.NETframework.aop.target.HotSwappableTargetSource</code>
+      exists to allow the target of an AOP proxy to be switched while allowing
+      callers to keep their references to it.</p>
+
+      <p>Changing the target source's target takes effect immediately. The
+      <code class="literal">HotSwappableTargetSource</code> is thread safe.</p>
+
+      <p>You can change the target via the <code class="literal">swap()</code> method
+      on HotSwappableTargetSource as follows:</p>
+
+      <pre class="programlisting">HotSwappableTargetSource swapper = 
+    (HotSwappableTargetSource) objectFactory.GetObject(<span style="color: #000000">"swapper"</span>);
+<span style="color: #0000FF">object</span> oldTarget = swapper.swap(newTarget);</pre>
+
+      <p>The XML definitions required look as follows:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"initialTarget"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.OldTarget, MyCompany"</span><span style="color: #A31515">&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"swapper"</span> 
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Target.HotSwappableTargetSource, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg&gt;</span><span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">local</span>=<span style="color: #0000FF">"initialTarget"</span><span style="color: #A31515">/&gt;</span><span style="color: #A31515">&lt;/constructor-arg&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"swappable"</span> 
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">
+&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetSource"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;ref</span> <span style="color: #FF0000">local</span>=<span style="color: #0000FF">"swapper"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>The above <code class="literal">swap()</code> call changes the target of the
+      swappable object. Clients who hold a reference to that object will be
+      unaware of the change, but will immediately start hitting the new
+      target.</p>
+
+      <p>Although this example doesn't add any advice--and it's not
+      necessary to add advice to use a <code class="literal">TargetSource</code>--of
+      course any <code class="literal">TargetSource</code> can be used in conjunction
+      with arbitrary advice.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-ts-pool"></a>13.11.2.&nbsp;Pooling target sources</h3></div></div></div>
+      
+
+      <p>Using a pooling target source provides a programming model in
+      which a pool of identical instances is maintained, with method
+      invocations going to free objects in the pool.</p>
+
+      <p>A crucial difference between Spring.NET pooling and pooling in
+      .NET Enterprise Services pooling is that Spring.NET pooling can be
+      applied to any PONO. (Plain old .NET object). As with Spring.NET in
+      general, this service can be applied in a non-invasive way.</p>
+
+      <p>Spring.NET provides out-of-the-box support using a pooling
+      implementation based on Jakarta Commons Pool 1.1, which provides a
+      fairly efficient pooling implementation. It's also possible to subclass
+      <code class="literal">Spring.Aop.Target.AbstractPoolingTargetSource</code> to
+      support any other pooling API.</p>
+
+      <p>Sample configuration is shown below:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"businessObjectTarget"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"MyCompany.MyBusinessObject, MyCompany"</span> <span style="color: #FF0000">singleton</span>=<span style="color: #0000FF">"false"</span><span style="color: #A31515">&gt;</span>
+    ... properties omitted
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"poolTargetSource"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Target.SimplePoolTargetSource, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"businessObjectTarget"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"maxSize"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"25"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"businessObject"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Framework.ProxyFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetSource"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"poolTargetSource"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"interceptorNames"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"myInterceptor"</span><span style="color: #A31515">/&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>Note that the target object--"businessObjectTarget" in the
+      example--<span class="emphasis"><em>must</em></span> be a prototype. This allows the
+      <code class="literal">PoolingTargetSource</code> implementation to create new
+      instances of the target to grow the pool as necessary. See the SDK
+      documentation for <code class="literal">AbstractPoolingTargetSource</code> and the
+      concrete subclass you wish to use for information about it's properties:
+      maxSize is the most basic, and always guaranteed to be present.</p>
+
+      <p>In this case, "myInterceptor" is the name of an interceptor that
+      would need to be defined in the same IoC context. However, it isn't
+      necessary to specify interceptors to use pooling. If you want only
+      pooling, and no other advice, don't set the interceptorNames property at
+      all.</p>
+
+      <p>It's possible to configure Spring.NET so as to be able to cast any
+      pooled object to the <code class="literal">Spring.Aop.Target.PoolingConfig</code>
+      interface, which exposes information about the configuration and current
+      size of the pool through an introduction. You'll need to define an
+      advisor like this:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"poolConfigAdvisor"</span> 
+    <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Object.Factory.Config.MethodInvokingFactoryObject, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"target"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"poolTargetSource"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetMethod"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"getPoolingConfigMixin"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>This advisor is obtained by calling a convenience method on the
+      <code class="literal">AbstractPoolingTargetSource</code> class, hence the use of
+      <code class="literal">MethodInvokingFactoryObject</code>. This advisor's name
+      (<code class="literal">'poolConfigAdvisor'</code> here) must be in the list of
+      interceptor names in the <code class="literal">ProxyFactoryObject</code> exposing
+      the pooled object.</p>
+
+      <p>The cast will look as follows:</p>
+
+      <pre class="programlisting">PoolingConfig conf = (PoolingConfig) objectFactory.GetObject(<span style="color: #000000">"businessObject"</span>);
+Console.WriteLine(<span style="color: #000000">"Max pool size is "</span> + conf.getMaxSize());</pre>
+
+      <p class="remark"><i><span class="remark">Pooling stateless service objects is not usually necessary. We
+      don't believe it should be the default choice, as most stateless objects
+      are naturally threadsafe, and instance pooling is problematic if
+      resources are cached.</span></i></p>
+
+      <p>Simpler pooling is available using autoproxying. It's possible to
+      set the TargetSources used by any autoproxy creator.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aop-ts-prototype"></a>13.11.3.&nbsp;Prototype target sources</h3></div></div></div>
+      
+
+      <p>Setting up a "prototype" target source is similar to a pooling
+      TargetSource. In this case, a new instance of the target will be created
+      on every method invocation. Although the cost of creating a new object
+      may not be high, the cost of wiring up the new object (satisfying its
+      IoC dependencies) may be more expensive. Thus you shouldn't use this
+      approach without very good reason.</p>
+
+      <p>To do this, you could modify the
+      <code class="literal">poolTargetSource</code> definition shown above as follows.
+      (the name of the definition has also been changed, for clarity.)</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"prototypeTargetSource"</span> 
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Target.PrototypeTargetSource, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"businessObject"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+      <p>There is only one property: the name of the target object.
+      Inheritance is used in the TargetSource implementations to ensure
+      consistent naming. As with the pooling target source, the target object
+      must be a prototype object definition, the singleton property of the
+      target should be set to false.</p>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e4457"></a>13.11.4.&nbsp;ThreadLocal target sources</h3></div></div></div>
+      
+
+      <p>ThreadLocal target sources are useful if you need an object to be
+      created for each incoming request (per thread that is). The concept of a
+      ThreadLocal provides a facility to transparently store resource
+      alongside a thread. Setting up a ThreadLocalTargetSource is pretty much
+      the same as was explained for the other types of target source:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"threadlocalTargetSource"</span> 
+        <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Aop.Target.ThreadLocalTargetSource, Spring.Aop"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"targetObjectName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"businessObject"</span><span style="color: #A31515"> /&gt;</span>
+<span style="color: #A31515">&lt;/object&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-extensibility"></a>13.12.&nbsp;Defining new Advice types</h2></div></div></div>
+    
+
+    <p>Spring.NET AOP is designed to be extensible. While the interception
+    implementation strategy is presently used internally, it is possible to
+    support arbitrary advice types in addition to interception around, before,
+    throws, and after returning advice, which are supported out of the
+    box.</p>
+
+    <p>The <code class="literal">Spring.Aop.Framework.Adapter</code> package is an
+    SPI (Service Provider Interface) package allowing support for new custom
+    advice types to be added without changing the core framework. The only
+    constraint on a custom Advice type is that it must implement the
+    <code class="literal">AopAlliance.Aop.IAdvice</code> tag interface.</p>
+
+    <p>Please refer to the <code class="literal">Spring.Aop.Framework.Adapter</code>
+    namespace documentation for further information.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="aop-futher-reading"></a>13.13.&nbsp;Further reading and resources</h2></div></div></div>
+    
+
+    <p>The Spring.NET team recommends the excellent <span class="emphasis"><em>AspectJ in
+    Action</em></span> by Ramnivas Laddad (Manning, 2003) for an introduction
+    to AOP.</p>
+
+    <p>If you are interested in more advanced capabilities of Spring.NET
+    AOP, take a look at the test suite as it illustrates advanced features not
+    discussed in this document.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="validation.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="aop-aspect-library.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;12.&nbsp;Validation Framework&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;14.&nbsp;Aspect Library</td></tr></table></div></body></html>

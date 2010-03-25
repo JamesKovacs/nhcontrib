@@ -1,0 +1,176 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;45.&nbsp;TIBCO EMS QuickStart</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"><link rel="prev" href="nms-quickstart.html" title="Chapter&nbsp;44.&nbsp;NMS QuickStart"><link rel="next" href="msmq-quickstart.html" title="Chapter&nbsp;46.&nbsp;MSMQ QuickStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="ems-quickstart"></a>Chapter&nbsp;45.&nbsp;TIBCO EMS QuickStart</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11123"></a>45.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The TIBCO EMS quick start application demonstrates how to use
+    asynchronous messaging to implement a system for purchasing a stock. To
+    purchase a stock, a client application will send a stock request message
+    containing the information about the stock, i.e. ticker symbol, quantity,
+    etc. The client request message will be received by the server where it
+    will perform business processing on the request, for example to determine
+    if the user has sufficient credit to purchase the stock or if the user is
+    even allowed to make the purchase due to existing account restrictions.
+    These are typically external processes as well. Usually the server
+    application will persist state about the request and forward it on to an
+    execute venue where the actual execution of the stock request is
+    performed. In addition, market data for the stock will be sent from the
+    server process to the client. The high level exchange of information is
+    shown below.</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart.jpg" width="405"></div>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>To follow this EMS QuickStart load the solution file found in the
+      directory
+      <code class="literal">&lt;spring-install-dir&gt;\examples\Spring\Spring.EmsQuickStart</code></p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11132"></a>45.2.&nbsp;Message Destinations</h2></div></div></div>
+    
+
+    <p>To implement this flow using messaging the following queues and
+    topics will be used. All requests from the client to the server will be
+    sent on the queue named APP.STOCK.REQUEST. Responses to the requests will
+    be sent from the server to the client on a queue unique to each client. In
+    this example the queue name is of the form APP.STOCK.&lt;UserName&gt;, and
+    more specifically is configured to be APP.STOCK.JOE. Market data does not
+    need to be delivered to an individual client as many client applications
+    are interested in this shared information. As such, the server will send
+    market data information on a topic named APP.STOCK.MARKETDATA. The
+    messaging communication between the server and the execution venue is not
+    included as part of the application. An local implementation of the
+    service interface that represents the execution venue is used instead of
+    one based on messaging or another middleware technology. The messaging
+    flow showing the queues and topics used is shown below.</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart-msg-destinations.jpg" width="405"></div>
+
+    <p>Queues are shown in red and topics in green.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11139"></a>45.3.&nbsp;Messaging Infrastructure</h2></div></div></div>
+    
+
+    <p>Much of this application mirrors the quickstart that is available
+    with ActiveMQ and you should refer to the NMS QuickStart for the
+    description on how the application in structured in terms of Gateway,
+    Message Data formats, Message Handler, and Message Converters. What this
+    section describeds are the specific configuration related to using TIBCO
+    EMS.</p>
+
+    <p>The implementations of the gateway interfaces inherit from Spring's
+    helper class <code class="literal">EmsGatewaySupport</code> in order to get easy
+    access to a <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsTemplate</span> for sending. The
+    implementation of the <code class="literal">IStockService</code> interface is shown
+    below</p>
+
+    <pre class="programlisting">    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> EmsStockServiceGateway : EmsGatewaySupport, IStockService
+    {
+        <span style="color: #0000FF">private</span> Destination defaultReplyToQueue;
+        
+        <span style="color: #0000FF">public</span> Destination DefaultReplyToQueue
+        {
+            <span style="color: #0000FF">set</span> { defaultReplyToQueue = <span style="color: #0000FF">value</span>; }
+        }
+
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">void</span> Send(TradeRequest tradeRequest)
+        {            
+            EmsTemplate.ConvertAndSendWithDelegate(tradeRequest, <span style="color: #0000FF">delegate</span>(Message message)
+                                                                     {
+                                                                         message.ReplyTo = defaultReplyToQueue;
+                                                                         message.CorrelationID = <span style="color: #0000FF">new</span> Guid().ToString();
+                                                                         <span style="color: #0000FF">return</span> message;
+                                                                     });
+        }        
+    }</pre>
+
+    <p>The <code class="literal">Send</code> method is using EmsTemplate's
+    <code class="literal">ConvertAndSendWithDelegate(object obj,
+    MessagePostProcessorDelegate messagePostProcessorDelegate)</code>
+    method. The anonymous delegate allows you to modify the message
+    properties, such as ReplyTo and CorrelationID after the message has been
+    converted from an object but before it has been sent. The use of an
+    anonymous delegate allows makes it very easy to apply any post processing
+    logic to the converted message.</p>
+
+    <p>The object definition for the
+    <code class="literal">EmsStockServiceGateway</code> is shown below along with its
+    dependent object definitions of <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">EmsTemplate</span> and the
+    <span xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="color: #2B91AF">ConnectionFactory</span>.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Common.EmsConnectionFactory, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">index</span>=<span style="color: #0000FF">"0"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"tcp://localhost:7222"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+  <i style="color: #008000">&lt;!-- EMS based implementation of technology neutral IStockServiceGateway --&gt;</i>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"StockServiceGateway"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.EmsQuickStart.Client.Gateways.EmsStockServiceGateway, Spring.EmsQuickStart.Client"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"EmsTemplate"</span>  <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"EmsTemplate"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultReplyToQueue"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"TIBCO.EMS.Queue, TIBCO.EMS"</span><span style="color: #A31515">&gt;</span>
+        <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"APP.STOCK.JOE"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;/object&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"EmsTemplate"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Messaging.Ems.Core.EmsTemplate, Spring.Messaging.Ems"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"ConnectionFactory"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"DefaultDestinationName"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"APP.STOCK.REQUEST"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"MessageConverter"</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"XmlMessageConverter"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre><p>In this example the
+    <code class="literal">Spring.Messaging.Ems.Common.EmsConnectionFactory
+    </code>connection factory was used. It would be more efficient resource
+    wise to use Spring's <code class="literal">CachingConnectionFactory</code> wrapper
+    class so that connections will not be open and closed for each message
+    send as well as allowing for the caching of other intermediate EMS API
+    objects such as sessions and message producers.</p>
+
+    <p>A similar configuration is used on the server to configure the class
+    <code class="literal">Spring.EmsQuickStart.Server.Gateways.MarketDataServiceGateway
+    </code>that implements the <code class="literal">IMarketDataService</code>
+    interface.</p>
+
+    <p>Since the client is also a consumer of messages, on the topic
+    APP.STOCK.MARKETDATA and the queue APP.STOCK.JOE (for Trader Joe!), two
+    message listener containers are defined as shown below.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;ems:listener-container</span> <span style="color: #FF0000">connection-factory</span>=<span style="color: #0000FF">"ConnectionFactory"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;ems:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.JOE"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;ems:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.MARKETDATA"</span> <span style="color: #FF0000">pubsub-domain</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/ems:listener-container&gt;</span></pre>
+
+    <p>Refer to the <a class="link" href="messaging.html" title="Chapter&nbsp;29.&nbsp;Message Oriented Middleware - Apache ActiveMQ and TIBCO EMS">messages reference
+    docs</a> for all the available attributes to configure the container
+    and also the section on <a class="link" href="xsd-config.html#xsd-config-body-schemas-nms" title="B.2.6.&nbsp;The nms messaging schema">registering the EMS schema</a>
+    with Spring..</p>
+
+    <p>On the server we define a message listener container for the queue
+    APP.STOCK.REQUEST but set the concurrency property to 10 so that 10
+    threads will be consuming messages from the queue.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;ems:listener-container</span> <span style="color: #FF0000">connection-factory</span>=<span style="color: #0000FF">"ConnectionFactory"</span> <span style="color: #FF0000">concurrency</span>=<span style="color: #0000FF">"</span><span class="bold"><strong>10</strong></span>"&gt;
+    <span style="color: #A31515">&lt;ems:listener</span> <span style="color: #FF0000">ref</span>=<span style="color: #0000FF">"MessageListenerAdapter"</span> <span style="color: #FF0000">destination</span>=<span style="color: #0000FF">"APP.STOCK.REQUEST"</span><span style="color: #A31515"> /&gt;</span>
+  <span style="color: #A31515">&lt;/ems:listener-container&gt;</span></pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e11169"></a>45.4.&nbsp;Running the application</h2></div></div></div>
+    
+
+    <p>To run both the client and server make sure that you select
+    'Multiple Startup Projects' within VS.NET. The GUI has a button to make a
+    hardcoded trade request and show confirmation in a text box. A text area
+    is used to display the market data. There is a 'Get Portfolio' button that
+    is not implemented at the moment. A picture of the GUI after it has been
+    running for a while and trade has been sent and responded to is shown
+    below</p>
+
+    <div class="mediaobject"><img src="images/nms-quickstart-gui.png"></div>
+
+    <p></p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="nms-quickstart.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="msmq-quickstart.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;44.&nbsp;NMS QuickStart&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;46.&nbsp;MSMQ QuickStart</td></tr></table></div></body></html>

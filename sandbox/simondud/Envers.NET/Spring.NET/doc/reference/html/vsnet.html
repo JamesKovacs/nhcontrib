@@ -1,0 +1,310 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;34.&nbsp;Visual Studio.NET Integration</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-vsnet.html" title="Part&nbsp;VI.&nbsp;VS.NET Integration"><link rel="prev" href="spring-vsnet.html" title="Part&nbsp;VI.&nbsp;VS.NET Integration"><link rel="next" href="spring-quickstarts.html" title="Part&nbsp;VII.&nbsp;Quickstart applications"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="vsnet"></a>Chapter&nbsp;34.&nbsp;Visual Studio.NET Integration</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="vsnet-config-section"></a>34.1.&nbsp;XML Editing and Validation</h2></div></div></div>
+    
+
+    <p>Most of this section is well travelled territory for those familiar
+    with editing XML files in their favorite XML editor. The XML configuration
+    data that defines the objects that Spring will manage for you are
+    validated against the Spring.NET XML Schema at runtime. The location of
+    the XML configuration data to create an
+    <code class="literal">IApplicationContext</code> can be any of the resource
+    locations supported by Spring's <code class="literal">IResource</code> abstraction.
+    (See <a class="xref" href="resources.html#objects-iresource" title="7.1.&nbsp;Introduction">Section&nbsp;7.1, &#8220;Introduction&#8221;</a> for more information.) To create
+    an <code class="literal">IApplicationContext</code> using a "standalone" XML
+    configuration file the custom configuration section in the standard .NET
+    application configuration would read:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;spring&gt;</span>
+
+  <span style="color: #A31515">&lt;context&gt;</span>
+    <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"file://objects.xml"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/context&gt;</span>
+
+<span style="color: #A31515">&lt;/spring&gt;</span></pre>
+
+    <p>The VS.NET 2005 or later, the XML editor uses the attribute
+    <code class="literal">xsi:schemaLocation</code> as a hint to associate the physical
+    location of a schema file with the XML document being edited. VS.NET
+    2002/2003 do not recognize the <code class="literal">xsi:schemaLocation</code>
+    element. If you reference the Spring.NET XML schema as shown below, you
+    can get intellisense and validation support while editing a Spring
+    configuration file in VS.NET 2005/2008. In order to get this functionality
+    in VS.NET 2002/2003 you will need to register the schema with VS.NET or
+    include the schema as part of your application project.</p>
+
+    <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+	<span style="color: #FF0000">xmlns:xsi</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema-instance"</span>
+	<span style="color: #FF0000">xsi:schemaLocation</span>=<span style="color: #0000FF">"http://www.springframework.net http://www.springframework.net/xsd/spring-objects.xsd"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"..."</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"..."</span><span style="color: #A31515">&gt;</span>
+  ...
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"..."</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"..."</span><span style="color: #A31515">&gt;</span>
+  ...
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  ...
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+    <p>It is typically more convenient to install the schema in VS.NET,
+    even for VS.NET 2005/2008, as it makes the xml a little less verbose and
+    you don't need to keep copying the XSD file for each project you create.
+    For VS.NET 2003 the schema directory is</p>
+
+    <div class="table"><a name="d4e9612"></a><div class="title">Table&nbsp;34.1.&nbsp;</div><div class="table-contents">
+      
+
+      <table summary="" border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Visual Studio Version&nbsp;</th><th align="center">Directory to put Spring .XSD files&nbsp;</th></tr></thead><tbody><tr><td>VS.NET 2003</td><td><code class="literal">C:\Program Files\Microsoft Visual Studio .NET
+            2003\Common7\Packages\schemas\xml</code></td></tr><tr><td>VS.NET 2005</td><td><code class="literal">C:\Program Files\Microsoft Visual Studio
+            8\Xml\Schemas</code></td></tr><tr><td>VS.NET 2008</td><td><code class="literal">C:\Program Files\Microsoft Visual Studio
+            9.0\Xml\Schemas</code></td></tr></tbody></table>
+    </div></div><br class="table-break">
+
+    <p>Spring's .xsd schemas are located in the directory doc/schema. In
+    that directory is also a NAnt build file to help copy over the .xsd files
+    to the appropriate VS.NET locations. To execute this script simply type
+    '<code class="literal">nant</code>' in the doc/schema directory.</p>
+
+    <p>Once you have registered the schema with VS.NET you can adding only
+    the namespace declaration to the objects element,</p>
+
+    <pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"..."</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"..."</span><span style="color: #A31515">&gt;</span>
+  ...
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"..."</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"..."</span><span style="color: #A31515">&gt;</span>
+  ...
+  <span style="color: #A31515">&lt;/object&gt;</span>
+  ...
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+
+    <p>Once registered, the namespace declaration alone is sufficient to
+    get intellisense and validation of the configuration file from within
+    VS.NET. Alternatively, you can select the .xsd file to use by setting the
+    targetSchema property in the Property Sheet for the configuration
+    file.</p>
+
+    <p>As shown in the section <a class="xref" href="objects.html#objects-factory-client" title="5.2.3.&nbsp;Using the container">Section&nbsp;5.2.3, &#8220;Using the container&#8221;</a>
+    Spring.NET supports using .NET's application configuration file as the
+    location to store the object definitions that will be managed by the
+    object factory.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"context"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.ContextHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"objects"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.DefaultSectionHandler, Spring.Core"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+
+    <span style="color: #A31515">&lt;context&gt;</span>
+      <span style="color: #A31515">&lt;resource</span> <span style="color: #FF0000">uri</span>=<span style="color: #0000FF">"config://spring/objects"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/context&gt;</span>
+
+    <span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">&gt;</span>
+        ...
+    <span style="color: #A31515">&lt;/objects&gt;</span>
+
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span>
+    </pre>
+
+    <p>In this case VS.NET 2003 will still provide you with intellisense
+    help but you will not be able to fully validate the document as the entire
+    schema for App.config is not known. To be able to validate this document
+    one would need to install the <a class="ulink" href="http://www.radsoftware.com.au/articles/intellisensewebconfig.aspx" target="_top">.NET
+    Configuration File schema</a> and an additional schema that
+    incorporates the <code class="literal">&lt;spring&gt;</code> and
+    <code class="literal">&lt;context&gt;</code> section in addition to the
+    <code class="literal">&lt;objects&gt;</code> would need to be created.</p>
+
+    <p>Validating schema is a new feature in VS 2005 or later. It is
+    validating all the time while you edit, you will see any errors that it
+    finds in the Error List window.</p>
+
+    <p>Keep these trade offs in mind as you decide where to place the bulk
+    of your configuration information. Conventional wisdom is do quick
+    prototyping with App.config and use another IResource location, file or
+    embedded assembly resource, for serious development.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9648"></a>34.2.&nbsp;Solution Templates</h2></div></div></div>
+    
+
+    <p>Solution templates for VS.NET 2008 are provided to get you up and
+    running quickly with a Spring.NET based application or library. Four
+    templates are provided and there are plans for more. All the templates
+    aside from the web template have been created using <a class="link" href="http://solutionfactory.codeplex.com/" target="_top">SolutionFactory VS.NET
+    Add-in</a>. The source to creating the templates is not included in the
+    distribution now, so please download the source from the <a class="link" href="https://src.springframework.org/svn/spring-net/trunk" target="_top">subversion
+    repository</a> if you are interested in making modifications.</p>
+
+    <p>To install the templates</p>
+
+    <div class="orderedlist"><ol type="1"><li>
+        <p>Add the registry key
+        <code class="literal">[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\AssemblyFolders\MyAssemblies]</code>
+        and set the value to be the directory
+        <code class="literal">&lt;spring.net-install-directory\bin\net\2.0</code></p>
+      </li><li>
+        <p>In the directory
+        <code class="literal">&lt;spring.net-install-directory&gt;\dev-support\vs.net-2008</code>
+        run the batch file <code class="literal">install-templates.bat</code></p>
+      </li></ol></div>
+
+    <p>In VS.NET 2008 when you create a new project you will see the
+    category Spring.NET and the four solution templates as shown below</p>
+
+    <div class="mediaobject"><img src="images/vsnet-solution-templates.png"></div>
+
+    <p>All of the templates have the required Spring dependencies set and
+    Spring application configuration files are present and ready for you to
+    add object definitions.</p>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9668"></a>34.2.1.&nbsp;Class Library</h3></div></div></div>
+      
+
+      <p>The simplest of the solution templates is the Spring Class
+      Library. This creates a solution with two class library projects, one
+      for you application classes that will be managed by Spring and another
+      testing project. The projects have starter files to write XML based
+      object definitions and also refer to Spring.NET .dlls as needed. The
+      testing project refers to Spring.Testing.NUnit which provides
+      integration testing support. A screen shot of the generated Class
+      Library solution is shown below.</p>
+
+      <div class="mediaobject"><img src="images/vsnet-classlib-sln.png"></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9674"></a>34.2.2.&nbsp;ADO.NET based application library</h3></div></div></div>
+      
+
+      <p>This solution template provides a service layer project, ADO.NET
+      based data access layer and an unit/integration testing project.</p>
+
+      <div class="mediaobject"><img src="images/vsnet-ado-sln.png"></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9680"></a>34.2.3.&nbsp;NHibernate based application library</h3></div></div></div>
+      
+
+      <p>This solution template provides a service layer project,
+      NHibernate based data access layer and an unit/integration testing
+      project.</p>
+
+      <div class="mediaobject"><img src="images/vsnet-nh-sln.png"></div>
+    </div>
+
+    <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d4e9686"></a>34.2.4.&nbsp;Spring based web application</h3></div></div></div>
+      
+
+      <p>This solution template provides a Spring based web layer project,
+      service layer project, ADO.NET based data access layer project and an
+      unit/integration testing project. You will need to set the reference of
+      the App.Web project to refer to the App.Web.References project
+      manually.</p>
+
+      <div class="mediaobject"><img src="images/vsnet-web-sln.png"></div>
+    </div>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9692"></a>34.3.&nbsp;Resharper Type Completion</h2></div></div></div>
+    
+
+    <p>Resharper supports intellisence completion for the value of the type
+    attribute when editing Spring's XML files. The key combination is
+    Shift+Alt+Space. This is shown below for the case of specifying the type
+    of a DAO object in the NHibernate sample application</p>
+
+    <div class="mediaobject"><img src="images/resharper-type-completion-1.png"></div>
+
+    <p>You start to type the name of the class and will get a filter list.
+    In this case we are typing HibernateOrderDao.</p>
+
+    <div class="mediaobject"><img src="images/resharper-type-completion-2.png"></div>
+
+    <p>Hittingn 'enter' will then insert the fully qualfied type name with
+    the namespace but not the assembly reference. To add the assembly
+    reference either hit 'CTRL+ENTER" or select the yellow 'light bulb' to and
+    select 'add module qualification'.</p>
+
+    <div class="mediaobject"><img src="images/resharper-type-completion-3.png"></div>
+
+    <p>You will need to remove the extraneous 'Verstion' information. This
+    will leave you with the following object definition.</p>
+
+    <div class="mediaobject"><img src="images/resharper-type-completion-4.png"></div>
+
+    <p>If you use Spring's autowiring functionality, then you can even
+    avoid having to type the property information when referring to
+    collaborating objects. See <a class="xref" href="objects.html#objects-factory-autowire" title="5.3.6.&nbsp;Autowiring collaborators">Section&nbsp;5.3.6, &#8220;Autowiring collaborators&#8221;</a>.
+    for more information on autowiring.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e9712"></a>34.4.&nbsp;Resharper templates</h2></div></div></div>
+    
+
+    <p>Resharper offers live templates for assistance while coding as well
+    as file templates. Spring 1.3 provides a few of each type to help you be
+    more efficient when performing common configuration related tasks. To
+    install the templates follow the directions in the 'dev-support'
+    directory. One installed the following templates are available</p>
+
+    <p></p>
+
+    <div class="mediaobject"><img src="images/resharper-live-templates.png"></div>
+
+    <div class="mediaobject"><img src="images/resharper-file-templates.png"></div>
+
+    <p>For example, to set a property reference for the object definition
+    from the previous chapter, type 'odpr' (<span class="bold"><strong>O</strong></span>bject <span class="bold"><strong>D</strong></span>efinition
+    <span class="bold"><strong>P</strong></span>roperty <span class="bold"><strong>R</strong></span>eference) and you will be prompted to hit 'tab' to
+    complete the XML fragment.</p>
+
+    <div class="mediaobject"><img src="images/resharper-property-ref-1.png"></div>
+
+    <p>Hitting tab will generate the XML to use for an object property
+    values</p>
+
+    <div class="mediaobject"><img src="images/resharper-property-ref-2.png"></div>
+
+    <p>You will need to type the name of the property and name of the
+    reference. Unfortunately, intellisence for property completion and ref
+    completion is not available. Typing the missing information in then leaves
+    the completed object definition.</p>
+
+    <div class="mediaobject"><img src="images/resharper-property-ref-3.png"></div>
+
+    <p>There are similar live templates for object property values
+    (<code class="literal">odpv</code>), object constructors (<code class="literal">odctor</code>)
+    and object definitions (<code class="literal">odef</code>)</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="vsnet-schema-versions"></a>34.5.&nbsp;Versions of XML Schema</h2></div></div></div>
+    
+
+    <p>The latest version of the schema will always be located under
+    <code class="literal">http://www.springframework.net/xsd/ </code>The filename of the
+    .xsd files contains the first Spring.NET version to which they
+    apply.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="vsnet-api-help"></a>34.6.&nbsp;API documentation</h2></div></div></div>
+    
+
+    <p>Spring provides API documentation that can be integrated within
+    Visual Studio. There are two versions of the documentation, one for .NET
+    1.1 and one for .NET 2.0/3.0. They differ only in the format applied and
+    the versions of VS.NET that supported. There is also standalone HTMLHELP
+    format API documentation. You will need to download the help file
+    seperately from the distribution.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="spring-vsnet.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spring-quickstarts.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;VI.&nbsp;VS.NET Integration&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;VII.&nbsp;Quickstart applications</td></tr></table></div></body></html>

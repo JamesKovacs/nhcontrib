@@ -1,0 +1,5 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ReferencePath>D:\pub\write\NHibernate-2.1.2.GA-src\src\</ReferencePath>
+  </PropertyGroup>
+</Project>

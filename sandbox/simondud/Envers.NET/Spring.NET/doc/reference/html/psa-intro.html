@@ -1,0 +1,72 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;24.&nbsp;Introduction to Spring Services</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-services.html" title="Part&nbsp;IV.&nbsp;Services"><link rel="prev" href="spring-services.html" title="Part&nbsp;IV.&nbsp;Services"><link rel="next" href="remoting.html" title="Chapter&nbsp;25.&nbsp;.NET Remoting"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="psa-intro"></a>Chapter&nbsp;24.&nbsp;Introduction to Spring Services</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d4e7767"></a>24.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The goal of Spring's integration with distributed technologies is to
+    adapt plain .NET objects so they can be used with a specific distributed
+    technology. This integration is designed to be as non-intrusive as
+    possible. If you need to expose an object to a remote process then you can
+    define an exporter for that object. Similarly, on the client side you
+    define an corresponding endpoint accessor. Of course, the object's methods
+    still need to be suitable for remoting, i.e. coarse grained, to avoid
+    making unnecessary and expensive remote calls.</p>
+
+    <p>Since these exporters and client side endpoint accessors are defined
+    using meta data for Spring IoC container, you can easily use dependency
+    injection on them to set initial state and to 'wire up' the presentation
+    tier, such as web forms, to the service layer. In addition, you may apply
+    AOP aspects to the exported classes and/or service endpoints to apply
+    behavior such as logging, security, or other custom behavior that may not
+    be provided by the target distributed technology. The Spring specific
+    terminology for this approach to object distribution is known as Portable
+    Service Abstractions (PSA). As a result of this approach, you can decide
+    much later in the development process the technical details of how you
+    will distribute your objects as compared to traditional code centric
+    approaches. Changing of the implementation is done though configuration of
+    the IoC container and not by recompilation. Of course, you may choose to
+    not use the IoC container to manage these objects and use the exporter and
+    service endpoints programatically.</p>
+
+    <p>The diagram shown below is a useful way to demonstrate the key
+    abstractions in the Spring tool chest and their interrelationships. The
+    four key concepts are; plain .NET objects, Dependency Injection, AOP, and
+    Portable Service Abstractions. At the heart sits the plain .NET object
+    that can be instantiated and configured using dependency injection. Then,
+    optionally, the plain object can be adapted to a specific distributed
+    technology. Lastly, additional behavior can be applied to objects. This
+    behavior is typically that which can not be easily address by traditional
+    OO approaches such as inheritance. In the case of service layer, common
+    requirements such as 'the service layer must be transactional' are
+    implemented in a manner that naturally expresses that intention in a
+    single place, as compared to scattered code across the service
+    layer.</p>
+
+    <div class="mediaobject"><img src="images/spring-triangle.png" width="270"></div><p>Spring implements this exporter functionality by creating
+    a proxy at runtime that meets the implementation requirements of a
+    specific distributed technology. In the case of .NET Remoting the proxy
+    will inherit from MarshalByRef, for EnterpriseServices it will inherit
+    from ServicedComponent and for aspx web services, WebMethod attributes
+    will be added to methods. Client side functionality is often implemented
+    by a thin layer over the client access mechanism of the underlying
+    distributed technology, though in some cases such as client side access to
+    web services, you have the option to create a proxy on the fly from the
+    .wsdl definition, much like you would have done using the command line
+    tools.</p>
+
+    <p>The common implementation theme for you as a provider of these
+    service objects is to implement an interface. This is generally considered
+    a best practice in its own right, you will see most pure WCF examples
+    following this practice, and also lends itself to a straightforward
+    approach to unit testing business functionality as stub or mock
+    implementations may be defined for testing purposes.</p>
+
+    <p>The assembly <code class="literal">Spring.Services.dll</code> contains support
+    for <a class="link" href="remoting.html" title="Chapter&nbsp;25.&nbsp;.NET Remoting">.NET Remoting</a>, <a class="link" href="services.html" title="Chapter&nbsp;26.&nbsp;.NET Enterprise Services">Enterprise Services</a> and <a class="link" href="webservices.html" title="Chapter&nbsp;27.&nbsp;Web Services">ASMX Web Services</a>. Support for WCF services
+    is planned for Spring 1.2 and is currently in the CVS repository if you
+    care to take an early look.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="spring-services.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="remoting.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;IV.&nbsp;Services&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;25.&nbsp;.NET Remoting</td></tr></table></div></body></html>

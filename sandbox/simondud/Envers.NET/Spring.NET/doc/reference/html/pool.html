@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;9.&nbsp;Object Pooling</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-core.html" title="Part&nbsp;I.&nbsp;Core Technologies"><link rel="prev" href="threading.html" title="Chapter&nbsp;8.&nbsp;Threading and Concurrency Support"><link rel="next" href="misc.html" title="Chapter&nbsp;10.&nbsp;Spring.NET miscellanea"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="pool"></a>Chapter&nbsp;9.&nbsp;Object Pooling</h2></div></div></div>
+  
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="pool-introduction"></a>9.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>The Spring.Pool namespace contains a generic API for implementing
+    pools of objects. Object pooling is a well known technique to minimize the
+    creation of objects that can take a significant amount of time. Common
+    examples are to create a pool of database connections such that each
+    request to the database can reuse an existing connection instead of
+    creating one per client request. Threads are also another common candidate
+    for pooling in order to increase responsiveness of an application to
+    multiple concurrent client requests.</p>
+
+    <p>.NET contains support for object pooling in these common scenarios.
+    Support for database connection pools is directly supported by ADO.NET
+    data providers as a configuration option. Similarly, thread pooling is
+    supported via the System.ThreadPool class. Support for pooling of other
+    objects can be done using the CLR managed API to COM+ found in the
+    System.EnterpriseServices namespace.</p>
+
+    <p>Despite this built-in support there are scenarios where you would
+    like to use alternative pool implementations. This may be because the
+    default implementations, such as System.ThreadPool, do not meet your
+    requirements. (For a discussion on advanced ThreadPool usage see <a class="ulink" href="http://www.codeproject.com/csharp/SmartThreadPool.asp" target="_top"> Smart Thread
+    Pool</a> by Ami Bar.) Alternatively, you may want to pool classes that
+    do not inherit from
+    <code class="literal">System.EnterpriseServices.ServicedComponent</code>. Instead of
+    making changes to the object model to meet this inheritance requirement,
+    Spring .NET provides similar support for pooling, but for any object, by
+    using AOP proxies and a generic pool API for managing object
+    instances.</p>
+
+    <p>Note, that if you are concerned only with applying pooling to an
+    existing object, the pooling APIs discussed here are not very important.
+    Instead the use and configuration of
+    <code class="literal">Spring.Aop.Target.SimplePoolTargetSource</code> is more
+    relevant. Pooling of objects can either be done Programatically or through
+    the XML configuration of the Spring .NET container. Attribute support for
+    pooling, similar to the ServicedComponent approach, will be available in a
+    future release of Spring.NET.</p>
+
+    <p><a class="xref" href="quickstarts.html" title="Chapter&nbsp;35.&nbsp;IoC Quickstarts">Chapter&nbsp;35, <i>IoC Quickstarts</i></a> contains an example that shows the
+    use of the pooling API independent of AOP functionality.</p>
+  </div>
+
+  <div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="pool-api"></a>9.2.&nbsp;Interfaces and Implementations</h2></div></div></div>
+    
+
+    <p>The <code class="literal">Spring.Pool</code> namespace provides two simple
+    interfaces to manage pools of objects. The first interface,
+    <code class="literal">IObjectPool</code> describes how to take and put back an
+    object from the pool. The second interface
+    <code class="literal">IPoolableObjectFactory</code> is meant to be used in
+    conjunction with implementations of the <code class="literal">IObjectPool</code>
+    to provide guidance in calling various lifecycle events on the objects
+    managed by the pool. These interfaces are based on the Jakarta Commons
+    Pool API. <code class="literal">Spring.Pool.Support.SimplePool</code> is a
+    default implementation of <code class="literal">IObjectPool</code> and
+    <code class="literal">Spring.Aop.Target.SimplePoolTargetSource</code> is the
+    implementation of <code class="literal">IPoolableObjectFactory</code> for use
+    with AOP. The current goal of the Spring.Pool namespace is not to provide
+    a one-for-one replacement of the Jakarta Commons Pool API, but rather to
+    support basic object pooling needs for common AOP scenarios. Consequently,
+    other interfaces and base classes available in the Jakarta package are not
+    available.</p>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="threading.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="misc.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;8.&nbsp;Threading and Concurrency Support&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;10.&nbsp;Spring.NET miscellanea</td></tr></table></div></body></html>

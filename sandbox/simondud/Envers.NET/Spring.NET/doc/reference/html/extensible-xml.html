@@ -1,0 +1,364 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Appendix&nbsp;C.&nbsp;Extensible XML authoring</title><link rel="stylesheet" href="styles/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot_8103"><link rel="home" href="index.html" title="The Spring.NET Framework"><link rel="up" href="spring-appendices.html" title="Part&nbsp;IX.&nbsp;Appendices"><link rel="prev" href="xsd-config.html" title="Appendix&nbsp;B.&nbsp;XML Schema-based configuration"><link rel="next" href="springobjectsxsd.html" title="Appendix&nbsp;D.&nbsp;Spring.NET's spring-objects.xsd"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.net/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/S2-banner-rhs.png"></img></a></div><div class="appendix" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="extensible-xml"></a>Appendix&nbsp;C.&nbsp;Extensible XML authoring</h2></div></div></div>
+  
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-introduction"></a>C.1.&nbsp;Introduction</h2></div></div></div>
+    
+
+    <p>Spring supports adding custom schema-based extensions to the basic
+    Spring XML format for defining and configuring objects. This section is
+    devoted to detailing how you would go about writing your own custom XML
+    object definition parsers and integrating such parsers into the Spring IoC
+    container.</p>
+
+    <p>To facilitate the authoring of configuration files using a
+    schema-aware XML editor, Spring's extensible XML configuration mechanism
+    is based on XML Schema. If you are not familiar with Spring's current XML
+    configuration extensions that come with the standard Spring distribution,
+    please first read the appendix entitled <a class="xref" href="xsd-config.html" title="Appendix&nbsp;B.&nbsp;XML Schema-based configuration">Appendix&nbsp;B, <i>XML Schema-based configuration</i></a>.</p>
+
+    <p>Creating new XML configuration extensions can be done by following
+    these (relatively) simple steps:</p>
+
+    <div class="orderedlist"><ol type="1"><li>
+          <p><a class="link" href="extensible-xml.html#extensible-xml-schema" title="C.2.&nbsp;Authoring the schema">Authoring</a> an XML
+          schema to describe your custom element(s).</p>
+        </li><li>
+          <p><a class="link" href="extensible-xml.html#extensible-xml-namespaceparser" title="C.3.&nbsp;Coding a INamespaceParser">Coding</a>
+          a custom <code class="literal">INamespaceParser</code>
+          implementation (this is an easy step, don't worry).</p>
+        </li><li>
+          <p><a class="link" href="extensible-xml.html#extensible-xml-parser" title="C.4.&nbsp;Coding an IObjectDefinitionParser">Coding</a> one or
+          more <code class="literal">IObjectDefinitionParser</code>
+          implementations (this is where the real work is done).</p>
+        </li><li>
+          <p><a class="link" href="extensible-xml.html#extensible-xml-registration" title="C.5.&nbsp;Registering the handler and the schema">Registering</a>
+          the above artifacts with Spring (this too is an easy step).</p>
+        </li></ol></div>
+
+    <p>What follows is a description of each of these steps. For the
+    example, we will create an XML extension (a custom XML element) that
+    allows us to configure objects of the type <code class="literal">Regex</code>
+    (from the <code class="literal">System.Text.RegularExpressions</code> namespace) in
+    an easy manner. When we are done, we will be able to define object
+    definitions of type <code class="literal">Regex</code> like this:</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;myns:regex</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"regex"</span>
+            <span style="color: #FF0000">pattern</span>=<span style="color: #0000FF">"(^\d{5}$)|(^\d{5}-\d{4}$)"</span>
+            <span style="color: #FF0000">options</span>=<span style="color: #0000FF">"Compiled"</span><span style="color: #A31515">/&gt;</span>
+</pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-schema"></a>C.2.&nbsp;Authoring the schema</h2></div></div></div>
+    
+
+    <p>Creating an XML configuration extension for use with Spring's IoC
+    container starts with authoring an XML Schema to describe the extension.
+    What follows is the schema we'll use to configure
+    <code class="literal">Regex</code> objects.</p>
+
+    <pre class="programlisting">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+<span style="color: #A31515">&lt;xsd:schema</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"myns"</span>
+           <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.mycompany.com/schema/myns"</span>
+           <span style="color: #FF0000">xmlns:xsd</span>=<span style="color: #0000FF">"http://www.w3.org/2001/XMLSchema"</span>
+           <span style="color: #FF0000">xmlns:objects</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+           <span style="color: #FF0000">xmlns:vs</span>=<span style="color: #0000FF">"http://schemas.microsoft.com/Visual-Studio-Intellisense"</span>
+           <span style="color: #FF0000">targetNamespace</span>=<span style="color: #0000FF">"http://www.mycompany.com/schema/myns"</span>
+           <span style="color: #FF0000">elementFormDefault</span>=<span style="color: #0000FF">"qualified"</span>
+           <span style="color: #FF0000">attributeFormDefault</span>=<span style="color: #0000FF">"unqualified"</span>
+           <span style="color: #FF0000">vs:friendlyname</span>=<span style="color: #0000FF">"Spring Regex Configuration"</span> <span style="color: #FF0000">vs:ishtmlschema</span>=<span style="color: #0000FF">"false"</span>
+           <span style="color: #FF0000">vs:iscasesensitive</span>=<span style="color: #0000FF">"true"</span> <span style="color: #FF0000">vs:requireattributequotes</span>=<span style="color: #0000FF">"true"</span>
+           <span style="color: #FF0000">vs:defaultnamespacequalifier</span>=<span style="color: #0000FF">""</span> <span style="color: #FF0000">vs:defaultnsprefix</span>=<span style="color: #0000FF">""</span><span style="color: #A31515">
+           &gt;</span>
+
+  <span style="color: #A31515">&lt;xsd:import</span> <span style="color: #FF0000">namespace</span>=<span style="color: #0000FF">"http://www.springframework.net"</span><span style="color: #A31515">/&gt;</span>
+
+  <span style="color: #A31515">&lt;xsd:element</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"regex"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;xsd:complexType&gt;</span>
+      <span style="color: #A31515">&lt;xsd:complexContent&gt;</span>
+        <span style="color: #A31515">&lt;xsd:extension</span> <span style="color: #FF0000">base</span>=<span style="color: #0000FF">"objects:identifiedType"</span><span style="color: #A31515">&gt;</span>
+          <span style="color: #A31515">&lt;xsd:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"pattern"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xsd:string"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"required"</span><span style="color: #A31515">/&gt;</span>
+          <span style="color: #A31515">&lt;xsd:attribute</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"options"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"xsd:string"</span> <span style="color: #FF0000">use</span>=<span style="color: #0000FF">"optional"</span><span style="color: #A31515">/&gt;</span>
+        <span style="color: #A31515">&lt;/xsd:extension&gt;</span>
+      <span style="color: #A31515">&lt;/xsd:complexContent&gt;</span>
+    <span style="color: #A31515">&lt;/xsd:complexType&gt;</span>
+  <span style="color: #A31515">&lt;/xsd:element&gt;</span>
+
+<span style="color: #A31515">&lt;/xsd:schema&gt;</span>    </pre>
+
+    <p>The emphasized line contains an extension base for all tags that
+    will be identifiable (meaning they have an <code class="literal">id</code> attribute
+    that will be used as the object identifier in the container). We are able
+    to use this attribute because we imported the Spring-provided
+    <code class="literal">'objects'</code> namespace. The <code class="literal">vs:</code>
+    prefixed elements are for better integration with intellisense in
+    VS.NET.</p>
+
+    <p>The above schema will be used to configure
+    <code class="literal">Regex</code> objects, directly in an XML application
+    context file using the <code class="literal">&lt;myns:regex/&gt;</code>
+    element.</p>
+
+    <pre class="programlisting"><span style="color: #A31515">&lt;myns:regex</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"usZipCodeRegex"</span>
+            <span style="color: #FF0000">pattern</span>=<span style="color: #0000FF">"(^\d{5}$)|(^\d{5}-\d{4}$)"</span>
+            <span style="color: #FF0000">options</span>=<span style="color: #0000FF">"Compiled"</span><span style="color: #A31515">/&gt;</span></pre>
+
+    <p>Note that after we've created the infrastructure classes, the above
+    snippet of XML will essentially be exactly the same as the following XML
+    snippet. In other words, we're just creating an object in the container,
+    identified by the name <code class="literal">'usZipCodeRegex'</code> of type
+    <code class="literal">Regex</code>, with a couple of constructor arguments
+    set.</p>
+
+    <pre class="programlisting">  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"usZipCodeRegex"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"System.Text.RegularExpressions.Regex, System"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"pattern"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"(^\d{5}$)|(^\d{5}-\d{4}$)"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;constructor-arg</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"options"</span> <span style="color: #FF0000">value</span>=<span style="color: #0000FF">"Compiled"</span><span style="color: #A31515">/&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span></pre>
+
+    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/admons/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top">
+      <p>The schema-based approach to creating configuration format allows
+      for tight integration with an IDE that has a schema-aware XML editor.
+      Using a properly authored schema, you can use intellisense to have a
+      user choose between several configuration options defined in the
+      enumeration. The schema for creating IDbProvider instances shows the use
+      of XSD enumerations.</p>
+    </td></tr></table></div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-namespaceparser"></a>C.3.&nbsp;Coding a <code class="literal">INamespaceParser</code></h2></div></div></div>
+    
+
+    <p>In addition to the schema, we need an
+    <code class="literal">INamespaceParser</code> that will parse all
+    elements of this specific namespace Spring encounters while parsing
+    configuration files. The <code class="literal">INamespaceParser</code>
+    should in our case take care of the parsing of the
+    <code class="literal">myns:regex</code> element.</p>
+
+    <p>The <code class="literal">INamespaceParser</code> interface is
+    pretty simple in that it features just two methods:</p>
+
+    <div class="itemizedlist"><ul type="disc" compact><li>
+        <p><code class="methodname">Init()</code> - allows for initialization of
+        the <code class="literal">INamespaceParser</code> and will be
+        called by Spring before the handler is used</p>
+      </li><li>
+        <p><code class="methodname">IObjectDefinition Parse(Element,
+        ParserContext)</code> - called when Spring encounters a
+        top-level element (not nested inside a object definition or a
+        different namespace). This method can register object definitions
+        itself and/or return a object definition.</p>
+      </li></ul></div>
+
+    <p>Although it is perfectly possible to code your own
+    <code class="literal">INamespaceParser</code> for the entire namespace
+    (and hence provide code that parses each and every element in the
+    namespace), it is often the case that each top-level XML element in a
+    Spring XML configuration file results in a single object definition (as in
+    our case, where a single <code class="literal">&lt;myns:regex/&gt;</code> element
+    results in a single <code class="literal">Regex</code> object definition).
+    Spring features a number of convenience classes that support this
+    scenario. In this example, we'll make use the
+    <code class="literal">NamespaceParserSupport</code> class:</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">using</span> Spring.Objects.Factory.Xml;
+
+<span style="color: #0000FF">namespace</span> CustomNamespace
+{
+    [NamespaceParser(
+        Namespace = <span style="color: #000000">"http://www.mycompany.com/schema/myns"</span>,
+        SchemaLocationAssemblyHint = <span style="color: #0000FF">typeof</span>(MyNamespaceParser),
+        SchemaLocation = <span style="color: #000000">"/CustomNamespace/myns.xsd"</span>
+        )
+    ]
+    <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> MyNamespaceParser : NamespaceParserSupport
+    {
+        <span style="color: #0000FF">public</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> Init()
+        {
+            RegisterObjectDefinitionParser(<span style="color: #000000">"regex"</span>, <span style="color: #0000FF">new</span> RegexObjectDefinitionParser());
+        }
+    }
+}</pre>
+
+    <p>Notice that there isn't actually a whole lot of parsing logic in
+    this class. Indeed... the <code class="literal">NamespaceParserSupport</code>
+    class has a built in notion of delegation. It supports the registration of
+    any number of <code class="literal">IObjectDefinitionParser</code>
+    instances, to which it will delegate to when it needs to parse an element
+    in it's namespace. This clean separation of concerns allows an
+    <code class="literal">INamespaceParser</code> to handle the
+    orchestration of the parsing of <span class="emphasis"><em>all</em></span> of the custom
+    elements in it's namespace, while delegating to
+    <code class="literal">IObjectDefinitionParsers</code> to do the grunt work of the
+    XML parsing; this means that each
+    <code class="literal">IObjectDefinitionParser</code> will contain just
+    the logic for parsing a single custom element, as we can see in the next
+    step.</p>
+
+    <p>To help in the registration of the parser for this namespace, the
+    <code class="literal">NamespaceParser</code> attribute is used to map the XML
+    namespace string, i.e.
+    <code class="literal">http://www.mycompany.com/schema/myns</code>, to the location
+    of the XML Schema file as an embedded assembly resource.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-parser"></a>C.4.&nbsp;Coding an
+    <code class="literal">IObjectDefinitionParser</code></h2></div></div></div>
+    
+
+    <p>A <code class="literal">IObjectDefinitionParser</code> will be
+    used if the <code class="literal">INamespaceParser</code> encounters an
+    XML element of the type that has been mapped to the specific object
+    definition parser (which is <code class="literal">'regex'</code> in this case). In
+    other words, the <code class="literal">IObjectDefinitionParser</code> is
+    responsible for parsing <span class="emphasis"><em>one</em></span> distinct top-level XML
+    element defined in the schema. In the parser, we'll have access to the XML
+    element (and thus it's subelements too) so that we can parse our custom
+    XML content, as can be seen in the following example:</p>
+
+    <pre class="programlisting"><span style="color: #0000FF">using</span> System;
+<span style="color: #0000FF">using</span> System.Text.RegularExpressions;
+<span style="color: #0000FF">using</span> System.Xml;
+<span style="color: #0000FF">using</span> Spring.Objects.Factory.Support;
+<span style="color: #0000FF">using</span> Spring.Objects.Factory.Xml;
+<span style="color: #0000FF">using</span> Spring.Util;
+
+<span style="color: #0000FF">namespace</span> CustomNamespace
+{
+   <span style="color: #0000FF">public</span> <span style="color: #0000FF">class</span> RegexObjectDefinitionParser : AbstractSimpleObjectDefinitionParser { <a name="extensible-xml-parser-simpledateformat-co-1"></a><img src="images/callouts/1.png" alt="1" border="0">
+
+   <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> Type GetObjectType(XmlElement element)
+   {
+     <span style="color: #0000FF">return</span> <span style="color: #0000FF">typeof</span> (Regex); <a name="extensible-xml-parser-simpledateformat-co-2"></a><img src="images/callouts/2.png" alt="2" border="0">
+   }
+
+   <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">void</span> DoParse(XmlElement element, ObjectDefinitionBuilder builder)
+   {
+       <i style="color: #008000">// this will never be null since the schema explicitly requires that a value be supplied</i>
+       <span style="color: #0000FF">string</span> pattern = element.GetAttribute(<span style="color: #000000">"pattern"</span>);
+       builder.AddConstructorArg(pattern);
+
+       <i style="color: #008000">// this however is an optional property</i>
+       <span style="color: #0000FF">string</span> options = element.GetAttribute(<span style="color: #000000">"options"</span>);
+       <span style="color: #0000FF">if</span> (StringUtils.HasText(options))
+       {
+          RegexOptions regexOptions = (RegexOptions)Enum.Parse(<span style="color: #0000FF">typeof</span> (RegexOptions), options);
+          builder.AddConstructorArg(regexOptions);
+       }
+   }
+
+   <span style="color: #0000FF">protected</span> <span style="color: #0000FF">override</span> <span style="color: #0000FF">bool</span> ShouldGenerateIdAsFallback
+   {
+      <span style="color: #0000FF">get</span> { <span style="color: #0000FF">return</span> <span style="color: #0000FF">true</span>; }
+   }
+}
+</pre>
+
+    <div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#extensible-xml-parser-simpledateformat-co-1"><img src="images/callouts/1.png" alt="1" border="0"></a> </p></td><td valign="top" align="left">
+        <p>We use the Spring-provided
+        <code class="literal">AbstractSingleObjectDefinitionParser</code> to handle
+        a lot of the basic grunt work of creating a
+        <span class="emphasis"><em>single</em></span>
+        <code class="literal">IObjectDefinition</code>.</p>
+      </td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#extensible-xml-parser-simpledateformat-co-2"><img src="images/callouts/2.png" alt="2" border="0"></a> </p></td><td valign="top" align="left">
+        <p>We supply the
+        <code class="literal">AbstractSingleObjectDefinitionParser</code> superclass
+        with the type that our single
+        <code class="literal">IObjectDefinition</code> will
+        represent.</p>
+      </td></tr></table></div>
+
+    <p>In this simple case, this is all that we need to do. The creation of
+    our single <code class="literal">IObjectDefinition</code> is handled by
+    the <code class="literal">AbstractSingleObjectDefinitionParser</code>
+    superclass, as is the extraction and setting of the object definition's
+    unique identifier. The property
+    <code class="literal">ShouldGenerateIdAsFallback</code> will generate a throw-away
+    object id incase one is not specified, this is useful when nesting object
+    definitions.</p>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-registration"></a>C.5.&nbsp;Registering the handler and the schema</h2></div></div></div>
+    
+
+    <p>The coding is finished! All that remains to be done is to somehow
+    make the Spring XML parsing infrastructure aware of our custom element; we
+    do this by registering our custom
+    <code class="literal">INamespaceParser</code> using a special
+    configuration section handler. The location of the XML Schema in this
+    example has been directly assoicated with the parser though the use of the
+    <code class="literal">Namespace</code> attribute.</p>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensible-xml-registration-spring-handlers"></a>C.5.1.&nbsp;<code class="filename">NamespaceParsersSectionHandler</code></h3></div></div></div>
+      
+
+      <p>The custom configuration section handler is of the type
+      <code class="literal">Spring.Context.Support.NamespaceParsersSectionHandler</code>
+      and is registered with .NET in the normal manner. The custom
+      configuration section will simply point to the
+      <code class="literal">INamespaceParser</code> implementation that has the
+      <code class="literal">Namespace</code> attribute. For our example, we need to
+      write the following:</p>
+
+      <pre class="programlisting"><span style="color: #A31515">&lt;configuration&gt;</span>
+
+  <span style="color: #A31515">&lt;configSections&gt;</span>
+    <span style="color: #A31515">&lt;sectionGroup</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"spring"</span><span style="color: #A31515">&gt;</span>
+      <span style="color: #A31515">&lt;section</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"parsers"</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"Spring.Context.Support.NamespaceParsersSectionHandler, Spring.Core"</span><span style="color: #A31515">/&gt;</span>
+     <span style="color: #A31515">&lt;/sectionGroup&gt;</span>
+  <span style="color: #A31515">&lt;/configSections&gt;</span>
+
+  <span style="color: #A31515">&lt;spring&gt;</span>
+    <span style="color: #A31515">&lt;parsers&gt;</span>
+      <span style="color: #A31515">&lt;parser</span> <span style="color: #FF0000">type</span>=<span style="color: #0000FF">"CustomNamespace.MyNamespaceParser, CustomNamespace"</span><span style="color: #A31515"> /&gt;</span>
+    <span style="color: #A31515">&lt;/parsers&gt;</span>
+  <span style="color: #A31515">&lt;/spring&gt;</span>
+
+<span style="color: #A31515">&lt;/configuration&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-using"></a>C.6.&nbsp;Using a custom extension in your Spring XML configuration</h2></div></div></div>
+    
+
+    <p>Using a custom extension that you yourself have implemented is no
+    different from using one of the 'custom' extensions that Spring provides
+    straight out of the box. Find below an example of using the custom
+    <code class="literal">&lt;regex/&gt;</code> element developed in the previous steps
+    in a Spring XML configuration file.</p>
+
+    <pre class="programlisting">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+<span style="color: #A31515">&lt;objects</span> <span style="color: #FF0000">xmlns</span>=<span style="color: #0000FF">"http://www.springframework.net"</span>
+         <span style="color: #FF0000">xmlns:myns</span>=<span style="color: #0000FF">"http://www.mycompany.com/schema/myns"</span><span style="color: #A31515">&gt;</span>
+
+  <i style="color: #008000">&lt;!-- as a top level object definition --&gt;</i>
+  <span style="color: #A31515">&lt;myns:regex</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"usZipCodeRegex"</span>
+              <span style="color: #FF0000">pattern</span>=<span style="color: #0000FF">"(^\d{5}$)|(^\d{5}-\d{4}$)"</span><span style="color: #A31515">/&gt;</span>
+
+  <span style="color: #A31515">&lt;object</span> <span style="color: #FF0000">id</span>=<span style="color: #0000FF">"jobDetailTemplate"</span> <span style="color: #FF0000">abstract</span>=<span style="color: #0000FF">"true"</span><span style="color: #A31515">&gt;</span>
+    <span style="color: #A31515">&lt;property</span> <span style="color: #FF0000">name</span>=<span style="color: #0000FF">"regex"</span><span style="color: #A31515">&gt;</span>
+      <i style="color: #008000">&lt;!-- as an inner object definition --&gt;</i>
+       <span style="color: #A31515">&lt;myns:regex</span> <span style="color: #FF0000">pattern</span>=<span style="color: #0000FF">"(^\d{5}$)|(^\d{5}-\d{4}$)"</span>
+                   <span style="color: #FF0000">options</span>=<span style="color: #0000FF">"Compiled"</span><span style="color: #A31515">/&gt;</span>
+    <span style="color: #A31515">&lt;/property&gt;</span>
+  <span style="color: #A31515">&lt;/object&gt;</span>
+
+<span style="color: #A31515">&lt;/objects&gt;</span></pre>
+  </div>
+
+  <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensible-xml-resources"></a>C.7.&nbsp;Further Resources</h2></div></div></div>
+    
+
+    <p>Find below links to further resources concerning XML Schema and the
+    extensible XML support described in this chapter.</p>
+
+    <div class="itemizedlist"><ul type="disc"><li>
+        <p>The <a class="ulink" href="http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/" target="_top">XML Schema
+        Part 1: Structures Second Edition</a></p>
+      </li><li>
+        <p>The <a class="ulink" href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/" target="_top">XML Schema
+        Part 2: Datatypes Second Edition</a></p>
+      </li></ul></div>
+  </div>
+</div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="xsd-config.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="springobjectsxsd.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Appendix&nbsp;B.&nbsp;XML Schema-based configuration&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">Sponsored by SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Appendix&nbsp;D.&nbsp;Spring.NET's spring-objects.xsd</td></tr></table></div></body></html>
