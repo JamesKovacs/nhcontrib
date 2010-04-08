@@ -1,10 +1,7 @@
 using System;
 using System.IO;
-using NHibernate.JetDriver.Tests.Entities;
-using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using System.Collections.Generic;
 
 namespace NHibernate.JetDriver.Tests
 {

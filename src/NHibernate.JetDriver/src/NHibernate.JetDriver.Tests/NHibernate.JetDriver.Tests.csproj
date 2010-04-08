@@ -66,6 +66,7 @@
     <Compile Include="JetHQLFixture.cs" />
     <Compile Include="JetOrderByFixture.cs" />
     <Compile Include="JetTestBase.cs" />
+    <Compile Include="Entities\NHCD37.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.JetDriver\NHibernate.JetDriver-2.0.csproj">
@@ -85,6 +86,9 @@
     <None Include="JetTests.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Entities\NHCD37.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

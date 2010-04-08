@@ -29,6 +29,11 @@ namespace NHibernate.JetDriver.Tests
             }
         }
 
+        protected override IList<string> Mappings
+        {
+            get { return new[] { "Entities.NHCD37.hbm.xml" }; }
+        }
+
         [Test]
         public void Can_Delete_Objects_With_HQL()
         {
@@ -89,6 +94,27 @@ namespace NHibernate.JetDriver.Tests
                 query.SetParameter("productId", 5);
                 var list = query.List();
                 int count = list.Count;
+
+                Assert.That(count, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void NHCD37_Two_From_Clause_Appears_In_Certain_HQL_Queries()
+        {
+            using (var s = SessionFactory.OpenSession())
+            {
+                string hql =
+                    @"select new TestDTO (
+                    CatalogEntries.Id,CatalogEntries.CatalogCategory.Id,CatalogEntries.ProductType.Id,CatalogEntries.CatalogCategory.Name,
+                    CatalogEntries.ProductType.Name) from CatalogEntriesEntity CatalogEntries 
+                    where CatalogEntries.CatalogCategory.ProductCatalog.Id=:productCatalogsId";
+
+                var list = s.CreateQuery(hql)
+                            .SetParameter("productCatalogsId", 5)
+                            .List();
+
+                var count = list.Count;
 
                 Assert.That(count, Is.EqualTo(0));
             }

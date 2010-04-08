@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernate.JetDriver.Tests"
+                   namespace="NHibernate.JetDriver.Tests.TransformFromClauseBehaviour">
+  <import class="NHibernate.JetDriver.Tests.TransformFromClauseBehaviour.TestDTO, NHibernate.JetDriver.Tests"/>
+  <class name="ProductCatalogsEntity" >
+    <id name="Id" column="IdProductCatalog" type="System.Int32" unsaved-value="null">
+      <generator class="native"/>
+    </id>
+
+    <property name="Name" column="[Name]" access="field.pascalcase-underscore" not-null="false" type="System.String"  insert="true" update="true"/>
+    <many-to-one name="ProductCatalogParent"  access="field.pascalcase-underscore" not-null="false" outer-join="auto" insert="true" update="true">
+      <column name="IdProductCatalogParent"/>
+    </many-to-one>
+  </class>
+    
+  <class name="CatalogEntriesEntity">
+    <id name="Id" column="IdCatalogEntry" type="System.Int32" unsaved-value="null">
+      <generator class="native"/>
+    </id>
+
+    <many-to-one name="CatalogCategory"  access="field.pascalcase-underscore" not-null="false" outer-join="auto" insert="true" update="true">
+      <column name="IdCatalogCategory"/>
+    </many-to-one>
+    <many-to-one name="ProductType"  access="field.pascalcase-underscore" not-null="false" outer-join="auto" insert="true" update="true">
+      <column name="IdProductType"/>
+    </many-to-one>
+  </class>
+
+  <class name="CatalogCategoriesEntity" >
+    <id name="Id" column="IdCatalogCategory" type="System.Int32" unsaved-value="null">
+      <generator class="native"/>
+    </id>
+
+    <property name="Name" column="[Name]" access="field.pascalcase-underscore" not-null="false" type="System.String"  insert="true" update="true"/>
+    <many-to-one name="CatalogCategoryParent"  access="field.pascalcase-underscore" not-null="false" outer-join="auto" insert="true" update="true">
+      <column name="IdCatalogCategoryParent"/>
+    </many-to-one>
+    <many-to-one name="ProductCatalog"  access="field.pascalcase-underscore" not-null="false" outer-join="auto" insert="true" update="true">
+      <column name="IdProductCatalog"/>
+    </many-to-one>
+
+    <set name="ChildrenCategories" cascade="none" inverse="true" lazy="true" access="field.pascalcase-underscore">
+      <key>
+        <column name="IdCatalogCategoryParent"/>
+      </key>
+      <one-to-many class="CatalogCategoriesEntity"/>
+    </set>
+    <set name="CatalogEntries" cascade="none" inverse="true" lazy="true" access="field.pascalcase-underscore">
+      <key>
+        <column name="IdCatalogCategory"/>
+      </key>
+      <one-to-many class="CatalogEntriesEntity"/>
+    </set>
+  </class>
+
+  <class name="ProductTypesEntity" batch-size="20">
+    <id name="Id" column="IdProductType" type="System.Int32" unsaved-value="null">
+      <generator class="native"/>
+    </id>
+
+    <property name="Name" column="[Name]" access="field.pascalcase-underscore" not-null="false" type="System.String"  insert="true" update="true"/>
+
+    <set name="CatalogEntries" cascade="delete" inverse="true" lazy="true" access="field.pascalcase-underscore">
+      <key>
+        <column name="IdProductType"/>
+      </key>
+      <one-to-many class="CatalogEntriesEntity"/>
+    </set>
+  </class>
+
+</hibernate-mapping>
