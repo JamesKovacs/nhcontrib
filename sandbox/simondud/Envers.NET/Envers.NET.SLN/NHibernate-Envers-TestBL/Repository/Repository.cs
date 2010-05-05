@@ -33,7 +33,7 @@ namespace Envers.Net.Repository
         }
 
         [Transaction]
-        public Type GetById(int entityId)
+        public Type GetById(object entityId)
         {
             return (Type)HibernateTemplate.Get(typeof(Type), entityId);
         }

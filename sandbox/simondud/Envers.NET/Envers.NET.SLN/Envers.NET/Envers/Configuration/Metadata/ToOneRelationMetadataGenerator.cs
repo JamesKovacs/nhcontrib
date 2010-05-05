@@ -36,7 +36,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                       ICompositeMapperBuilder mapper, String entityName, bool insertable) {
             String referencedEntityName = ((ToOne)value).ReferencedEntityName;
 
-            IdMappingData idMapping = mainGenerator.getReferencedIdMappingData(entityName, referencedEntityName,
+            IdMappingData idMapping = mainGenerator.GetReferencedIdMappingData(entityName, referencedEntityName,
                     propertyAuditingData, true);
 
             String lastPropertyPrefix = MappingTools.createToOneRelationPrefix(propertyAuditingData.Name);
@@ -65,11 +65,12 @@ namespace NHibernate.Envers.Configuration.Metadata
 
             
             // Adding an element to the mapping corresponding to the references entity id's
-            XmlElement properties = (XmlElement) idMapping.xmlRelationMapping.Clone();
+            // Use OwnerDocument.ImportNode() instead of XmlNode.Clone();
+            XmlElement properties = (XmlElement)parent.OwnerDocument.ImportNode(idMapping.XmlRelationMapping,true);
             properties.SetAttribute("name",propertyAuditingData.Name);
 
-            MetadataTools.prefixNamesInPropertyElement(properties, lastPropertyPrefix,
-                    MetadataTools.getColumnNameEnumerator((IEnumerator<Mapping.Column>)value.ColumnIterator.GetEnumerator()), false, insertable);
+            MetadataTools.PrefixNamesInPropertyElement(properties, lastPropertyPrefix,
+                    MetadataTools.GetColumnNameEnumerator((IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator()), false, insertable);
             parent.AppendChild(properties);
 
 

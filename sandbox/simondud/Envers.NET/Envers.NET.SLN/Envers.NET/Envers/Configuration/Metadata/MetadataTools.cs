@@ -12,7 +12,7 @@ namespace NHibernate.Envers.Configuration.Metadata
      * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
      */
     public class MetadataTools {
-        public static XmlElement addNativelyGeneratedId(XmlDocument doc, XmlElement parent, String name, String type) {
+        public static XmlElement AddNativelyGeneratedId(XmlDocument doc, XmlElement parent, String name, String type) {
             XmlElement id_mapping = doc.CreateElement("id");
             parent.AppendChild(id_mapping);
             id_mapping.SetAttribute("name", name);
@@ -27,7 +27,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             return id_mapping;
         }
 
-        public static XmlElement addProperty(XmlElement parent, String name, String type, bool insertable, bool key) {
+        public static XmlElement AddProperty(XmlElement parent, String name, String type, bool insertable, bool key) {
             XmlElement prop_mapping;
             if (key) {
                 prop_mapping = parent.OwnerDocument.CreateElement("key-property");
@@ -47,7 +47,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             return prop_mapping;
         }
 
-        private static void addOrModifyAttribute(XmlElement parent, String name, String value) {
+        private static void AddOrModifyAttribute(XmlElement parent, String name, String value) {
             parent.SetAttribute(name,value);
             //if (attribute.Length == 0) {
             //    parent.SetAttribute(name, value);
@@ -56,15 +56,15 @@ namespace NHibernate.Envers.Configuration.Metadata
             //}
         }
 
-        public static XmlElement addOrModifyColumn(XmlElement parent, String name) {
+        public static XmlElement AddOrModifyColumn(XmlElement parent, String name) {
             XmlElement column_mapping = (XmlElement)parent.SelectSingleNode("column");
 
             if (column_mapping == null) {
-                return addColumn(parent, name, -1, 0, 0, null);
+                return AddColumn(parent, name, -1, 0, 0, null);
             }
 
             if (!String.IsNullOrEmpty(name)) {
-                addOrModifyAttribute(column_mapping, "name", name);
+                AddOrModifyAttribute(column_mapping, "name", name);
             }
 
             return column_mapping;
@@ -80,7 +80,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         /// <param name="precision"></param>
         /// <param name="sqlType"></param>
         /// <returns></returns>
-        public static XmlElement addColumn(XmlElement parent, String name, int length, int scale, int precision,
+        public static XmlElement AddColumn(XmlElement parent, String name, int length, int scale, int precision,
 									    String sqlType) {
             XmlElement column_mapping = parent.OwnerDocument.CreateElement("column");
              parent.AppendChild(column_mapping);
@@ -102,7 +102,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             return column_mapping;
         }
 
-        private static XmlElement createEntityCommon(XmlDocument document, String type, AuditTableData auditTableData,
+        private static XmlElement CreateEntityCommon(XmlDocument document, String type, AuditTableData auditTableData,
                                                   String discriminatorValue) {
             XmlElement hibernate_mapping = document.CreateElement("hibernate-mapping");
             hibernate_mapping.SetAttribute("assembly", "Envers.NET");
@@ -138,20 +138,20 @@ namespace NHibernate.Envers.Configuration.Metadata
             return class_mapping;
         }
 
-        public static XmlElement createEntity(XmlDocument document, AuditTableData auditTableData, String discriminatorValue) {
-            return createEntityCommon(document, "class", auditTableData, discriminatorValue);
+        public static XmlElement CreateEntity(XmlDocument document, AuditTableData auditTableData, String discriminatorValue) {
+            return CreateEntityCommon(document, "class", auditTableData, discriminatorValue);
         }
 
-        public static XmlElement createSubclassEntity(XmlDocument document, String subclassType, AuditTableData auditTableData,
+        public static XmlElement CreateSubclassEntity(XmlDocument document, String subclassType, AuditTableData auditTableData,
                                                    String extendsEntityName, String discriminatorValue) {
-            XmlElement class_mapping = createEntityCommon(document, subclassType, auditTableData, discriminatorValue);
+            XmlElement class_mapping = CreateEntityCommon(document, subclassType, auditTableData, discriminatorValue);
 
             class_mapping.SetAttribute("extends", extendsEntityName);
 
             return class_mapping;
         }
 
-        public static XmlElement createJoin(XmlElement parent, String tableName,
+        public static XmlElement CreateJoin(XmlElement parent, String tableName,
                                          String schema, String catalog) {
 
             XmlElement join_mapping = parent.OwnerDocument.CreateElement("join");
@@ -175,16 +175,16 @@ namespace NHibernate.Envers.Configuration.Metadata
         /// </summary>
         /// <param name="any_mapping"></param>
         /// <param name="columns">should contain elements of Column type</param>
-        public static void addColumns(XmlElement any_mapping, IEnumerator<ISelectable> columns) {
+        public static void AddColumns(XmlElement any_mapping, IEnumerator<ISelectable> columns) {
             while (columns.MoveNext()) {
                 Column column = (Column)columns.Current;
-                addColumn(any_mapping, column.Name, column.Length, column.Scale, column.Precision,
+                AddColumn(any_mapping, column.Name, column.Length, column.Scale, column.Precision,
 					    column.SqlType);
             }
         }
 
         //TODO Simon: ORIG: @SuppressWarnings({"unchecked"})
-        private static void changeNamesInColumnElement(XmlElement element, ColumnNameEnumerator colNameEnumerator) {
+        private static void ChangeNamesInColumnElement(XmlElement element, ColumnNameEnumerator colNameEnumerator) {
             //Iterator<XmlElement> properties = element.elementIterator();
             XmlNodeList nodeList = element.ChildNodes;
             //while (properties.hasNext()) {
@@ -202,7 +202,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         }
 
         //@SuppressWarnings({"unchecked"})
-        public static void prefixNamesInPropertyElement(XmlElement element, String prefix, ColumnNameEnumerator colNameEnumerator,
+        public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, ColumnNameEnumerator colNameEnumerator,
                                                         bool changeToKey, bool insertable) {
             XmlNodeList nodeList = element.ChildNodes;
             foreach (XmlElement property in nodeList){
@@ -211,7 +211,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                     if (!String.IsNullOrEmpty(value)) {
                         property.SetAttribute("name",prefix + value);
                     }
-                    changeNamesInColumnElement(property, colNameEnumerator);
+                    ChangeNamesInColumnElement(property, colNameEnumerator);
 
                     if (changeToKey) {
                         ChangeElementName(property, "key-property");
@@ -277,11 +277,11 @@ namespace NHibernate.Envers.Configuration.Metadata
         }
 
         public class ColumnNameEnumeratorFromEnum : ColumnNameEnumerator {
-            private IEnumerator<Column> _columnEnumerator;
-            public ColumnNameEnumeratorFromEnum(IEnumerator<Column> columnEnumerator){_columnEnumerator = columnEnumerator;}
+            private IEnumerator<ISelectable> _columnEnumerator;
+            public ColumnNameEnumeratorFromEnum(IEnumerator<ISelectable> columnEnumerator) { _columnEnumerator = columnEnumerator; }
             public override bool MoveNext() { return _columnEnumerator.MoveNext(); }
             //TODO Simon: see if value is the intended return
-            public override String Current { get {return _columnEnumerator.Current.Value.ToString();} }
+            public override String Current { get {return ((Column)_columnEnumerator.Current).Value.ToString();} }
             public override void Reset() { _columnEnumerator.Reset(); }
             public override void Dispose() { _columnEnumerator.Dispose(); }
         }
@@ -303,11 +303,11 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         }
 
-        public static ColumnNameEnumerator getColumnNameEnumerator(IEnumerator<Column> columnEnumerator) {
-            return new ColumnNameEnumeratorFromEnum(columnEnumerator) ;
+        public static ColumnNameEnumerator GetColumnNameEnumerator(IEnumerator<ISelectable> columnEnumerator) {
+            return new ColumnNameEnumeratorFromEnum(columnEnumerator);
         }
 
-        public static ColumnNameEnumerator getColumnNameEnumerator(JoinColumnAttribute[] joinColumns) {
+        public static ColumnNameEnumerator GetColumnNameEnumerator(JoinColumnAttribute[] joinColumns) {
             return new ColumnNameEnumeratorFromArray(joinColumns);
         }
     }

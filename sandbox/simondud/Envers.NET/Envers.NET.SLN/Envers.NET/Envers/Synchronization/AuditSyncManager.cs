@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NHibernate.Envers.RevisionInfo;
 using NHibernate.Event;
 using System.Collections;
+using Spring.Transaction.Support;
 
 namespace NHibernate.Envers.Synchronization
 {
@@ -25,16 +25,20 @@ namespace NHibernate.Envers.Synchronization
         public AuditSync get(IEventSource session) {
             ITransaction transaction = session.Transaction;
 
-            AuditSync verSync = auditSyncs[transaction];
-            if (verSync == null) {
+            if( auditSyncs.Keys.Contains(transaction))
+                return auditSyncs[transaction];
+            else {
                 // No worries about registering a transaction twice - a transaction is single thread
-                verSync = new AuditSync(this, session, revisionInfoGenerator);
+                AuditSync verSync = new AuditSync(this, session, revisionInfoGenerator);
                 auditSyncs.Add(transaction, verSync);
 
                 transaction.RegisterSynchronization(verSync);
-            }
 
-            return verSync;
+                //ITransactionSynchronization synchro = new EnversTransactionSynchronization(verSync);
+                //TransactionSynchronizationManager.RegisterSynchronization(synchro);
+
+                return verSync;
+            }
         }
 
         public void Remove(ITransaction transaction) {

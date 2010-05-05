@@ -156,6 +156,7 @@
     <Compile Include="Envers\SecondaryAuditTablesAttribute.cs" />
     <Compile Include="Envers\Synchronization\AuditSync.cs" />
     <Compile Include="Envers\Synchronization\AuditSyncManager.cs" />
+    <Compile Include="Envers\Synchronization\EnversTransactionSynchronization.cs" />
     <Compile Include="Envers\Synchronization\Work\AbstractAuditWorkUnit.cs" />
     <Compile Include="Envers\Synchronization\Work\AddWorkUnit.cs" />
     <Compile Include="Envers\Synchronization\Work\DelWorkUnit.cs" />
@@ -183,6 +184,10 @@
     <ProjectReference Include="..\..\NHibernate-2.1.2.GA-src\src\NHibernate\NHibernate.csproj">
       <Project>{5909BFE7-93CF-4E5F-BE22-6293368AF01D}</Project>
       <Name>NHibernate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Spring.NET\src\Spring\Spring.Data\Spring.Data.2008.csproj">
+      <Project>{AE00E5AB-C39A-436F-86D2-33BFE33E2E40}</Project>
+      <Name>Spring.Data.2008</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

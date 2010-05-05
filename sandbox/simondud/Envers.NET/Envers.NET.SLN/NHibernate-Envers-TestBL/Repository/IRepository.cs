@@ -8,7 +8,7 @@ namespace Envers.Net.Repository
         void Add(Type entity);
         void Update(Type entity);
         void Remove(Type entity);
-        Type GetById(int entityId);
+        Type GetById(object entityId);
         ICollection<Type> GetByType(string type);
     }
 }

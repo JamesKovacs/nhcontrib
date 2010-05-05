@@ -86,14 +86,16 @@ namespace NHibernate.Envers.Synchronization
             IAuditWorkUnit vwu;
 
             // First undoing any performed work units
-            while ((vwu = undoQueue.Dequeue()) != null) {
+            while ( undoQueue.Count > 0){
+                vwu = undoQueue.Dequeue();
                 vwu.Undo(session);
             }
 
             //ORIG: while ((vwu = workUnits.poll()) != null) {
             //    vwu.Perform(session, revisionData);
             //}
-            while ((vwu = workUnits.First.Value) != null) {
+            while (workUnits.Count > 0) {
+                vwu = workUnits.First.Value;
                 workUnits.RemoveFirst();
                 vwu.Perform(session, revisionData);
             }
@@ -142,7 +144,7 @@ namespace NHibernate.Envers.Synchronization
 				    ExecuteInSession(session);
 
 				    // Explicity flushing the session, as the auto-flush may have already happened.
-				    ((NHibernate.ISession)session).Flush();
+				    //((NHibernate.ISession)session).Flush();
 			    }
 		    } catch (System.Exception e) {
 			    // Rolling back the transaction in case of any exceptions

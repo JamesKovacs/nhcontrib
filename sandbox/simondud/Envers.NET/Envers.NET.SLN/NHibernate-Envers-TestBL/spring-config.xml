@@ -8,21 +8,33 @@
     <property name="ConfigSections" value="databaseSettings"/>
   </object>
 
+  <!--SQL CE-->
   <db:provider
-   id="DbProvider"
+   id="DbProviderCE"
    provider="SqlServerCe-3.5.1"
    connectionString="Data Source=NHibernatePOC.sdf"/>
 
+  <!--SQL Server 200x-->
+  <db:provider
+   id="DbProvider200x"
+   provider="System.Data.SqlClient"
+   connectionString="Server=(local);initial catalog=envers;Integrated Security=SSPI"/>
+  
   <object id="ExecutingAssembly" type="Envers.Net.Model.Util.ExecutingAssemblyFactoryObject, APDRP_NHibernatePOC"/>
 
   <object id="NHibernateSessionFactory" type="Envers.Net.Utils.AttributesSessionFactoryObject" singleton="true" lazy-init="true">
-    <property name="DbProvider" ref="DbProvider"/>
+    <property name="DbProvider" ref="DbProvider200x"/>
     <property name="Assembly" ref="ExecutingAssembly"/>
     <property name="HibernateProperties">
       <dictionary>
-        <entry key="dialect" value="NHibernate.Dialect.MsSqlCeDialect"/>
+        <!--SQL Server 200x-->
+        <entry key="dialect" value="NHibernate.Dialect.MsSql2005Dialect"/>
         <entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>
-        <entry key="connection.driver_class" value="NHibernate.Driver.SqlServerCeDriver"/>
+        <entry key="connection.driver_class" value="NHibernate.Driver.SqlClientDriver"/>
+        <!--SQL CE-->
+        <!--<entry key="dialect" value="NHibernate.Dialect.MsSqlCeDialect"/>-->
+        <!--<entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>-->
+        <!--<entry key="connection.driver_class" value="NHibernate.Driver.SqlServerCeDriver"/>-->
         <entry key="hbm2ddl.auto" value="create"/>
         <entry key="connection.release_mode" value="on_close"/>
         <entry key="show_sql" value="true"/>

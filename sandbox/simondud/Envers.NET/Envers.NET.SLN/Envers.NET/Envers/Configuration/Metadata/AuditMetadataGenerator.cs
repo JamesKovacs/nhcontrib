@@ -82,7 +82,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             XmlElement rev_mapping = (XmlElement)doc.ImportNode(revisionInfoRelationMapping, true);
             rev_mapping.SetAttribute("name", VerEntCfg.RevisionFieldName);
 
-            MetadataTools.addOrModifyColumn(rev_mapping, VerEntCfg.RevisionFieldName);
+            MetadataTools.AddOrModifyColumn(rev_mapping, VerEntCfg.RevisionFieldName);
 
             return rev_mapping;
         }
@@ -94,10 +94,10 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         void addRevisionType(XmlElement any_mapping)
         {
-            XmlElement revTypeProperty = MetadataTools.addProperty(any_mapping, VerEntCfg.RevisionTypePropName,
+            XmlElement revTypeProperty = MetadataTools.AddProperty(any_mapping, VerEntCfg.RevisionTypePropName,
                     VerEntCfg.RevisionTypePropType, true, false);
             //TODO Simon Replace with typeof(NHibernate.Envers.Entities.RevisionTypeType).FullName
-            revTypeProperty.SetAttribute("type", "NHibernate.Envers.Entities.RevisionTypeType");
+            revTypeProperty.SetAttribute("type", "NHibernate.Envers.Entities.RevisionTypeType, Envers.NET");
         }
 
         //@SuppressWarnings({"unchecked"})
@@ -264,13 +264,13 @@ namespace NHibernate.Envers.Configuration.Metadata
                 String schema = GetSchema(auditingData.AuditTable.schema, join.Table);
                 String catalog = GetCatalog(auditingData.AuditTable.catalog, join.Table);
 
-                XmlElement joinElement = MetadataTools.createJoin(parent, auditTableName, schema, catalog);
+                XmlElement joinElement = MetadataTools.CreateJoin(parent, auditTableName, schema, catalog);
                 JoinElements.Add(join, joinElement);
 
                 XmlElement joinKey = joinElement.OwnerDocument.CreateElement("key");
                 joinElement.AppendChild(joinKey);
-                MetadataTools.addColumns(joinKey, (IEnumerator<ISelectable>)join.Key.ColumnIterator.GetEnumerator());
-                MetadataTools.addColumn(joinKey, VerEntCfg.RevisionFieldName, -1, 0, 0, null);
+                MetadataTools.AddColumns(joinKey, (IEnumerator<ISelectable>)join.Key.ColumnIterator.GetEnumerator());
+                MetadataTools.AddColumn(joinKey, VerEntCfg.RevisionFieldName, -1, 0, 0, null);
             }
         }
 
@@ -315,7 +315,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         {
             bool hasDiscriminator = pc.Discriminator != null;
 
-            XmlElement class_mapping = MetadataTools.createEntity(xmlMappingData.MainXmlMapping, auditTableData,
+            XmlElement class_mapping = MetadataTools.CreateEntity(xmlMappingData.MainXmlMapping, auditTableData,
                     hasDiscriminator ? pc.DiscriminatorValue : null);
             IExtendedPropertyMapper propertyMapper = new MultiPropertyMapper();
 
@@ -324,7 +324,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             {
                 XmlElement discriminator_element = class_mapping.OwnerDocument.CreateElement("discriminator");
                 class_mapping.AppendChild(discriminator_element);
-                MetadataTools.addColumns(discriminator_element, (IEnumerator<ISelectable>)pc.Discriminator.ColumnIterator.GetEnumerator());
+                MetadataTools.AddColumns(discriminator_element, (IEnumerator<ISelectable>)pc.Discriminator.ColumnIterator.GetEnumerator());
                 discriminator_element.SetAttribute("type", pc.Discriminator.Type.Name);
             }
 
@@ -348,7 +348,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             }
 
             // Adding the id mapping
-            XmlNode xmlMp = class_mapping.OwnerDocument.ImportNode(idMapper.xmlMapping,true);
+            XmlNode xmlMp = class_mapping.OwnerDocument.ImportNode(idMapper.XmlMapping,true);
             class_mapping.AppendChild(xmlMp);
 
             // Adding the "revision type" property
@@ -362,7 +362,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                 String inheritanceMappingType)
         {
             String extendsEntityName = VerEntCfg.GetAuditEntityName(pc.Superclass.EntityName);
-            XmlElement class_mapping = MetadataTools.createSubclassEntity(xmlMappingData.MainXmlMapping,
+            XmlElement class_mapping = MetadataTools.CreateSubclassEntity(xmlMappingData.MainXmlMapping,
                     inheritanceMappingType, auditTableData, extendsEntityName, pc.DiscriminatorValue);
 
             // The id and revision type is already mapped in the parent
@@ -460,7 +460,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                     // Adding the "key" element with all id columns...
                     XmlElement keyMapping = mappingData.First.OwnerDocument.CreateElement("key");
                     mappingData.First.AppendChild(keyMapping);
-                    MetadataTools.addColumns(keyMapping, (IEnumerator<ISelectable>)pc.Table.PrimaryKey.ColumnIterator.GetEnumerator());
+                    MetadataTools.AddColumns(keyMapping, (IEnumerator<ISelectable>)pc.Table.PrimaryKey.ColumnIterator.GetEnumerator());
 
                     // ... and the revision number column, read from the revision info relation mapping.
                     keyMapping.AppendChild((XmlElement)CloneAndSetupRevisionInfoRelationMapping(keyMapping.OwnerDocument).GetElementsByTagName("column")[0].Clone());
@@ -538,7 +538,7 @@ namespace NHibernate.Envers.Configuration.Metadata
          * mapped using {@link RelationTargetAuditMode#NOT_AUDITED}.
          * @return The id mapping data of the related entity. 
          */
-        public IdMappingData getReferencedIdMappingData(String entityName, String referencedEntityName,
+        public IdMappingData GetReferencedIdMappingData(String entityName, String referencedEntityName,
                                                 PropertyAuditingData propertyAuditingData,
                                                 bool allowNotAuditedTarget)
         {

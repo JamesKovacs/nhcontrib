@@ -121,7 +121,7 @@ namespace NHibernate.Envers.Synchronization.Work
                 // Finally adding all of the new changes to the end of the list
                 mergedChanges = (List<PersistentCollectionChangeData>)mergedChanges.Concat(getCollectionChanges());
 
-                return new PersistentCollectionChangeWorkUnit(sessionImplementor, entityName, verCfg, id, mergedChanges, 
+                return new PersistentCollectionChangeWorkUnit(sessionImplementor, EntityName, verCfg, EntityId, mergedChanges, 
                         ReferencingPropertyName);
             } else {
                 throw new Exception("Trying to merge a " + first + " with a PersitentCollectionChangeWorkUnit. " +

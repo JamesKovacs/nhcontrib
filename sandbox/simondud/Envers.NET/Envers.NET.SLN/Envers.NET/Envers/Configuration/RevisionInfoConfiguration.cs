@@ -28,10 +28,10 @@ namespace NHibernate.Envers.Configuration
         private String revisionPropSqlType;
 
         public RevisionInfoConfiguration() {
-            revisionInfoEntityName = "NHibernate.Envers.DefaultRevisionEntity";
+            revisionInfoEntityName = "NHibernate.Envers.DefaultRevisionEntity, Envers.NET";
             revisionInfoIdData = new PropertyData("id", "id", "field", ModificationStore._NULL);
             revisionInfoTimestampData = new PropertyData("RevisionDate", "RevisionDate", "field", ModificationStore._NULL);
-            revisionInfoTimestampType = new LongType(); //ORIG: LongType();
+            revisionInfoTimestampType = new DateTimeType(); //ORIG: LongType();
 
             revisionPropType = "integer";
         }
@@ -39,12 +39,12 @@ namespace NHibernate.Envers.Configuration
         private XmlDocument generateDefaultRevisionInfoXmlMapping() {
             XmlDocument document = new XmlDocument();//ORIG: DocumentHelper.createDocument();
 
-            XmlElement class_mapping = MetadataTools.createEntity(document, new AuditTableData(null, null, null, null), null);
+            XmlElement class_mapping = MetadataTools.CreateEntity(document, new AuditTableData(null, null, null, null), null);
 
             class_mapping.SetAttribute("name", revisionInfoEntityName);
             class_mapping.SetAttribute("table", "REVINFO");
 
-            XmlElement idProperty = MetadataTools.addNativelyGeneratedId(document,class_mapping, revisionInfoIdData.Name,
+            XmlElement idProperty = MetadataTools.AddNativelyGeneratedId(document,class_mapping, revisionInfoIdData.Name,
                     revisionPropType);
             //ORIG: MetadataTools.addColumn(idProperty, "REV", -1, 0, 0, null);
             XmlElement col = idProperty.OwnerDocument.CreateElement("column");
@@ -52,9 +52,9 @@ namespace NHibernate.Envers.Configuration
             //idProperty should have a "generator" node otherwise sth. is wrong.
             idProperty.InsertBefore(col, idProperty.GetElementsByTagName("generator")[0]);
 
-            XmlElement timestampProperty = MetadataTools.addProperty(class_mapping, revisionInfoTimestampData.Name,
+            XmlElement timestampProperty = MetadataTools.AddProperty(class_mapping, revisionInfoTimestampData.Name,
                     revisionInfoTimestampType.Name, true, false);
-            MetadataTools.addColumn(timestampProperty, "REVTSTMP", -1, 0, 0, null);
+            MetadataTools.AddColumn(timestampProperty, "REVTSTMP", -1, 0, 0, SqlTypeFactory.DateTime.ToString());
 
             return document;
         }
@@ -67,7 +67,7 @@ namespace NHibernate.Envers.Configuration
 
             if (revisionPropSqlType != null) {
                 // Putting a fake name to make Hibernate happy. It will be replaced later anyway.
-                MetadataTools.addColumn(rev_rel_mapping, "*" , -1, 0, 0, revisionPropSqlType);
+                MetadataTools.AddColumn(rev_rel_mapping, "*" , -1, 0, 0, revisionPropSqlType);
             }
 
             return rev_rel_mapping;

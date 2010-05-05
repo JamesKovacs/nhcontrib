@@ -40,14 +40,14 @@ namespace NHibernate.Envers.Synchronization.Work
         public FakeBidirectionalRelationWorkUnit(FakeBidirectionalRelationWorkUnit original,
                                                  IDictionary<String, FakeRelationChange> fakeRelationChanges,
                                                  IAuditWorkUnit nestedWorkUnit)
-            : base(original.sessionImplementor, original.entityName, original.verCfg, original.id)
+            : base(original.sessionImplementor, original.EntityName, original.verCfg, original.EntityId)
         {
             this.fakeRelationChanges = fakeRelationChanges;
             this.nestedWorkUnit = nestedWorkUnit;
         }
 
         public FakeBidirectionalRelationWorkUnit(FakeBidirectionalRelationWorkUnit original, IAuditWorkUnit nestedWorkUnit)
-            : base(original.sessionImplementor, original.entityName, original.verCfg, original.id)
+            : base(original.sessionImplementor, original.EntityName, original.verCfg, original.EntityId)
         {
             this.nestedWorkUnit = nestedWorkUnit;
 

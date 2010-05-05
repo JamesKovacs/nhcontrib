@@ -18,11 +18,15 @@ namespace APDRP_NHibernatePOC_Test
     public class HibernateStartedTest
     {
         private IApplicationContext applicationContext;
+        private IRepository<Person> personRepository;
+        private IRepository<Address> addressRepository;
 
         [TestFixtureSetUp]
         public void SetUp()
         {
             applicationContext = new XmlApplicationContext("spring-config.xml");
+            personRepository = (IRepository<Person>)applicationContext.GetObject("PersonRepository");
+            addressRepository = (IRepository<Address>)applicationContext.GetObject("AddressRepository");
         }
 
         [TestFixtureTearDown]
@@ -31,7 +35,7 @@ namespace APDRP_NHibernatePOC_Test
             ((XmlApplicationContext)applicationContext).Dispose();
         }
 
-        [Test]
+        //[Test]
         public void testDbProvider()
         {
             IDbProvider dbProvider = (IDbProvider)applicationContext.GetObject("DbProvider");
@@ -42,7 +46,7 @@ namespace APDRP_NHibernatePOC_Test
         }
 
 
-        [Test]
+        //[Test]
         public void TestSessionFactoryStartedOk()
         {
             ISessionFactory sessionFactory = (ISessionFactory)applicationContext.GetObject("NHibernateSessionFactory");
@@ -53,14 +57,31 @@ namespace APDRP_NHibernatePOC_Test
         [Test]
         public void TestSessionFactory()
         {
-            IApplicationContext applicationContext = new XmlApplicationContext("spring-config.xml");
             //AuditEventListener lis = (AuditEventListener)applicationContext.GetObject("enversEventListener");
-            IRepository<Person> personRepository = (IRepository<Person>)applicationContext.GetObject("PersonRepository");
-            IRepository<Address> addressRepository = (IRepository<Address>)applicationContext.GetObject("AddressRepository");
 
             Address address = new Address{number="22", street="Valea Calugareasca"};
             addressRepository.Add(address);
             Assert.IsTrue(address.id != 0);
+            long id1 = address.id;
+            
+            Person pers = new Person{firstName = "Ion", lastName = "Gheorghe", address = address};
+            personRepository.Add(pers);
+            Assert.IsTrue(pers.id != 0);
+            
+            address.number = "23";
+            addressRepository.Update(address);
+
+            address.number = "24";
+            addressRepository.Update(address);
+
+            address = new Address { number = "45", street = "Strada Strada" };
+
+            addressRepository.Add(address);
+
+            address = addressRepository.GetById(id1);
+            Assert.IsTrue(address.number == "23" && address.street == "Valea Calugareasca");
+
+
         }
     }
 }

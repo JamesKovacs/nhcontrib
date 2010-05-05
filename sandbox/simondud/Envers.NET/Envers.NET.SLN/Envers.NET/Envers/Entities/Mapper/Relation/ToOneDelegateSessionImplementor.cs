@@ -32,7 +32,7 @@ public class ToOneDelegateSessionImplementor : AbstractDelegateSessionImplemento
         this.entityId = entityId;
         this.revision = revision;
         EntitiesConfigurations entCfg = verCfg.getEntCfg();
-        notVersionedEntityConfiguration = entCfg.getNotVersionEntityConfiguration(entityClass.Name);
+        notVersionedEntityConfiguration = entCfg.GetNotVersionEntityConfiguration(entityClass.Name);
     }
 
     public override Object doImmediateLoad(String entityName) {

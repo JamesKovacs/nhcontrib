@@ -45,7 +45,7 @@ namespace NHibernate.Envers.Event
 
             for (int i=0; i<propertyNames.GetLength(0); i++) {
                 String propertyName = propertyNames[i];
-                RelationDescription relDesc = verCfg.getEntCfg().getRelationDescription(entityName, propertyName);
+                RelationDescription relDesc = verCfg.getEntCfg().GetRelationDescription(entityName, propertyName);
                 if (relDesc != null && relDesc.Bidirectional && relDesc.getRelationType() == RelationType.TO_ONE &&
                         relDesc.isInsertable()) {
                     // Checking for changes
@@ -108,7 +108,7 @@ namespace NHibernate.Envers.Event
         public void OnPostInsert(PostInsertEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().isVersioned(entityName)) {
+            if (verCfg.getEntCfg().IsVersioned(entityName)) {
                 AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
 
                 IAuditWorkUnit workUnit = new AddWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
@@ -119,13 +119,20 @@ namespace NHibernate.Envers.Event
                     GenerateBidirectionalCollectionChangeWorkUnits(verSync, evt.Persister, entityName, evt.State,
                             null, evt.Session);
                 }
+
+                //Simon - TODO - Correct/clarify this:
+                // it appears that the AuditSyncManager's transaction.RegisterSynchronization(verSync);
+                // does not lead to calling the verSync's synchronization methods (Before and AfterCompletion
+                // so I will call this manually. The problem that I found is that AdoTransaction's Commit method
+                // is not called at all. Could this be because of Spring.NET?
+                verSync.BeforeCompletion();
             }
         }
 
         public void OnPostUpdate(PostUpdateEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().isVersioned(entityName)) {
+            if (verCfg.getEntCfg().IsVersioned(entityName)) {
                 AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
 
                 IAuditWorkUnit workUnit = new ModWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
@@ -136,13 +143,15 @@ namespace NHibernate.Envers.Event
                     GenerateBidirectionalCollectionChangeWorkUnits(verSync, evt.Persister, entityName, evt.State,
                             evt.OldState, evt.Session);
                 }
+                //Simon - TODO - same as above
+                verSync.BeforeCompletion();
             }
         }
 
         public void OnPostDelete(PostDeleteEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().isVersioned(entityName)) {
+            if (verCfg.getEntCfg().IsVersioned(entityName)) {
                 AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
 
                 IAuditWorkUnit workUnit = new DelWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
@@ -153,6 +162,8 @@ namespace NHibernate.Envers.Event
                     GenerateBidirectionalCollectionChangeWorkUnits(verSync, evt.Persister, entityName, null,
                             evt.DeletedState, evt.Session);
                 }
+                //Simon - TODO - same as above
+                verSync.BeforeCompletion();
             }
         }
 
@@ -223,7 +234,7 @@ namespace NHibernate.Envers.Event
                                         CollectionEntry collectionEntry) {
             String entityName = evt.GetAffectedOwnerEntityName();
 
-            if (verCfg.getEntCfg().isVersioned(entityName)) {
+            if (verCfg.getEntCfg().IsVersioned(entityName)) {
                 AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
 
                 String ownerEntityName = ((AbstractCollectionPersister) collectionEntry.LoadedPersister).OwnerEntityName;

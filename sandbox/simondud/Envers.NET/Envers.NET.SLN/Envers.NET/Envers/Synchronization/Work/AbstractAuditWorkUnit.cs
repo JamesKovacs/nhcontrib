@@ -13,8 +13,8 @@ namespace NHibernate.Envers.Synchronization.Work
     public abstract class AbstractAuditWorkUnit : IAuditWorkUnit {
 	    protected readonly ISessionImplementor sessionImplementor;
         protected readonly AuditConfiguration verCfg;
-        protected readonly object id;
-        protected readonly String entityName;
+        public object EntityId { get; private set; }
+        public string EntityName { get; private set; }
 
         public Object performedData;
 
@@ -22,8 +22,8 @@ namespace NHibernate.Envers.Synchronization.Work
 									    Object id) {
 		    this.sessionImplementor = sessionImplementor;
             this.verCfg = verCfg;
-            this.id = id;
-            this.entityName = entityName;
+            this.EntityId = id;
+            this.EntityName = entityName;
         }
 
         protected void FillDataWithId(IDictionary<String, Object> data, Object revision, RevisionType revisionType) {
@@ -32,8 +32,8 @@ namespace NHibernate.Envers.Synchronization.Work
             IDictionary<String, Object> originalId = new Dictionary<String, Object>();
             originalId.Add(entitiesCfg.RevisionFieldName, revision);
 
-            verCfg.getEntCfg()[EntityName].GetIdMapper().MapToMapFromId(originalId, id);
-            data.Add(entitiesCfg.RevisionTypePropName, revisionType);
+            verCfg.getEntCfg()[EntityName].GetIdMapper().MapToMapFromId(originalId, EntityId);
+            data.Add(entitiesCfg.RevisionTypePropName, revisionType.Representation);
             data.Add(entitiesCfg.OriginalIdPropName, originalId);
         }
 
@@ -74,8 +74,6 @@ namespace NHibernate.Envers.Synchronization.Work
 
         #region IAuditWorkUnit Members
 
-        public object EntityId { get; private set; }
-        public string EntityName { get; private set; }
         public abstract IDictionary<String, Object> GenerateData(Object revisionData);
         public abstract bool ContainsWork();
 

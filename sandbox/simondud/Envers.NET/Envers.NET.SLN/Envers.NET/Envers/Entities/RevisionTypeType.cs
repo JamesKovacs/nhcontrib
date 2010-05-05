@@ -5,6 +5,7 @@ using System.Text;
 using NHibernate.UserTypes;
 using NHibernate.SqlTypes;
 using System.Data;
+using System.Data.Common;
 
 namespace NHibernate.Envers.Entities
 {
@@ -45,7 +46,9 @@ namespace NHibernate.Envers.Entities
             if (null == value) {
                 cmd.Parameters[index] = null;
             } else {
-                cmd.Parameters[index] = ((RevisionType) value).Representation;
+                ((IDbDataParameter)cmd.Parameters[index]).Value = value;
+                //DbParameter param = DbParameter;
+                //cmd.Parameters[index] = param.Value();
             }
         }
 

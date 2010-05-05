@@ -13,14 +13,14 @@ namespace NHibernate.Envers.Entities
     public class IdMappingData {
         public IIdMapper IdMapper { get; private set; }
         // Mapping which will be used to generate the entity
-        public XmlElement xmlMapping { get; private set; }
+        public XmlElement XmlMapping { get; private set; }
         // Mapping which will be used to generate references to the entity in related entities
-        public XmlElement xmlRelationMapping { get; private set; }
+        public XmlElement XmlRelationMapping { get; private set; }
 
         public IdMappingData(IIdMapper idMapper, XmlElement xmlMapping, XmlElement xmlRelationMapping) {
             this.IdMapper = idMapper;
-            this.xmlMapping = xmlMapping;
-            this.xmlRelationMapping = xmlRelationMapping;
+            this.XmlMapping = xmlMapping;
+            this.XmlRelationMapping = xmlRelationMapping;
         }
     }
 }

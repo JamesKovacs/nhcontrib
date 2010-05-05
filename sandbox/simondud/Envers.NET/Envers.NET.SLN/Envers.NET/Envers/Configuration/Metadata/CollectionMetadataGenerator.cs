@@ -100,7 +100,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 
             //String mappedBy = GetMappedBy(propertyValue);
 
-            //IdMappingData referencedIdMapping = mainGenerator.getReferencedIdMappingData(referencingEntityName,
+            //IdMappingData referencedIdMapping = mainGenerator.GetReferencedIdMappingData(referencingEntityName,
             //            referencedEntityName, propertyAuditingData, false);
             //IdMappingData referencingIdMapping = referencingEntityConfiguration.IdMappingData;
 
@@ -191,8 +191,8 @@ namespace NHibernate.Envers.Configuration.Metadata
         private void AddRelatedToXmlMapping(XmlElement xmlMapping, String prefix,
                                             MetadataTools.ColumnNameEnumerator columnNameIterator,
                                             IdMappingData relatedIdMapping) {
-            XmlElement properties = (XmlElement) relatedIdMapping.xmlRelationMapping.Clone();
-            MetadataTools.prefixNamesInPropertyElement(properties, prefix, columnNameIterator, true, true);
+            XmlElement properties = (XmlElement) relatedIdMapping.XmlRelationMapping.Clone();
+            MetadataTools.PrefixNamesInPropertyElement(properties, prefix, columnNameIterator, true, true);
             foreach (XmlElement idProperty in (IList<XmlElement>) properties.ChildNodes) {
                 xmlMapping.AppendChild((XmlElement) idProperty.Clone());
             }
@@ -376,7 +376,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 
             //    String referencedEntityName = MappingTools.getReferencedEntityName(value);
 
-            //    IdMappingData referencedIdMapping = mainGenerator.getReferencedIdMappingData(referencingEntityName,
+            //    IdMappingData referencedIdMapping = mainGenerator.GetReferencedIdMappingData(referencingEntityName,
             //            referencedEntityName, propertyAuditingData, true);
 
             //    // Adding related-entity (in this case: the referenced entities id) id mapping to the xml only if the
@@ -455,7 +455,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             throw new NotImplementedException();
             //if (referencedEntityName != null) {
             //    if (propertyValue.isInverse()) {
-            //        referencingEntityConfiguration.addToManyMiddleNotOwningRelation(propertyName, mappedBy, referencedEntityName);
+            //        referencingEntityConfiguration.AddToManyMiddleNotOwningRelation(propertyName, mappedBy, referencedEntityName);
             //    } else {
             //        referencingEntityConfiguration.addToManyMiddleRelation(propertyName, referencedEntityName);
             //    }

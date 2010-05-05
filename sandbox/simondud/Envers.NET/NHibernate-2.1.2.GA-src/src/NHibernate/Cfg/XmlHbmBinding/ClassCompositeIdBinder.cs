@@ -42,6 +42,10 @@ namespace NHibernate.Cfg.XmlHbmBinding
 			compositeId.NullValue = GetXmlEnumAttribute(idSchema.unsavedvalue);
 
 			System.Type compIdClass = compositeId.ComponentClass;
+
+            //<Simon date='26.04.2010'>
+            if(compositeId.IsDynamic) return;
+            //</Simon>
 			if (!ReflectHelper.OverridesEquals(compIdClass))
 				throw new MappingException(
 					"composite-id class must override Equals(): " + compIdClass.FullName
@@ -71,9 +75,21 @@ namespace NHibernate.Cfg.XmlHbmBinding
 			}
 			else
 			{
-				// an "embedded" component (ids only)
-				compositeId.ComponentClass = compositeId.Owner.MappedClass;
-				compositeId.IsEmbedded = true;
+                //<Simon date='26.04.2010'>
+                if (compositeId.Owner.HasPocoRepresentation)
+                {
+                    //</Simon>
+                    // an "embedded" component (ids only)
+                    compositeId.ComponentClass = compositeId.Owner.MappedClass;
+                    compositeId.IsEmbedded = true;
+
+                //<Simon date='26.04.2010'>
+                }
+                else
+                {
+                    compositeId.IsDynamic = true;
+                }
+                //</Simon>
 			}
 
 			foreach (object item in idSchema.Items ?? new object[0])

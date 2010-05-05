@@ -747,9 +747,15 @@ namespace NHibernate.Cfg.XmlHbmBinding
 				string columns = Columns(property.Value);
 				if (columns.Length > 0)
 					msg += " -> " + columns;
-				if (property.Type != null)
-					msg += ", type: " + property.Type.Name;
-				log.Debug(msg);
+                //<Simon date='27.04.2010'>
+                //for dynamic classes property.Type throws MappingException
+                //if(property.PersistentClass != null)
+                //{
+                //</Simon>
+                    if (property.Type != null)
+                        msg += ", type: " + property.Type.Name;
+                //}
+                log.Debug(msg);
 			}
 
 			property.MetaAttributes = GetMetas(node.SelectNodes(HbmConstants.nsMeta, namespaceManager), inheritedMetas);

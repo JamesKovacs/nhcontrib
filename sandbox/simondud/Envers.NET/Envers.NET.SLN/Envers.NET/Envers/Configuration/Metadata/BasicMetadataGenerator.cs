@@ -50,9 +50,9 @@ namespace NHibernate.Envers.Configuration.Metadata
                                     IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
             {
 		    if (parent != null) {
-                XmlElement prop_mapping = MetadataTools.addProperty(parent, propertyAuditingData.Name,
+                XmlElement prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
                         value.Type.Name, propertyAuditingData.ForceInsertable || insertable, key);
-                MetadataTools.addColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator());
+                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator());
 		    }
 
 		    // A null mapper means that we only want to add xml mappings
@@ -64,7 +64,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 	    private void AddCustomValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
 								    IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) {
 		    if (parent != null) {
-			    XmlElement prop_mapping = MetadataTools.addProperty(parent, propertyAuditingData.Name,
+			    XmlElement prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
 					    null, insertable, key);
 
 			    //CustomType propertyType = (CustomType) value.getType();
@@ -84,7 +84,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 				    }
 			    }
 
-                MetadataTools.addColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator);
+                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator);
 		    }
 
 		    if (mapper != null) {

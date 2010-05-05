@@ -40,7 +40,7 @@ namespace NHibernate.Envers.Entities
             }
 
             // The $type$ property holds the name of the (versions) entity
-            String name = verCfg.getEntCfg().getEntityNameForVersionsEntityName(((String) versionsEntity["$type$"]));
+            String name = verCfg.getEntCfg().GetEntityNameForVersionsEntityName(((String) versionsEntity["$type$"]));
 
             if (name != null) {
                 entityName = name;

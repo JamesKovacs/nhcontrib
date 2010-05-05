@@ -58,7 +58,7 @@ namespace NHibernate.Envers.Entities
                     toEntityName, null, null, null, null, true));
         }
 
-        public void addToManyMiddleNotOwningRelation(String fromPropertyName, String mappedByPropertyName, String toEntityName)
+        public void AddToManyMiddleNotOwningRelation(String fromPropertyName, String mappedByPropertyName, String toEntityName)
         {
             relations.Add(fromPropertyName, new RelationDescription(fromPropertyName, RelationType.TO_MANY_MIDDLE_NOT_OWNING,
                     toEntityName, mappedByPropertyName, null, null, null, true));
@@ -66,12 +66,12 @@ namespace NHibernate.Envers.Entities
 
         public bool IsRelation(String propertyName)
         {
-            return relations[propertyName] != null;
+            return relations.ContainsKey(propertyName) && relations[propertyName] != null;
         }
 
         public RelationDescription GetRelationDescription(String propertyName)
         {
-            return relations[propertyName];
+            return relations.ContainsKey(propertyName)? relations[propertyName]: null;
         }
 
         // For use by EntitiesConfigurations
@@ -82,7 +82,7 @@ namespace NHibernate.Envers.Entities
         }
 
         //TODO Simon rename - getRelationsCollection
-        public ICollection<RelationDescription> getRelationsIterator()
+        public ICollection<RelationDescription> GetRelationsIterator()
         {
             return relations.Values;
         }

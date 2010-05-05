@@ -48,7 +48,7 @@ namespace NHibernate.Envers.Synchronization.Work
 
     public override IAuditWorkUnit Merge(ModWorkUnit second)
     {
-        return new AddWorkUnit(sessionImplementor, entityName, verCfg, id, second.getData());
+        return new AddWorkUnit(sessionImplementor, EntityName, verCfg, EntityId, second.getData());
     }
 
     public override IAuditWorkUnit Merge(DelWorkUnit second)

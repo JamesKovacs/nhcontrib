@@ -20,93 +20,96 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
      * @author Erik-Berndt Scheper
      */
     public class AuditedPropertiesReader {
-	    private ModificationStore defaultStore;
-	    private IPersistentPropertiesSource persistentPropertiesSource;
-	    private IAuditedPropertiesHolder auditedPropertiesHolder;
-	    private GlobalConfiguration globalCfg;
-	    private String propertyNamePrefix;
+	    private readonly ModificationStore _defaultStore;
+	    private readonly IPersistentPropertiesSource _persistentPropertiesSource;
+	    private readonly IAuditedPropertiesHolder _auditedPropertiesHolder;
+	    private readonly GlobalConfiguration _globalCfg;
+	    private readonly String _propertyNamePrefix;
 
-	    private ISet<String> propertyAccessedPersistentProperties;
-	    private ISet<String> fieldAccessedPersistentProperties;
+	    private readonly ISet<String> _propertyAccessedPersistentProperties;
+	    private readonly ISet<String> _fieldAccessedPersistentProperties;
 
 	    public AuditedPropertiesReader(ModificationStore defaultStore,
 								       IPersistentPropertiesSource persistentPropertiesSource,
 								       IAuditedPropertiesHolder auditedPropertiesHolder,
 								       GlobalConfiguration globalCfg,
 								       String propertyNamePrefix) {
-		    this.defaultStore = defaultStore;
-		    this.persistentPropertiesSource = persistentPropertiesSource;
-		    this.auditedPropertiesHolder = auditedPropertiesHolder;
-		    this.globalCfg = globalCfg;
-		    this.propertyNamePrefix = propertyNamePrefix;
+		    this._defaultStore = defaultStore;
+		    this._persistentPropertiesSource = persistentPropertiesSource;
+		    this._auditedPropertiesHolder = auditedPropertiesHolder;
+		    this._globalCfg = globalCfg;
+		    this._propertyNamePrefix = propertyNamePrefix;
 
-		    propertyAccessedPersistentProperties = Toolz.newHashSet<String>();
-		    fieldAccessedPersistentProperties = Toolz.newHashSet<String>();
+		    _propertyAccessedPersistentProperties = Toolz.newHashSet<String>();
+		    _fieldAccessedPersistentProperties = Toolz.newHashSet<String>();
 	    }
 
 	    public void read() {
 		    // First reading the access types for the persistent properties.
-		    readPersistentPropertiesAccess();
+		    ReadPersistentPropertiesAccess();
 
 		    // Adding all properties from the given class.
-		    addPropertiesFromClass(persistentPropertiesSource.GetClass());
+		    AddPropertiesFromClass(_persistentPropertiesSource.GetClass());
 	    }
 
-	    private void readPersistentPropertiesAccess() {
-		    IEnumerator<Property> propertyIter = persistentPropertiesSource.PropertyEnumerator;
+	    private void ReadPersistentPropertiesAccess() {
+		    IEnumerator<Property> propertyIter = _persistentPropertiesSource.PropertyEnumerator;
 		    while (propertyIter.MoveNext()) {
 			    Property property = (Property) propertyIter.Current;
 			    if ("field".Equals(property.PropertyAccessorName)) {
-				    fieldAccessedPersistentProperties.Add(property.Name);
+				    _fieldAccessedPersistentProperties.Add(property.Name);
 			    } else {
-				    propertyAccessedPersistentProperties.Add(property.Name);
+				    _propertyAccessedPersistentProperties.Add(property.Name);
 			    }
 		    }
 	    }
 
-	    private void addPropertiesFromClass(System.Type clazz)  {
-		    System.Type superclazz = clazz.BaseType;
-            if (!"System.Object".Equals(superclazz.FullName))
-            {
-			    addPropertiesFromClass(superclazz);
-		    }
+	    private void AddPropertiesFromClass(System.Type clazz)  {
+            //No need to go to base class, the .NET GetProperty method can bring the base properties also
+            //System.Type superclazz = clazz.BaseType;
+            //if (!"System.Object".Equals(superclazz.FullName))
+            //{
+            //    AddPropertiesFromClass(superclazz);
+            //}
 
             //ORIG: addFromProperties(clazz.getDeclaredProperties("field"), "field", fieldAccessedPersistentProperties);
-            //addFromProperties(clazz.getDeclaredProperties("property"), "property", propertyAccessedPersistentProperties);
-            addFromProperties(clazz.GetProperties(BindingFlags.GetField), "field", fieldAccessedPersistentProperties);
-            addFromProperties(clazz.GetProperties(BindingFlags.GetProperty), "property", propertyAccessedPersistentProperties);
+            //addFromProperties(clazz.getDeclaredProperties("property"), "property", _propertyAccessedPersistentProperties);
+
+            //only one call is needed, .NET does not differentiate between field and property
+            //AddFromProperties(clazz.GetProperties(BindingFlags.GetField), "field", _fieldAccessedPersistentProperties);
+            AddFromProperties(clazz.GetProperties(), "property", _propertyAccessedPersistentProperties);
 	    }
 
-	    private void addFromProperties(IEnumerable<PropertyInfo> properties, String accessType, ISet<String> persistentProperties) {
+	    private void AddFromProperties(IEnumerable<PropertyInfo> properties, String accessType, ISet<String> persistentProperties) {
 		    //ORIG: foreach (XProperty property in properties) {
 			foreach (PropertyInfo property in properties) {
 			    // If this is not a persistent property, with the same access type as currently checked,
 			    // it's not audited as well.
 			    if (persistentProperties.Contains(property.Name)) {
-				    IValue propertyValue = persistentPropertiesSource.GetProperty(property.Name).Value;
+				    IValue propertyValue = _persistentPropertiesSource.GetProperty(property.Name).Value;
 
 				    PropertyAuditingData propertyData;
 				    bool isAudited;
 				    if (propertyValue is Component) {
 					    ComponentAuditingData componentData = new ComponentAuditingData();
-					    isAudited = fillPropertyData(property, componentData, accessType);
+					    isAudited = FillPropertyData(property, componentData, accessType);
 
 					    IPersistentPropertiesSource componentPropertiesSource = new ComponentPropertiesSource(
 							    (Component) propertyValue);
 					    new AuditedPropertiesReader(ModificationStore.FULL, componentPropertiesSource, componentData,
-							    globalCfg,
-							    propertyNamePrefix + MappingTools.createComponentPrefix(property.Name))
+							    _globalCfg,
+							    _propertyNamePrefix + MappingTools.createComponentPrefix(property.Name))
 							    .read();
 
 					    propertyData = componentData;
 				    } else {
 					    propertyData = new PropertyAuditingData();
-					    isAudited = fillPropertyData(property, propertyData, accessType);
+					    isAudited = FillPropertyData(property, propertyData, accessType);
 				    }
 
 				    if (isAudited) {
 					    // Now we know that the property is audited
-					    auditedPropertiesHolder.addPropertyAuditingData(property.Name, propertyData);
+					    _auditedPropertiesHolder.addPropertyAuditingData(property.Name, propertyData);
 				    }
 			    }
 		    }
@@ -119,7 +122,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     * @param accessType Access type for the property.
 	     * @return False if this property is not audited.
 	     */
-	    private bool fillPropertyData(PropertyInfo property, PropertyAuditingData propertyData,
+	    private bool FillPropertyData(PropertyInfo property, PropertyAuditingData propertyData,
 									     String accessType) {
 
 		    // check if a property is declared as not audited to exclude it
@@ -130,7 +133,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 		    } else {
 			    // if the optimistic locking field has to be unversioned and the current property
 			    // is the optimistic locking field, don't audit it
-			    if (globalCfg.isDoNotAuditOptimisticLockingField()) {
+			    if (_globalCfg.isDoNotAuditOptimisticLockingField()) {
 				    //Version jpaVer = property.getAnnotation(typeof(Version));
                     VersionAttribute jpaVer = (VersionAttribute)Attribute.GetCustomAttribute(property, typeof(VersionAttribute));
 				    if (jpaVer != null) {
@@ -146,14 +149,14 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 			    propertyData.Store = aud.ModStore;
 			    propertyData.setRelationTargetAuditMode(aud.TargetAuditMode);
 		    } else {
-			    if (defaultStore != null) {
-				    propertyData.Store = defaultStore;
+			    if (_defaultStore != null) {
+				    propertyData.Store = _defaultStore;
 			    } else {
 				    return false;
 			    }
 		    }
 
-		    propertyData.Name = propertyNamePrefix + property.Name;
+		    propertyData.Name = _propertyNamePrefix + property.Name;
 		    propertyData.BeanName = property.Name;
 		    propertyData.AccessType = accessType;
 
@@ -224,8 +227,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     */
 	    private bool ProcessPropertyAuditingOverrides(PropertyInfo property, PropertyAuditingData propertyData) {
 		    // if this property is part of a component, process all override annotations
-		    if (this.auditedPropertiesHolder is ComponentAuditingData) {
-			    IList<AuditOverrideAttribute> overrides = ((ComponentAuditingData) this.auditedPropertiesHolder).AuditingOverrides;
+		    if (this._auditedPropertiesHolder is ComponentAuditingData) {
+			    IList<AuditOverrideAttribute> overrides = ((ComponentAuditingData) this._auditedPropertiesHolder).AuditingOverrides;
 			    foreach (AuditOverrideAttribute ovr in overrides) {
 				    if (property.Name.Equals(ovr.Name)) {
 					    // the override applies to this property
