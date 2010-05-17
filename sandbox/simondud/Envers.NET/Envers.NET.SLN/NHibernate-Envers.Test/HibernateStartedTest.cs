@@ -79,7 +79,7 @@ namespace APDRP_NHibernatePOC_Test
             addressRepository.Add(address);
 
             address = addressRepository.GetById(id1);
-            Assert.IsTrue(address.number == "23" && address.street == "Valea Calugareasca");
+            Assert.IsTrue(address.number == "24" && address.street == "Valea Calugareasca");
 
 
         }

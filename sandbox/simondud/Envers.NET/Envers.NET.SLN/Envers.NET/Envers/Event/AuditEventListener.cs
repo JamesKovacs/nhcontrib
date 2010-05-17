@@ -125,6 +125,7 @@ namespace NHibernate.Envers.Event
                 // does not lead to calling the verSync's synchronization methods (Before and AfterCompletion
                 // so I will call this manually. The problem that I found is that AdoTransaction's Commit method
                 // is not called at all. Could this be because of Spring.NET?
+                // When corrected, change also in AuditSync the Flush in BeforeCompletion.
                 verSync.BeforeCompletion();
             }
         }

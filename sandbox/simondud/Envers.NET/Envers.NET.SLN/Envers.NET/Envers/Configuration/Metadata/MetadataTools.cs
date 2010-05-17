@@ -178,8 +178,8 @@ namespace NHibernate.Envers.Configuration.Metadata
         public static void AddColumns(XmlElement any_mapping, IEnumerator<ISelectable> columns) {
             while (columns.MoveNext()) {
                 Column column = (Column)columns.Current;
-                AddColumn(any_mapping, column.Name, column.Length, column.Scale, column.Precision,
-					    column.SqlType);
+                AddColumn(any_mapping, column.Name, column.Length, column.IsPrecisionDefined()?column.Scale:0, 
+                          column.IsPrecisionDefined()?column.Precision:0,column.SqlType);
             }
         }
 
@@ -217,7 +217,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                         ChangeElementName(property, "key-property");
                     }
 
-				    property.SetAttribute("insert",insertable.ToString());
+				    property.SetAttribute("insert",insertable?"true":"false");
                 }
             }
         }

@@ -149,7 +149,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 			    propertyData.Store = aud.ModStore;
 			    propertyData.setRelationTargetAuditMode(aud.TargetAuditMode);
 		    } else {
-			    if (_defaultStore != null) {
+			    if (_defaultStore != ModificationStore._NULL) {
 				    propertyData.Store = _defaultStore;
 			    } else {
 				    return false;
