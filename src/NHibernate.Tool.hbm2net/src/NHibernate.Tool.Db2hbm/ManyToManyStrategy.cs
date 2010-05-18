@@ -23,7 +23,7 @@ namespace NHibernate.Tool.Db2hbm
                 logger.Debug(string.Format("{0} working on:", GetType().Name) + e.table);
                 if (IsManyToManyJoin(e))
                 {
-                    var kc = GetKeyColumns(context.GetTableMetaData(e.schema, e.name));
+                    var kc = GetKeyColumns(context.GetTableMetaData(e.schema, e.table));
                     bool hasbag = false;
                     if (kc.Length == 2)//bag: key spawn two columns
                     {

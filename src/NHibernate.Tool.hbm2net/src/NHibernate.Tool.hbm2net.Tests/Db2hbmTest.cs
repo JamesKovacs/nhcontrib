@@ -76,6 +76,33 @@ namespace NHibernate.Tool.hbm2net.Tests
                 
             }
         }
+        private static void CreateDbFromSchema(string schemaResourceName)
+        {
+            var cfg = TestHelper.GetASqlExpressConfiguration();
+            using (SqlConnection conn = new SqlConnection(cfg.Properties[NHibernate.Cfg.Environment.ConnectionString]))
+            {
+                conn.Open();
+                StreamReader sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(schemaResourceName));
+                StringBuilder cmdBuffer = new StringBuilder();
+                string line;
+                while( null != (line = sr.ReadLine() ) )
+                {
+                    if (line.Trim().Equals("GO", StringComparison.InvariantCulture))
+                    {
+                        var cmd = conn.CreateCommand();
+                        cmd.CommandText = cmdBuffer.ToString();
+                        cmd.CommandType = CommandType.Text;
+                        cmd.ExecuteNonQuery();
+                        cmdBuffer = new StringBuilder();
+                    }
+                    else
+                    {
+                        cmdBuffer.AppendLine(line.Trim());
+                    }
+                }
+                conn.Close();
+            }
+        }
         [Test, Explicit]
         public void InferConfigSchema()
         {
@@ -86,6 +113,16 @@ namespace NHibernate.Tool.hbm2net.Tests
             {
                 schema.Write(Console.Out);
             }
+        }
+        [Test, Explicit
+        , Description("Requires schema UserBugNullRererenceWhenSmallIntIsKey.sql")
+        ]
+        public void UserBugNullRererenceWhenSmallIntIsKey()
+        {
+            CreateDbFromSchema("NHibernate.Tool.hbm2net.Tests.Schemas.UserBugNullRererenceWhenSmallIntIsKey.sql");
+            MappingGenerator gen = new MappingGenerator();
+            gen.Configure(XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("NHibernate.Tool.hbm2net.Tests.UserBugNullReferenceWhenSmallIntIsAKey.xml")));
+            gen.Generate(new StdoutStreamProvider());
         }
         [Test]
         public void CanReadConfiguration()

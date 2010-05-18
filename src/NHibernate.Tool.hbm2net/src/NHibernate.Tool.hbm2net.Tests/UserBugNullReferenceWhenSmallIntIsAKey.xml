@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<db2hbm-conf xmlns="urn:nhibernate-codegen-2.2">
+
+  <metadata-strategies>
+    <strategy class="NHibernate.Tool.Db2hbm.FirstPassEntityCollector, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.PrimaryKeyStrategy, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.ManyToOneStrategy, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.SetStrategy, NHibernate.Tool.Db2hbm"/>
+    <strategy class="NHibernate.Tool.Db2hbm.ManyToManyStrategy, NHibernate.Tool.Db2hbm"/>
+    <!--strategy class="NHibernate.Tool.Db2hbm.SetToMapStrategy, NHibernate.Tool.Db2hbm"/-->
+    <strategy class="NHibernate.Tool.Db2hbm.ApplyEntityExceptionsStrategy, NHibernate.Tool.Db2hbm"/>
+  </metadata-strategies>
+  <foreign-key-crawlers>
+    <factory>NHibernate.Tool.Db2hbm.ForeignKeyCrawlers.MSSQLForeignKeyCrawlerFactory, NHibernate.Tool.Db2hbm</factory>
+  </foreign-key-crawlers>
+  <type-mapping>
+    <sql-type dbtype="varchar" nhtype="String"/>
+    <sql-type dbtype="nvarchar" nhtype="String"/>
+    <sql-type dbtype="int" nhtype="Int32"/>
+    <sql-type dbtype="bigint" nhtype="Int64"/>
+    <sql-type dbtype="datetime" nhtype="DateTime"/>
+  </type-mapping>
+  <naming-strategy class="NHibernate.Tool.Db2hbm.DefaultNamingStrategy, NHibernate.Tool.Db2hbm">
+    <property name="Language">English</property>
+  </naming-strategy>
+  <connection-info>
+    <dialect>NHibernate.Dialect.MsSql2005Dialect, NHibernate</dialect>
+    <connection-string>Server=localhost\SQLEXPRESS;initial catalog=db2hbm;Integrated Security=True</connection-string>
+    <connection-driver>NHibernate.Driver.SqlClientDriver, NHibernate</connection-driver>
+  </connection-info>
+  <table-filter>
+    <include table="TMAR_.*"/>
+  </table-filter>
+  <tables>
+    <table schema="dbo" catalog="db2hbm" name="Simple">
+    </table>
+  </tables>
+  <entity-exceptions>
+    <entity match="Widget">
+      <member-name match="Pay|Name|Address">
+        <alter>
+
+          <set name="insert" value="false"/>
+          <set name="update" value="false"/>
+
+
+        </alter>
+      </member-name>
+    </entity>
+  </entity-exceptions>
+  <entities-namespace>NHibernate.User1</entities-namespace>
+  <entities-assembly>NHibernate.User1</entities-assembly>
+
+
+</db2hbm-conf>

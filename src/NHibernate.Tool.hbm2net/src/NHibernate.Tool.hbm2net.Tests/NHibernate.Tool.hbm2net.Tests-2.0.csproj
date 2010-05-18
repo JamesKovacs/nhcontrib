@@ -108,6 +108,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -127,6 +128,7 @@
     <None Include="App.config" />
     <EmbeddedResource Include="convert.vm" />
     <None Include="NHibernate.Tool.hbm2net.Tests.build" />
+    <EmbeddedResource Include="Schemas\UserBugNullRererenceWhenSmallIntIsKey.sql" />
     <EmbeddedResource Include="Simple1.csharp" />
     <EmbeddedResource Include="Simple.csharp" />
     <Compile Include="AssemblyInfo.cs">
@@ -291,6 +293,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Db2hbmTestAdventureWorks.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserBugNullReferenceWhenSmallIntIsAKey.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

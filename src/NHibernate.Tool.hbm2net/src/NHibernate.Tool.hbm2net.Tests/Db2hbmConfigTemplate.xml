@@ -24,12 +24,16 @@
     <table schema="s1" catalog="c1" name="Simple" >
       <primary-key>
         <generator class="generatorname">
+          <!--
           <param name="param_name">parameter value</param>
           <param name="param_name1">parameter value</param>
+          -->
         </generator>
+        <!--
         <key-column name="name" type="dbtype"/>
-        <key-column name="name1" type="dbtype"/>
+        <key-column name="name1" type="dbtype"/>-->
       </primary-key>
+      <!--
       <foreign-key
             constraint-name="foreignKeyName"
             foreign-catalog="catalogName"
@@ -46,7 +50,7 @@
             foreign-table="tableName"
       >
         <column-ref local-column="columnName1" foreign-column="foreignColumnName1"/>
-      </foreign-key>
+      </foreign-key> -->
       </table>
     <table schema="s2" catalog="c2" name="s2"></table>
     <table schema="s3" catalog="c3" name="s3"></table>
