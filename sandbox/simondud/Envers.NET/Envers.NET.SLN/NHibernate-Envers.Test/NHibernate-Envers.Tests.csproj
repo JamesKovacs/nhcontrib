@@ -71,6 +71,10 @@
       <Project>{710961A3-0DF4-49E4-A26E-F5B9C044AC84}</Project>
       <Name>Spring.Core.2008</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Spring.NET\src\Spring\Spring.Data.NHibernate21\Spring.Data.NHibernate21.2008.csproj">
+      <Project>{E57B4652-0231-49CB-B058-87E10EFE540D}</Project>
+      <Name>Spring.Data.NHibernate21.2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Spring.NET\src\Spring\Spring.Data\Spring.Data.2008.csproj">
       <Project>{AE00E5AB-C39A-436F-86D2-33BFE33E2E40}</Project>
       <Name>Spring.Data.2008</Name>

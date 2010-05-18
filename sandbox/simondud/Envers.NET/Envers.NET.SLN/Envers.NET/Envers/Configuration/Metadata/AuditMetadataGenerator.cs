@@ -542,13 +542,15 @@ namespace NHibernate.Envers.Configuration.Metadata
                                                 PropertyAuditingData propertyAuditingData,
                                                 bool allowNotAuditedTarget)
         {
-            EntityConfiguration configuration = EntitiesConfigurations[referencedEntityName];
-            if (configuration == null)
+            EntityConfiguration configuration;
+            if (EntitiesConfigurations.Keys.Contains(referencedEntityName))
+                configuration = EntitiesConfigurations[referencedEntityName];
+            else
             {
                 RelationTargetAuditMode relationTargetAuditMode = propertyAuditingData.getRelationTargetAuditMode();
-                configuration = NotAuditedEntitiesConfigurations[referencedEntityName];
 
-                if (configuration == null || !allowNotAuditedTarget || !RelationTargetAuditMode.NOT_AUDITED.Equals(relationTargetAuditMode))
+                if (!NotAuditedEntitiesConfigurations.Keys.Contains(referencedEntityName) ||
+                    !allowNotAuditedTarget || !RelationTargetAuditMode.NOT_AUDITED.Equals(relationTargetAuditMode))
                 {
                     throw new MappingException("An audited relation from " + entityName + "."
                             + propertyAuditingData.Name + " to a not audited entity " + referencedEntityName + "!"
@@ -556,8 +558,8 @@ namespace NHibernate.Envers.Configuration.Metadata
                                 " Such mapping is possible, but has to be explicitly defined using @Audited(targetAuditMode = NOT_AUDITED)." :
                                 ""));
                 }
+                else configuration = NotAuditedEntitiesConfigurations[referencedEntityName];
             }
-
             return configuration.IdMappingData;
         }
     }

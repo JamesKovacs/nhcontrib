@@ -7,62 +7,31 @@ using NHibernate.Envers.Entities.Mapper;
 namespace NHibernate.Envers.Entities
 {
     public class RelationDescription {
-        private readonly String fromPropertyName;
-        private readonly RelationType relationType;
-        private readonly String toEntityName;
-        private readonly String mappedByPropertyName;
-        private readonly IIdMapper idMapper;
-        private readonly IPropertyMapper fakeBidirectionalRelationMapper;
-        private readonly IPropertyMapper fakeBidirectionalRelationIndexMapper;
-        private readonly bool insertable;
+        public virtual String FromPropertyName { get; private set;}
+        public virtual RelationType RelationType { get; private set; }
+        public virtual String ToEntityName { get; private set; }
+        public virtual String MappedByPropertyName { get; private set; }
+        public virtual IIdMapper IdMapper { get; private set; }
+        public virtual IPropertyMapper FakeBidirectionalRelationMapper { get; private set; }
+        public virtual IPropertyMapper FakeBidirectionalRelationIndexMapper { get; private set; }
+        public virtual bool Insertable { get; private set; }
         public bool Bidirectional { get; set; }
 
         public RelationDescription(String fromPropertyName, RelationType relationType, String toEntityName,
                                    String mappedByPropertyName, IIdMapper idMapper,
                                    IPropertyMapper fakeBidirectionalRelationMapper,
                                    IPropertyMapper fakeBidirectionalRelationIndexMapper, bool insertable) {
-            this.fromPropertyName = fromPropertyName;
-            this.relationType = relationType;
-            this.toEntityName = toEntityName;
-            this.mappedByPropertyName = mappedByPropertyName;
-            this.idMapper = idMapper;
-            this.fakeBidirectionalRelationMapper = fakeBidirectionalRelationMapper;
-            this.fakeBidirectionalRelationIndexMapper = fakeBidirectionalRelationIndexMapper;
-            this.insertable = insertable;
+            this.FromPropertyName = fromPropertyName;
+            this.RelationType = relationType;
+            this.ToEntityName = toEntityName;
+            this.MappedByPropertyName = mappedByPropertyName;
+            this.IdMapper = idMapper;
+            this.FakeBidirectionalRelationMapper = fakeBidirectionalRelationMapper;
+            this.FakeBidirectionalRelationIndexMapper = fakeBidirectionalRelationIndexMapper;
+            this.Insertable = insertable;
 
             this.Bidirectional = false;
         }
 
-        public String getFromPropertyName() {
-            return fromPropertyName;
-        }
-
-        public RelationType getRelationType() {
-            return relationType;
-        }
-
-        public String getToEntityName() {
-            return toEntityName;
-        }
-
-        public String getMappedByPropertyName() {
-            return mappedByPropertyName;
-        }
-
-        public IIdMapper getIdMapper() {
-            return idMapper;
-        }
-
-        public IPropertyMapper getFakeBidirectionalRelationMapper() {
-            return fakeBidirectionalRelationMapper;
-        }
-
-        public IPropertyMapper getFakeBidirectionalRelationIndexMapper() {
-            return fakeBidirectionalRelationIndexMapper;
-        }
-
-        public bool isInsertable() {
-            return insertable;
-        }
     }
 }

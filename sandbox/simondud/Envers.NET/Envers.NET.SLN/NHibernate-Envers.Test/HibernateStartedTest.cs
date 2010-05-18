@@ -11,6 +11,7 @@ using Envers.Net.Repository;
 using Spring.Data.Common;
 using System.Data;
 using NHibernate.Envers.Event;
+using Spring.Data.NHibernate;
 
 namespace APDRP_NHibernatePOC_Test
 {
@@ -20,6 +21,7 @@ namespace APDRP_NHibernatePOC_Test
         private IApplicationContext applicationContext;
         private IRepository<Person> personRepository;
         private IRepository<Address> addressRepository;
+        private IRepository<ContBancar> contRepository;
 
         [TestFixtureSetUp]
         public void SetUp()
@@ -27,6 +29,7 @@ namespace APDRP_NHibernatePOC_Test
             applicationContext = new XmlApplicationContext("spring-config.xml");
             personRepository = (IRepository<Person>)applicationContext.GetObject("PersonRepository");
             addressRepository = (IRepository<Address>)applicationContext.GetObject("AddressRepository");
+            contRepository = (IRepository<ContBancar>)applicationContext.GetObject("ContBancarRepository");
         }
 
         [TestFixtureTearDown]
@@ -75,7 +78,16 @@ namespace APDRP_NHibernatePOC_Test
             addressRepository.Update(address);
 
             address = new Address { number = "45", street = "Strada Strada" };
+            addressRepository.Add(address);
 
+            ContBancar cont = new ContBancar{NumeBanca="BRD", IBAN = "RO212423455634",Adresa = address};
+
+            contRepository.Add(cont);
+
+            pers.cont = cont;
+            personRepository.Update(pers);
+
+            address = new Address { number = "55bis", street = "Alta strada" };
             addressRepository.Add(address);
 
             address = addressRepository.GetById(id1);

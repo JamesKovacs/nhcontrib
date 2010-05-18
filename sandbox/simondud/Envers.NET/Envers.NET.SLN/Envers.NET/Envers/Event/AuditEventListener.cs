@@ -46,8 +46,8 @@ namespace NHibernate.Envers.Event
             for (int i=0; i<propertyNames.GetLength(0); i++) {
                 String propertyName = propertyNames[i];
                 RelationDescription relDesc = verCfg.getEntCfg().GetRelationDescription(entityName, propertyName);
-                if (relDesc != null && relDesc.Bidirectional && relDesc.getRelationType() == RelationType.TO_ONE &&
-                        relDesc.isInsertable()) {
+                if (relDesc != null && relDesc.Bidirectional && relDesc.RelationType == RelationType.TO_ONE &&
+                        relDesc.Insertable) {
                     // Checking for changes
                     Object oldValue = oldState == null ? null : oldState[i];
                     Object newValue = newState == null ? null : newState[i];
@@ -126,7 +126,7 @@ namespace NHibernate.Envers.Event
                 // so I will call this manually. The problem that I found is that AdoTransaction's Commit method
                 // is not called at all. Could this be because of Spring.NET?
                 // When corrected, change also in AuditSync the Flush in BeforeCompletion.
-                verSync.BeforeCompletion();
+                //verSync.BeforeCompletion();
             }
         }
 
@@ -145,7 +145,7 @@ namespace NHibernate.Envers.Event
                             evt.OldState, evt.Session);
                 }
                 //Simon - TODO - same as above
-                verSync.BeforeCompletion();
+                //verSync.BeforeCompletion();
             }
         }
 
@@ -180,7 +180,7 @@ namespace NHibernate.Envers.Event
             // the other side of the relation.
             // relDesc can be null if this is a collection of simple values (not a relation).
             if (rd != null && rd.Bidirectional) {
-                String relatedEntityName = rd.getToEntityName();
+                String relatedEntityName = rd.ToEntityName;
                 IIdMapper relatedIdMapper = verCfg.getEntCfg()[relatedEntityName].GetIdMapper();
                 
                 foreach (PersistentCollectionChangeData changeData in workUnit.getCollectionChanges()) 
@@ -204,7 +204,7 @@ namespace NHibernate.Envers.Event
 
             // Getting the id mapper for the related entity, as the work units generated will corrspond to the related
             // entities.
-            String relatedEntityName = rd.getToEntityName();
+            String relatedEntityName = rd.ToEntityName;
             IIdMapper relatedIdMapper = verCfg.getEntCfg()[relatedEntityName].GetIdMapper();
 
             // For each collection change, generating the bidirectional work unit.
@@ -244,7 +244,7 @@ namespace NHibernate.Envers.Event
                 // Checking if this is not a "fake" many-to-one bidirectional relation. The relation description may be
                 // null in case of collections of non-entities.
                 RelationDescription rd = verCfg.getEntCfg()[entityName].GetRelationDescription(referencingPropertyName);
-                if (rd != null && rd.getMappedByPropertyName() != null) {
+                if (rd != null && rd.MappedByPropertyName != null) {
                     GenerateFakeBidirecationalRelationWorkUnits(verSync, newColl, oldColl, entityName,
                             referencingPropertyName, evt, rd);
                 } else {

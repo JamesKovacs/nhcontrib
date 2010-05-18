@@ -44,13 +44,14 @@ namespace NHibernate.Envers.Entities
             foreach (RelationDescription relDesc in entCfg.GetRelationsIterator()) {
                 // If this is an "owned" relation, checking the related entity, if it has a relation that has
                 // a mapped-by attribute to the currently checked. If so, this is a bidirectional relation.
-                if (relDesc.getRelationType() == RelationType.TO_ONE ||
-						relDesc.getRelationType() == RelationType.TO_MANY_MIDDLE) {
-					EntityConfiguration entityConfiguration = entitiesConfigurations[relDesc.getToEntityName()];
-					if (entityConfiguration != null) {
+                if (relDesc.RelationType == RelationType.TO_ONE ||
+						relDesc.RelationType == RelationType.TO_MANY_MIDDLE) {
+                    if (entitiesConfigurations.Keys.Contains(relDesc.ToEntityName))
+                    {
+                        EntityConfiguration entityConfiguration = entitiesConfigurations[relDesc.ToEntityName];
 						foreach (RelationDescription other in entityConfiguration.GetRelationsIterator()) {
-							if (relDesc.getFromPropertyName().Equals(other.getMappedByPropertyName()) &&
-									(entityName.Equals(other.getToEntityName()))) {
+							if (relDesc.FromPropertyName.Equals(other.MappedByPropertyName) &&
+									(entityName.Equals(other.ToEntityName))) {
 								relDesc.Bidirectional = true;
 								other.Bidirectional = true;
 							}

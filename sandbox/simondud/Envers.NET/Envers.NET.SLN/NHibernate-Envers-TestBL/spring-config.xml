@@ -23,18 +23,25 @@
   <object id="ExecutingAssembly" type="Envers.Net.Model.Util.ExecutingAssemblyFactoryObject, APDRP_NHibernatePOC"/>
 
   <object id="NHibernateSessionFactory" type="Envers.Net.Utils.AttributesSessionFactoryObject" singleton="true" lazy-init="true">
+    <!--SQL Server 200x-->
     <property name="DbProvider" ref="DbProvider200x"/>
+    <!--SQL CE-->
+    <!--<property name="DbProvider" ref="DbProviderCE"/>-->
+
     <property name="Assembly" ref="ExecutingAssembly"/>
     <property name="HibernateProperties">
       <dictionary>
+        
         <!--SQL Server 200x-->
         <entry key="dialect" value="NHibernate.Dialect.MsSql2005Dialect"/>
         <entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>
         <entry key="connection.driver_class" value="NHibernate.Driver.SqlClientDriver"/>
+        
         <!--SQL CE-->
-        <!--<entry key="dialect" value="NHibernate.Dialect.MsSqlCeDialect"/>-->
-        <!--<entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>-->
-        <!--<entry key="connection.driver_class" value="NHibernate.Driver.SqlServerCeDriver"/>-->
+        <!--<entry key="dialect" value="NHibernate.Dialect.MsSqlCeDialect"/>
+        <entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>
+        <entry key="connection.driver_class" value="NHibernate.Driver.SqlServerCeDriver"/>-->
+        
         <entry key="hbm2ddl.auto" value="create"/>
         <entry key="connection.release_mode" value="on_close"/>
         <entry key="show_sql" value="true"/>
@@ -60,5 +67,19 @@
   <object id="AddressRepository" type="Envers.Net.Repository.Repository&lt;Envers.Net.Model.Address>" lazy-init="true">
     <property name="SessionFactory" ref="NHibernateSessionFactory"/>
   </object>
+
+  <object id="ContBancarRepository" type="Envers.Net.Repository.Repository&lt;Envers.Net.Model.ContBancar>" lazy-init="true">
+    <property name="SessionFactory" ref="NHibernateSessionFactory"/>
+  </object>
+
+  <object id="txManager" type="Spring.Data.NHibernate.HibernateTransactionManager, Spring.Data.NHibernate21">
+    <property name="sessionFactory" ref="NHibernateSessionFactory"/>
+  </object>
+
+  <!--<object id="transactionTemplate" type="Spring.Transaction.Support.TransactionTemplate">
+    <property name="transactionManager" ref="txManager"/>
+  </object>-->
+
+  <tx:attribute-driven transaction-manager="txManager"/>
 
 </objects>

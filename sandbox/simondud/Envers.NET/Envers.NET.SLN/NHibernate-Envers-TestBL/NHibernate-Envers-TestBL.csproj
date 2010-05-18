@@ -115,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\ContBancar.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\DomainObject.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Model\Person.cs" />

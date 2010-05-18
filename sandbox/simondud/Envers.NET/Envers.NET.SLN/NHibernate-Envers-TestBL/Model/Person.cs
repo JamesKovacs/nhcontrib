@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.Mapping.Attributes;
+using NHibernate.Envers;
 
 namespace Envers.Net.Model
 {
     [Class(Name="Person")]
+    [Audited]
     public class Person : DomainObject
     {
         private String fullName;
@@ -16,5 +15,8 @@ namespace Envers.Net.Model
         public virtual String lastName { get; set; }
         [ManyToOne]
         public virtual Address address { get; set; }
+        [ManyToOne]
+        [Audited(TargetAuditMode = RelationTargetAuditMode.NOT_AUDITED)]
+        public virtual ContBancar cont { get; set; }
     }
 }

@@ -146,7 +146,7 @@ namespace NHibernate.Envers.Synchronization
 				    // Explicity flushing the session, as the auto-flush may have already happened.
                     // TODO Simon: Will have to re-enable this after I figure out how to call BeforeCompletion the 
                     // proper way, see also AuditEventListener.
-                    //((NHibernate.ISession)session).Flush();
+                    ((NHibernate.ISession)session).Flush();
 			    }
 		    } catch (System.Exception e) {
 			    // Rolling back the transaction in case of any exceptions

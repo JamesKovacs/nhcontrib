@@ -83,7 +83,7 @@ public class SingleIdMapper : AbstractIdMapper , ISimpleIdMapperBuilder {
             	INHibernateProxy hibernateProxy = (INHibernateProxy)obj;
             	data.Add(propertyData.Name , hibernateProxy.HibernateLazyInitializer.Identifier);
             } else {
-                PropertyInfo propInfo = obj.GetType().GetProperty(propertyData.Name);
+                PropertyInfo propInfo = obj.GetType().GetProperty(propertyData.BeanName);
                 data.Add(propertyData.Name, propInfo.GetValue(obj, null));
             }
         }
