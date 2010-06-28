@@ -34,7 +34,7 @@ namespace NHibernate.Envers.Event
                                                                     String entityName, Object[] newState, Object[] oldState,
                                                                     ISessionImplementor session) {
             // Checking if this is enabled in configuration ...
-            if (!verCfg.getGlobalCfg().isGenerateRevisionsForCollections()) {
+            if (!verCfg.GlobalCfg.isGenerateRevisionsForCollections()) {
                 return;
             }
 
@@ -45,7 +45,7 @@ namespace NHibernate.Envers.Event
 
             for (int i=0; i<propertyNames.GetLength(0); i++) {
                 String propertyName = propertyNames[i];
-                RelationDescription relDesc = verCfg.getEntCfg().GetRelationDescription(entityName, propertyName);
+                RelationDescription relDesc = verCfg.EntCfg.GetRelationDescription(entityName, propertyName);
                 if (relDesc != null && relDesc.Bidirectional && relDesc.RelationType == RelationType.TO_ONE &&
                         relDesc.Insertable) {
                     // Checking for changes
@@ -74,7 +74,7 @@ namespace NHibernate.Envers.Event
                     	    } else {
                     		    toEntityName =  session.GuessEntityName(newValue);
 
-							    IIdMapper idMapper = verCfg.getEntCfg()[toEntityName].GetIdMapper();
+							    IIdMapper idMapper = verCfg.EntCfg[toEntityName].GetIdMapper();
                          	    id = idMapper.MapToIdFromEntity(newValue);
                     	    }
 
@@ -94,7 +94,7 @@ namespace NHibernate.Envers.Event
                     	    } else {
                     		    toEntityName =  session.GuessEntityName(oldValue);
 
-							    IIdMapper idMapper = verCfg.getEntCfg()[toEntityName].GetIdMapper();
+							    IIdMapper idMapper = verCfg.EntCfg[toEntityName].GetIdMapper();
 							    id = idMapper.MapToIdFromEntity(oldValue);
                     	    }
     						
@@ -108,8 +108,8 @@ namespace NHibernate.Envers.Event
         public void OnPostInsert(PostInsertEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().IsVersioned(entityName)) {
-                AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
+            if (verCfg.EntCfg.IsVersioned(entityName)) {
+                AuditSync verSync = verCfg.AuditSyncManager.get(evt.Session);
 
                 IAuditWorkUnit workUnit = new AddWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
                         evt.Id, evt.Persister, evt.State);
@@ -133,8 +133,8 @@ namespace NHibernate.Envers.Event
         public void OnPostUpdate(PostUpdateEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().IsVersioned(entityName)) {
-                AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
+            if (verCfg.EntCfg.IsVersioned(entityName)) {
+                AuditSync verSync = verCfg.AuditSyncManager.get(evt.Session);
 
                 IAuditWorkUnit workUnit = new ModWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
                         evt.Id, evt.Persister, evt.State, evt.OldState);
@@ -152,8 +152,8 @@ namespace NHibernate.Envers.Event
         public void OnPostDelete(PostDeleteEvent evt) {
             String entityName = evt.Persister.EntityName;
 
-            if (verCfg.getEntCfg().IsVersioned(entityName)) {
-                AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
+            if (verCfg.EntCfg.IsVersioned(entityName)) {
+                AuditSync verSync = verCfg.AuditSyncManager.get(evt.Session);
 
                 IAuditWorkUnit workUnit = new DelWorkUnit(evt.Session, evt.Persister.EntityName, verCfg,
                         evt.Id, evt.Persister, evt.DeletedState);
@@ -172,7 +172,7 @@ namespace NHibernate.Envers.Event
                                                                     PersistentCollectionChangeWorkUnit workUnit,
                                                                     RelationDescription rd) {
             // Checking if this is enabled in configuration ...
-            if (!verCfg.getGlobalCfg().isGenerateRevisionsForCollections()) {
+            if (!verCfg.GlobalCfg.isGenerateRevisionsForCollections()) {
                 return;
             }
 
@@ -181,7 +181,7 @@ namespace NHibernate.Envers.Event
             // relDesc can be null if this is a collection of simple values (not a relation).
             if (rd != null && rd.Bidirectional) {
                 String relatedEntityName = rd.ToEntityName;
-                IIdMapper relatedIdMapper = verCfg.getEntCfg()[relatedEntityName].GetIdMapper();
+                IIdMapper relatedIdMapper = verCfg.EntCfg[relatedEntityName].GetIdMapper();
                 
                 foreach (PersistentCollectionChangeData changeData in workUnit.getCollectionChanges()) 
                 {
@@ -199,19 +199,19 @@ namespace NHibernate.Envers.Event
                                                                  AbstractCollectionEvent evt,
                                                                  RelationDescription rd) {
             // First computing the relation changes
-            IList<PersistentCollectionChangeData> collectionChanges = verCfg.getEntCfg()[collectionEntityName].PropertyMapper
+            IList<PersistentCollectionChangeData> collectionChanges = verCfg.EntCfg[collectionEntityName].PropertyMapper
                     .MapCollectionChanges(referencingPropertyName, newColl, oldColl, evt.AffectedOwnerIdOrNull);
 
             // Getting the id mapper for the related entity, as the work units generated will corrspond to the related
             // entities.
             String relatedEntityName = rd.ToEntityName;
-            IIdMapper relatedIdMapper = verCfg.getEntCfg()[relatedEntityName].GetIdMapper();
+            IIdMapper relatedIdMapper = verCfg.EntCfg[relatedEntityName].GetIdMapper();
 
             // For each collection change, generating the bidirectional work unit.
             foreach (PersistentCollectionChangeData changeData in collectionChanges) {
                 Object relatedObj = changeData.GetChangedElement();
                 object relatedId = relatedIdMapper.MapToIdFromEntity(relatedObj);
-                RevisionType revType = (RevisionType) changeData.getData()[verCfg.getAuditEntCfg().RevisionTypePropName];
+                RevisionType revType = (RevisionType) changeData.getData()[verCfg.AuditEntCfg.RevisionTypePropName];
 
                 // This can be different from relatedEntityName, in case of inheritance (the real entity may be a subclass
                 // of relatedEntityName).
@@ -235,15 +235,15 @@ namespace NHibernate.Envers.Event
                                         CollectionEntry collectionEntry) {
             String entityName = evt.GetAffectedOwnerEntityName();
 
-            if (verCfg.getEntCfg().IsVersioned(entityName)) {
-                AuditSync verSync = verCfg.getSyncManager().get(evt.Session);
+            if (verCfg.EntCfg.IsVersioned(entityName)) {
+                AuditSync verSync = verCfg.AuditSyncManager.get(evt.Session);
 
                 String ownerEntityName = ((AbstractCollectionPersister) collectionEntry.LoadedPersister).OwnerEntityName;
                 String referencingPropertyName = collectionEntry.Role.Substring(ownerEntityName.Length + 1);
 
                 // Checking if this is not a "fake" many-to-one bidirectional relation. The relation description may be
                 // null in case of collections of non-entities.
-                RelationDescription rd = verCfg.getEntCfg()[entityName].GetRelationDescription(referencingPropertyName);
+                RelationDescription rd = verCfg.EntCfg[entityName].GetRelationDescription(referencingPropertyName);
                 if (rd != null && rd.MappedByPropertyName != null) {
                     GenerateFakeBidirecationalRelationWorkUnits(verSync, newColl, oldColl, entityName,
                             referencingPropertyName, evt, rd);

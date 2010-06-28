@@ -66,6 +66,9 @@ namespace APDRP_NHibernatePOC_Test
             addressRepository.Add(address);
             Assert.IsTrue(address.id != 0);
             long id1 = address.id;
+
+            address.number = "29";
+            addressRepository.Update(address);
             
             Person pers = new Person{firstName = "Ion", lastName = "Gheorghe", address = address};
             personRepository.Add(pers);
@@ -89,6 +92,18 @@ namespace APDRP_NHibernatePOC_Test
 
             address = new Address { number = "55bis", street = "Alta strada" };
             addressRepository.Add(address);
+
+            ContBancar cont2 = new ContBancar { NumeBanca = "BCR", IBAN = "RO33BCRO212423455634", Adresa = address };
+            contRepository.Add(cont2);
+
+            pers.cont = cont2;
+            personRepository.Update(pers);
+
+            cont.IBAN += "P2";
+            contRepository.Update(cont);
+
+            Person pers2 = new Person { firstName = "Mihai", lastName = "Trompetzescu", address = address, cont = cont};
+            personRepository.Add(pers2);
 
             address = addressRepository.GetById(id1);
             Assert.IsTrue(address.number == "24" && address.street == "Valea Calugareasca");

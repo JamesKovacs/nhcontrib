@@ -18,14 +18,15 @@ namespace NHibernate.Envers.Configuration
         private static readonly ILog log = LogManager.GetLogger(typeof(ClassesAuditingData));
 
         private readonly IDictionary<String, ClassAuditingData> entityNameToAuditingData = new Dictionary<String, ClassAuditingData>();
-        private readonly IDictionary<PersistentClass, ClassAuditingData> persistentClassToAuditingData = new LinkedHashMap<PersistentClass, ClassAuditingData>();
+        //Simon 27/06/2010 - era new LinkedHashMap...
+        private readonly IDictionary<PersistentClass, ClassAuditingData> persistentClassToAuditingData = new Dictionary<PersistentClass, ClassAuditingData>();
 
         /**
          * Stores information about auditing meta-data for the given class.
          * @param pc Persistent class.
          * @param cad Auditing meta-data for the given class.
          */
-        public void addClassAuditingData(PersistentClass pc, ClassAuditingData cad) {
+        public void AddClassAuditingData(PersistentClass pc, ClassAuditingData cad) {
             entityNameToAuditingData.Add(pc.EntityName, cad);
             persistentClassToAuditingData.Add(pc, cad);
         }
@@ -33,7 +34,7 @@ namespace NHibernate.Envers.Configuration
         /**
          * @return A collection of all auditing meta-data for persistent classes.
          */
-        public ICollection<KeyValuePair<PersistentClass, ClassAuditingData>> getAllClassAuditedData() {
+        public ICollection<KeyValuePair<PersistentClass, ClassAuditingData>> GetAllClassAuditedData() {
             return persistentClassToAuditingData;
         }
 
@@ -41,7 +42,7 @@ namespace NHibernate.Envers.Configuration
          * @param entityName Name of the entity.
          * @return Auditing meta-data for the given entity.
          */
-        public ClassAuditingData getClassAuditingData(String entityName) {
+        public ClassAuditingData GetClassAuditingData(String entityName) {
             return entityNameToAuditingData[entityName];
         }
 
@@ -51,7 +52,7 @@ namespace NHibernate.Envers.Configuration
          * <li>setting {@code forceInsertable} to {@code true} for properties specified by {@code @AuditMappedBy}</li> 
          * </ul>
          */
-        public void updateCalculatedFields() {
+        public void UpdateCalculatedFields() {
             foreach (KeyValuePair<PersistentClass, ClassAuditingData> classAuditingDataEntry in persistentClassToAuditingData) {
                 PersistentClass pc = classAuditingDataEntry.Key;
                 ClassAuditingData classAuditingData = classAuditingDataEntry.Value;
@@ -63,17 +64,17 @@ namespace NHibernate.Envers.Configuration
 
                         ClassAuditingData referencedClassAuditingData = entityNameToAuditingData[referencedEntityName];
 
-                        forcePropertyInsertable(referencedClassAuditingData, propertyAuditingData.AuditMappedBy,
+                        ForcePropertyInsertable(referencedClassAuditingData, propertyAuditingData.AuditMappedBy,
                                 pc.EntityName, referencedEntityName);
 
-                        forcePropertyInsertable(referencedClassAuditingData, propertyAuditingData.PositionMappedBy,
+                        ForcePropertyInsertable(referencedClassAuditingData, propertyAuditingData.PositionMappedBy,
                                 pc.EntityName, referencedEntityName);
                     }
                 }
             }
         }
 
-        private void forcePropertyInsertable(ClassAuditingData classAuditingData, String propertyName,
+        private static void ForcePropertyInsertable(ClassAuditingData classAuditingData, String propertyName,
                                              String entityName, String referencedEntityName) {
             if (propertyName != null) {
                 if (classAuditingData.getPropertyAuditingData(propertyName) == null) {

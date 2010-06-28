@@ -23,26 +23,26 @@ namespace NHibernate.Envers.Tools
             return new Dictionary<K,V>();
         }
 
-        public static ISet<E> newHashSet<E>() {
+        public static ISet<E> NewHashSet<E>() {
             return new HashedSet<E>();
         }
 
         //TODO Simon gaseste versiune pentru LinkedHashMap in c#
-        //public static <K,V> Map<K,V> newLinkedHashMap() {
+        //public static <K,V> Map<K,V> NewDictionary() {
         //    return new LinkedHashMap<K,V>();
         //}
-        public static IDictionary<K,V> newLinkedHashMap<K,V>() {
+        public static IDictionary<K,V> NewDictionary<K,V>() {
             return new Dictionary<K,V>();
         }
 
 	    public static bool EntitiesEqual(ISessionImplementor session, Object obj1, Object obj2) {
-            Object id1 = getIdentifier(session, obj1);
-		    Object id2 = getIdentifier(session, obj2);
+            Object id1 = GetIdentifier(session, obj1);
+		    Object id2 = GetIdentifier(session, obj2);
 
-            return objectsEqual(id1, id2);
+            return ObjectsEqual(id1, id2);
         }
 
-	    public static Object getIdentifier(ISessionImplementor session, Object obj) {
+	    public static Object GetIdentifier(ISessionImplementor session, Object obj) {
 		    if (obj == null) {
 			    return null;
 		    }
@@ -74,7 +74,7 @@ namespace NHibernate.Envers.Tools
             }
         }
 
-        public static bool objectsEqual(Object obj1, Object obj2) {
+        public static bool ObjectsEqual(Object obj1, Object obj2) {
             if (obj1 == null) {
                 return obj2 == null;
             }
@@ -82,7 +82,7 @@ namespace NHibernate.Envers.Tools
             return obj1.Equals(obj2);
         }
 
-        public static IList<T> iteratorToList<T>(IEnumerator<T> iter) {
+        public static IList<T> IteratorToList<T>(IEnumerator<T> iter) {
             IList<T> ret = new List<T>();
             while (iter.MoveNext()) {
                 ret.Add(iter.Current);
@@ -111,7 +111,7 @@ namespace NHibernate.Envers.Tools
          * @param list List to transform.
          * @return A list of pairs: ((0, element_at_index_0), (1, element_at_index_1), ...)
          */
-        public static IList<Pair<int, T>> listToIndexElementPairList<T>(IList<T> list)
+        public static IList<Pair<int, T>> ListToIndexElementPairList<T>(IList<T> list)
         {
             IList<Pair<int, T>> ret = new List<Pair<int, T>>();
             IEnumerator<T> listEnum = list.GetEnumerator();

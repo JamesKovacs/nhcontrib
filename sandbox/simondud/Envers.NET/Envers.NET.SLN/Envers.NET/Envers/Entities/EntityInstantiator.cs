@@ -34,21 +34,21 @@ namespace NHibernate.Envers.Entities
          * @return An entity instance, with versioned properties set as in the versionsEntity map, and proxies
          * created for collections.
          */
-        public Object createInstanceFromVersionsEntity(String entityName, IDictionary<string,object> versionsEntity, long revision) {
+        public Object CreateInstanceFromVersionsEntity(String entityName, IDictionary<string,object> versionsEntity, long revision) {
             if (versionsEntity == null) {
                 return null;
             }
 
             // The $type$ property holds the name of the (versions) entity
-            String name = verCfg.getEntCfg().GetEntityNameForVersionsEntityName(((String) versionsEntity["$type$"]));
+            String name = verCfg.EntCfg.GetEntityNameForVersionsEntityName(((String) versionsEntity["$type$"]));
 
             if (name != null) {
                 entityName = name;
             }
 
             // First mapping the primary key
-            IIdMapper idMapper = verCfg.getEntCfg()[entityName].GetIdMapper();
-            IDictionary<string,object> originalId = (IDictionary<string,object>) versionsEntity[verCfg.getAuditEntCfg().OriginalIdPropName];
+            IIdMapper idMapper = verCfg.EntCfg[entityName].GetIdMapper();
+            IDictionary<string,object> originalId = (IDictionary<string,object>) versionsEntity[verCfg.AuditEntCfg.OriginalIdPropName];
 
             Object primaryKey = idMapper.MapToIdFromMap(originalId);
 
@@ -72,7 +72,7 @@ namespace NHibernate.Envers.Entities
             // relation is present (which is eagerly loaded).
             versionsReader.FirstLevelCache.Add(entityName, revision, primaryKey, ret);
 
-            verCfg.getEntCfg()[entityName].PropertyMapper.MapToEntityFromMap(verCfg, ret, versionsEntity, primaryKey,
+            verCfg.EntCfg[entityName].PropertyMapper.MapToEntityFromMap(verCfg, ret, versionsEntity, primaryKey,
                     versionsReader, revision);
             idMapper.MapToEntityFromMap(ret, originalId);
 
@@ -81,7 +81,7 @@ namespace NHibernate.Envers.Entities
 
         public void AddInstancesFromVersionsEntities(String entityName, IList addTo, IList<IDictionary<string,object>> versionsEntities, long revision) {
             foreach (IDictionary<string,object> versionsEntity in versionsEntities) {
-                addTo.Add(createInstanceFromVersionsEntity(entityName, versionsEntity, revision));
+                addTo.Add(CreateInstanceFromVersionsEntity(entityName, versionsEntity, revision));
             }
         }
     }

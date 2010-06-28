@@ -38,7 +38,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 
         public bool MapToMapFromEntity(ISessionImplementor session, IDictionary<String, Object> data, Object newObj, Object oldObj)
         {
-            LinkedHashMap<String, Object> newData = new LinkedHashMap<String, Object>();
+            //Simon 27/06/2010 - era new LinkedHashMap
+            IDictionary<String, Object> newData = new Dictionary<String, Object>();
             data.Add(propertyData.Name, newData);
 
             // If this property is originally non-insertable, but made insertable because it is in a many-to-one "fake"

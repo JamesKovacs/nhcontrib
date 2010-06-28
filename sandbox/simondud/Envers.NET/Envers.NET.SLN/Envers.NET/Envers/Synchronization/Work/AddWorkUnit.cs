@@ -19,7 +19,7 @@ namespace NHibernate.Envers.Synchronization.Work
         : base(sessionImplementor, entityName, verCfg, id)
     {
         data = new Dictionary<String, Object>();
-        verCfg.getEntCfg()[EntityName].PropertyMapper.Map(sessionImplementor, data,
+        verCfg.EntCfg[EntityName].PropertyMapper.Map(sessionImplementor, data,
 				entityPersister.PropertyNames, state, null);
     }
 

@@ -40,8 +40,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 		    this._globalCfg = globalCfg;
 		    this._propertyNamePrefix = propertyNamePrefix;
 
-		    _propertyAccessedPersistentProperties = Toolz.newHashSet<String>();
-		    _fieldAccessedPersistentProperties = Toolz.newHashSet<String>();
+		    _propertyAccessedPersistentProperties = Toolz.NewHashSet<String>();
+		    _fieldAccessedPersistentProperties = Toolz.NewHashSet<String>();
 	    }
 
 	    public void read() {

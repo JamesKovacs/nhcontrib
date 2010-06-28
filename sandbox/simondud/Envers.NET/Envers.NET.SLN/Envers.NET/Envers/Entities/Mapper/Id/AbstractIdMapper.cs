@@ -12,25 +12,18 @@ namespace NHibernate.Envers.Entities.Mapper.Id
 {
     public abstract class AbstractIdMapper:  IIdMapper
     {
-        private Parameters getParametersToUse(Parameters parameters, IList<QueryParameterData> paramDatas)
+        private static Parameters GetParametersToUse(Parameters parameters, ICollection<QueryParameterData> paramDatas)
         {
-            if (paramDatas.Count > 1)
-            {
-                return parameters.addSubParameters("and");
-            }
-            else
-            {
-                return parameters;
-            }
+            return paramDatas.Count > 1 ? parameters.AddSubParameters("and") : parameters;
         }
 
         public void AddIdsEqualToQuery(Parameters parameters, String prefix1, String prefix2) {
         IList<QueryParameterData> paramDatas = MapToQueryParametersFromId(null); 
 
-        Parameters parametersToUse = getParametersToUse(parameters, paramDatas);
+        Parameters parametersToUse = GetParametersToUse(parameters, paramDatas);
 
         foreach (QueryParameterData paramData in paramDatas) {
-            parametersToUse.addWhere(paramData.getProperty(prefix1), false, "=", paramData.getProperty(prefix2), false);
+            parametersToUse.AddWhere(paramData.getProperty(prefix1), false, "=", paramData.getProperty(prefix2), false);
         }
     }
 
@@ -39,7 +32,7 @@ namespace NHibernate.Envers.Entities.Mapper.Id
             IList<QueryParameterData> paramDatas1 = MapToQueryParametersFromId(null);
             IList<QueryParameterData> paramDatas2 = mapper2.MapToQueryParametersFromId(null); 
 
-            Parameters parametersToUse = getParametersToUse(parameters, paramDatas1);
+            Parameters parametersToUse = GetParametersToUse(parameters, paramDatas1);
 
             IEnumerator<QueryParameterData> paramDataIter1 = paramDatas1.GetEnumerator();
             IEnumerator<QueryParameterData> paramDataIter2 = paramDatas2.GetEnumerator();
@@ -48,27 +41,27 @@ namespace NHibernate.Envers.Entities.Mapper.Id
                 QueryParameterData paramData1 = paramDataIter1.Current;
                 QueryParameterData paramData2 = paramDataIter2.Current;
 
-                parametersToUse.addWhere(paramData1.getProperty(prefix1), false, "=", paramData2.getProperty(prefix2), false);
+                parametersToUse.AddWhere(paramData1.getProperty(prefix1), false, "=", paramData2.getProperty(prefix2), false);
             }
         }
 
         public void AddIdEqualsToQuery(Parameters parameters, Object id, String prefix, bool equals) {
         IList<QueryParameterData> paramDatas = MapToQueryParametersFromId(id); 
 
-        Parameters parametersToUse = getParametersToUse(parameters, paramDatas);
+        Parameters parametersToUse = GetParametersToUse(parameters, paramDatas);
 
         foreach (QueryParameterData paramData in paramDatas) {
-            parametersToUse.addWhereWithParam(paramData.getProperty(prefix) , equals ? "=" : "<>", paramData.getValue());
+            parametersToUse.AddWhereWithParam(paramData.getProperty(prefix) , equals ? "=" : "<>", paramData.getValue());
         }
     }
 
         public void AddNamedIdEqualsToQuery(Parameters parameters, String prefix, bool equals) {
         IList<QueryParameterData> paramDatas = MapToQueryParametersFromId(null); 
 
-        Parameters parametersToUse = getParametersToUse(parameters, paramDatas);
+        Parameters parametersToUse = GetParametersToUse(parameters, paramDatas);
 
         foreach (QueryParameterData paramData in paramDatas) {
-            parametersToUse.addWhereWithNamedParam(paramData.getProperty(prefix), equals ? "=" : "<>", paramData.GetQueryParameterName());
+            parametersToUse.AddWhereWithNamedParam(paramData.getProperty(prefix), equals ? "=" : "<>", paramData.GetQueryParameterName());
         }
     }
 

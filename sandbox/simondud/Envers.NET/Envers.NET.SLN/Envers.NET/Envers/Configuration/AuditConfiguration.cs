@@ -14,50 +14,51 @@ namespace NHibernate.Envers.Configuration
      */
     public class AuditConfiguration 
     {
-        private readonly GlobalConfiguration globalCfg;
-        private readonly AuditEntitiesConfiguration auditEntCfg;
-        private readonly AuditSyncManager auditSyncManager;
-        private readonly EntitiesConfigurations entCfg;
-        private readonly RevisionInfoQueryCreator revisionInfoQueryCreator;
-        private readonly RevisionInfoNumberReader revisionInfoNumberReader;
+        public virtual GlobalConfiguration GlobalCfg { get; private set; }
+        public virtual AuditEntitiesConfiguration AuditEntCfg { get; private set; }
+        public virtual AuditSyncManager AuditSyncManager { get; private set; }
+        public virtual EntitiesConfigurations EntCfg { get; private set; }
+        public virtual RevisionInfoQueryCreator RevisionInfoQueryCreator { get; private set; }
+        public virtual RevisionInfoNumberReader RevisionInfoNumberReader { get; private set; }
 
-        public AuditEntitiesConfiguration getAuditEntCfg() {
-            return auditEntCfg;
-        }
+        //public AuditEntitiesConfiguration getAuditEntCfg() {
+        //    return auditEntCfg;
+        //}
 
-        public AuditSyncManager getSyncManager() {
-            return auditSyncManager;
-        }
+        //public AuditSyncManager getSyncManager() {
+        //    return auditSyncManager;
+        //}
 
-        public GlobalConfiguration getGlobalCfg() {
-            return globalCfg;
-        }
+        //public GlobalConfiguration getGlobalCfg() {
+        //    return globalCfg;
+        //}
 
-        public EntitiesConfigurations getEntCfg() {
-            return entCfg;
-        }
+        //public EntitiesConfigurations getEntCfg() {
+        //    return entCfg;
+        //}
 
-        public RevisionInfoQueryCreator getRevisionInfoQueryCreator() {
-            return revisionInfoQueryCreator;
-        }
+        //public RevisionInfoQueryCreator getRevisionInfoQueryCreator() {
+        //    return revisionInfoQueryCreator;
+        //}
 
-        public RevisionInfoNumberReader getRevisionInfoNumberReader() {
-            return revisionInfoNumberReader;
-        }
+        //public RevisionInfoNumberReader getRevisionInfoNumberReader() {
+        //    return revisionInfoNumberReader;
+        //}
 
         //TODO Simon @SuppressWarnings({"unchecked"})
+
         public AuditConfiguration(NHibernate.Cfg.Configuration cfg) {
             IDictionary<string,string> properties = cfg.Properties;
 
             //ReflectionManager reflectionManager = ((AnnotationConfiguration) cfg).getReflectionManager();
             RevisionInfoConfiguration revInfoCfg = new RevisionInfoConfiguration();
             RevisionInfoConfigurationResult revInfoCfgResult = revInfoCfg.configure(cfg);
-            auditEntCfg = new AuditEntitiesConfiguration(properties, revInfoCfgResult.RevisionInfoEntityName);
-            globalCfg = new GlobalConfiguration(properties);
-            auditSyncManager = new AuditSyncManager(revInfoCfgResult.RevisionInfoGenerator);
-            revisionInfoQueryCreator = revInfoCfgResult.RevisionInfoQueryCreator;
-            revisionInfoNumberReader = revInfoCfgResult.RevisionInfoNumberReader;
-            entCfg = new EntitiesConfigurator().configure(cfg, globalCfg, auditEntCfg,
+            AuditEntCfg = new AuditEntitiesConfiguration(properties, revInfoCfgResult.RevisionInfoEntityName);
+            GlobalCfg = new GlobalConfiguration(properties);
+            AuditSyncManager = new AuditSyncManager(revInfoCfgResult.RevisionInfoGenerator);
+            RevisionInfoQueryCreator = revInfoCfgResult.RevisionInfoQueryCreator;
+            RevisionInfoNumberReader = revInfoCfgResult.RevisionInfoNumberReader;
+            EntCfg = new EntitiesConfigurator().Configure(cfg, GlobalCfg, AuditEntCfg,
                     revInfoCfgResult.RevisionInfoXmlMapping, revInfoCfgResult.RevisionInfoRelationMapping);
         }
 

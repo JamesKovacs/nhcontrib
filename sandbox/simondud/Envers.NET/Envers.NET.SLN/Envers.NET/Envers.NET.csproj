@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NHibernate-Envers-TestBL\SharedLibs\C5\C5.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\NHibernate-2.1.2.GA-src\lib\net\2.0\Iesi.Collections.dll</HintPath>
@@ -62,6 +66,7 @@
     <Compile Include="Envers\ColumnAttribute.cs" />
     <Compile Include="Envers\Compatibility\Attributes\MapKeyAttribute.cs" />
     <Compile Include="Envers\Compatibility\Attributes\VersionAttribute.cs" />
+    <Compile Include="Envers\Compatibility\ISortedSet.cs" />
     <Compile Include="Envers\Compatibility\LongType.cs" />
     <Compile Include="Envers\Configuration\AuditConfiguration.cs" />
     <Compile Include="Envers\Configuration\AuditEntitiesConfiguration.cs" />
@@ -113,12 +118,34 @@
     <Compile Include="Envers\Entities\Mapper\MultiPropertyMapper.cs" />
     <Compile Include="Envers\Entities\Mapper\PersistentCollectionChangeData.cs" />
     <Compile Include="Envers\Entities\Mapper\ISimpleMapperBuilder.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\AbstractCollectionMapper.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\AbstractDelegateSessionImplementor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\BasicCollectionMapper.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\CommonCollectionMapperData.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Component\IMiddleComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleDummyComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleMapKeyIdComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleMapKeyPropertyComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleRelatedComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleSimpleComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleStraightComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\AbstractCollectionInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\BasicCollectionInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\IInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\CollectionProxy.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\SetProxy.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\SortedSetProxy.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\MiddleComponentData.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\MiddleIdData.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\OneToOneNotOwningMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\OneEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\QueryGeneratorTools.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\ThreeEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityOneAuditedQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Tools\EmptyDictionary.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\IRelationQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\OneAuditEntityQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\ToOneDelegateSessionImplementor.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\ToOneIdMapper.cs" />
     <Compile Include="Envers\Entities\Mapper\SinglePropertyMapper.cs" />
@@ -137,8 +164,8 @@
     <Compile Include="Envers\Query\IAuditQuery.cs" />
     <Compile Include="Envers\Query\IParameters.cs" />
     <Compile Include="Envers\Query\Order\IAuditOrder.cs" />
-    <Compile Include="Envers\Query\IQueryBuilder.cs" />
     <Compile Include="Envers\Query\Projection\IAuditProjection.cs" />
+    <Compile Include="Envers\Query\QueryBuilder.cs" />
     <Compile Include="Envers\Reader\IAuditReader.cs" />
     <Compile Include="Envers\Reader\IAuditReaderImplementor.cs" />
     <Compile Include="Envers\Reader\IFirstLevelCache.cs" />
@@ -176,6 +203,7 @@
     <Compile Include="Envers\Tools\MutableInteger.cs" />
     <Compile Include="Envers\Tools\Pair.cs" />
     <Compile Include="Envers\Tools\Query\Parameters.cs" />
+    <Compile Include="Envers\Tools\StringTools.cs" />
     <Compile Include="Envers\Tools\Toolz.cs" />
     <Compile Include="Envers\Tools\Triple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

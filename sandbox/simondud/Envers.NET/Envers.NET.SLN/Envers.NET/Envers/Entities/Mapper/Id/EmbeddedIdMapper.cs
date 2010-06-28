@@ -86,17 +86,18 @@ public class EmbeddedIdMapper  : AbstractCompositeIdMapper , ISimpleIdMapperBuil
         }
 
         public override IList<QueryParameterData> MapToQueryParametersFromId(object obj) {
-        IDictionary<String, Object> data = new LinkedHashMap<String, Object>();
-        MapToMapFromId(data, obj);
+            //Simon 27/06/2010 - era LinkedHashMap
+            IDictionary<String, Object> data = new Dictionary<String, Object>();
+            MapToMapFromId(data, obj);
 
-        IList<QueryParameterData> ret = new List<QueryParameterData>();
+            IList<QueryParameterData> ret = new List<QueryParameterData>();
 
-        foreach (KeyValuePair<String, Object> propertyData in data) {
-            ret.Add(new QueryParameterData(propertyData.Key, propertyData.Value));
+            foreach (KeyValuePair<String, Object> propertyData in data) {
+                ret.Add(new QueryParameterData(propertyData.Key, propertyData.Value));
+            }
+
+            return ret;
         }
-
-        return ret;
-    }
 
     }
 }

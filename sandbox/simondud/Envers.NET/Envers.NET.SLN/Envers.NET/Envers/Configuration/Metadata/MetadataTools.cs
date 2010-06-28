@@ -280,8 +280,8 @@ namespace NHibernate.Envers.Configuration.Metadata
             private IEnumerator<ISelectable> _columnEnumerator;
             public ColumnNameEnumeratorFromEnum(IEnumerator<ISelectable> columnEnumerator) { _columnEnumerator = columnEnumerator; }
             public override bool MoveNext() { return _columnEnumerator.MoveNext(); }
-            //TODO Simon: see if value is the intended return
-            public override String Current { get {return ((Column)_columnEnumerator.Current).Value.ToString();} }
+            //TODO Simon: see if value is the intended return. 27/06/2010 - It seems not, it is the name
+            public override String Current { get {return ((Column)_columnEnumerator.Current).Name;} }
             public override void Reset() { _columnEnumerator.Reset(); }
             public override void Dispose() { _columnEnumerator.Dispose(); }
         }

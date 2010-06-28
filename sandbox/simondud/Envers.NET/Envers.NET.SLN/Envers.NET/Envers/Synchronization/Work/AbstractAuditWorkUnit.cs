@@ -27,12 +27,12 @@ namespace NHibernate.Envers.Synchronization.Work
         }
 
         protected void FillDataWithId(IDictionary<String, Object> data, Object revision, RevisionType revisionType) {
-            AuditEntitiesConfiguration entitiesCfg = verCfg.getAuditEntCfg();
+            AuditEntitiesConfiguration entitiesCfg = verCfg.AuditEntCfg;
 
             IDictionary<String, Object> originalId = new Dictionary<String, Object>();
             originalId.Add(entitiesCfg.RevisionFieldName, revision);
 
-            verCfg.getEntCfg()[EntityName].GetIdMapper().MapToMapFromId(originalId, EntityId);
+            verCfg.EntCfg[EntityName].GetIdMapper().MapToMapFromId(originalId, EntityId);
             data.Add(entitiesCfg.RevisionTypePropName, revisionType.Representation);
             data.Add(entitiesCfg.OriginalIdPropName, originalId);
         }
@@ -40,7 +40,7 @@ namespace NHibernate.Envers.Synchronization.Work
         public void Perform(ISession session, Object revisionData) {
             IDictionary<String, Object> data = GenerateData(revisionData);
 
-            session.Save(verCfg.getAuditEntCfg().GetAuditEntityName(EntityName), data);
+            session.Save(verCfg.AuditEntCfg.GetAuditEntityName(EntityName), data);
 
             SetPerformed(data);
         }
@@ -55,7 +55,7 @@ namespace NHibernate.Envers.Synchronization.Work
 
         public void Undo(ISession session) {
             if (IsPerformed()) {
-                session.Delete(verCfg.getAuditEntCfg().GetAuditEntityName(EntityName), performedData);
+                session.Delete(verCfg.AuditEntCfg.GetAuditEntityName(EntityName), performedData);
                 session.Flush();
             }
         }

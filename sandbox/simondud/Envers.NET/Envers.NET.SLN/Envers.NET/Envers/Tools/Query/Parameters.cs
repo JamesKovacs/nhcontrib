@@ -46,7 +46,7 @@ public class Parameters {
      */
     private IDictionary<String, Object> localQueryParamValues;
 
-    Parameters(String alias, String connective, MutableInteger queryParamCounter) {
+    public Parameters(String alias, String connective, MutableInteger queryParamCounter) {
         this.alias = alias;
         this.connective = connective;
         this.queryParamCounter = queryParamCounter;
@@ -57,7 +57,7 @@ public class Parameters {
         localQueryParamValues = new Dictionary<String, Object>(); 
     }
 
-    private String generateQueryParam() {
+    private String GenerateQueryParam() {
         return "_p" + queryParamCounter.getAndIncrease();
     }
 
@@ -68,7 +68,7 @@ public class Parameters {
      * @param newConnective New connective of the parameters.
      * @return Sub-parameters with the given connective.
      */
-    public Parameters addSubParameters(String newConnective) {
+    public Parameters AddSubParameters(String newConnective) {
         if (connective.Equals(newConnective)) {
             return this;
         } else {
@@ -83,17 +83,17 @@ public class Parameters {
      * in the generated query and negated, e.g. ... not (exp1 and exp2) ...
      * @return Negated sub paremters.
      */
-    public Parameters addNegatedParameters() {
+    public Parameters AddNegatedParameters() {
         Parameters newParams = new Parameters(alias, AND, queryParamCounter);
         negatedParameters.Add(newParams);
         return newParams;
     }
 
-    public void addWhere(String left, String op, String right) {
-        addWhere(left, true, op, right, true);
+    public void AddWhere(String left, String op, String right) {
+        AddWhere(left, true, op, right, true);
     }
 
-    public void addWhere(String left, bool addAliasLeft, String op, String right, bool addAliasRight) {
+    public void AddWhere(String left, bool addAliasLeft, String op, String right, bool addAliasRight) {
         StringBuilder expression = new StringBuilder();
 
         if (addAliasLeft) { expression.Append(alias).Append("."); }
@@ -107,22 +107,22 @@ public class Parameters {
         expressions.Add(expression.ToString());
     }
 
-    public void addWhereWithParam(String left, String op, Object paramValue) {
-        addWhereWithParam(left, true, op, paramValue);
+    public void AddWhereWithParam(String left, String op, Object paramValue) {
+        AddWhereWithParam(left, true, op, paramValue);
     }
 
-    public void addWhereWithParam(String left, bool addAlias, String op, Object paramValue) {
-        String paramName = generateQueryParam();
+    public void AddWhereWithParam(String left, bool addAlias, String op, Object paramValue) {
+        String paramName = GenerateQueryParam();
         localQueryParamValues.Add(paramName, paramValue);
 
-        addWhereWithNamedParam(left, addAlias, op, paramName);
+        AddWhereWithNamedParam(left, addAlias, op, paramName);
     }
 
-    public void addWhereWithNamedParam(String left, String op, String paramName) {
-        addWhereWithNamedParam(left, true, op, paramName);
+    public void AddWhereWithNamedParam(String left, String op, String paramName) {
+        AddWhereWithNamedParam(left, true, op, paramName);
     }
 
-    public void addWhereWithNamedParam(String left, bool addAlias, String op, String paramName) {
+    public void AddWhereWithNamedParam(String left, bool addAlias, String op, String paramName) {
         StringBuilder expression = new StringBuilder();
 
         if (addAlias) { expression.Append(alias).Append("."); }
@@ -133,14 +133,14 @@ public class Parameters {
         expressions.Add(expression.ToString());
     }
 
-    public void addWhereWithParams(String left, String opStart, Object[] paramValues, String opEnd) {
+    public void AddWhereWithParams(String left, String opStart, Object[] paramValues, String opEnd) {
         StringBuilder expression = new StringBuilder();
 
         expression.Append(alias).Append(".").Append(left).Append(" ").Append(opStart);
 
         for (int i=0; i<paramValues.Length; i++) {
             Object paramValue = paramValues[i];
-            String paramName = generateQueryParam();
+            String paramName = GenerateQueryParam();
             localQueryParamValues.Add(paramName, paramValue);
             expression.Append(":").Append(paramName);
 
@@ -155,11 +155,11 @@ public class Parameters {
         expressions.Add(expression.ToString());
     }
 
-    public void addWhere(String left, String op, IQueryBuilder right) {
-        addWhere(left, true, op, right);
+    public void AddWhere(String left, String op, QueryBuilder right) {
+        AddWhere(left, true, op, right);
     }
 
-    public void addWhere(String left, bool addAlias, String op, IQueryBuilder right) {
+    public void AddWhere(String left, bool addAlias, String op, QueryBuilder right) {
         StringBuilder expression = new StringBuilder();
 
         if (addAlias) {
@@ -177,7 +177,7 @@ public class Parameters {
         expressions.Add(expression.ToString());
     }
 
-    private void append(StringBuilder sb, String toAppend, MutableBoolean isFirst) {
+    private void Append(StringBuilder sb, String toAppend, MutableBoolean isFirst) {
         if (!isFirst.isSet()) {
             sb.Append(" ").Append(connective).Append(" ");
         }
@@ -187,20 +187,20 @@ public class Parameters {
         isFirst.unset();
     }
 
-    bool isEmpty() {
+    public bool IsEmpty() {
         return expressions.Count == 0 && subParameters.Count == 0 && negatedParameters.Count == 0;
     }
 
-    void Build(StringBuilder sb, IDictionary<String, Object> queryParamValues) {
+    public void Build(StringBuilder sb, IDictionary<String, Object> queryParamValues) {
         MutableBoolean isFirst = new MutableBoolean(true);
 
         foreach (String expression in expressions) {
-            append(sb, expression, isFirst);
+            Append(sb, expression, isFirst);
         }
 
         foreach (Parameters sub in subParameters) {
             if (!(subParameters.Count == 0)) {
-                append(sb, "(", isFirst);
+                Append(sb, "(", isFirst);
                 sub.Build(sb, queryParamValues);
                 sb.Append(")");
             }
@@ -208,7 +208,7 @@ public class Parameters {
 
         foreach (Parameters negated in negatedParameters) {
             if (!(negatedParameters.Count == 0)) {
-                append(sb, "not (", isFirst);
+                Append(sb, "not (", isFirst);
                 negated.Build(sb, queryParamValues);
                 sb.Append(")");
             }

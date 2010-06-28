@@ -87,12 +87,12 @@ namespace NHibernate.Envers.Configuration.Metadata
             return rev_mapping;
         }
 
-        public void addRevisionInfoRelation(XmlElement any_mapping)
+        public void AddRevisionInfoRelation(XmlElement any_mapping)
         {
             any_mapping.AppendChild(CloneAndSetupRevisionInfoRelationMapping(any_mapping.OwnerDocument));
         }
 
-        void addRevisionType(XmlElement any_mapping)
+        public void AddRevisionType(XmlElement any_mapping)
         {
             XmlElement revTypeProperty = MetadataTools.AddProperty(any_mapping, VerEntCfg.RevisionTypePropName,
                     VerEntCfg.RevisionTypePropType, true, false);
@@ -198,7 +198,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             return true;
         }
 
-        protected String GetSchema(String schemaFromAnnotation, Table table)
+        public String GetSchema(String schemaFromAnnotation, Table table)
         {
             // Get the schema from the annotation ...
             String schema = schemaFromAnnotation;
@@ -216,7 +216,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             return schema;
         }
 
-        protected String GetCatalog(String catalogFromAnnotation, Table table)
+        public String GetCatalog(String catalogFromAnnotation, Table table)
         {
             // Get the catalog from the annotation ...
             String catalog = catalogFromAnnotation;
@@ -352,7 +352,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             class_mapping.AppendChild(xmlMp);
 
             // Adding the "revision type" property
-            addRevisionType(class_mapping);
+            AddRevisionType(class_mapping);
 
             return Triple<XmlElement, IExtendedPropertyMapper, string>.Make<XmlElement, IExtendedPropertyMapper, string>(class_mapping, propertyMapper, null);
         }
@@ -520,7 +520,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         // Getters for generators and configuration
 
-        void ThrowUnsupportedTypeException(IType type, String entityName, String propertyName)
+        public void ThrowUnsupportedTypeException(IType type, String entityName, String propertyName)
         {
             String message = "Type not supported for auditing: " + type.Name +
                     ", on entity " + entityName + ", property '" + propertyName + "'.";
@@ -555,7 +555,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                     throw new MappingException("An audited relation from " + entityName + "."
                             + propertyAuditingData.Name + " to a not audited entity " + referencedEntityName + "!"
                             + (allowNotAuditedTarget ?
-                                " Such mapping is possible, but has to be explicitly defined using @Audited(targetAuditMode = NOT_AUDITED)." :
+                                " Such mapping is possible, but has to be explicitly defined using [Audited(TargetAuditMode = RelationTargetAuditMode.NOT_AUDITED)]." :
                                 ""));
                 }
                 else configuration = NotAuditedEntitiesConfigurations[referencedEntityName];

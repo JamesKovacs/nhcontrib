@@ -80,7 +80,8 @@ namespace NHibernate.Cfg.XmlHbmBinding
 					value = new SimpleValue(table);
 					BindSimpleValue(subnode, (SimpleValue) value, true, propertyName);
 				}
-				else if ("component".Equals(name) || "dynamic-component".Equals(name))
+                // Simon 27/06/2010 - added "properties" to be handled similarily to Hibernate (required by Envers.NET)
+                else if ("component".Equals(name) || "dynamic-component".Equals(name) || "properties".Equals(name))
 				{
 					string subpath = StringHelper.Qualify(entityName, propertyName);
 					// NH: Modified from H2.1 to allow specifying the type explicitly using class attribute

@@ -12,22 +12,22 @@ namespace NHibernate.Envers
      * @return Name of the join table. Defaults to a concatenation of the names of the primary table of the entity
      * owning the association and of the primary table of the entity referenced by the association.
      */
-    public String name = "";
+    public String Name = "";
 
     /**
      * @return The schema of the join table. Defaults to the schema of the entity owning the association.
      */
-    public String schema = "";
+    public String Schema = "";
 
     /**
      * @return The catalog of the join table. Defaults to the catalog of the entity owning the association.
      */
-    public String catalog = "";
+    public String Catalog = "";
 
     /**
      * @return The foreign key columns of the join table which reference the primary table of the entity that does not
      * own the association (i.e. the inverse side of the association).
      */
-    public JoinColumnAttribute[] inverseJoinColumns = {};
+    public JoinColumnAttribute[] InverseJoinColumns = {};
     }
 }

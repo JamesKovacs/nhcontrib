@@ -30,7 +30,8 @@ namespace NHibernate.Envers.Entities.Mapper.Id
 
         protected AbstractCompositeIdMapper(System.Type compositeIdClass)
         {
-            ids = new LinkedHashMap<PropertyData, SingleIdMapper>();
+            //Simon 27/06/2010 - era LinkedHashMap
+            ids = new Dictionary<PropertyData, SingleIdMapper>();
 
             this.compositeIdClass = compositeIdClass;
         }

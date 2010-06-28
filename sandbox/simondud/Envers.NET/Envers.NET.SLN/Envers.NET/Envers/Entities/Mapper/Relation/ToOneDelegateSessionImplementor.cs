@@ -31,7 +31,7 @@ public class ToOneDelegateSessionImplementor : AbstractDelegateSessionImplemento
         this.entityClass = entityClass;
         this.entityId = entityId;
         this.revision = revision;
-        EntitiesConfigurations entCfg = verCfg.getEntCfg();
+        EntitiesConfigurations entCfg = verCfg.EntCfg;
         notVersionedEntityConfiguration = entCfg.GetNotVersionEntityConfiguration(entityClass.Name);
     }
 

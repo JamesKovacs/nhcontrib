@@ -9,7 +9,7 @@ namespace NHibernate.Envers.Entities.Mapper
     /**
      * Data describing the change of a single object in a persistent collection (when the object was added, removed or
      * modified in the collection).
-     * @author Adam Warski (adam at warski dot org)
+     * @author Simon Duduica, port of omonyme class by Adam Warski (adam at warski dot org)
      */
     public class PersistentCollectionChangeData {
         public String EntityName
@@ -39,7 +39,7 @@ namespace NHibernate.Envers.Entities.Mapper
         public Object GetChangedElement() {
             if (changedElement.GetType().Equals(typeof(Pair<,>)))
             {
-                return ((Pair<Object,Object>)changedElement).getSecond();
+                return ((Pair<Object,Object>)changedElement).GetSecond();
             }
 
             if (changedElement.GetType().Equals(typeof(KeyValuePair<,>)))
@@ -56,7 +56,7 @@ namespace NHibernate.Envers.Entities.Mapper
         public Object GetChangedElementIndex() {
             if (changedElement.GetType().Equals(typeof(Pair<,>)))
             {
-                return ((Pair<Object, Object>)changedElement).getFirst();
+                return ((Pair<Object, Object>)changedElement).GetFirst();
             }
 
             if (changedElement.GetType().Equals(typeof(KeyValuePair<,>)))

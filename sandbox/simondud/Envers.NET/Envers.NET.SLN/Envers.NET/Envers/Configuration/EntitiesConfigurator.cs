@@ -17,7 +17,7 @@ namespace NHibernate.Envers.Configuration
      * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
      */
     public class EntitiesConfigurator {
-        public EntitiesConfigurations configure(NHibernate.Cfg.Configuration cfg, 
+        public EntitiesConfigurations Configure(NHibernate.Cfg.Configuration cfg, 
                                                 GlobalConfiguration globalCfg, AuditEntitiesConfiguration verEntCfg,
                                                 XmlDocument revisionInfoXmlMapping, XmlElement revisionInfoRelationMapping) 
         {
@@ -40,17 +40,17 @@ namespace NHibernate.Envers.Configuration
                         new AnnotationsMetadataReader(globalCfg, pc);
                 ClassAuditingData auditData = annotationsMetadataReader.AuditData;
 
-                classesAuditingData.addClassAuditingData(pc, auditData);
+                classesAuditingData.AddClassAuditingData(pc, auditData);
             }
 
             // Now that all information is read we can update the calculated fields.
-            classesAuditingData.updateCalculatedFields();
+            classesAuditingData.UpdateCalculatedFields();
 
             AuditMetadataGenerator auditMetaGen = new AuditMetadataGenerator(cfg, globalCfg, verEntCfg,
                     revisionInfoRelationMapping, auditEntityNameRegister, classesAuditingData);
 
             // First pass
-            foreach (KeyValuePair<PersistentClass, ClassAuditingData> pcDatasEntry in classesAuditingData.getAllClassAuditedData())
+            foreach (KeyValuePair<PersistentClass, ClassAuditingData> pcDatasEntry in classesAuditingData.GetAllClassAuditedData())
             {
                 PersistentClass pc = pcDatasEntry.Key;
                 ClassAuditingData auditData = pcDatasEntry.Value;
@@ -70,7 +70,7 @@ namespace NHibernate.Envers.Configuration
             }
 
             // Second pass
-            foreach (KeyValuePair<PersistentClass, ClassAuditingData> pcDatasEntry in classesAuditingData.getAllClassAuditedData())
+            foreach (KeyValuePair<PersistentClass, ClassAuditingData> pcDatasEntry in classesAuditingData.GetAllClassAuditedData())
             {
                 EntityXmlMappingData xmlMappingData = xmlMappings[pcDatasEntry.Key];
 
@@ -79,12 +79,12 @@ namespace NHibernate.Envers.Configuration
                     try {
                         //cfg.AddDocument(writer.write(xmlMappingData.MainXmlMapping));
                         cfg.AddDocument(xmlMappingData.MainXmlMapping);
-                        //writeDocument(xmlMappingData.getMainXmlMapping());
+                        //WriteDocument(xmlMappingData.getMainXmlMapping());
 
                         foreach (XmlDocument additionalMapping in  xmlMappingData.AdditionalXmlMappings) {
                             //cfg.AddDocument(writer.write(additionalMapping));
                             cfg.AddDocument(additionalMapping);
-                            //writeDocument(additionalMapping);
+                            //WriteDocument(additionalMapping);
                         }
                     }
                     catch (MappingException e)
@@ -95,11 +95,11 @@ namespace NHibernate.Envers.Configuration
             }
 
             // Only if there are any versioned classes
-            if (classesAuditingData.getAllClassAuditedData().Count > 0)
+            if (classesAuditingData.GetAllClassAuditedData().Count > 0)
             {
                 try {
                     if (revisionInfoXmlMapping !=  null) {
-                        //writeDocument(revisionInfoXmlMapping);
+                        //WriteDocument(revisionInfoXmlMapping);
                         //cfg.addDocument(writer.write(revisionInfoXmlMapping));
                         cfg.AddDocument((revisionInfoXmlMapping));
                     }
@@ -115,7 +115,7 @@ namespace NHibernate.Envers.Configuration
         }
 
         //@SuppressWarnings({"UnusedDeclaration"})
-        private void writeDocument(XmlDocument e) {
+        private void WriteDocument(XmlDocument e) {
             ////Todo in second implementation phase
             ////java: ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ////java: Writer w = new PrintWriter(baos);

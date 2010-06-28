@@ -20,15 +20,15 @@ namespace NHibernate.Envers.Tools
             this.obj2 = obj2;
         }
 
-        public T1 getFirst() {
+        public T1 GetFirst() {
             return obj1;
         }
 
-        public T2 getSecond() {
+        public T2 GetSecond() {
             return obj2;
         }
 
-        public bool equals(Object o) {
+        public override bool Equals(Object o) {
             if (this == o) return true;
             if (!(o.GetType().Equals(typeof(Pair<,>)))) return false;
 
@@ -40,7 +40,7 @@ namespace NHibernate.Envers.Tools
             return true;
         }
 
-        public int hashCode() {
+        public override int GetHashCode() {
             int result;
             result = (obj1 != null ? obj1.GetHashCode() : 0);
             result = 31 * result + (obj2 != null ? obj2.GetHashCode() : 0);

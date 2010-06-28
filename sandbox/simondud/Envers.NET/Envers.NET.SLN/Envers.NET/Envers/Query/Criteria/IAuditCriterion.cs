@@ -8,6 +8,6 @@ namespace NHibernate.Envers.Query.Criteria
 {
     public interface IAuditCriterion
     {
-        void addToQuery(AuditConfiguration auditCfg, String entityName, IQueryBuilder qb, IParameters parameters);
+        void AddToQuery(AuditConfiguration auditCfg, String entityName, QueryBuilder qb, IParameters parameters);
     }
 }

@@ -25,7 +25,7 @@ namespace NHibernate.Envers.Synchronization.Work
         {
 		    this.ReferencingPropertyName = referencingPropertyName;
 
-            collectionChanges = auditCfg.getEntCfg()[EntityName].PropertyMapper
+            collectionChanges = auditCfg.EntCfg[EntityName].PropertyMapper
                     .MapCollectionChanges(referencingPropertyName, collection, snapshot, id);
         }
 
@@ -51,7 +51,7 @@ namespace NHibernate.Envers.Synchronization.Work
 
         // TODO Simon @SuppressWarnings({"unchecked"})
         public void perform(ISession session, Object revisionData) {
-            AuditEntitiesConfiguration entitiesCfg = verCfg.getAuditEntCfg();
+            AuditEntitiesConfiguration entitiesCfg = verCfg.AuditEntCfg;
 
             foreach (PersistentCollectionChangeData persistentCollectionChangeData in collectionChanges) {
                 // Setting the revision number
@@ -130,7 +130,7 @@ namespace NHibernate.Envers.Synchronization.Work
         }
 
         private Object getOriginalId(PersistentCollectionChangeData persistentCollectionChangeData) {
-            return persistentCollectionChangeData.getData()[verCfg.getAuditEntCfg().OriginalIdPropName];
+            return persistentCollectionChangeData.getData()[verCfg.AuditEntCfg.OriginalIdPropName];
         }
 
         /**

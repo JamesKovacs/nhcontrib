@@ -100,7 +100,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         orig_id_mapping.SetAttribute("name", mainGenerator.VerEntCfg.OriginalIdPropName);
 
         // Adding a relation to the revision entity (effectively: the "revision number" property)
-        mainGenerator.addRevisionInfoRelation(orig_id_mapping);
+        mainGenerator.AddRevisionInfoRelation(orig_id_mapping);
 
         return new IdMappingData(mapper, orig_id_mapping, rel_id_mapping);
     }

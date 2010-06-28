@@ -2,50 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Envers.Configuration;
+using NHibernate.Envers.Entities.Mapper.Relation.Query;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
     /**
      * Data that is used by all collection mappers, regardless of the type.  
-     * @author Adam Warski (adam at warski dot org)
+     * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
      */
     public sealed class CommonCollectionMapperData {
-        //To be implemented in phase 2 (TODO Simon)
 
-    //    private final AuditEntitiesConfiguration verEntCfg;
-    //    private final String versionsMiddleEntityName;
-    //    private final PropertyData collectionReferencingPropertyData;
-    //    private final MiddleIdData referencingIdData;
-    //    private final RelationQueryGenerator queryGenerator;
+        private readonly AuditEntitiesConfiguration _verEntCfg;
+        public AuditEntitiesConfiguration VerEntCfg { get { return _verEntCfg; } }
+        private readonly String _versionsMiddleEntityName;
+        public String VersionsMiddleEntityName { get { return _versionsMiddleEntityName; } }
+        private readonly PropertyData _collectionReferencingPropertyData;
+        public PropertyData CollectionReferencingPropertyData { get { return _collectionReferencingPropertyData; } }
+        private readonly MiddleIdData _referencingIdData;
+        public MiddleIdData ReferencingIdData { get { return _referencingIdData; } }
+        private readonly IRelationQueryGenerator _queryGenerator;
+        public IRelationQueryGenerator QueryGenerator { get { return _queryGenerator; } }
 
-    //    public CommonCollectionMapperData(AuditEntitiesConfiguration verEntCfg, String versionsMiddleEntityName,
-    //                                      PropertyData collectionReferencingPropertyData, MiddleIdData referencingIdData,
-    //                                      RelationQueryGenerator queryGenerator) {
-    //        this.verEntCfg = verEntCfg;
-    //        this.versionsMiddleEntityName = versionsMiddleEntityName;
-    //        this.collectionReferencingPropertyData = collectionReferencingPropertyData;
-    //        this.referencingIdData = referencingIdData;
-    //        this.queryGenerator = queryGenerator;
-    //    }
-
-    //    public AuditEntitiesConfiguration getVerEntCfg() {
-    //        return verEntCfg;
-    //    }
-
-    //    public String getVersionsMiddleEntityName() {
-    //        return versionsMiddleEntityName;
-    //    }
-
-    //    public PropertyData getCollectionReferencingPropertyData() {
-    //        return collectionReferencingPropertyData;
-    //    }
-
-    //    public MiddleIdData getReferencingIdData() {
-    //        return referencingIdData;
-    //    }
-
-    //    public RelationQueryGenerator getQueryGenerator() {
-    //        return queryGenerator;
-    //    }
+        public CommonCollectionMapperData(AuditEntitiesConfiguration verEntCfg, String versionsMiddleEntityName,
+                                          PropertyData collectionReferencingPropertyData, MiddleIdData referencingIdData,
+                                          IRelationQueryGenerator queryGenerator) {
+            this._verEntCfg = verEntCfg;
+            this._versionsMiddleEntityName = versionsMiddleEntityName;
+            this._collectionReferencingPropertyData = collectionReferencingPropertyData;
+            this._referencingIdData = referencingIdData;
+            this._queryGenerator = queryGenerator;
+        }
     }
 }
