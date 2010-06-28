@@ -163,8 +163,6 @@ namespace NHibernate.Envers.Event
                     GenerateBidirectionalCollectionChangeWorkUnits(verSync, evt.Persister, entityName, null,
                             evt.DeletedState, evt.Session);
                 }
-                //Simon - TODO - same as above
-                verSync.BeforeCompletion();
             }
         }
 

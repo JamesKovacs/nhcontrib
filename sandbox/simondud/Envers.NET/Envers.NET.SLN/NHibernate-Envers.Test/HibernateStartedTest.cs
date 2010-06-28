@@ -108,6 +108,10 @@ namespace APDRP_NHibernatePOC_Test
             address = addressRepository.GetById(id1);
             Assert.IsTrue(address.number == "24" && address.street == "Valea Calugareasca");
 
+            address = new Address { number = "123", street = "P-asta o stergem"};
+            addressRepository.Add(address);
+
+            addressRepository.Remove(address);
 
         }
     }
