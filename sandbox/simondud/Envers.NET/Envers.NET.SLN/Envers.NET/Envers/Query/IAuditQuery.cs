@@ -14,32 +14,32 @@ namespace NHibernate.Envers.Query
      * @see org.hibernate.Criteria
      */
     public interface IAuditQuery {
-        IList getResultList();
+        IList GetResultList();
 
-        Object getSingleResult();
+        Object GetSingleResult();
 
         IAuditQuery Add(IAuditCriterion criterion);
 
         IAuditQuery AddProjection(IAuditProjection projection);
 
-        IAuditQuery addOrder(IAuditOrder order);
+        IAuditQuery AddOrder(IAuditOrder order);
 
-        IAuditQuery setMaxResults(int maxResults);
+        IAuditQuery SetMaxResults(int maxResults);
 
-	    IAuditQuery setFirstResult(int firstResult);
+	    IAuditQuery SetFirstResult(int firstResult);
 
-        IAuditQuery setCacheable(bool cacheable);
+        IAuditQuery SetCacheable(bool cacheable);
 
-        IAuditQuery setCacheRegion(String cacheRegion);
+        IAuditQuery SetCacheRegion(String cacheRegion);
 
-        IAuditQuery setComment(String comment);
+        IAuditQuery SetComment(String comment);
 
-        IAuditQuery setFlushMode(FlushMode flushMode);
+        IAuditQuery SetFlushMode(FlushMode flushMode);
 
-        IAuditQuery setCacheMode(CacheMode cacheMode);
+        IAuditQuery SetCacheMode(CacheMode cacheMode);
 
-        IAuditQuery setTimeout(int timeout);
+        IAuditQuery SetTimeout(int timeout);
 
-        IAuditQuery setLockMode(LockMode lockMode);
+        IAuditQuery SetLockMode(LockMode lockMode);
     }
 }

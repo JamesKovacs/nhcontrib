@@ -16,13 +16,6 @@ namespace NHibernate.Envers.Tools
      */
     public class Toolz {
 
-        //public static <K,V> Map<K,V> newHashMap() {
-        //return new HashMap<K,V>();
-        //}
-        public static IDictionary<K,V> newDictionary<K,V>() {
-            return new Dictionary<K,V>();
-        }
-
         public static ISet<E> NewHashSet<E>() {
             return new HashedSet<E>();
         }
@@ -56,7 +49,7 @@ namespace NHibernate.Envers.Tools
 		    return session.GetEntityPersister(null, obj).GetIdentifier(obj, session.EntityMode);
 	    }
 
-        public static Object getTargetFromProxy(ISessionFactoryImplementor sessionFactoryImplementor, INHibernateProxy proxy) {
+        public static Object GetTargetFromProxy(ISessionFactoryImplementor sessionFactoryImplementor, INHibernateProxy proxy) {
             if (!proxy.HibernateLazyInitializer.IsUninitialized) {
                 return proxy.HibernateLazyInitializer.GetImplementation();
             }
@@ -90,7 +83,7 @@ namespace NHibernate.Envers.Tools
 
             return ret;
         }
-        public static bool iteratorsContentEqual(IEnumerator iter1, IEnumerator iter2)
+        public static bool IteratorsContentEqual(IEnumerator iter1, IEnumerator iter2)
         {
             while (iter1.MoveNext() && iter2.MoveNext()) {
                 if (!iter1.Current.Equals(iter2.Current)) {
@@ -206,7 +199,7 @@ namespace NHibernate.Envers.Tools
         }
 
 
-        internal static ISetter getSetter(System.Type revisionInfoType, NHibernate.Envers.Entities.PropertyData revisionInfoTimestampData)
+        internal static ISetter GetSetter(System.Type revisionInfoType, NHibernate.Envers.Entities.PropertyData revisionInfoTimestampData)
         {
             throw new NotImplementedException();
         }

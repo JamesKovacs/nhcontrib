@@ -533,7 +533,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             {
                 Property property = assocClassProps.Current;
 
-                if (Toolz.iteratorsContentEqual(property.Value.ColumnIterator.GetEnumerator(),
+                if (Toolz.IteratorsContentEqual(property.Value.ColumnIterator.GetEnumerator(),
                         collectionValue.Key.ColumnIterator.GetEnumerator()))
                 {
                     return property.Name;

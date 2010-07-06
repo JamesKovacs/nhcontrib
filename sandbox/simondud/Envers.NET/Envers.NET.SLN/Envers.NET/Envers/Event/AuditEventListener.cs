@@ -70,7 +70,7 @@ namespace NHibernate.Envers.Event
                     	        toEntityName = session.BestGuessEntityName(newValue);
                     	        id = hibernateProxy.HibernateLazyInitializer.Identifier;
 							    // We've got to initialize the object from the proxy to later read its state.   
-							    newValue = NHibernate.Envers.Tools.Toolz.getTargetFromProxy(session.Factory, hibernateProxy);
+							    newValue = NHibernate.Envers.Tools.Toolz.GetTargetFromProxy(session.Factory, hibernateProxy);
                     	    } else {
                     		    toEntityName =  session.GuessEntityName(newValue);
 
@@ -90,7 +90,7 @@ namespace NHibernate.Envers.Event
                     	        toEntityName = session.BestGuessEntityName(oldValue);
                     	        id = hibernateProxy.HibernateLazyInitializer.Identifier;
 							    // We've got to initialize the object as we'll read it's state anyway.
-							    oldValue = Toolz.getTargetFromProxy(session.Factory, hibernateProxy);
+							    oldValue = Toolz.GetTargetFromProxy(session.Factory, hibernateProxy);
                     	    } else {
                     		    toEntityName =  session.GuessEntityName(oldValue);
 

@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using NHibernate.Envers.Query;
 
-namespace NHibernate.Envers.Reader
+namespace NHibernate.Envers
 {
-    /**
-     * @author Adam Warski (adam at warski dot org)
-     */
     public interface IAuditReader {
         /**
          * Find an entity by primary key at the given revision.
@@ -22,7 +19,7 @@ namespace NHibernate.Envers.Reader
          * @throws NotAuditedException When entities of the given class are not audited.
          * @throws IllegalStateException If the associated entity manager is closed.
          */
-         T Find<T>(System.Type cls, Object primaryKey, long revision);
+        T Find<T>(System.Type cls, Object primaryKey, long revision);
 
         /**
          * Get a list of revision numbers, at which an entity was modified.
@@ -69,9 +66,9 @@ namespace NHibernate.Envers.Reader
          * @throws RevisionDoesNotExistException If the revision does not exist.
          * @throws IllegalStateException If the associated entity manager is closed.
          */
-         T FindRevision<T>(System.Type revisionEntityClass, long revision);
+        T FindRevision<T>(System.Type revisionEntityClass, long revision);
 
-	    /**
+        /**
 	     * Gets an instance of the current revision entity, to which any entries in the audit tables will be bound.
 	     * Please note the if {@code persist} is {@code false}, and no audited entities are modified in this session,
 	     * then the obtained revision entity instance won't be persisted. If {@code persist} is {@code true}, the revision
@@ -83,7 +80,7 @@ namespace NHibernate.Envers.Reader
 	     * {@code null}.
 	     * @return The current revision entity, to which any entries in the audit tables will be bound.
 	     */
-         T GetCurrentRevision<T>(System.Type revisionEntityClass, bool persist);
+        T GetCurrentRevision<T>(System.Type revisionEntityClass, bool persist);
 
         /**
          *

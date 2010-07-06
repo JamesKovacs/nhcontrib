@@ -62,6 +62,7 @@
     <Compile Include="Envers\AuditMappedByAttribute.cs" />
     <Compile Include="Envers\AuditOverrideAttribute.cs" />
     <Compile Include="Envers\AuditOverridesAttribute.cs" />
+    <Compile Include="Envers\AuditReaderFactory.cs" />
     <Compile Include="Envers\AuditTableAttribute.cs" />
     <Compile Include="Envers\ColumnAttribute.cs" />
     <Compile Include="Envers\Compatibility\Attributes\MapKeyAttribute.cs" />
@@ -143,6 +144,38 @@
     <Compile Include="Envers\Entities\Mapper\Relation\Query\ThreeEntityQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityOneAuditedQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Exceptions\NotAuditedException.cs" />
+    <Compile Include="Envers\Query\AuditEntity.cs" />
+    <Compile Include="Envers\Query\Criteria\AggregatedAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditConjunction.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditDisjunction.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditId.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditProperty.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditRelatedId.cs" />
+    <Compile Include="Envers\Query\Criteria\BetweenAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\CriteriaTools.cs" />
+    <Compile Include="Envers\Query\Criteria\IdentifierEqAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\IExtendableCriterion.cs" />
+    <Compile Include="Envers\Query\Criteria\InAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\LogicalAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NotAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NotNullAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NullAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\PropertyAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\RelatedAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\SimpleAuditExpression.cs" />
+    <Compile Include="Envers\Query\Order\PropertyAuditOrder.cs" />
+    <Compile Include="Envers\Query\Projection\PropertyAuditProjection.cs" />
+    <Compile Include="Envers\Query\Property\EntityPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\IPropertyNameGetter.cs" />
+    <Compile Include="Envers\Query\Property\OriginalIdPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionNumberPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionPropertyPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionTypePropertyName.cs" />
+    <Compile Include="Envers\Reader\AuditReader.cs" />
+    <Compile Include="Envers\Reader\FirstLevelCache.cs" />
+    <Compile Include="Envers\Tools\ArgumentsTools.cs" />
+    <Compile Include="Envers\Tools\ArraysTools.cs" />
     <Compile Include="Envers\Tools\EmptyDictionary.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\IRelationQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\OneAuditEntityQueryGenerator.cs" />
@@ -162,11 +195,10 @@
     <Compile Include="Envers\Query\AuditQueryCreator.cs" />
     <Compile Include="Envers\Query\Criteria\IAuditCriterion.cs" />
     <Compile Include="Envers\Query\IAuditQuery.cs" />
-    <Compile Include="Envers\Query\IParameters.cs" />
     <Compile Include="Envers\Query\Order\IAuditOrder.cs" />
     <Compile Include="Envers\Query\Projection\IAuditProjection.cs" />
     <Compile Include="Envers\Query\QueryBuilder.cs" />
-    <Compile Include="Envers\Reader\IAuditReader.cs" />
+    <Compile Include="Envers\IAuditReader.cs" />
     <Compile Include="Envers\Reader\IAuditReaderImplementor.cs" />
     <Compile Include="Envers\Reader\IFirstLevelCache.cs" />
     <Compile Include="Envers\RelationTargetAuditMode.cs" />
@@ -217,6 +249,9 @@
       <Project>{AE00E5AB-C39A-436F-86D2-33BFE33E2E40}</Project>
       <Name>Spring.Data.2008</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Envers\Query\Impl\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

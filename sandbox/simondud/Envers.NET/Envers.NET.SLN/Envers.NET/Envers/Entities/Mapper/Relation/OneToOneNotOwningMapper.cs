@@ -46,7 +46,7 @@ public class OneToOneNotOwningMapper : IPropertyMapper {
 
         //try {
         //    value = versionsReader.CreateQuery().ForEntitiesAtRevision(entityClass, revision)
-        //            //.Add( (AuditEntity.relatedId(owningReferencePropertyName).eq(primaryKey)).getSingleResult();
+        //            //.Add( (AuditEntity.relatedId(owningReferencePropertyName).eq(primaryKey)).GetSingleResult();
         //} catch (NoResultException e) {
         //    value = null;
         //} catch (NonUniqueResultException e) {
@@ -84,7 +84,7 @@ public class OneToOneNotOwningMapper : IPropertyMapper {
 
        // try {
        //     value = versionsReader.CreateQuery().ForEntitiesAtRevision(entityClass, revision)
-       //             .Add(AuditEntity.relatedId(owningReferencePropertyName).eq(primaryKey)).getSingleResult();
+       //             .Add(AuditEntity.relatedId(owningReferencePropertyName).eq(primaryKey)).GetSingleResult();
        // } catch (NoResultException e) {
        //     value = null;
        // } catch (NonUniqueResultException e) {
