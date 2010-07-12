@@ -23,8 +23,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	    private bool defaultAudited;
 
         public ClassAuditingData() {
-            Properties = Toolz.newDictionary<String,PropertyAuditingData>();
-            SecondaryTableDictionary = Toolz.newDictionary<String, String>();
+            Properties = Toolz.NewDictionary<String,PropertyAuditingData>();
+            SecondaryTableDictionary = Toolz.NewDictionary<String, String>();
         }
 
 	    public void addPropertyAuditingData(String propertyName, PropertyAuditingData auditingData) {

@@ -12,20 +12,12 @@ namespace NHibernate.Envers.Tools
      * @author Adam Warski (adamw@aster.pl)
      */
     public class Pair<T1, T2> {
-        private T1 obj1;
-        private T2 obj2;
+        public T1 First{ get; private set;}
+        public T2 Second { get; private set; }
 
         public Pair(T1 obj1, T2 obj2) {
-            this.obj1 = obj1;
-            this.obj2 = obj2;
-        }
-
-        public T1 GetFirst() {
-            return obj1;
-        }
-
-        public T2 GetSecond() {
-            return obj2;
+            this.First = obj1;
+            this.Second = obj2;
         }
 
         public override bool Equals(Object o) {
@@ -34,16 +26,16 @@ namespace NHibernate.Envers.Tools
 
             Pair<object, object> pair = (Pair<object,object>) o;
 
-            if (obj1 != null ? !obj1.Equals(pair.obj1) : pair.obj1 != null) return false;
-            if (obj2 != null ? !obj2.Equals(pair.obj2) : pair.obj2 != null) return false;
+            if (First != null ? !First.Equals(pair.First) : pair.First != null) return false;
+            if (Second != null ? !Second.Equals(pair.Second) : pair.Second != null) return false;
 
             return true;
         }
 
         public override int GetHashCode() {
             int result;
-            result = (obj1 != null ? obj1.GetHashCode() : 0);
-            result = 31 * result + (obj2 != null ? obj2.GetHashCode() : 0);
+            result = (First != null ? First.GetHashCode() : 0);
+            result = 31 * result + (Second != null ? Second.GetHashCode() : 0);
             return result;
         }
 

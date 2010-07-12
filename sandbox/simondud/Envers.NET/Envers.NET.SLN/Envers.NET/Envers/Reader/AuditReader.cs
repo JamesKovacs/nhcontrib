@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,16 +59,18 @@ namespace NHibernate.Envers.Reader
                 // The result is put into the cache by the entity instantiator called from the query
                 result = CreateQuery().ForEntitiesAtRevision(cls, revision)
                     .Add(AuditEntity.Id().Eq(primaryKey)).GetSingleResult();
-            } catch (NoResultException e) {
-                result = null;
             } catch (NonUniqueResultException e) {
                 throw new AuditException(e);
+            }
+            catch (HibernateException e)
+            {//ORIG: NoResultException e
+                result = null;
             }
 
             return (T) result;
         }
 
-        public IList<long> GetRevisions(System.Type cls, Object primaryKey)
+        public IList GetRevisions(System.Type cls, Object primaryKey)
         {
             // todo: if a class is not versioned from the beginning, there's a missing ADD rev - what then?
             ArgumentsTools.CheckNotNull(cls, "Entity class");
@@ -106,19 +109,19 @@ namespace NHibernate.Envers.Reader
             }
         }
 
-        public long getRevisionNumberForDate(DateTime date) {
+        public long GetRevisionNumberForDate(DateTime date) {
             ArgumentsTools.CheckNotNull(date, "Date of revision");
             CheckSession();
 
             IQuery query = verCfg.RevisionInfoQueryCreator.getRevisionNumberForDateQuery(Session, date);
 
             try {
-                long res = (long) query.UniqueResult();
+                object res = query.UniqueResult();
                 if (res == null) {
                     throw new RevisionDoesNotExistException(date);
                 }
 
-                return res;
+                return (long)res;
             } catch (NonUniqueResultException e) {
                 throw new AuditException(e);
             }
@@ -132,13 +135,13 @@ namespace NHibernate.Envers.Reader
             IQuery query = verCfg.RevisionInfoQueryCreator.getRevisionQuery(Session, revision);
 
             try {
-                T revisionData = (T) query.UniqueResult();
+                object revisionData = query.UniqueResult();
 
                 if (revisionData == null) {
                     throw new RevisionDoesNotExistException(revision);
                 }
 
-                return revisionData;
+                return (T)revisionData;
             } catch (NonUniqueResultException e) {
                 throw new AuditException(e);
             }
@@ -147,7 +150,7 @@ namespace NHibernate.Envers.Reader
         public T GetCurrentRevision<T>(System.Type revisionEntityClass, bool persist)
         {
 		    if (!(Session is IEventSource)) {
-			    throw new IllegalArgumentException("The provided session is not an EventSource!");
+                throw new NotSupportedException("The provided session is not an EventSource!");// ORIG IllegalArgumentException
 		    }
 
 		    // Obtaining the current audit sync

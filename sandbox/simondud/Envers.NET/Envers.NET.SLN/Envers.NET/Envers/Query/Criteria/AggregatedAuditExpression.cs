@@ -54,6 +54,7 @@ namespace NHibernate.Envers.Query.Criteria
                     break;
                 case AggregatedMode.MAX:
                     subQb.AddProjection("max", propertyName, false);
+                    break;
             }
 
             // Adding the constrain on the result of the aggregated criteria

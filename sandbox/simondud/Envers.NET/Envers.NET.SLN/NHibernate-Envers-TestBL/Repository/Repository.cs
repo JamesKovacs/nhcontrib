@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,18 @@ using Envers.Net.Repository;
 using NHibernate.Envers;
 using Spring.Data.NHibernate.Support;
 using Spring.Transaction.Interceptor;
+using Envers.Net.Model;
 
 namespace Envers.Net.Repository
 {
     
     public class Repository<T> : HibernateDaoSupport, IRepository<T>
     {
+        public Repository()
+        {
+            if (!typeof(T).IsSubclassOf(typeof(DomainObject)))
+                throw new NotSupportedException("Generic type should be subclass of DomainObject!");            
+        }
 
         #region IRepository<T> Members
 
@@ -49,10 +56,10 @@ namespace Envers.Net.Repository
             throw new NotImplementedException();
         }
 
-        public IList<long> GetAllRevisionIds(System.Type tip)
+        public IList GetAllRevisionIds(DomainObject entity)
         {
-            IAuditReader auditReader = AuditReaderFactory.get(Session);
-            return auditReader.getRevisions(entity.getClass(), entity.getId());
+            IAuditReader auditReader = AuditReaderFactory.Get(Session);
+            return auditReader.GetRevisions(entity.GetType(), entity.id);
         }
 
         public IList<long> GetRevision(System.Type tip, long Id, long VersionId)

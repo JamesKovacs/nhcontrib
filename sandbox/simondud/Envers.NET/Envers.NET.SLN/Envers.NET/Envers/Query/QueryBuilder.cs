@@ -124,7 +124,6 @@ namespace NHibernate.Envers.Query
          * @param queryParamValues Map to which name and values of parameters used in the query should be added.
          */
          public void Build(StringBuilder sb, IDictionary<String, Object> queryParamValues)
-        //TODO in second implementation phase
         {
             sb.Append("select ");
             if (projections.Count > 0)
@@ -150,14 +149,14 @@ namespace NHibernate.Envers.Query
             if (orders.Count > 0)
             {
                 sb.Append(" order by ");
-                StringTools.Append(sb, getOrderList().GetEnumerator(), ", ");
+                StringTools.Append(sb, GetOrderList().GetEnumerator(), ", ");
             }
         }
-        //TODO in second implementation phase
+
         private IList<String> GetAliasList() {
             IList<String> aliasList = new List<String>();
             foreach (Pair<String, String> from in froms) {
-                aliasList.Add(from.GetSecond());
+                aliasList.Add(from.Second);
             }
 
             return aliasList;
@@ -166,16 +165,16 @@ namespace NHibernate.Envers.Query
         private IList<String> GetFromList() {
             IList<String> fromList = new List<String>();
             foreach (Pair<String, String> from in froms) {
-                fromList.Add(from.GetFirst() + " " + from.GetSecond());
+                fromList.Add(from.First + " " + from.Second);
             }
 
             return fromList;
         }
 
-        private IList<String> getOrderList() {
+        private IList<String> GetOrderList() {
             IList<String> orderList = new List<String>();
             foreach (Pair<String, Boolean> order in orders) {
-                orderList.Add(alias + "." + order.GetFirst() + " " + (order.GetSecond() ? "asc" : "desc"));
+                orderList.Add(alias + "." + order.First + " " + (order.Second ? "asc" : "desc"));
             }
 
             return orderList;

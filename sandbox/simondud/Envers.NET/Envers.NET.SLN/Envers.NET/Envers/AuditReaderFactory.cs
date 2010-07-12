@@ -5,6 +5,7 @@ using System.Text;
 using NHibernate.Engine;
 using NHibernate.Envers.Event;
 using NHibernate.Envers.Exceptions;
+using NHibernate.Envers.Reader;
 using NHibernate.Envers.Tools;
 using NHibernate.Event;
 
@@ -37,7 +38,7 @@ namespace NHibernate.Envers
                 if (listener is AuditEventListener) {
                     if (ArraysTools.ArrayIncludesInstanceOf(listeners.PostUpdateEventListeners, typeof(AuditEventListener)) &&
                         ArraysTools.ArrayIncludesInstanceOf(listeners.PostDeleteEventListeners, typeof(AuditEventListener))) {
-                        return new AuditReaderImpl(((AuditEventListener) listener).getVerCfg(), session,
+                        return new AuditReader(((AuditEventListener) listener).getVerCfg(), session,
                                 sessionImpl);
                     }
                 }
@@ -55,16 +56,18 @@ namespace NHibernate.Envers
          * @throws AuditException When the given entity manager is not based on Hibernate, or if the required
          * listeners aren't installed.
          */
-        public static AuditReader get(EntityManager entityManager) throws AuditException {
-            if (entityManager.getDelegate() instanceof Session) {
-                return get((Session) entityManager.getDelegate());
+        //TODO Simon See if need it with NHibernate
+        /*
+        public static IAuditReader Get(EntityManager entityManager){
+            if (entityManager.getDelegate() is ISession) {
+                return get((ISession) entityManager.getDelegate());
             }
 
-            if (entityManager.getDelegate() instanceof EntityManager) {
+            if (entityManager.getDelegate() is EntityManager) {
                 return get((EntityManager) entityManager.getDelegate());
             }
 
             throw new AuditException("Hibernate EntityManager not present!");
-        }
+        }*/
     }
 }

@@ -145,6 +145,7 @@
     <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityOneAuditedQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityQueryGenerator.cs" />
     <Compile Include="Envers\Exceptions\NotAuditedException.cs" />
+    <Compile Include="Envers\Exceptions\RevisionDoesNotExistException.cs" />
     <Compile Include="Envers\Query\AuditEntity.cs" />
     <Compile Include="Envers\Query\Criteria\AggregatedAuditExpression.cs" />
     <Compile Include="Envers\Query\Criteria\AuditConjunction.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Envers\Query\Criteria\PropertyAuditExpression.cs" />
     <Compile Include="Envers\Query\Criteria\RelatedAuditExpression.cs" />
     <Compile Include="Envers\Query\Criteria\SimpleAuditExpression.cs" />
+    <Compile Include="Envers\Query\Impl\AbstractAuditQuery.cs" />
     <Compile Include="Envers\Query\Order\PropertyAuditOrder.cs" />
     <Compile Include="Envers\Query\Projection\PropertyAuditProjection.cs" />
     <Compile Include="Envers\Query\Property\EntityPropertyName.cs" />
@@ -249,9 +251,6 @@
       <Project>{AE00E5AB-C39A-436F-86D2-33BFE33E2E40}</Project>
       <Name>Spring.Data.2008</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Envers\Query\Impl\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

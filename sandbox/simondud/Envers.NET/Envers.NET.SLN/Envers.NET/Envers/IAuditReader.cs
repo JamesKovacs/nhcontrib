@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,8 @@ namespace NHibernate.Envers
          * @throws IllegalArgumentException If cls or primaryKey is null.
          * @throws IllegalStateException If the associated entity manager is closed.
          */
-        IList<long> getRevisions(System.Type cls, Object primaryKey);
+        //ORIG: List<Number>
+        IList GetRevisions(System.Type cls, Object primaryKey);
 
         /**
          * Get the date, at which a revision was created.
@@ -46,8 +48,8 @@ namespace NHibernate.Envers
         /**
          * Gets the revision number, that corresponds to the given date. More precisely, returns
          * the number of the highest revision, which was created on or before the given date. So:
-         * <code>getRevisionDate(getRevisionNumberForDate(date)) <= date</code> and
-         * <code>getRevisionDate(getRevisionNumberForDate(date)+1) > date</code>.
+         * <code>getRevisionDate(GetRevisionNumberForDate(date)) <= date</code> and
+         * <code>getRevisionDate(GetRevisionNumberForDate(date)+1) > date</code>.
          * @param date Date for which to get the revision.
          * @return Revision number corresponding to the given date.
          * @throws IllegalStateException If the associated entity manager is closed.

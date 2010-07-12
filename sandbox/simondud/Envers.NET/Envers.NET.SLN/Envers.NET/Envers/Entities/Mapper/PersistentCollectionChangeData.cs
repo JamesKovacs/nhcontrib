@@ -39,7 +39,7 @@ namespace NHibernate.Envers.Entities.Mapper
         public Object GetChangedElement() {
             if (changedElement.GetType().Equals(typeof(Pair<,>)))
             {
-                return ((Pair<Object,Object>)changedElement).GetSecond();
+                return ((Pair<Object,Object>)changedElement).Second;
             }
 
             if (changedElement.GetType().Equals(typeof(KeyValuePair<,>)))
@@ -56,7 +56,7 @@ namespace NHibernate.Envers.Entities.Mapper
         public Object GetChangedElementIndex() {
             if (changedElement.GetType().Equals(typeof(Pair<,>)))
             {
-                return ((Pair<Object, Object>)changedElement).GetFirst();
+                return ((Pair<Object, Object>)changedElement).First;
             }
 
             if (changedElement.GetType().Equals(typeof(KeyValuePair<,>)))
