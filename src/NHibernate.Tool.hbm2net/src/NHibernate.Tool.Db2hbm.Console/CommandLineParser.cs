@@ -31,7 +31,7 @@ namespace NHibernate.Tool.Db2hbm
             {
                 if (s.StartsWith("-")||s.StartsWith("--")) // option
                 {
-                    int sub = s.TrimEnd('-').LastIndexOf('-')+1;
+                    int sub = FirstNonMinusIndex(s);
                     if (s.Substring(sub).Contains(':') || s.Substring(sub).Contains('='))
                     {
                         string[] tokens = s.Substring(sub).Split(':','=');
@@ -52,6 +52,16 @@ namespace NHibernate.Tool.Db2hbm
                 }
             }
             CheckMandatory();
+        }
+
+        private int FirstNonMinusIndex(string s)
+        {
+            int i = 0;
+            while (s[i] == '-' && i < s.Length)
+            {
+                ++i;
+            }
+            return i;
         }
         public string GetHelp()
         {
