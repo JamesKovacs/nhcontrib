@@ -146,6 +146,7 @@ namespace NHibernate.Tool.Db2hbm
 
         private void ParseOption(string option, string value)
         {
+            value = value.Trim('\"');
             if (!options.Any(k => k.Flag == option))
                 warnings.Add("Ignoring unknown option:" + option);
             else
