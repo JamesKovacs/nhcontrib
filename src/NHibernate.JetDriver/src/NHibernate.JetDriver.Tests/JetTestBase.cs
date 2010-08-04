@@ -34,6 +34,7 @@ namespace NHibernate.JetDriver.Tests
                 .SetProperty(Environment.Dialect, typeof(JetDialect).AssemblyQualifiedName)
                 .SetProperty(Environment.ConnectionDriver, typeof(JetDriver).AssemblyQualifiedName)
                 .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).FullName)
+                .SetProperty(Environment.ShowSql, "true")
                 .SetProperty(Environment.ConnectionString, string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", DataFile));
 
             AddMappings();

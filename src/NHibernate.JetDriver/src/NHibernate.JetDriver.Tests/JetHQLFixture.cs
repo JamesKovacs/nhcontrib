@@ -119,5 +119,27 @@ namespace NHibernate.JetDriver.Tests
                 Assert.That(count, Is.EqualTo(0));
             }
         }
+
+        [Test]
+        public void NHCD38_Missing_Parenthesis_In_SubQueries()
+        {
+            using(var s = SessionFactory.OpenSession())
+            {
+                var hql = @"from Catalog c 
+                                join c.Category as cat
+                                join c.ProductType as pt
+                                join cat.Product as p
+                            where c.Category.Name NOT IN 
+                            (
+                                select cg.Name from Category cg
+                            )";
+                var list = s.CreateQuery(hql)
+                            .List<Catalog>();
+
+                var count = list.Count;
+
+                Assert.That(count, Is.EqualTo(0));
+            }
+        }
     }
 }
