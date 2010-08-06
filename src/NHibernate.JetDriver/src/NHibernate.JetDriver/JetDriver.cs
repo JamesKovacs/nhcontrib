@@ -92,7 +92,7 @@ namespace NHibernate.JetDriver
 			var beginOfFrom = sqlString.IndexOfCaseInsensitive(FromClause);
 			var endOfFrom = sqlString.IndexOfCaseInsensitive(WhereClause);
 			var beginOfOrderBy = sqlString.IndexOfCaseInsensitive(OrderByClause);
-
+            
 			if (beginOfFrom < 0)
 			{
 				return sqlString;
@@ -111,13 +111,32 @@ namespace NHibernate.JetDriver
             }
 
 			var fromClause = sqlString.Substring(beginOfFrom, endOfFrom - beginOfFrom).ToString();
+            var wherePart = sqlString.Substring(endOfFrom);
+            var fromClauseInWhere = wherePart.IndexOfCaseInsensitive(FromClause);
 			var transformedFrom = TransformFromClause(fromClause);
+            var processWhereJoins = string.Empty;
+
+            if (fromClauseInWhere > -1) //has where clause, inspect other joins
+            {
+                var whereClause = wherePart.Substring(0, fromClauseInWhere);
+                var criteria = wherePart.Substring(fromClauseInWhere).ToString();
+
+                processWhereJoins = whereClause + TransformFromClause(criteria);
+            }
 
 			//put it all together again
 			var final = new SqlStringBuilder(sqlString.Count + 1);
 			final.Add(sqlString.Substring(0, beginOfFrom));
 			final.Add(transformedFrom);
-			final.Add(sqlString.Substring(endOfFrom));
+
+            if (string.IsNullOrEmpty(processWhereJoins))
+            {
+                final.Add(sqlString.Substring(endOfFrom));
+            }
+            else
+            {
+                final.Add(processWhereJoins);
+            }
 
 			SqlString ret = final.ToSqlString();
 			_queryCache[sqlString] = ret;

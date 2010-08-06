@@ -126,12 +126,15 @@ namespace NHibernate.JetDriver.Tests
             using(var s = SessionFactory.OpenSession())
             {
                 var hql = @"from Catalog c 
-                                join c.Category as cat
-                                join c.ProductType as pt
-                                join cat.Product as p
-                            where c.Category.Name NOT IN 
+                                 join c.Category as cat
+                                 join c.ProductType as pt
+                                 join cat.Product as p
+                            where p.Id NOT IN 
                             (
-                                select cg.Name from Category cg
+                                 select p.Id from Catalog ca
+                                          join ca.Category as cati
+                                          join ca.ProductType pti
+                                          join cati.Product as pi
                             )";
                 var list = s.CreateQuery(hql)
                             .List<Catalog>();
