@@ -44,7 +44,7 @@ namespace NHibernate.Envers.Reader
             ArgumentsTools.CheckPositive(revision, "Entity revision");
             CheckSession();
 
-            String entityName = cls.Name;
+            String entityName = cls.FullName;
 
             if (!verCfg.EntCfg.IsVersioned(entityName)) {
                 throw new NotAuditedException(entityName, entityName + " is not versioned!");
@@ -77,13 +77,13 @@ namespace NHibernate.Envers.Reader
             ArgumentsTools.CheckNotNull(primaryKey, "Primary key");
             CheckSession();
 
-            String entityName = cls.Name;
+            String entityName = cls.FullName;
 
             if (!verCfg.EntCfg.IsVersioned(entityName)) {
                 throw new NotAuditedException(entityName, entityName + " is not versioned!");
             }
 
-            return CreateQuery().forRevisionsOfEntity(cls, false, true)
+            return CreateQuery().ForRevisionsOfEntity(cls, false, true)
                     .AddProjection(AuditEntity.RevisionNumber())
                     .Add(AuditEntity.Id().Eq(primaryKey))
                     .GetResultList();

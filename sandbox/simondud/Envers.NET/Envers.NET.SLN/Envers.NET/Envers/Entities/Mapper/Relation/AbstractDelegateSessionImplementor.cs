@@ -67,10 +67,11 @@ public abstract class AbstractDelegateSessionImplementor : ISessionImplementor {
     public IBatcher getBatcher() {
         return delegat.Batcher;
     }
-    // TODO in second implementation phase
-    //public IList list(String query, QueryParameters queryParameters) {
-    //    return delegat.List<query, queryParameters>;
-    //}
+
+    public IList list(String query, QueryParameters queryParameters)
+    {
+        return delegat.List(query, queryParameters);
+    }
     // TODO in second implementation phase
     //public Iterator iterate(String query, QueryParameters queryParameters)  {
     //    return delegat.iterate(query, queryParameters);
@@ -252,245 +253,245 @@ public abstract class AbstractDelegateSessionImplementor : ISessionImplementor {
 
     public void Initialize()
     {
-        throw new NotImplementedException();
+        delegat.Initialize();
     }
 
     public void InitializeCollection(IPersistentCollection collection, bool writing)
     {
-        throw new NotImplementedException();
+        delegat.InitializeCollection(collection, writing);
     }
 
     public object InternalLoad(string entityName, object id, bool eager, bool isNullable)
     {
-        throw new NotImplementedException();
+        return delegat.InternalLoad(entityName, id, eager, isNullable);
     }
 
     public object ImmediateLoad(string entityName, object id)
     {
-        throw new NotImplementedException();
+        return delegat;
     }
 
     public long Timestamp
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Timestamp; }
     }
 
     public ISessionFactoryImplementor Factory
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Factory; }
     }
 
     public IBatcher Batcher
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Batcher; }
     }
 
     public IList List(string query, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.List(query, parameters);
     }
 
     public void List(string query, QueryParameters parameters, IList results)
     {
-        throw new NotImplementedException();
+        delegat.List(query, parameters, results);
     }
 
     public IList<T> List<T>(string query, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.List<T>(query, queryParameters);
     }
 
     public IList<T> List<T>(CriteriaImpl criteria)
     {
-        throw new NotImplementedException();
+        return delegat.List<T>(criteria);
     }
 
     public void List(CriteriaImpl criteria, IList results)
     {
-        throw new NotImplementedException();
+        delegat.List(criteria, results);
     }
 
     public IList List(CriteriaImpl criteria)
     {
-        throw new NotImplementedException();
+        return delegat.List(criteria);
     }
 
     public IEnumerable Enumerable(string query, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.Enumerable(query, parameters);
     }
 
     public IEnumerable<T> Enumerable<T>(string query, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.Enumerable<T>(query, queryParameters);
     }
 
     public IList ListFilter(object collection, string filter, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.ListFilter(collection, filter, parameters);
     }
 
     public IList<T> ListFilter<T>(object collection, string filter, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.ListFilter<T>(collection, filter, parameters);
     }
 
     public IEnumerable EnumerableFilter(object collection, string filter, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.EnumerableFilter(collection, filter, parameters);
     }
 
     public IEnumerable<T> EnumerableFilter<T>(object collection, string filter, QueryParameters parameters)
     {
-        throw new NotImplementedException();
+        return delegat.EnumerableFilter<T>(collection, filter, parameters);
     }
 
     public IEntityPersister GetEntityPersister(string entityName, object obj)
     {
-        throw new NotImplementedException();
+        return delegat.GetEntityPersister(entityName, obj);
     }
 
     public void AfterTransactionBegin(ITransaction tx)
     {
-        throw new NotImplementedException();
+        delegat.AfterTransactionBegin(tx);
     }
 
     public void BeforeTransactionCompletion(ITransaction tx)
     {
-        throw new NotImplementedException();
+        delegat.BeforeTransactionCompletion(tx);
     }
 
     public void AfterTransactionCompletion(bool successful, ITransaction tx)
     {
-        throw new NotImplementedException();
+        delegat.AfterTransactionCompletion(successful, tx);
     }
 
     public object GetContextEntityIdentifier(object obj)
     {
-        throw new NotImplementedException();
+        return delegat.GetContextEntityIdentifier(obj);
     }
 
     public object Instantiate(string entityName, object id)
     {
-        throw new NotImplementedException();
+        return delegat.Instantiate(entityName, id);
     }
 
     public IList List(NativeSQLQuerySpecification spec, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.List(spec, queryParameters);
     }
 
     public void List(NativeSQLQuerySpecification spec, QueryParameters queryParameters, IList results)
     {
-        throw new NotImplementedException();
+        delegat.List(spec, queryParameters, results);
     }
 
     public IList<T> List<T>(NativeSQLQuerySpecification spec, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.List<T>(spec, queryParameters);
     }
 
     public void ListCustomQuery(ICustomQuery customQuery, QueryParameters queryParameters, IList results)
     {
-        throw new NotImplementedException();
+        delegat.ListCustomQuery(customQuery,queryParameters, results);
     }
 
     public IList<T> ListCustomQuery<T>(ICustomQuery customQuery, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.ListCustomQuery<T>(customQuery, queryParameters);
     }
 
     public object GetFilterParameterValue(string filterParameterName)
     {
-        throw new NotImplementedException();
+        return delegat.GetFilterParameterValue(filterParameterName);
     }
 
     public IType GetFilterParameterType(string filterParameterName)
     {
-        throw new NotImplementedException();
+        return delegat.GetFilterParameterType(filterParameterName);
     }
 
     public IDictionary<string, IFilter> EnabledFilters
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.EnabledFilters; }
     }
 
     public IQuery GetNamedSQLQuery(string name)
     {
-        throw new NotImplementedException();
+        return delegat.GetNamedSQLQuery(name);
     }
 
     public NHibernate.Hql.IQueryTranslator[] GetQueries(string query, bool scalar)
     {
-        throw new NotImplementedException();
+        return delegat.GetQueries(query, scalar);
     }
 
     public IInterceptor Interceptor
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Interceptor; }
     }
 
     public EventListeners Listeners
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Listeners; }
     }
 
     public int DontFlushFromFind
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.DontFlushFromFind; }
     }
 
     public NHibernate.AdoNet.ConnectionManager ConnectionManager
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.ConnectionManager; }
     }
 
     public bool IsEventSource
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.IsEventSource; }
     }
 
     public object GetEntityUsingInterceptor(EntityKey key)
     {
-        throw new NotImplementedException();
+        return delegat.GetEntityUsingInterceptor(key);
     }
 
     public IPersistenceContext PersistenceContext
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.PersistenceContext; }
     }
 
     public CacheMode CacheMode
     {
         get
         {
-            throw new NotImplementedException();
+            return delegat.CacheMode;
         }
         set
         {
-            throw new NotImplementedException();
+            delegat.CacheMode = value;
         }
     }
 
     public bool IsOpen
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.IsOpen; }
     }
 
     public bool IsConnected
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.IsConnected; }
     }
 
     public FlushMode FlushMode
     {
         get
         {
-            throw new NotImplementedException();
+            return delegat.FlushMode;
         }
         set
         {
-            throw new NotImplementedException();
+            delegat.FlushMode = value;
         }
     }
 
@@ -498,94 +499,94 @@ public abstract class AbstractDelegateSessionImplementor : ISessionImplementor {
     {
         get
         {
-            throw new NotImplementedException();
+            return delegat.FetchProfile;
         }
         set
         {
-            throw new NotImplementedException();
+            delegat.FetchProfile = value;
         }
     }
 
     public string BestGuessEntityName(object entity)
     {
-        throw new NotImplementedException();
+        return delegat.BestGuessEntityName(entity);
     }
 
     public string GuessEntityName(object entity)
     {
-        throw new NotImplementedException();
+        return delegat.GuessEntityName(entity);
     }
 
     public IDbConnection Connection
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.Connection; }
     }
 
     public IQuery GetNamedQuery(string queryName)
     {
-        throw new NotImplementedException();
+        return delegat.GetNamedQuery(queryName);
     }
 
     public bool IsClosed
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.IsClosed; }
     }
 
     public void Flush()
     {
-        throw new NotImplementedException();
+        delegat.Flush();
     }
 
     public bool TransactionInProgress
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.TransactionInProgress; }
     }
 
     public EntityMode EntityMode
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.EntityMode; }
     }
 
     public int ExecuteNativeUpdate(NativeSQLQuerySpecification specification, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.ExecuteNativeUpdate(specification, queryParameters);
     }
 
     public int ExecuteUpdate(string query, QueryParameters queryParameters)
     {
-        throw new NotImplementedException();
+        return delegat.ExecuteUpdate(query, queryParameters);
     }
 
     public FutureCriteriaBatch FutureCriteriaBatch
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.FutureCriteriaBatch; }
     }
 
     public FutureQueryBatch FutureQueryBatch
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.FutureQueryBatch; }
     }
 
     public Guid SessionId
     {
-        get { throw new NotImplementedException(); }
+        get { return delegat.SessionId; }
     }
 
     public NHibernate.Transaction.ITransactionContext TransactionContext
     {
         get
         {
-            throw new NotImplementedException();
+            return delegat.TransactionContext;
         }
         set
         {
-            throw new NotImplementedException();
+            delegat.TransactionContext = value;
         }
     }
 
     public void CloseSessionFromDistributedTransaction()
     {
-        throw new NotImplementedException();
+        delegat.CloseSessionFromDistributedTransaction();
     }
 
     #endregion

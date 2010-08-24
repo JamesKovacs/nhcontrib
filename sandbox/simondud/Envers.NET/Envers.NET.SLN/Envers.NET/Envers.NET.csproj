@@ -166,6 +166,8 @@
     <Compile Include="Envers\Query\Criteria\RelatedAuditExpression.cs" />
     <Compile Include="Envers\Query\Criteria\SimpleAuditExpression.cs" />
     <Compile Include="Envers\Query\Impl\AbstractAuditQuery.cs" />
+    <Compile Include="Envers\Query\Impl\EntitiesAtRevisionQuery.cs" />
+    <Compile Include="Envers\Query\Impl\RevisionsOfEntityQuery.cs" />
     <Compile Include="Envers\Query\Order\PropertyAuditOrder.cs" />
     <Compile Include="Envers\Query\Projection\PropertyAuditProjection.cs" />
     <Compile Include="Envers\Query\Property\EntityPropertyName.cs" />
@@ -178,6 +180,8 @@
     <Compile Include="Envers\Reader\FirstLevelCache.cs" />
     <Compile Include="Envers\Tools\ArgumentsTools.cs" />
     <Compile Include="Envers\Tools\ArraysTools.cs" />
+    <Compile Include="Envers\Tools\CollectionWrapper.cs" />
+    <Compile Include="Envers\Tools\DictionaryWrapper.cs" />
     <Compile Include="Envers\Tools\EmptyDictionary.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\IRelationQueryGenerator.cs" />
     <Compile Include="Envers\Entities\Mapper\Relation\Query\OneAuditEntityQueryGenerator.cs" />
@@ -228,10 +232,14 @@
     <Compile Include="Envers\Synchronization\Work\IWorkUnitMergeVisitor.cs" />
     <Compile Include="Envers\Synchronization\Work\ModWorkUnit.cs" />
     <Compile Include="Envers\Synchronization\Work\PersistentCollectionChangeWorkUnit.cs" />
+    <Compile Include="Envers\Tools\EnumeratorOfDictionariesWrapper.cs" />
+    <Compile Include="Envers\Tools\EnumeratorWrapper.cs" />
     <Compile Include="Envers\Tools\Graph\GraphTopologicalSort.cs" />
     <Compile Include="Envers\Tools\Graph\IGraphDefiner.cs" />
     <Compile Include="Envers\Tools\Graph\TopologicalSort.cs" />
     <Compile Include="Envers\Tools\Graph\Vertex.cs" />
+    <Compile Include="Envers\Tools\ListOfDictionariesWrapper.cs" />
+    <Compile Include="Envers\Tools\ListWrapper.cs" />
     <Compile Include="Envers\Tools\MappingTools.cs" />
     <Compile Include="Envers\Tools\MutableBoolean.cs" />
     <Compile Include="Envers\Tools\MutableInteger.cs" />

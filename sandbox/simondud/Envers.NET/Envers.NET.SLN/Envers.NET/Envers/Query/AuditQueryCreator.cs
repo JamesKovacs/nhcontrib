@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Envers.Query.Impl;
 using NHibernate.Envers.Reader;
 using NHibernate.Envers.Configuration;
+using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Query
 {
@@ -29,10 +31,10 @@ namespace NHibernate.Envers.Query
          * projection is added.
          */
         public IAuditQuery ForEntitiesAtRevision(System.Type c, long revision) {
-            throw new NotImplementedException("Query not implemented yet");
-            //checkNotNull(revision, "Entity revision");
-            //checkPositive(revision, "Entity revision");
-            //return new EntitiesAtRevisionQuery(auditCfg, auditReaderImplementor, c, revision);
+            //throw new NotImplementedException("Query not implemented yet");
+            ArgumentsTools.CheckNotNull(revision, "Entity revision");
+            ArgumentsTools.CheckPositive(revision, "Entity revision");
+            return new EntitiesAtRevisionQuery(auditCfg, auditReaderImplementor, c, revision);
         }
 
         /**
@@ -55,9 +57,9 @@ namespace NHibernate.Envers.Query
          * can then be executed. The results of the query will be sorted in ascending order by the revision number,
          * unless an order or projection is added.
          */
-        public IAuditQuery forRevisionsOfEntity(System.Type c, bool selectEntitiesOnly, bool selectDeletedEntities) {
-            throw new NotImplementedException("Query not implemented yet");
-            //return new RevisionsOfEntityQuery(auditCfg, auditReaderImplementor, c, selectEntitiesOnly,selectDeletedEntities);
+        public IAuditQuery ForRevisionsOfEntity(System.Type c, bool selectEntitiesOnly, bool selectDeletedEntities) {
+            //throw new NotImplementedException("Query not implemented yet");
+            return new RevisionsOfEntityQuery(auditCfg, auditReaderImplementor, c, selectEntitiesOnly,selectDeletedEntities);
         }
     }
 }

@@ -38,7 +38,8 @@ namespace NHibernate.Envers.Query.Impl
             criterions = new List<IAuditCriterion>();
             entityInstantiator = new EntityInstantiator(verCfg, versionsReader);
 
-            entityName = cls.Name;
+            entityName = cls.FullName;
+            
             versionsEntityName = verCfg.AuditEntCfg.GetAuditEntityName(entityName);
 
             qb = new QueryBuilder(versionsEntityName, "e");

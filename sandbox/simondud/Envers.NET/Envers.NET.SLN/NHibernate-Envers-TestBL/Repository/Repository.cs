@@ -62,9 +62,10 @@ namespace Envers.Net.Repository
             return auditReader.GetRevisions(entity.GetType(), entity.id);
         }
 
-        public IList<long> GetRevision(System.Type tip, long Id, long VersionId)
+        public T GetRevision(System.Type tip, long Id, long VersionId)
         {
-            throw new NotImplementedException();
+            IAuditReader auditReader = AuditReaderFactory.Get(Session);
+            return auditReader.Find<T>(tip, Id, VersionId);
         }
 
         #endregion

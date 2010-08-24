@@ -13,7 +13,7 @@ namespace Envers.Net.Repository
         T GetById(object entityId);
         ICollection<T> GetByType(string type);
         IList GetAllRevisionIds(DomainObject entity);
-        IList<long> GetRevision(System.Type tip, long Id, long VersionId);
+        T GetRevision(System.Type tip, long Id, long VersionId);
     }
 }
 

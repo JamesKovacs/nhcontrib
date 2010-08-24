@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,7 +60,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                 return;
             }
 
-            Object entityId = delegat.MapToIdFromMap((IDictionary<String, Object>)data[propertyData.Name]);
+            Object entityId = delegat.MapToIdFromMap(DictionaryWrapper<String, Object>.Wrap((IDictionary)data[propertyData.Name]));
             Object value;
             if (entityId == null)
             {

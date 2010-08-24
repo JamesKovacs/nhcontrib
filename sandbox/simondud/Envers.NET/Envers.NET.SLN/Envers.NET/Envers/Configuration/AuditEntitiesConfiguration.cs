@@ -24,6 +24,15 @@ namespace NHibernate.Envers.Configuration
         public String RevisionTypePropType { get; private set; }
 
         public String RevisionInfoEntityName { get; private set; }
+        /// <summary>
+        /// Returns the class name without the assembly name. Used for generating querries
+        /// </summary>
+        public String RevisionInfoEntityFullClassName {
+            get
+            {
+                return RevisionInfoEntityName.Split(new char[]{','})[0];
+            }
+        }
 
         private readonly IDictionary<String, String> customAuditTablesNames;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,7 +74,19 @@ namespace APDRP_NHibernatePOC_Test
             Person pers = new Person{firstName = "Ion", lastName = "Gheorghe", address = address};
             personRepository.Add(pers);
             Assert.IsTrue(pers.id != 0);
+
+            pers.firstName = "Ionel";
+            personRepository.Update(pers);
             
+            IList personRevisionIds = personRepository.GetAllRevisionIds( pers );
+
+				foreach ( object personRevId in personRevisionIds )
+				{
+					Person auditedPerson = personRepository.GetRevision( typeof(Person), pers.id, (long)(int)personRevId );
+					System.Console.Write( personRevId + ":" + auditedPerson.firstName + " " + auditedPerson.lastName + " -> " + auditedPerson.address.street );
+				}
+
+
             address.number = "23";
             addressRepository.Update(address);
 

@@ -48,7 +48,7 @@ namespace NHibernate.Envers.Entities
 
             // First mapping the primary key
             IIdMapper idMapper = verCfg.EntCfg[entityName].GetIdMapper();
-            IDictionary<string,object> originalId = (IDictionary<string,object>) versionsEntity[verCfg.AuditEntCfg.OriginalIdPropName];
+            IDictionary<string,object> originalId = DictionaryWrapper<string,object>.Wrap((IDictionary)versionsEntity[verCfg.AuditEntCfg.OriginalIdPropName]);
 
             Object primaryKey = idMapper.MapToIdFromMap(originalId);
 
