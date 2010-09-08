@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Proxy;
 using NUnit.Framework;
 using Spring.Context.Support;
 using Spring.Context;
@@ -13,6 +14,7 @@ using Spring.Data.Common;
 using System.Data;
 using NHibernate.Envers.Event;
 using Spring.Data.NHibernate;
+using NHibernate.Impl;
 
 namespace APDRP_NHibernatePOC_Test
 {
@@ -62,6 +64,24 @@ namespace APDRP_NHibernatePOC_Test
         public void TestSessionFactory()
         {
             //AuditEventListener lis = (AuditEventListener)applicationContext.GetObject("enversEventListener");
+            Address adr = new Address { number = "16", street = "Diligentei" };
+            addressRepository.Add(adr);
+            ContBancar cnt = new ContBancar { NumeBanca = "BCR", IBAN = "RO212BCRO423455634", Adresa = adr };
+            contRepository.Add(cnt);
+            Person persoana = new Person { firstName = "Mihai", lastName = "Popa", cont = cnt};
+            personRepository.Add(persoana);
+            persoana.lastName = "Popatatu";
+            personRepository.Update(persoana);
+            IList personRevisionIds;
+            //personRevisionIds = personRepository.GetAllRevisionIds(persoana);
+
+            //foreach (object personRevId in personRevisionIds)
+            //{
+            //    Person auditedPerson = personRepository.GetRevision(typeof(Person), persoana.id, (long)(int)personRevId);
+            //    Assert.IsTrue(auditedPerson.cont is SessionImpl);
+            //    System.Console.Write(personRevId + ":" + auditedPerson.firstName + " " + auditedPerson.lastName + " -> " + auditedPerson.address.street);
+            //}
+
 
             Address address = new Address{number="22", street="Valea Calugareasca"};
             addressRepository.Add(address);
@@ -78,11 +98,18 @@ namespace APDRP_NHibernatePOC_Test
             pers.firstName = "Ionel";
             personRepository.Update(pers);
             
-            IList personRevisionIds = personRepository.GetAllRevisionIds( pers );
+            personRevisionIds = personRepository.GetAllRevisionIds( pers );
 
 				foreach ( object personRevId in personRevisionIds )
 				{
 					Person auditedPerson = personRepository.GetRevision( typeof(Person), pers.id, (long)(int)personRevId );
+                    if (auditedPerson.address is INHibernateProxy)
+                    {
+                        Type tt = ((INHibernateProxy)auditedPerson.address).HibernateLazyInitializer.PersistentClass;
+                        object gigi = ((INHibernateProxy)auditedPerson.address).HibernateLazyInitializer.GetImplementation();
+                    }
+				    Type t = NHibernateUtil.GetClass(auditedPerson.address);
+
 					System.Console.Write( personRevId + ":" + auditedPerson.firstName + " " + auditedPerson.lastName + " -> " + auditedPerson.address.street );
 				}
 
