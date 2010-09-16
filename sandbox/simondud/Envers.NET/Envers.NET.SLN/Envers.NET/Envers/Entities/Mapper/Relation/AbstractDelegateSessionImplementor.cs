@@ -268,7 +268,7 @@ public abstract class AbstractDelegateSessionImplementor : ISessionImplementor {
 
     public object ImmediateLoad(string entityName, object id)
     {
-        return delegat;
+        return doImmediateLoad(entityName);
     }
 
     public long Timestamp

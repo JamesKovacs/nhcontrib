@@ -18,7 +18,7 @@
   <db:provider
    id="DbProvider200x"
    provider="System.Data.SqlClient"
-   connectionString="Server=(local);initial catalog=envers;Integrated Security=SSPI"/>
+   connectionString="Data Source=SIMON-PC\SQLEXPRESS;Initial Catalog=envers;Integrated Security=True"/>
   
   <object id="ExecutingAssembly" type="Envers.Net.Model.Util.ExecutingAssemblyFactoryObject, APDRP_NHibernatePOC"/>
 
