@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+  <session-factory>
+    <property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
+    <property name="dialect">NHibernate.Dialect.MsSqlCeDialect</property>
+    <property name="connection.driver_class">NHibernate.Driver.SqlServerCeDriver</property>
+    <property name="connection.connection_string">Data Source=Envers.sdf</property>
+    <property name="show_sql">true</property>
+    <property name="proxyfactory.factory_class">NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle</property>
+    <property name="EventListeners">
+      <dictionary>
+        <entry key="PostInsert">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+        <entry key="PostUpdate">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+        <entry key="PostDelete">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+        <entry key="PostCollectionRecreate">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+        <entry key="PreCollectionRemove">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+        <entry key="PreCollectionUpdate">
+          <object type="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
+        </entry>
+      </dictionary>
+    </property>
+  </session-factory>
+</hibernate-configuration>
+

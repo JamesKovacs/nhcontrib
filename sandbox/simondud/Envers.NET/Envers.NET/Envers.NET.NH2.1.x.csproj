@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{221D5752-3D59-4DC6-AE40-B3A4AAD43018}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>PropertiesNH2.1.x</AppDesignerFolder>
+    <RootNamespace>Envers.NET.NH2._1.x</RootNamespace>
+    <AssemblyName>Envers.NET.NH2.1.x</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharedLibs\C5\C5.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharedLibs\NHibernate\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharedLibs\NHibernate\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Envers\AuditedAttribute.cs" />
+    <Compile Include="Envers\AuditJoinTableAttribute.cs" />
+    <Compile Include="Envers\AuditMappedByAttribute.cs" />
+    <Compile Include="Envers\AuditOverrideAttribute.cs" />
+    <Compile Include="Envers\AuditOverridesAttribute.cs" />
+    <Compile Include="Envers\AuditReaderFactory.cs" />
+    <Compile Include="Envers\AuditTableAttribute.cs" />
+    <Compile Include="Envers\ColumnAttribute.cs" />
+    <Compile Include="Envers\Compatibility\Attributes\MapKeyAttribute.cs" />
+    <Compile Include="Envers\Compatibility\Attributes\VersionAttribute.cs" />
+    <Compile Include="Envers\Compatibility\ISortedSet.cs" />
+    <Compile Include="Envers\Compatibility\LongType.cs" />
+    <Compile Include="Envers\Configuration\AuditConfiguration.cs" />
+    <Compile Include="Envers\Configuration\AuditEntitiesConfiguration.cs" />
+    <Compile Include="Envers\Configuration\ClassesAuditingData.cs" />
+    <Compile Include="Envers\Configuration\EntitiesConfigurator.cs" />
+    <Compile Include="Envers\Configuration\GlobalConfiguration.cs" />
+    <Compile Include="Envers\Configuration\Metadata\AuditEntityNameRegister.cs" />
+    <Compile Include="Envers\Configuration\Metadata\AuditMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\Metadata\AuditTableData.cs" />
+    <Compile Include="Envers\Configuration\Metadata\BasicMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\Metadata\CollectionMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\Metadata\ComponentMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\Metadata\EntityXmlMappingData.cs" />
+    <Compile Include="Envers\Configuration\Metadata\IdMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\Metadata\InheritanceType.cs" />
+    <Compile Include="Envers\Configuration\Metadata\MetadataTools.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\AnnotationsMetadataReader.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\AuditedPropertiesReader.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\ClassAuditingData.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\ComponentAuditingData.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\IAuditedPropertiesHolder.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\IPersistentPropertiesSource.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\IQueryGeneratorBuilder.cs" />
+    <Compile Include="Envers\Configuration\Metadata\Reader\PropertyAuditingData.cs" />
+    <Compile Include="Envers\Configuration\Metadata\ToOneRelationMetadataGenerator.cs" />
+    <Compile Include="Envers\Configuration\PersistentClassGraphDefiner.cs" />
+    <Compile Include="Envers\Configuration\RevisionInfoConfiguration.cs" />
+    <Compile Include="Envers\DefaultAuditJoinTableAttribute.cs" />
+    <Compile Include="Envers\DefaultAuditTableAttribute.cs" />
+    <Compile Include="Envers\DefaultRevisionEntity.cs" />
+    <Compile Include="Envers\Entities\EntitiesConfigurations.cs" />
+    <Compile Include="Envers\Entities\EntityConfiguration.cs" />
+    <Compile Include="Envers\Entities\EntityInstantiator.cs" />
+    <Compile Include="Envers\Entities\IdMappingData.cs" />
+    <Compile Include="Envers\Entities\Mapper\ComponentPropertyMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\ICompositeMapperBuilder.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\AbstractCompositeIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\AbstractIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\EmbeddedIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\IIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\ISimpleIdMapperBuilder.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\MultipleIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\QueryParameterData.cs" />
+    <Compile Include="Envers\Entities\Mapper\Id\SingleIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\IExtendedPropertyMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\IPropertyMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\ISimpleMapperBuilder.cs" />
+    <Compile Include="Envers\Entities\Mapper\MultiPropertyMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\PersistentCollectionChangeData.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\AbstractCollectionMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\AbstractDelegateSessionImplementor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\BasicCollectionMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\CommonCollectionMapperData.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\IMiddleComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleDummyComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleMapKeyIdComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleMapKeyPropertyComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleRelatedComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleSimpleComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Component\MiddleStraightComponentMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\AbstractCollectionInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\BasicCollectionInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Initializor\IInitializor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\CollectionProxy.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\SetProxy.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Lazy\Proxy\SortedSetProxy.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\MiddleComponentData.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\MiddleIdData.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\OneToOneNotOwningMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\IRelationQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\OneAuditEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\OneEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\QueryGeneratorTools.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\ThreeEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityOneAuditedQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\Query\TwoEntityQueryGenerator.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\ToOneDelegateSessionImplementor.cs" />
+    <Compile Include="Envers\Entities\Mapper\Relation\ToOneIdMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\SinglePropertyMapper.cs" />
+    <Compile Include="Envers\Entities\Mapper\SubclassPropertyMapper.cs" />
+    <Compile Include="Envers\Entities\PropertyData.cs" />
+    <Compile Include="Envers\Entities\RelationDescription.cs" />
+    <Compile Include="Envers\Entities\RelationType.cs" />
+    <Compile Include="Envers\Entities\RevisionTypeType.cs" />
+    <Compile Include="Envers\Event\AuditEventListener.cs" />
+    <Compile Include="Envers\Exceptions\AuditException.cs" />
+    <Compile Include="Envers\Exceptions\NotAuditedException.cs" />
+    <Compile Include="Envers\Exceptions\RevisionDoesNotExistException.cs" />
+    <Compile Include="Envers\IAuditReader.cs" />
+    <Compile Include="Envers\JoinColumnAttribute.cs" />
+    <Compile Include="Envers\ModificationStore.cs" />
+    <Compile Include="Envers\NotAuditedAttribute.cs" />
+    <Compile Include="Envers\Query\AuditEntity.cs" />
+    <Compile Include="Envers\Query\AuditQueryCreator.cs" />
+    <Compile Include="Envers\Query\Criteria\AggregatedAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditConjunction.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditDisjunction.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditId.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditProperty.cs" />
+    <Compile Include="Envers\Query\Criteria\AuditRelatedId.cs" />
+    <Compile Include="Envers\Query\Criteria\BetweenAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\CriteriaTools.cs" />
+    <Compile Include="Envers\Query\Criteria\IAuditCriterion.cs" />
+    <Compile Include="Envers\Query\Criteria\IdentifierEqAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\IExtendableCriterion.cs" />
+    <Compile Include="Envers\Query\Criteria\InAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\LogicalAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NotAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NotNullAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\NullAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\PropertyAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\RelatedAuditExpression.cs" />
+    <Compile Include="Envers\Query\Criteria\SimpleAuditExpression.cs" />
+    <Compile Include="Envers\Query\IAuditQuery.cs" />
+    <Compile Include="Envers\Query\Impl\AbstractAuditQuery.cs" />
+    <Compile Include="Envers\Query\Impl\EntitiesAtRevisionQuery.cs" />
+    <Compile Include="Envers\Query\Impl\RevisionsOfEntityQuery.cs" />
+    <Compile Include="Envers\Query\Order\IAuditOrder.cs" />
+    <Compile Include="Envers\Query\Order\PropertyAuditOrder.cs" />
+    <Compile Include="Envers\Query\Projection\IAuditProjection.cs" />
+    <Compile Include="Envers\Query\Projection\PropertyAuditProjection.cs" />
+    <Compile Include="Envers\Query\Property\EntityPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\IPropertyNameGetter.cs" />
+    <Compile Include="Envers\Query\Property\OriginalIdPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionNumberPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionPropertyPropertyName.cs" />
+    <Compile Include="Envers\Query\Property\RevisionTypePropertyName.cs" />
+    <Compile Include="Envers\Query\QueryBuilder.cs" />
+    <Compile Include="Envers\Reader\AuditReader.cs" />
+    <Compile Include="Envers\Reader\FirstLevelCache.cs" />
+    <Compile Include="Envers\Reader\IAuditReaderImplementor.cs" />
+    <Compile Include="Envers\Reader\IFirstLevelCache.cs" />
+    <Compile Include="Envers\RelationTargetAuditMode.cs" />
+    <Compile Include="Envers\RevisionDelegate.cs" />
+    <Compile Include="Envers\RevisionEntityAttribute.cs" />
+    <Compile Include="Envers\RevisionInfo\DefaultRevisionInfoGenerator.cs" />
+    <Compile Include="Envers\RevisionInfo\IRevisionInfoGenerator.cs" />
+    <Compile Include="Envers\RevisionInfo\RevisionInfoNumberReader.cs" />
+    <Compile Include="Envers\RevisionInfo\RevisionInfoQueryCreator.cs" />
+    <Compile Include="Envers\RevisionNumberAttribute.cs" />
+    <Compile Include="Envers\RevisionTimestampAttribute.cs" />
+    <Compile Include="Envers\RevisionType.cs" />
+    <Compile Include="Envers\SecondaryAuditTableAttribute.cs" />
+    <Compile Include="Envers\SecondaryAuditTablesAttribute.cs" />
+    <Compile Include="Envers\Synchronization\AuditSync.cs" />
+    <Compile Include="Envers\Synchronization\AuditSyncManager.cs" />
+    <Compile Include="Envers\Synchronization\Work\AbstractAuditWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\AddWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\CollectionChangeWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\DelWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\FakeBidirectionalRelationWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\IAuditWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\IWorkUnitMergeDispatcher.cs" />
+    <Compile Include="Envers\Synchronization\Work\IWorkUnitMergeVisitor.cs" />
+    <Compile Include="Envers\Synchronization\Work\ModWorkUnit.cs" />
+    <Compile Include="Envers\Synchronization\Work\PersistentCollectionChangeWorkUnit.cs" />
+    <Compile Include="Envers\Tools\ArgumentsTools.cs" />
+    <Compile Include="Envers\Tools\ArraysTools.cs" />
+    <Compile Include="Envers\Tools\CollectionWrapper.cs" />
+    <Compile Include="Envers\Tools\DictionaryWrapper.cs" />
+    <Compile Include="Envers\Tools\EmptyDictionary.cs" />
+    <Compile Include="Envers\Tools\EnumeratorOfDictionariesWrapper.cs" />
+    <Compile Include="Envers\Tools\EnumeratorWrapper.cs" />
+    <Compile Include="Envers\Tools\Graph\GraphTopologicalSort.cs" />
+    <Compile Include="Envers\Tools\Graph\IGraphDefiner.cs" />
+    <Compile Include="Envers\Tools\Graph\TopologicalSort.cs" />
+    <Compile Include="Envers\Tools\Graph\Vertex.cs" />
+    <Compile Include="Envers\Tools\ListOfDictionariesWrapper.cs" />
+    <Compile Include="Envers\Tools\ListWrapper.cs" />
+    <Compile Include="Envers\Tools\MappingTools.cs" />
+    <Compile Include="Envers\Tools\MutableBoolean.cs" />
+    <Compile Include="Envers\Tools\MutableInteger.cs" />
+    <Compile Include="Envers\Tools\Pair.cs" />
+    <Compile Include="Envers\Tools\Query\Parameters.cs" />
+    <Compile Include="Envers\Tools\StringTools.cs" />
+    <Compile Include="Envers\Tools\Toolz.cs" />
+    <Compile Include="Envers\Tools\Triple.cs" />
+    <Compile Include="PropertiesNH2.1.x\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NHibernate-2.1.x\src\NHibernate\NHibernate.csproj">
+      <Project>{5909BFE7-93CF-4E5F-BE22-6293368AF01D}</Project>
+      <Name>NHibernate</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
