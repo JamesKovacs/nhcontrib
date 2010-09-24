@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Envers.NET.NH2.1.x", "Envers.NET\Envers.NET.NH2.1.x.csproj", "{221D5752-3D59-4DC6-AE40-B3A4AAD43018}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "..\NHibernate-2.1.x\src\NHibernate\NHibernate.csproj", "{5909BFE7-93CF-4E5F-BE22-6293368AF01D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Envers.NET.Tests.NH2.1.x", "Envers.NET.Tests\Envers.NET.Tests.NH2.1.x.csproj", "{994DA203-3FB6-4D6A-9BE8-AABBA4DFA4BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{221D5752-3D59-4DC6-AE40-B3A4AAD43018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221D5752-3D59-4DC6-AE40-B3A4AAD43018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221D5752-3D59-4DC6-AE40-B3A4AAD43018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221D5752-3D59-4DC6-AE40-B3A4AAD43018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5909BFE7-93CF-4E5F-BE22-6293368AF01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5909BFE7-93CF-4E5F-BE22-6293368AF01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5909BFE7-93CF-4E5F-BE22-6293368AF01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5909BFE7-93CF-4E5F-BE22-6293368AF01D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{994DA203-3FB6-4D6A-9BE8-AABBA4DFA4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{994DA203-3FB6-4D6A-9BE8-AABBA4DFA4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{994DA203-3FB6-4D6A-9BE8-AABBA4DFA4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{994DA203-3FB6-4D6A-9BE8-AABBA4DFA4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
