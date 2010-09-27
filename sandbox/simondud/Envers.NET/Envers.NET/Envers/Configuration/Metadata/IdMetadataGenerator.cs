@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml;
 using NHibernate.Envers.Entities.Mapper;
 using NHibernate.Mapping;
 using NHibernate.Type;
 using NHibernate.Envers.Configuration.Metadata.Reader;
 using NHibernate.Envers.Entities;
-using NHibernate.Envers.Configuration.Metadata;
-using NHibernate.Envers.Tools.Graph;
-using NHibernate.Properties;
-using NHibernate.Type;
-using Iesi.Collections.Generic;
 using NHibernate.Envers.Entities.Mapper.Id;
 
 namespace NHibernate.Envers.Configuration.Metadata
