@@ -60,6 +60,12 @@
     </Content>
     <Content Include="hibernate.cfg.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Envers.NET\Envers.NET.NH3.csproj">
+      <Project>{16492F52-0C2E-4847-9CBF-696907808FD6}</Project>
+      <Name>Envers.NET.NH3</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

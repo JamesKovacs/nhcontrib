@@ -108,7 +108,8 @@ namespace NHibernate.Envers.Configuration.Metadata
             hibernate_mapping.SetAttribute("assembly", "Envers.NET");
             hibernate_mapping.SetAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
             hibernate_mapping.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-            hibernate_mapping.SetAttribute("xmlns", Cfg.Configuration.MappingSchemaXMLNS);
+            //rk: changed from Configuration.MappingSchemaXMLNS. Not available in NH3
+            hibernate_mapping.SetAttribute("xmlns", "urn:nhibernate-mapping-2.2"); 
             hibernate_mapping.SetAttribute("auto-import", "false");
             document.AppendChild(hibernate_mapping);
 
