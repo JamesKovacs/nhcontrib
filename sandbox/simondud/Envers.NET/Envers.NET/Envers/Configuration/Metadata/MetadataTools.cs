@@ -29,17 +29,21 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         public static XmlElement AddProperty(XmlElement parent, String name, String type, bool insertable, bool key) {
             XmlElement prop_mapping;
-            if (key) {
+            if (key) 
+            {
                 prop_mapping = parent.OwnerDocument.CreateElement("key-property");
-            } else {
+            } 
+            else 
+            {
                 prop_mapping = parent.OwnerDocument.CreateElement("property");
+                //rk: only insert/update attributes on property - not key-property
+                prop_mapping.SetAttribute("insert", insertable ? "true" : "false");
+                prop_mapping.SetAttribute("update", "false");
             }
             parent.AppendChild(prop_mapping);
 
             prop_mapping.SetAttribute("name", name);
-            prop_mapping.SetAttribute("insert", insertable ? "true" : "false");
-            prop_mapping.SetAttribute("update", "false");
-
+            
             if (type != null) {
                 prop_mapping.SetAttribute("type", type);
             }

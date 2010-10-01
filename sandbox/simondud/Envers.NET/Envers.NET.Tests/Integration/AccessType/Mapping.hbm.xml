@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Envers.NET.Tests.NH3"
+                   namespace="Envers.NET.Tests.NH3.Integration.AccessType">
+
+  <class name="FieldAccessEntity">
+    <id name="id" access="field">
+      <generator class="native"/>
+    </id>
+    <property name="data" access="field"/>
+  </class>
+
+  <class name="PropertyAccessEntity">
+    <id name="Id" access="property">
+      <generator class="native"/>
+    </id>
+    <property name="Data" access="property"/>
+  </class>
+</hibernate-mapping>

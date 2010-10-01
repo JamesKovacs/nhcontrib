@@ -8,8 +8,8 @@
     <ProjectGuid>{16492F52-0C2E-4847-9CBF-696907808FD6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>PropertiesNH3</AppDesignerFolder>
-    <RootNamespace>Envers.NET.NH3</RootNamespace>
-    <AssemblyName>Envers.NET.NH3</AssemblyName>
+    <RootNamespace>Envers.NET</RootNamespace>
+    <AssemblyName>Envers.NET</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,10 +42,6 @@
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharedLibs\NHibernate3alpha3\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate, Version=3.0.0.1003, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharedLibs\NHibernate3alpha3\Required_Bins\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -250,6 +246,12 @@
     <Compile Include="Envers\Tools\Toolz.cs" />
     <Compile Include="Envers\Tools\Triple.cs" />
     <Compile Include="PropertiesNH3\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\nhibSource\nhibernate\src\NHibernate\NHibernate.csproj">
+      <Project>{5909BFE7-93CF-4E5F-BE22-6293368AF01D}</Project>
+      <Name>NHibernate</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
