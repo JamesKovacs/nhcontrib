@@ -24,7 +24,6 @@ namespace Envers.NET.Tests.NH3.Integration.AccessType
     public class PropertyAccessEntity
     {
         public virtual int Id { get; set; }
-
         [Audited]
         public virtual string Data { get; set; }
     }

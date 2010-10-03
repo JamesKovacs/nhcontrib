@@ -34,5 +34,12 @@ namespace Envers.NET.Tests.NH3.Integration.AccessType
         {
             CollectionAssert.AreEquivalent(new[] {1, 2}, AuditReader.GetRevisions(typeof (FieldAccessEntity), id));
         }
+
+        [Test]
+        public void VerifyHistory()
+        {
+            Assert.AreEqual("first", AuditReader.Find<FieldAccessEntity>(typeof (FieldAccessEntity), id, 1));
+            Assert.AreEqual("second", AuditReader.Find<FieldAccessEntity>(typeof (FieldAccessEntity), id, 2));
+        }
     }
 }

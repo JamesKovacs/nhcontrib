@@ -37,6 +37,7 @@ namespace NHibernate.Envers.Reader
             }
         }
 
+        //rk - why both T and cls here?
         public T Find<T> (System.Type cls, Object primaryKey, long revision){
             ArgumentsTools.CheckNotNull(cls, "Entity class");
             ArgumentsTools.CheckNotNull(primaryKey, "Primary key");

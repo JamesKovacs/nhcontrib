@@ -72,9 +72,13 @@ namespace NHibernate.Envers.Entities
             return notAuditedEntitiesConfigurations.ContainsKey(entityName)? notAuditedEntitiesConfigurations[entityName]:null;
         }
 
-        public String GetEntityNameForVersionsEntityName(String versionsEntityName)
+        public string GetEntityNameForVersionsEntityName(string versionsEntityName)
         {
-            return _entityNamesForVersionsEntityNames.ContainsKey(versionsEntityName) ? _entityNamesForVersionsEntityNames[versionsEntityName] : null;
+            //rk changed
+            if (versionsEntityName == null)
+                return null;
+            string ret;
+            return _entityNamesForVersionsEntityNames.TryGetValue(versionsEntityName, out ret) ? ret : null;
         }
 
         public bool IsVersioned(String entityName)

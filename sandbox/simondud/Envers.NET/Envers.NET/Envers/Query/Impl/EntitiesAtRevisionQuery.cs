@@ -63,17 +63,16 @@ namespace NHibernate.Envers.Query.Impl
 
             if (hasProjection) {
                 return queryResult;
-            } else {
-                IList result = new ArrayList();
-                IList<IDictionary<string, object>> queryResultTyped = new List<IDictionary<string, object>>();
-                foreach (Hashtable hash in queryResult)
-                {
-                    queryResultTyped.Add(DictionaryWrapper<string, object>.Wrap(hash));
-                }
-                entityInstantiator.AddInstancesFromVersionsEntities(entityName, result, 
-                        queryResultTyped, revision);
-                return result;
             }
+            var result = new ArrayList();
+            var queryResultTyped = new List<IDictionary<string, object>>();
+            foreach (IDictionary hash in queryResult)
+            {
+                queryResultTyped.Add(DictionaryWrapper<string, object>.Wrap(hash));
+            }
+            entityInstantiator.AddInstancesFromVersionsEntities(entityName, result, 
+                                                                queryResultTyped, revision);
+            return result;
         }}
     }
 }

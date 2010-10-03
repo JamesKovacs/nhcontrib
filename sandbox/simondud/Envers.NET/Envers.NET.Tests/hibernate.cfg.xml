@@ -9,7 +9,7 @@
     <property name="show_sql">true</property>
     <property name="proxyfactory.factory_class">NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle</property>
 
-    <event type="post-insert">
+    <!--<event type="post-insert">
       <listener class="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
     </event>
     <event type="post-update">
@@ -26,7 +26,7 @@
     </event>
     <event type="pre-collection-update">
       <listener class="NHibernate.Envers.Event.AuditEventListener, Envers.NET" />
-    </event>
+    </event>-->
   </session-factory>
 </hibernate-configuration>
 
