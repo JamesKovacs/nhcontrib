@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D03CBC3B-37CF-4C06-BACE-3B2674399BEE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -84,11 +84,11 @@
     <EmbeddedResource Include="Integration\AccessType\Mapping.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\nhibSource\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\nhtrunk\trunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj">
       <Project>{31C3F0EA-0FED-4A2F-B68D-96CE29844487}</Project>
       <Name>NHibernate.ByteCode.Castle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\nhibSource\nhibernate\src\NHibernate\NHibernate.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\nhtrunk\trunk\nhibernate\src\NHibernate\NHibernate.csproj">
       <Project>{5909BFE7-93CF-4E5F-BE22-6293368AF01D}</Project>
       <Name>NHibernate</Name>
     </ProjectReference>

@@ -1,0 +1,4 @@
+RK:
+* NHibernate + ByteCode not checked in. I was thinking to wait until next release and then ref bins instead (fix NH-2355 included then)
+
+* I added a ref to bytecode in Envers +(test) for now. This should disappear later.

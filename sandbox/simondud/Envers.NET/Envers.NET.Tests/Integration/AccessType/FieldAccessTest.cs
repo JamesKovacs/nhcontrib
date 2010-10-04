@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Envers.NET.Tests.NH3.Integration.AccessType
 {
-    [TestFixture, Explicit("Field access does not work just yet")]
+    [TestFixture]
     public class FieldAccessTest : TestBase
     {
         private int id;
