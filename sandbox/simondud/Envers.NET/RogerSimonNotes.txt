@@ -1,4 +1,9 @@
 RK:
-* NHibernate + ByteCode not checked in. I was thinking to wait until next release and then ref bins instead (fix NH-2355 included then)
+* NHibernate + ByteCode not checked in. 
+I was thinking to wait until next release and then reference bins instead 
+To run test, ref NH trunk and Castle Byte code
+Apply patch NH-2355 & NH 2364
 
-* I added a strong ref to bytecode in Enverstest for now. This should probably disappear later.
+* Only two test fixtures yet committed. PropertyAccessTest that works,
+and FieldAccessTest that fails due to our code that only do reflection
+on (public) properties at read/write
