@@ -113,11 +113,11 @@ namespace NHibernate.Spatial.Type
 				}
 				if (points == 0)
 				{
-					builder.BeginFigure(coordinate.X, coordinate.Y, z, null);
+					builder.BeginFigure(coordinate.Y, coordinate.X, z, null);
 				}
 				else
 				{
-					builder.AddLine(coordinate.X, coordinate.Y, z, null);
+					builder.AddLine(coordinate.Y, coordinate.X, z, null);
 				}
 				points++;
 			});

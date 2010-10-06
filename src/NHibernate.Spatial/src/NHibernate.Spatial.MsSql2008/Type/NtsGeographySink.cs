@@ -43,11 +43,11 @@ namespace NHibernate.Spatial.Type
 			ICoordinate coordinate;
 			if (z.HasValue)
 			{
-				coordinate = new Coordinate(x, y, z.Value);
+				coordinate = new Coordinate(y, x, z.Value);
 			}
 			else
 			{
-				coordinate = new Coordinate(x, y);
+				coordinate = new Coordinate(y, x);
 			}
 			this.coordinates.Add(coordinate);
 		}
