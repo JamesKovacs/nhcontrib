@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using GisSharpBlog.NetTopologySuite.Geometries;
+using GisSharpBlog.NetTopologySuite.IO;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Spatial.Criterion;
@@ -38,6 +39,31 @@ namespace Tests.NHibernate.Spatial
 		{
 			DeleteMappings(session);
 			session.Close();
+		}
+
+		[Test]
+		public void IsDirty()
+		{
+			Assert.IsFalse(session.IsDirty());
+
+			var simple = session.CreateCriteria<Simple>()
+				.SetMaxResults(1)
+				.UniqueResult<Simple>();
+
+			Assert.NotNull(simple);
+
+			// New instance of the same geometry
+			var wkt = simple.Geometry.AsText();
+			var geometry = new WKTReader().Read(wkt);
+			geometry.SRID = simple.Geometry.SRID;
+
+			simple.Geometry = geometry;
+
+			Assert.IsFalse(session.IsDirty());
+
+			simple.Geometry.SRID = 12345;
+
+			Assert.IsTrue(session.IsDirty());
 		}
 
 		[Test]

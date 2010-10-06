@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate.SqlTypes;
 using NHibernate.Type;
 using NHibernate.UserTypes;
@@ -211,9 +212,24 @@ namespace NHibernate.Spatial.Type
 		/// <returns></returns>
 		bool IUserType.Equals(object a, object b)
 		{
-			return Util.EqualsHelper.Equals(
-				(a is IGeometry ? this.FromGeometry(a) : (T)a),
-				(b is IGeometry ? this.FromGeometry(b) : (T)b));
+			IGeometry ga = a as IGeometry;
+			IGeometry gb = b as IGeometry;
+			if (ga != null && gb != null)
+			{
+				try
+				{
+					return ga.SRID == gb.SRID && ga.Equals(gb);
+				}
+				catch (TopologyException)
+				{
+					return false;
+				}
+			}
+			if (ga == null && gb == null)
+			{
+				return Util.EqualsHelper.Equals((T)a, (T)b);
+			}
+			return false;
 		}
 
 		/// <summary>
