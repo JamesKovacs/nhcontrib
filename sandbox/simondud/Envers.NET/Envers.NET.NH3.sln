@@ -5,14 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Envers.NET.NH3", "Envers.NE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Envers.NET.Tests.NH3", "Envers.NET.Tests\Envers.NET.Tests.NH3.csproj", "{D03CBC3B-37CF-4C06-BACE-3B2674399BEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "..\..\..\..\..\nhtrunk\trunk\nhibernate\src\NHibernate\NHibernate.csproj", "{5909BFE7-93CF-4E5F-BE22-6293368AF01D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ByteCode.Castle", "..\..\..\..\..\nhtrunk\trunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj", "{31C3F0EA-0FED-4A2F-B68D-96CE29844487}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34BA8295-3EBE-47B0-ABBF-0A7E9A8E6B35}"
 	ProjectSection(SolutionItems) = preProject
 		RogerSimonNotes.txt = RogerSimonNotes.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate\NHibernate.csproj", "{5909BFE7-93CF-4E5F-BE22-6293368AF01D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ByteCode.Castle", "..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj", "{31C3F0EA-0FED-4A2F-B68D-96CE29844487}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

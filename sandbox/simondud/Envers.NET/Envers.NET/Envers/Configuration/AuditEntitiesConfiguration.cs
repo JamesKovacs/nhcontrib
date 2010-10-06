@@ -84,8 +84,9 @@ namespace NHibernate.Envers.Configuration
 
         //
 
-        public String GetAuditEntityName(String entityName) {
-            return auditTablePrefix + entityName + auditTableSuffix;
+        public string GetAuditEntityName(String entityName) 
+        {
+            return auditTablePrefix + entityName.Replace(".", "_") + auditTableSuffix;
         }
 
         public String GetAuditTableName(String entityName, String tableName) {
