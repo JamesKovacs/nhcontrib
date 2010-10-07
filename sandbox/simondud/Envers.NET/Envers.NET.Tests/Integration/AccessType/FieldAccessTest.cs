@@ -38,8 +38,8 @@ namespace Envers.NET.Tests.Integration.AccessType
         [Test]
         public void VerifyHistory()
         {
-            Assert.AreEqual("first", AuditReader.Find<FieldAccessEntity>(typeof (FieldAccessEntity), id, 1));
-            Assert.AreEqual("second", AuditReader.Find<FieldAccessEntity>(typeof (FieldAccessEntity), id, 2));
+            Assert.AreEqual("first", AuditReader.Find<FieldAccessEntity>(id, 1));
+            Assert.AreEqual("second", AuditReader.Find<FieldAccessEntity>(id, 2));
         }
     }
 }

@@ -37,8 +37,8 @@ namespace Envers.NET.Tests.Integration.AccessType
         [Test]
         public void VerifyHistory()
         {
-            Assert.AreEqual("first", AuditReader.Find<PropertyAccessEntity>(typeof(PropertyAccessEntity), id, 1).Data);
-            Assert.AreEqual("second", AuditReader.Find<PropertyAccessEntity>(typeof(PropertyAccessEntity), id, 2).Data);
+            Assert.AreEqual("first", AuditReader.Find<PropertyAccessEntity>(id, 1).Data);
+            Assert.AreEqual("second", AuditReader.Find<PropertyAccessEntity>(id, 2).Data);
         }
 
     }

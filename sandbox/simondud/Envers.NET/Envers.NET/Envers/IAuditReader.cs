@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.Envers.Query;
 
 namespace NHibernate.Envers
@@ -10,7 +7,6 @@ namespace NHibernate.Envers
     public interface IAuditReader {
         /**
          * Find an entity by primary key at the given revision.
-         * @param cls Class of the entity.
          * @param primaryKey Primary key of the entity.
          * @param revision Revision in which to get the entity.
          * @return The found entity instance at the given revision (its properties may be partially filled
@@ -20,7 +16,9 @@ namespace NHibernate.Envers
          * @throws NotAuditedException When entities of the given class are not audited.
          * @throws IllegalStateException If the associated entity manager is closed.
          */
-        T Find<T>(System.Type cls, Object primaryKey, long revision);
+        T Find<T>(Object primaryKey, long revision);
+
+        object Find(System.Type cls, object primaryKey, long revision);
 
         /**
          * Get a list of revision numbers, at which an entity was modified.

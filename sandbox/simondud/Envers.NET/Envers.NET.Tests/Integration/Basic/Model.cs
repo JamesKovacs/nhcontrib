@@ -16,5 +16,10 @@ namespace Envers.NET.Tests.Integration.Basic
                 return false;
             return (bte.Id == Id && string.Equals(bte.Str1, Str1) && string.Equals(bte.Str2, Str2));
         }
+
+        public override int GetHashCode()
+        {
+            return Id ^ Str1.GetHashCode() ^ Str2.GetHashCode();
+        }
     }
 }

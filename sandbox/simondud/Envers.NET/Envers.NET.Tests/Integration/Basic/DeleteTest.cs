@@ -64,30 +64,30 @@ namespace Envers.NET.Tests.Integration.Basic
         {
             var ver1 = new BasicTestEntity2 {Id = id1, Str1 = "x"};
             var ver2 = new BasicTestEntity2 {Id = id1, Str1 = "x2"};
-            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(typeof (BasicTestEntity2), id1, 1));
-            Assert.AreEqual(ver2, AuditReader.Find<BasicTestEntity2>(typeof (BasicTestEntity2), id1, 2));
-            Assert.AreEqual(ver2, AuditReader.Find<BasicTestEntity2>(typeof (BasicTestEntity2), id1, 3));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof (BasicTestEntity2), id1, 4));
+            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(id1, 1));
+            Assert.AreEqual(ver2, AuditReader.Find<BasicTestEntity2>(id1, 2));
+            Assert.AreEqual(ver2, AuditReader.Find<BasicTestEntity2>(id1, 3));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id1, 4));
         }
 
         [Test]
         public void VerifyHistoryOf2()
         {
             var ver1 = new BasicTestEntity2 { Id = id2, Str1 = "y" };
-            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id2, 1));
-            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id2, 2));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id2, 3));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id2, 4));
+            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(id2, 1));
+            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(id2, 2));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id2, 3));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id2, 4));
         }
 
         [Test]
         public void VerifyHistoryOf3()
         {
             var ver1 = new BasicTestEntity2 { Id = id3, Str1 = "z" };
-            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id3, 1));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id3, 2));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id3, 3));
-            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(typeof(BasicTestEntity2), id3, 4));
+            Assert.AreEqual(ver1, AuditReader.Find<BasicTestEntity2>(id3, 1));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id3, 2));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id3, 3));
+            Assert.IsNull(AuditReader.Find<BasicTestEntity2>(id3, 4));
         }
     }
 }

@@ -37,9 +37,13 @@ namespace NHibernate.Envers.Reader
             }
         }
 
-        //rk - why both T and cls here?
-        public T Find<T> (System.Type cls, Object primaryKey, long revision){
-            ArgumentsTools.CheckNotNull(cls, "Entity class");
+        public T Find<T> (Object primaryKey, long revision)
+        {
+            return (T) Find(typeof (T), primaryKey, revision);
+        }
+
+        public object Find(System.Type cls, object primaryKey, long revision)
+        {
             ArgumentsTools.CheckNotNull(primaryKey, "Primary key");
             ArgumentsTools.CheckNotNull(revision, "Entity revision");
             ArgumentsTools.CheckPositive(revision, "Entity revision");
@@ -47,20 +51,25 @@ namespace NHibernate.Envers.Reader
 
             String entityName = cls.FullName;
 
-            if (!verCfg.EntCfg.IsVersioned(entityName)) {
+            if (!verCfg.EntCfg.IsVersioned(entityName))
+            {
                 throw new NotAuditedException(entityName, entityName + " is not versioned!");
             }
 
-            if (FirstLevelCache.Contains(entityName, revision, primaryKey)) {
-                return (T) FirstLevelCache[entityName, revision, primaryKey];
+            if (FirstLevelCache.Contains(entityName, revision, primaryKey))
+            {
+                return FirstLevelCache[entityName, revision, primaryKey];
             }
 
             Object result;
-            try {
+            try
+            {
                 // The result is put into the cache by the entity instantiator called from the query
                 result = CreateQuery().ForEntitiesAtRevision(cls, revision)
                     .Add(AuditEntity.Id().Eq(primaryKey)).GetSingleResult();
-            } catch (NonUniqueResultException e) {
+            }
+            catch (NonUniqueResultException e)
+            {
                 throw new AuditException(e);
             }
             catch (HibernateException e)
@@ -68,7 +77,7 @@ namespace NHibernate.Envers.Reader
                 result = null;
             }
 
-            return (T) result;
+            return result;
         }
 
         public IList GetRevisions(System.Type cls, Object primaryKey)
