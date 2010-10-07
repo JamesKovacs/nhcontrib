@@ -9,7 +9,7 @@ using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests.NH3
+namespace Envers.NET.Tests
 {
     public abstract class TestBase
     {
@@ -64,7 +64,7 @@ namespace Envers.NET.Tests.NH3
 
         protected virtual string MappingAssembly
         {
-            get { return "Envers.NET.Tests.NH3"; }
+            get { return "Envers.NET.Tests"; }
         }
 
         private void addMappings()

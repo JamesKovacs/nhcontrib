@@ -71,6 +71,8 @@
     <Compile Include="Integration\AccessType\FieldAccessTest.cs" />
     <Compile Include="Integration\AccessType\Model.cs" />
     <Compile Include="Integration\AccessType\PropertyAccessTest.cs" />
+    <Compile Include="Integration\Basic\DeleteTest.cs" />
+    <Compile Include="Integration\Basic\Model.cs" />
     <Compile Include="PropertiesNH3\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
@@ -81,6 +83,7 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Integration\Basic\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\AccessType\Mapping.hbm.xml" />
   </ItemGroup>
   <ItemGroup>

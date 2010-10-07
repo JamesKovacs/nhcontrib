@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests.NH3.Integration.AccessType
+namespace Envers.NET.Tests.Integration.AccessType
 {
     [TestFixture]
     public class FieldAccessTest : TestBase
