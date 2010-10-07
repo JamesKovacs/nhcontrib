@@ -76,6 +76,7 @@
     <Compile Include="Integration\Basic\ManyOperationsInTransactionTest.cs" />
     <Compile Include="Integration\Basic\Model.cs" />
     <Compile Include="Integration\Basic\NonVersionedTest.cs" />
+    <Compile Include="Integration\Basic\NullPropertiesTest.cs" />
     <Compile Include="PropertiesNH3\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
@@ -90,11 +91,11 @@
     <EmbeddedResource Include="Integration\AccessType\Mapping.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\nhibTrunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj">
       <Project>{31C3F0EA-0FED-4A2F-B68D-96CE29844487}</Project>
       <Name>NHibernate.ByteCode.Castle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate\NHibernate.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\nhibTrunk\nhibernate\src\NHibernate\NHibernate.csproj">
       <Project>{5909BFE7-93CF-4E5F-BE22-6293368AF01D}</Project>
       <Name>NHibernate</Name>
     </ProjectReference>

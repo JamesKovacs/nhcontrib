@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		RogerSimonNotes.txt = RogerSimonNotes.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate\NHibernate.csproj", "{5909BFE7-93CF-4E5F-BE22-6293368AF01D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate", "..\..\..\..\..\nhibTrunk\nhibernate\src\NHibernate\NHibernate.csproj", "{5909BFE7-93CF-4E5F-BE22-6293368AF01D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ByteCode.Castle", "..\..\..\..\..\nhTrunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj", "{31C3F0EA-0FED-4A2F-B68D-96CE29844487}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.ByteCode.Castle", "..\..\..\..\..\nhibTrunk\nhibernate\src\NHibernate.ByteCode.Castle\NHibernate.ByteCode.Castle.csproj", "{31C3F0EA-0FED-4A2F-B68D-96CE29844487}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
