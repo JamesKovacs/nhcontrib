@@ -9,6 +9,14 @@
     <property name="Str2"/>
   </class>
 
+  <class name="BasicTestEntity3">
+    <id name="Id">
+      <generator class="native"/>
+    </id>
+    <property name="Str1"/>
+    <property name="Str2"/>
+  </class>
+
   <class name="BasicTestEntity4">
     <id name="Id">
       <generator class="native"/>
