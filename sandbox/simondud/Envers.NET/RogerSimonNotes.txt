@@ -7,3 +7,5 @@ Apply patch NH-2355
 * Only two test fixtures yet committed. PropertyAccessTest that works,
 and FieldAccessTest that fails due to our code that only do reflection
 on (public) properties at read/write
+
+* IAuditReader.Find(...) now has one generic impl and one non generic impl instead of a combination.
