@@ -56,11 +56,7 @@ namespace Envers.NET.Tests
             createDropSchema(false);
         }
 
-
-        protected virtual IEnumerable<string> Mappings
-        {
-            get { return new string[0]; }
-        }
+        protected abstract IEnumerable<string> Mappings { get; }
 
         protected virtual string MappingAssembly
         {

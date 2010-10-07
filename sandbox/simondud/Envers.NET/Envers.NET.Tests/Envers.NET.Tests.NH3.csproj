@@ -73,6 +73,7 @@
     <Compile Include="Integration\AccessType\PropertyAccessTest.cs" />
     <Compile Include="Integration\Basic\DeleteTest.cs" />
     <Compile Include="Integration\Basic\GlobalVersionedTest.cs" />
+    <Compile Include="Integration\Basic\ManyOperationsInTransactionTest.cs" />
     <Compile Include="Integration\Basic\Model.cs" />
     <Compile Include="Integration\Basic\NonVersionedTest.cs" />
     <Compile Include="PropertiesNH3\AssemblyInfo.cs" />

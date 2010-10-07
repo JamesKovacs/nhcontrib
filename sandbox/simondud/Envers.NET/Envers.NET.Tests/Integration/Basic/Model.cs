@@ -2,6 +2,28 @@ using NHibernate.Envers;
 
 namespace Envers.NET.Tests.Integration.Basic
 {
+    public class BasicTestEntity1
+    {
+        public virtual int Id { get; set; }
+        [Audited]
+        public virtual string Str1 { get; set; }
+        [Audited]
+        public virtual long Long1 { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var bte = obj as BasicTestEntity1;
+            if (bte == null)
+                return false;
+            return (bte.Id == Id && string.Equals(bte.Str1, Str1) && bte.Long1 == Long1);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id ^ Str1.GetHashCode() ^ Long1.GetHashCode();
+        }
+    }
+
     public class BasicTestEntity2
     {
         public virtual int Id { get; set; }
