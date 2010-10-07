@@ -40,6 +40,5 @@ namespace Envers.NET.Tests.Integration.AccessType
             Assert.AreEqual("first", AuditReader.Find<PropertyAccessEntity>(id, 1).Data);
             Assert.AreEqual("second", AuditReader.Find<PropertyAccessEntity>(id, 2).Data);
         }
-
     }
 }
