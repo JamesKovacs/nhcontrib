@@ -16,7 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Linq.Expressions;
 using GeoAPI.Geometries;
+using NHibernate.Impl;
+using NHibernate.Spatial.Criterion.Lambda;
 
 namespace NHibernate.Spatial.Criterion
 {
@@ -38,6 +41,11 @@ namespace NHibernate.Spatial.Criterion
 	{
 		internal SpatialRestrictions()
 		{
+		}
+
+		public static LambdaSpatialRestrictionBuilder On<T>(Expression<Func<T, object>> expression)
+		{
+			return new LambdaSpatialRestrictionBuilder(ExpressionProcessor.FindMemberExpression(expression.Body));
 		}
 
 		#region Filter

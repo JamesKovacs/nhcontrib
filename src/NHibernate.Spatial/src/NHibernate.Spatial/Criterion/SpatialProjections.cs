@@ -24,7 +24,7 @@ namespace NHibernate.Spatial.Criterion
 	/// In the GIS context, this class name could be misleading,
 	/// but it has nothing to do with cartographic planar projections.
 	/// </remarks>
-	public static class SpatialProjections
+	public static partial class SpatialProjections
 	{
 
 		#region Aggregates
@@ -77,11 +77,11 @@ namespace NHibernate.Spatial.Criterion
 		/// Buffers the specified property name.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
-		/// <param name="anotherPropertyName">Name of another property.</param>
+		/// <param name="distance">Name of another property.</param>
 		/// <returns></returns>
-		public static SpatialProjection Buffer(string propertyName, double anotherPropertyName)
+		public static SpatialProjection Buffer(string propertyName, double distance)
 		{
-			return new SpatialAnalysisProjection(propertyName, SpatialAnalysis.Buffer, anotherPropertyName);
+			return new SpatialAnalysisProjection(propertyName, SpatialAnalysis.Buffer, distance);
 		}
 
 		/// <summary>

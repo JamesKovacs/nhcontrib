@@ -63,6 +63,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Criterion\SpatialProjectionsLambda.cs" />
+    <Compile Include="Criterion\Lambda\LambdaSpatialRestrictionBuilder.cs" />
+    <Compile Include="Criterion\Lambda\QueryOverSpatialExtensions.cs" />
+    <Compile Include="Criterion\Lambda\QueryOverSpatialRestrictionBuilder.cs" />
+    <Compile Include="Criterion\Lambda\QueryOverSpatialRestrictionBuilderBase.cs" />
     <Compile Include="Dialect\Function\SpatialAnalysisFunction.cs" />
     <Compile Include="Dialect\Function\SpatialPropertyFunction.cs" />
     <Compile Include="Dialect\Function\SpatialRelationFunction.cs" />

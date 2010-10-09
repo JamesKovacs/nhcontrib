@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate;
@@ -75,6 +76,26 @@ namespace Tests.NHibernate.Spatial
 					)
 				.List();
 
+			CountAndUnionByState(results);
+		}
+
+		[Test]
+		public void CountAndUnionByStateLambda()
+		{
+			var results = session.QueryOver<County>()
+				.Select(
+					Projections.ProjectionList()
+						.Add(Projections.Group<County>(o => o.State))
+						.Add(Projections.RowCount())
+						.Add(SpatialProjections.Union<County>(o => o.Boundaries)))
+				.OrderBy(o => o.State).Asc
+				.List<object[]>();
+
+			CountAndUnionByState((IList)results);
+		}
+
+		private static void CountAndUnionByState(IList results)
+		{
 			Assert.AreEqual(2, results.Count);
 
 			object[] resultAA = (object[])results[0];
@@ -92,7 +113,6 @@ namespace Tests.NHibernate.Spatial
 			Assert.AreEqual(2, countBB);
 			Assert.IsTrue(expectedAA.Equals(aggregatedAA));
 			Assert.IsTrue(expectedBB.Equals(aggregatedBB));
-
 		}
 
 		[Test]

@@ -4,7 +4,9 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using GisSharpBlog.NetTopologySuite.IO;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Criterion.Lambda;
 using NHibernate.Spatial.Criterion;
+using NHibernate.Spatial.Criterion.Lambda;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
 
@@ -82,12 +84,31 @@ namespace Tests.NHibernate.Spatial
 		[Test]
 		public void CountNullOrSpatialEmpty()
 		{
-			IList results = session.CreateCriteria(typeof(Simple))
+			IList results = session.CreateCriteria(typeof (Simple))
 				.Add(Restrictions.Or(
 					Restrictions.IsNull("Geometry"),
 					SpatialRestrictions.IsEmpty("Geometry")
-				))
+				     	))
 				.List();
+			Assert.AreEqual(3, results.Count);
+			foreach (Simple item in results)
+			{
+				if (item.Geometry != null)
+				{
+					Assert.IsTrue(item.Geometry.IsEmpty);
+				}
+			}
+		}
+
+		[Test]
+		public void CountNullOrSpatialEmptyLambda()
+		{
+			IList results = session.CreateCriteria(typeof (Simple))
+				.Add(Restrictions.Or(
+					Restrictions.On<Simple>(o => o.Geometry).IsNull,
+					SpatialRestrictions.On<Simple>(o => o.Geometry).IsEmpty
+				))
+			    .List();
 			Assert.AreEqual(3, results.Count);
 			foreach (Simple item in results)
 			{
