@@ -62,7 +62,22 @@ namespace NHibernate.Spatial.Dialect
 		/// 
 		/// </remarks>
 		[ThreadStatic]
-		public static ISpatialDialect LastInstantiated;
+		private static ISpatialDialect lastInstantiated;
+
+		public static ISpatialDialect LastInstantiated
+		{
+			get { return lastInstantiated; }
+			set
+			{
+				lastInstantiated = value;
+
+				// Set Linq-to-HQL generator registry by default.
+				((NHibernate.Dialect.Dialect)value)
+					.DefaultProperties["linqtohql.generatorsregistry"] =
+					typeof (Linq.Functions.SpatialLinqToHqlGeneratorsRegistry)
+						.AssemblyQualifiedName;
+			}
+		}
 
 		#region Utility methods
 

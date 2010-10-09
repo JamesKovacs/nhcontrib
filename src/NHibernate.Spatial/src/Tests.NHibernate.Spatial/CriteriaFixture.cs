@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Linq;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using GisSharpBlog.NetTopologySuite.IO;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Criterion.Lambda;
+using NHibernate.Linq;
 using NHibernate.Spatial.Criterion;
-using NHibernate.Spatial.Criterion.Lambda;
+using NHibernate.Spatial.Linq;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
 
@@ -109,6 +110,27 @@ namespace Tests.NHibernate.Spatial
 					SpatialRestrictions.On<Simple>(o => o.Geometry).IsEmpty
 				))
 			    .List();
+			Assert.AreEqual(3, results.Count);
+			foreach (Simple item in results)
+			{
+				if (item.Geometry != null)
+				{
+					Assert.IsTrue(item.Geometry.IsEmpty);
+				}
+			}
+		}
+
+		[Test]
+		public void CountNullOrSpatialEmptyLinq()
+		{
+			bool x = session.Query<Simple>().Select(s => s.Geometry.IsEmpty).First();
+
+			IList results =
+				session.Query<Simple>()
+					//.Where(s => s.Geometry == null || s.Geometry.IsEmpty)
+					.Where(s => s.Geometry.IsNull() || s.Geometry.IsEmpty)
+					.ToList();
+
 			Assert.AreEqual(3, results.Count);
 			foreach (Simple item in results)
 			{

@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Spatial.Criterion;
+using NHibernate.Spatial.Linq;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.Model;
 

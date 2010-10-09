@@ -29,10 +29,24 @@ namespace Tests.NHibernate.Spatial
 		}
 
 		[Test]
+		public override void ConformanceItemT40Linq()
+		{
+			PostGisTestsUtil.IgnoreIfAffectedByIssue22(this.postGisVersion);
+			base.ConformanceItemT40Linq();
+		}
+
+		[Test]
 		public override void ConformanceItemT51Hql()
 		{
 			PostGisTestsUtil.IgnoreIfAffectedByIssue22(this.postGisVersion);
 			base.ConformanceItemT51Hql();
+		}
+
+		[Test]
+		public override void ConformanceItemT51Linq()
+		{
+			PostGisTestsUtil.IgnoreIfAffectedByIssue22(this.postGisVersion);
+			base.ConformanceItemT51Linq();
 		}
 	}
 }

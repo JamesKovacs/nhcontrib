@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using System.Linq;
 using GeoAPI.Geometries;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
+using NHibernate.Spatial.Linq;
 using NHibernate.Spatial.Metadata;
 using NUnit.Framework;
 using Tests.NHibernate.Spatial.OgcSfSql11Compliance.Model;
@@ -248,11 +251,30 @@ UNIT[""Meter"", 1.0]]";
             {
                 Assert.Ignore("Provider does not support spatial metadata");
             }
-            string result = session.CreateQuery(@"
+			var query = session.CreateQuery(@"
 				select g.Name
 				from GeometryColumn g
 				where g.TableName = 'streams'
-				").UniqueResult<string>();
+				");
+
+			string result = query.UniqueResult<string>();
+
+			Assert.AreEqual("centerline", result);
+		}
+
+		[Test]
+		public void ConformanceItemT02Linq()
+		{
+			if (!Metadata.SupportsSpatialMetadata(session, MetadataClass.GeometryColumn))
+            {
+                Assert.Ignore("Provider does not support spatial metadata");
+            }
+			var query =
+				from g in session.Query<GeometryColumn>()
+				where g.TableName == "streams"
+				select g.Name;
+
+			string result = query.Single();
 
 			Assert.AreEqual("centerline", result);
 		}
@@ -283,11 +305,30 @@ UNIT[""Meter"", 1.0]]";
             {
                 Assert.Ignore("Provider does not support spatial metadata");
             }
-            int result = session.CreateQuery(@"
+			var query = session.CreateQuery(@"
 				select g.Dimension
 				from GeometryColumn g
 				where g.TableName = 'streams'
-				").UniqueResult<int>();
+				");
+
+			int result = query.UniqueResult<int>();
+
+			Assert.AreEqual(2, result);
+		}
+
+		[Test]
+		public void ConformanceItemT03Linq()
+		{
+			if (!Metadata.SupportsSpatialMetadata(session, MetadataClass.GeometryColumn))
+            {
+                Assert.Ignore("Provider does not support spatial metadata");
+            }
+			var query = 
+				from g in session.Query<GeometryColumn >()
+				where g.TableName == "streams"
+				select g.Dimension;
+
+			int result = query.Single();
 
 			Assert.AreEqual(2, result);
 		}
@@ -318,11 +359,30 @@ UNIT[""Meter"", 1.0]]";
             {
                 Assert.Ignore("Provider does not support spatial metadata");
             }
-            int result = session.CreateQuery(@"
+			var query = session.CreateQuery(@"
 				select g.SRID
 				from GeometryColumn g
 				where g.TableName = 'streams'
-				").UniqueResult<int>();
+				");
+
+			int result = query.UniqueResult<int>();
+
+			Assert.AreEqual(101, result);
+		}
+
+		[Test]
+		public void ConformanceItemT04Linq()
+		{
+			if (!Metadata.SupportsSpatialMetadata(session, MetadataClass.GeometryColumn))
+            {
+                Assert.Ignore("Provider does not support spatial metadata");
+            }
+			var query = 
+				from g in session.Query<GeometryColumn >()
+				where g.TableName == "streams"
+				select g.SRID;
+
+			int result = query.Single();
 
 			Assert.AreEqual(101, result);
 		}
@@ -366,6 +426,24 @@ UNIT[""Meter"", 1.0]]";
 			srs = session.CreateQuery(
 				"from SpatialReferenceSystem s where s=101")
 				.UniqueResult<SpatialReferenceSystem>();
+
+			Assert.IsNotNull(srs);
+			Assert.AreEqual(SpatialReferenceSystemWKT, srs.WellKnownText);
+		}
+
+		[Test]
+		public void ConformanceItemT05Linq()
+		{
+			if (!Metadata.SupportsSpatialMetadata(session, MetadataClass.SpatialReferenceSystem))
+            {
+                Assert.Ignore("Provider does not support spatial metadata");
+            }
+			var query =
+				from s in session.Query<SpatialReferenceSystem>()
+				where s.SRID == 101
+				select s;
+			
+			var srs = query.Single();
 
 			Assert.IsNotNull(srs);
 			Assert.AreEqual(SpatialReferenceSystemWKT, srs.WellKnownText);
@@ -436,6 +514,19 @@ where t.Name = 'Blue Lake'
 			Assert.AreEqual(2, result);
 		}
 
+		[Test]
+		public void ConformanceItemT06Linq()
+		{
+			var query =
+				from t in session.Query<Lake>()
+				where t.Name == "Blue Lake"
+				select t.Shore.GetDimension();
+
+			int result = query.Single();
+
+			Assert.AreEqual(2, result);
+		}
+
 		/// <summary>
 		/// Conformance Item T7	
 		/// GeometryType(g Geometry) : String
@@ -473,6 +564,19 @@ where t.Name = 'Route 75'
 ";
 			string result = session.CreateQuery(query)
 				.UniqueResult<string>();
+
+			Assert.AreEqual("MULTILINESTRING", result.ToUpper());
+		}
+
+		[Test]
+		public void ConformanceItemT07Linq()
+		{
+			var query =
+				from t in session.Query<DividedRoute>()
+				where t.Name == "Route 75"
+				select t.Centerlines.GeometryType;
+
+			string result = query.Single();
 
 			Assert.AreEqual("MULTILINESTRING", result.ToUpper());
 		}
@@ -518,6 +622,20 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(expected.Equals(result));
 		}
 
+		[Test]
+		public void ConformanceItemT08Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary;
+
+			IGeometry result = query.Single();
+			IGeometry expected = Wkt.Read("POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )");
+
+			Assert.IsTrue(expected.Equals(result));
+		}
+
 		/// <summary>
 		/// Conformance Item T9	
 		/// AsBinary(g Geometry) : Blob
@@ -551,6 +669,21 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		[Ignore("TODO: ToPolygon")]
+		public void ConformanceItemT09Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.AsBinary().ToPolygon(0);
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T10	
 		/// SRID(g Geometry) : Integer
@@ -575,6 +708,19 @@ where t.Name = 'Goose Island'
 ";
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
+
+			Assert.AreEqual(101, result);
+		}
+
+		[Test]
+		public void ConformanceItemT10Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.SRID;
+
+			int result = query.Single();
 
 			Assert.AreEqual(101, result);
 		}
@@ -623,6 +769,19 @@ where t.Name = 'Route 5' and t.Aliases = 'Main Street'
 			Assert.IsFalse(result);
 		}
 
+		[Test]
+		public void ConformanceItemT11Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Name == "Route 5" && t.Aliases == "Main Street"
+				select t.Centerline.IsEmpty;
+
+			bool result = query.Single();
+
+			Assert.IsFalse(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T12	
 		/// IsSimple(g Geometry) : Integer
@@ -662,6 +821,19 @@ where t.Name = 'Blue Lake'
 ";
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
+
+			Assert.IsTrue(result);
+		}
+
+		[Test]
+		public void ConformanceItemT12Linq()
+		{
+			var query =
+				from t in session.Query<Lake>()
+				where t.Name == "Blue Lake"
+				select t.Shore.IsSimple;
+
+			bool result = query.Single();
 
 			Assert.IsTrue(result);
 		}
@@ -710,6 +882,20 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT13Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Boundary;
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("LINESTRING( 67 13, 67 18, 59 18, 59 13, 67 13 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T14	
 		/// Envelope(g Geometry) : Geometry
@@ -736,6 +922,20 @@ where t.Name = 'Goose Island'
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POLYGON( ( 59 13, 59 18, 67 18, 67 13, 59 13) )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT14Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Envelope;
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POLYGON( ( 59 13, 59 18, 67 18, 67 13, 59 13) )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -778,6 +978,19 @@ where t.Name = 'Cam Bridge'
 			Assert.AreEqual(44, result);
 		}
 
+		[Test]
+		public void ConformanceItemT15Linq()
+		{
+			var query =
+				from t in session.Query<Bridge>()
+				where t.Name == "Cam Bridge"
+				select ((IPoint)t.Position).X;
+
+			double result = query.Single();
+
+			Assert.AreEqual(44, result);
+		}
+
 		/// <summary>
 		/// Conformance Item T16	
 		/// Y(p Point) : Double Precision
@@ -806,6 +1019,19 @@ where t.Name = 'Cam Bridge'
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(31, result);
+		}
+
+		[Test]
+		public void ConformanceItemT16Linq()
+		{
+			var query =
+				from t in session.Query<Bridge >()
+				where t.Name == "Cam Bridge"
+				select ((IPoint)t.Position).Y;
+
+			double result = query.Single();
 
 			Assert.AreEqual(31, result);
 		}
@@ -845,6 +1071,20 @@ where t.Fid = 102
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT17Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Fid == 102
+				select ((ICurve)t.Centerline).StartPoint;
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("POINT( 0 18 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T18	
 		/// EndPoint(c Curve) : Point
@@ -871,6 +1111,20 @@ where t.Fid = 102
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POINT( 44 31 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT18Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Fid == 102
+				select ((ICurve)t.Centerline).EndPoint;
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POINT( 44 31 )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -908,6 +1162,19 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT19Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select ((ICurve)t.Boundary.Boundary).IsClosed;
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T20	
 		/// IsRing(c Curve) : Integer
@@ -940,6 +1207,19 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT20Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select ((ICurve)t.Boundary.Boundary).IsRing;
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T21	
 		/// Length(c Curve) : Double Precision
@@ -964,6 +1244,19 @@ where t.Fid = 106
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(26, result);
+		}
+
+		[Test]
+		public void ConformanceItemT21Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Fid == 106
+				select t.Centerline.Length;
+
+			double result = query.Single();
 
 			Assert.AreEqual(26, result);
 		}
@@ -1000,6 +1293,19 @@ where t.Fid = 102
 			Assert.AreEqual(5, result);
 		}
 
+		[Test]
+		public void ConformanceItemT22Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Fid == 102
+				select t.Centerline.NumPoints;
+
+			int result = query.Single();
+
+			Assert.AreEqual(5, result);
+		}
+
 		/// <summary>
 		/// Conformance Item T23	
 		/// PointN(l LineString, n Integer) : Point
@@ -1026,6 +1332,20 @@ where t.Fid = 102
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POINT( 0 18 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT23Linq()
+		{
+			var query =
+				from t in session.Query<RoadSegment>()
+				where t.Fid == 102
+				select ((ILineString)t.Centerline).GetPointN(0);
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POINT( 0 18 )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -1061,6 +1381,20 @@ where t.Name = 'Goose Island'
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POINT( 63 15.5 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT24Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Centroid;
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POINT( 63 15.5 )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -1110,6 +1444,18 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT25Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Contains(t.Boundary.PointOnSurface);
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
 
 		/// <summary>
 		/// Conformance Item T26	
@@ -1135,6 +1481,19 @@ where t.Name = 'Goose Island'
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(40, result);
+		}
+
+		[Test]
+		public void ConformanceItemT26Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Area;
+
+			double result = query.Single();
 
 			Assert.AreEqual(40, result);
 		}
@@ -1174,6 +1533,20 @@ where t.Name = 'Blue Lake'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT27Linq()
+		{
+			var query =
+				from t in session.Query<Lake>()
+				where t.Name == "Blue Lake"
+				select ((IPolygon)t.Shore).ExteriorRing;
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("LINESTRING(52 18, 66 23, 73  9, 48  6, 52 18)");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T28	
 		/// NumInteriorRings(p Polygon) : Integer
@@ -1198,6 +1571,19 @@ where t.Name = 'Blue Lake'
 ";
 			int result = session.CreateQuery(query)
 				.UniqueResult<int>();
+
+			Assert.AreEqual(1, result);
+		}
+
+		[Test]
+		public void ConformanceItemT28Linq()
+		{
+			var query =
+				from t in session.Query<Lake>()
+				where t.Name == "Blue Lake"
+				select ((IPolygon)t.Shore).NumInteriorRings;
+
+			int result = query.Single();
 
 			Assert.AreEqual(1, result);
 		}
@@ -1246,6 +1632,20 @@ where t.Name = 'Blue Lake'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT29Linq()
+		{
+			var query =
+				from t in session.Query<Lake>()
+				where t.Name == "Blue Lake"
+				select ((IPolygon)t.Shore).GetInteriorRingN(0);
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("LINESTRING(59 18, 67 18, 67 13, 59 13, 59 18)");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		#endregion
 
 		#region Queries testing functions in section 3.2.16.2 (T30 - T31)
@@ -1278,6 +1678,18 @@ where t.Name = 'Route 75'
 			Assert.AreEqual(2, result);
 		}
 
+		[Test]
+		public void ConformanceItemT30Linq()
+		{
+			var query =
+				from t in session.Query<DividedRoute>()
+				where t.Name == "Route 75"
+				select t.Centerlines.NumGeometries;
+
+			int result = query.Single();
+
+			Assert.AreEqual(2, result);
+		}
 
 		/// <summary>
 		/// Conformance Item T31	
@@ -1323,6 +1735,20 @@ where t.Name = 'Route 75'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT31Linq()
+		{
+			var query =
+				from t in session.Query<DividedRoute>()
+				where t.Name == "Route 75"
+				select t.Centerlines.GetGeometryN(1);
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("LINESTRING( 16 0, 16 23, 16 48 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		#endregion
 
 		#region Queries testing functions in section 3.2.17.2 (T31 - T33)
@@ -1359,6 +1785,19 @@ where t.Name = 'Route 75'
 			Assert.IsFalse(result);
 		}
 
+		[Test]
+		public void ConformanceItemT32Linq()
+		{
+			var query =
+				from t in session.Query<DividedRoute>()
+				where t.Name == "Route 75"
+				select ((ICurve)t.Centerlines).IsClosed;
+			
+			bool result = query.Single();
+
+			Assert.IsFalse(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T33	
 		/// Length(mc MultiCurve) : Double Precision
@@ -1384,6 +1823,19 @@ where t.Name = 'Route 75'
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(96, result);
+		}
+
+		[Test]
+		public void ConformanceItemT33Linq()
+		{
+			var query =
+				from t in session.Query<DividedRoute>()
+				where t.Name == "Route 75"
+				select t.Centerlines.Length;
+
+			double result = query.Single();
 
 			Assert.AreEqual(96, result);
 		}
@@ -1418,6 +1870,20 @@ where t.Fid = 120
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POINT( 25 42 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+		
+		[Test]
+		public void ConformanceItemT34Linq()
+		{
+			var query =
+				from t in session.Query<Pond>()
+				where t.Fid == 120
+				select t.Shores.Centroid;
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POINT( 25 42 )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -1467,6 +1933,19 @@ where t.Fid = 120
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT35Linq()
+		{
+			var query =
+				from t in session.Query<Pond>()
+				where t.Fid == 120
+				select t.Shores.Contains(t.Shores.PointOnSurface);
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T36	
 		/// Area(ms MultiSurface) : Double Precision
@@ -1491,6 +1970,19 @@ where t.Fid = 120
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(8, result);
+		}
+
+		[Test]
+		public void ConformanceItemT36Linq()
+		{
+			var query =
+				from t in session.Query<Pond>()
+				where t.Fid == 120
+				select t.Shores.Area;
+
+			double result = query.Single();
 
 			Assert.AreEqual(8, result);
 		}
@@ -1536,6 +2028,20 @@ where t.Name = 'Goose Island'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		[Ignore("TODO: ToPolygon")]
+		public void ConformanceItemT37Linq()
+		{
+			var query =
+				from t in session.Query<NamedPlace>()
+				where t.Name == "Goose Island"
+				select t.Boundary.Equals("POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )".ToPolygon(101));
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T38	
 		/// Disjoint(g1 Geometry, g2 Geometry) : Integer
@@ -1569,6 +2075,20 @@ where dr.Name = 'Route 75' and np.Name = 'Ashton'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT38Linq()
+		{
+			var query =
+				from dr in session.Query<DividedRoute>()
+				from np in session.Query<NamedPlace>()
+				where dr.Name == "Route 75" && np.Name == "Ashton"
+				select dr.Centerlines.Disjoint(np.Boundary);
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T39	
 		/// Touch(g1 Geometry, g2 Geometry) : Integer
@@ -1598,6 +2118,20 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 ";
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
+
+			Assert.IsTrue(result);
+		}
+
+		[Test]
+		public void ConformanceItemT39Linq()
+		{
+			var query =
+				from s in session.Query<Stream>()
+				from l in session.Query<Lake>()
+				where s.Name == "Cam Stream" && l.Name == "Blue Lake"
+				select s.Centerline.Touches(l.Shore);
+
+			bool result = query.Single();
 
 			Assert.IsTrue(result);
 		}
@@ -1641,6 +2175,20 @@ where np.Name = 'Ashton' and b.Address = '215 Main Street'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public virtual void ConformanceItemT40Linq()
+		{
+			var query =
+				from np in session.Query<NamedPlace>()
+				from b in session.Query<Building>()
+				where np.Name == "Ashton" && b.Address == "215 Main Street"
+				select b.Footprint.Within(np.Boundary);
+		
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T41	
 		/// Overlap(g1 Geometry, g2 Geometry) : Integer
@@ -1670,6 +2218,20 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 ";
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
+
+			Assert.IsTrue(result);
+		}
+
+		[Test]
+		public void ConformanceItemT41Linq()
+		{
+			var query =
+				from f in session.Query<Forest>()
+				from np in session.Query<NamedPlace>()
+				where f.Name == "Green Forest" && np.Name == "Ashton"
+				select f.Boundary.Overlaps(np.Boundary);
+
+			bool result = query.Single();
 
 			Assert.IsTrue(result);
 		}
@@ -1707,6 +2269,20 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT42Linq()
+		{
+			var query =
+				from rs in session.Query<RoadSegment>()
+				from dr in session.Query<DividedRoute>()
+				where rs.Fid == 102 && dr.Name == "Route 75"
+				select rs.Centerline.Crosses(dr.Centerlines);
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T43	
 		/// Intersects(g1 Geometry, g2 Geometry) : Integer
@@ -1736,6 +2312,20 @@ where rs.Fid = 102 and dr.Name = 'Route 75'
 ";
 			bool result = session.CreateQuery(query)
 				.UniqueResult<bool>();
+
+			Assert.IsTrue(result);
+		}
+
+		[Test]
+		public void ConformanceItemT43Linq()
+		{
+			var query =
+				from rs in session.Query<RoadSegment>()
+				from dr in session.Query<DividedRoute>()
+				where rs.Fid == 102 && dr.Name == "Route 75"
+				select rs.Centerline.Intersects(dr.Centerlines);
+
+			bool result = query.Single();
 
 			Assert.IsTrue(result);
 		}
@@ -1773,6 +2363,20 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 			Assert.IsFalse(result);
 		}
 
+		[Test]
+		public void ConformanceItemT44Linq()
+		{
+			var query =
+				from f in session.Query<Forest>()
+				from np in session.Query<NamedPlace>()
+				where f.Name == "Green Forest" && np.Name == "Ashton"
+				select f.Boundary.Contains(np.Boundary);
+
+			bool result = query.Single();
+
+			Assert.IsFalse(result);
+		}
+
 		/// <summary>
 		/// Conformance Item T45	
 		/// Relate(g1 Geometry, g2 Geometry, PatternMatrix String) : Integer
@@ -1806,6 +2410,20 @@ where f.Name = 'Green Forest' and np.Name = 'Ashton'
 			Assert.IsTrue(result);
 		}
 
+		[Test]
+		public void ConformanceItemT45Linq()
+		{
+			var query =
+				from f in session.Query<Forest>()
+				from np in session.Query<NamedPlace>()
+				where f.Name == "Green Forest" && np.Name == "Ashton"
+				select f.Boundary.Relate(np.Boundary, "TTTTTTTTT");
+
+			bool result = query.Single();
+
+			Assert.IsTrue(result);
+		}
+
 		#endregion
 
 		#region Queries testing functions in section 3.2.20.2 (T46)
@@ -1834,6 +2452,20 @@ where b.Name = 'Cam Bridge' and np.Name = 'Ashton'
 ";
 			double result = session.CreateQuery(query)
 				.UniqueResult<double>();
+
+			Assert.AreEqual(12, result);
+		}
+
+		[Test]
+		public void ConformanceItemT46Linq()
+		{
+			var query =
+				from b in session.Query<Bridge>()
+				from np in session.Query<NamedPlace>()
+				where b.Name == "Cam Bridge" && np.Name == "Ashton"
+				select b.Position.Distance(np.Boundary);
+
+			double result = query.Single();
 
 			Assert.AreEqual(12, result);
 		}
@@ -1875,6 +2507,21 @@ where s.Name = 'Cam Stream' and l.Name = 'Blue Lake'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT47Linq()
+		{
+			var query =
+				from s in session.Query<Stream>()
+				from l in session.Query<Lake>()
+				where s.Name == "Cam Stream" && l.Name == "Blue Lake"
+				select s.Centerline.Intersection(l.Shore);
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("POINT( 52 18 )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T48	
 		/// Difference(g1 Geometry, g2 Geometry) : Geometry
@@ -1903,6 +2550,21 @@ where np.Name = 'Ashton' and f.Name = 'Green Forest'
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POLYGON( ( 56 34, 62 48, 84 48, 84 42, 56 34) )");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT48Linq()
+		{
+			var query =
+				from np in session.Query<NamedPlace>()
+				from f in session.Query<Forest>()
+				where np.Name == "Ashton" && f.Name == "Green Forest"
+				select np.Boundary.Difference(f.Boundary);
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POLYGON( ( 56 34, 62 48, 84 48, 84 42, 56 34) )");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -1940,6 +2602,21 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POLYGON((52 18,66 23,73 9,48 6,52 18))");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT49Linq()
+		{
+			var query =
+				from l in session.Query<Lake>()
+				from np in session.Query<NamedPlace>()
+				where l.Name == "Blue Lake" && np.Name == "Goose Island"
+				select l.Shore.Union(np.Boundary);
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POLYGON((52 18,66 23,73 9,48 6,52 18))");
 
 			Assert.IsTrue(expected.Equals(geometry));
@@ -2004,6 +2681,21 @@ where l.Name = 'Blue Lake' and np.Name = 'Goose Island'
 			Assert.IsTrue(expected.Equals(geometry));
 		}
 
+		[Test]
+		public void ConformanceItemT50Linq()
+		{
+			var query =
+				from l in session.Query<Lake>()
+				from np in session.Query<NamedPlace>()
+				where l.Name == "Blue Lake" && np.Name == "Goose Island"
+				select l.Shore.SymmetricDifference(np.Boundary);
+
+			IGeometry geometry = query.Single();
+			IGeometry expected = Wkt.Read("POLYGON((52 18,66 23,73 9,48 6,52 18))");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
 		/// <summary>
 		/// Conformance Item T51	
 		/// Buffer(g Geometry, d Double Precision) : Geometry
@@ -2043,6 +2735,20 @@ where NHSP.Contains(NHSP.Buffer(br.Position, 15.0), bl.Footprint) = true
 			Assert.AreEqual(1, result);
 		}
 
+		[Test]
+		public virtual void ConformanceItemT51Linq()
+		{
+			var query =
+				from bl in session.Query<Building>()
+				from br in session.Query<Bridge>()
+				where br.Position.Buffer(15.0).Contains(bl.Footprint)
+				select bl
+				;
+			long result = query.LongCount();
+
+			Assert.AreEqual(1, result);
+		}
+
 		/// <summary>
 		/// Conformance Item T52	
 		/// ConvexHull(g Geometry) : Geometry
@@ -2070,6 +2776,20 @@ where l.Name = 'Blue Lake'
 				.UniqueResult<string>();
 
 			IGeometry geometry = Wkt.Read(result);
+			IGeometry expected = Wkt.Read("POLYGON((52 18,66 23,73 9,48 6,52 18))");
+
+			Assert.IsTrue(expected.Equals(geometry));
+		}
+
+		[Test]
+		public void ConformanceItemT52Linq()
+		{
+			var query =
+				from l in session.Query<Lake>()
+				where l.Name == "Blue Lake"
+				select l.Shore.ConvexHull();
+
+			IGeometry geometry = query.Single();
 			IGeometry expected = Wkt.Read("POLYGON((52 18,66 23,73 9,48 6,52 18))");
 
 			Assert.IsTrue(expected.Equals(geometry));
