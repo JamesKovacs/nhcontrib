@@ -22,6 +22,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,33 +44,36 @@
   <ItemGroup>
     <Reference Include="GeoAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\GeoAPI.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\GeoAPI.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\log4net.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NetTopologySuite, Version=1.7.2.32155, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\NetTopologySuite.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\NetTopologySuite.dll</HintPath>
     </Reference>
     <Reference Include="NetTopologySuite.TestRunner, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\NetTopologySuite.TestRunner.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\NetTopologySuite.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=2.0.0.4001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\NHibernate.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\lib\net\2.0\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\..\lib\net\3.5\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>

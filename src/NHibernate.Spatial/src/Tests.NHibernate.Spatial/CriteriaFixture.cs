@@ -32,6 +32,7 @@ namespace Tests.NHibernate.Spatial
 			session.Save(new Simple("a null", null));
 			session.Save(new Simple("a collection empty 1", Wkt.Read("GEOMETRYCOLLECTION EMPTY")));
 			session.Save(new Simple("a collection empty 2", GeometryCollection.Empty));
+
 			session.Flush();
 		}
 

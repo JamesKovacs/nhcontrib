@@ -22,6 +22,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,17 +45,20 @@
   <ItemGroup>
     <Reference Include="GeoAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\GeoAPI.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\GeoAPI.dll</HintPath>
     </Reference>
     <Reference Include="NetTopologySuite, Version=1.7.3.32147, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\NetTopologySuite.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\NetTopologySuite.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=2.0.0.4001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net\2.0\NHibernate.dll</HintPath>
+      <HintPath>..\..\lib\net\3.5\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>

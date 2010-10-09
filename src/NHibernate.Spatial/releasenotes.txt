@@ -13,6 +13,15 @@ http://jira.nhibernate.org/browse/NHSP
 ...and support questions to NH Users mailing list:
 http://groups.google.com/group/nhusers
 
+Build 2.1.2.GA
+========================	
+
+** New Feature
+    * MsSql2008 Geometry and Geography.
+
+** Improvement
+    * Updated to NH 2.1.2.GA
+
 
 Build 1.0.0.Beta2
 ========================	
