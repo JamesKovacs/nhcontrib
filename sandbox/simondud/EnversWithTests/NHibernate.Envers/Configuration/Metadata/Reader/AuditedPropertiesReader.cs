@@ -7,6 +7,7 @@ using NHibernate.Envers.Tools;
 using NHibernate.Mapping;
 using System.Reflection;
 using NHibernate.Envers.Compatibility.Attributes;
+using NHibernate.Properties;
 using NHibernate.Util;
 
 namespace NHibernate.Envers.Configuration.Metadata.Reader
@@ -56,8 +57,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	    private void ReadPersistentPropertiesAccess() {
 		    IEnumerator<Property> propertyIter = _persistentPropertiesSource.PropertyEnumerator;
 		    while (propertyIter.MoveNext()) {
-			    Property property = (Property) propertyIter.Current;
-			    if ("field".Equals(property.PropertyAccessorName)) {
+			    Property property = propertyIter.Current;
+			    if (property.PropertyAccessorName.StartsWith("field")) {
 				    _fieldAccessedPersistentProperties.Add(property.Name);
 			    } else {
 				    _propertyAccessedPersistentProperties.Add(property.Name);

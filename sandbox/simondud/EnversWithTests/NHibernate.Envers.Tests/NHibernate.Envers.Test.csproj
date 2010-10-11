@@ -66,7 +66,9 @@
   <ItemGroup>
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\UnversionedEntity.cs" />
+    <Compile Include="Integration\AccessType\Country.cs" />
     <Compile Include="Integration\AccessType\FieldAccessTest.cs" />
+    <Compile Include="Integration\AccessType\ImmutableClassAccessTest.cs" />
     <Compile Include="Integration\AccessType\Model.cs" />
     <Compile Include="Integration\AccessType\PropertyAccessTest.cs" />
     <Compile Include="Integration\Basic\DeleteTest.cs" />

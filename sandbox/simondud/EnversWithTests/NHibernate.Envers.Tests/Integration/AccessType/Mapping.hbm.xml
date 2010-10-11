@@ -11,9 +11,16 @@
   </class>
 
   <class name="PropertyAccessEntity">
-    <id name="Id" access="property">
+    <id name="Id">
       <generator class="native"/>
     </id>
-    <property name="Data" access="property"/>
+    <property name="Data"/>
+  </class>
+
+  <class name="Country">
+    <id name="Code" access="field.camelcase-underscore">
+      <generator class="assigned"/>
+    </id>
+    <property name="Name" access="field.camelcase-underscore"/>
   </class>
 </hibernate-mapping>
