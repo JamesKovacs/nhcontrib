@@ -94,10 +94,9 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         public void AddRevisionType(XmlElement any_mapping)
         {
-            XmlElement revTypeProperty = MetadataTools.AddProperty(any_mapping, VerEntCfg.RevisionTypePropName,
+            var revTypeProperty = MetadataTools.AddProperty(any_mapping, VerEntCfg.RevisionTypePropName,
                     VerEntCfg.RevisionTypePropType, true, false);
-            //TODO Simon Replace with typeof(NHibernate.Envers.Entities.RevisionTypeType).FullName
-            revTypeProperty.SetAttribute("type", "NHibernate.Envers.Entities.RevisionTypeType, Envers.NET");
+            revTypeProperty.SetAttribute("type", typeof(RevisionTypeType).AssemblyQualifiedName);
         }
 
         //@SuppressWarnings({"unchecked"})

@@ -28,7 +28,7 @@ namespace NHibernate.Envers.Configuration
         private String revisionPropSqlType;
 
         public RevisionInfoConfiguration() {
-            revisionInfoEntityName = "NHibernate.Envers.DefaultRevisionEntity, Envers.NET";
+            revisionInfoEntityName = typeof(DefaultRevisionEntity).FullName;
             revisionInfoIdData = new PropertyData("id", "id", "field", ModificationStore._NULL);
             revisionInfoTimestampData = new PropertyData("RevisionDate", "RevisionDate", "field", ModificationStore._NULL);
             revisionInfoTimestampType = new DateTimeType(); //ORIG: LongType();

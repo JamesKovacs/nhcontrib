@@ -8,8 +8,8 @@
     <ProjectGuid>{16492F52-0C2E-4847-9CBF-696907808FD6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Envers.NET</RootNamespace>
-    <AssemblyName>Envers.NET</AssemblyName>
+    <RootNamespace>NHibernate.Envers</RootNamespace>
+    <AssemblyName>NHibernate.Envers</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

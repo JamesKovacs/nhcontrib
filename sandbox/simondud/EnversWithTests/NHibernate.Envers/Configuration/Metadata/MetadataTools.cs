@@ -109,7 +109,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         private static XmlElement CreateEntityCommon(XmlDocument document, String type, AuditTableData auditTableData,
                                                   String discriminatorValue) {
             XmlElement hibernate_mapping = document.CreateElement("hibernate-mapping");
-            hibernate_mapping.SetAttribute("assembly", "Envers.NET");
+            hibernate_mapping.SetAttribute("assembly", "NHibernate.Envers");
             hibernate_mapping.SetAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
             hibernate_mapping.SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             //rk: changed from Configuration.MappingSchemaXMLNS. Not available in NH3
