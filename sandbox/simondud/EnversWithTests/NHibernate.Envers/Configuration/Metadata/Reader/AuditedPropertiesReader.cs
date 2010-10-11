@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Iesi.Collections.Generic;
 using NHibernate.Envers.Tools;
 using NHibernate.Mapping;
 using System.Reflection;
 using NHibernate.Envers.Compatibility.Attributes;
-using NHibernate.Properties;
-using NHibernate.Util;
 
 namespace NHibernate.Envers.Configuration.Metadata.Reader
 {
@@ -36,11 +32,11 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 								       IAuditedPropertiesHolder auditedPropertiesHolder,
 								       GlobalConfiguration globalCfg,
 								       String propertyNamePrefix) {
-		    this._defaultStore = defaultStore;
-		    this._persistentPropertiesSource = persistentPropertiesSource;
-		    this._auditedPropertiesHolder = auditedPropertiesHolder;
-		    this._globalCfg = globalCfg;
-		    this._propertyNamePrefix = propertyNamePrefix;
+		    _defaultStore = defaultStore;
+		    _persistentPropertiesSource = persistentPropertiesSource;
+		    _auditedPropertiesHolder = auditedPropertiesHolder;
+		    _globalCfg = globalCfg;
+		    _propertyNamePrefix = propertyNamePrefix;
 
 		    _propertyAccessedPersistentProperties = Toolz.NewHashSet<String>();
 		    _fieldAccessedPersistentProperties = Toolz.NewHashSet<String>();
@@ -57,12 +53,15 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	    private void ReadPersistentPropertiesAccess() {
 		    IEnumerator<Property> propertyIter = _persistentPropertiesSource.PropertyEnumerator;
 		    while (propertyIter.MoveNext()) {
-			    Property property = propertyIter.Current;
-			    if (property.PropertyAccessorName.StartsWith("field")) {
-				    _fieldAccessedPersistentProperties.Add(property.Name);
-			    } else {
-				    _propertyAccessedPersistentProperties.Add(property.Name);
-			    }
+			    var property = propertyIter.Current;
+                if ("field".Equals(property.PropertyAccessorName))
+                {
+                    _fieldAccessedPersistentProperties.Add(property.Name);
+                }
+                else
+                {
+                    _propertyAccessedPersistentProperties.Add(property.Name);
+                }
 		    }
 	    }
 
