@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.AccessType
 {
+    [TestFixture]
     public class PropertyAccessTest : TestBase
     {
         private int id;
