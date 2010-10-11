@@ -1,6 +1,4 @@
-using NHibernate.Envers;
-
-namespace Envers.NET.Tests.Integration.Basic
+namespace NHibernate.Envers.Tests.Integration.Basic
 {
     public class BasicTestEntity1
     {

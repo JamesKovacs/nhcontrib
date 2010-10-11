@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests.Integration.AccessType
+namespace NHibernate.Envers.Tests.Integration.AccessType
 {
     public class PropertyAccessTest : TestBase
     {

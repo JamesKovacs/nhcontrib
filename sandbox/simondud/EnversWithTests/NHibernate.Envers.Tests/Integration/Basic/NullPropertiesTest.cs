@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests.Integration.Basic
+namespace NHibernate.Envers.Tests.Integration.Basic
 {
     public class NullPropertiesTest : TestBase
     {

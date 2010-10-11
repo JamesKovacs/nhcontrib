@@ -1,6 +1,4 @@
-using NHibernate.Envers;
-
-namespace Envers.NET.Tests.Integration.AccessType
+namespace NHibernate.Envers.Tests.Integration.AccessType
 {
     public class FieldAccessEntity
     {

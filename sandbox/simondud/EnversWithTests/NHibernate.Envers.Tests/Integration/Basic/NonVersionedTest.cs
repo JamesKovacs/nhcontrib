@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Exceptions;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests.Integration.Basic
+namespace NHibernate.Envers.Tests.Integration.Basic
 {
     [TestFixture]
     public class NonVersionedTest : TestBase

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
-                   assembly="Envers.NET.Tests"
-                   namespace="Envers.NET.Tests.Integration.AccessType">
+                   assembly="NHibernate.Envers.Tests"
+                   namespace="NHibernate.Envers.Tests.Integration.AccessType">
 
   <class name="FieldAccessEntity">
     <id name="id" access="field">

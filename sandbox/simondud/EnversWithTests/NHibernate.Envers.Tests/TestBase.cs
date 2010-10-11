@@ -1,26 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using NHibernate;
-using NHibernate.Cfg;
-using NHibernate.Envers;
 using NHibernate.Envers.Event;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
-namespace Envers.NET.Tests
+namespace NHibernate.Envers.Tests
 {
     public abstract class TestBase
     {
         public ISession Session{ get; private set; }
         public IAuditReader AuditReader { get; private set; }
-        private Configuration cfg;
+        private Cfg.Configuration cfg;
 
         [SetUp]
         public void BaseSetup()
         {
-            cfg = new Configuration();
+            cfg = new Cfg.Configuration();
             addListeners();
             cfg.Configure();
             addMappings();
@@ -60,7 +56,7 @@ namespace Envers.NET.Tests
 
         protected virtual string MappingAssembly
         {
-            get { return "Envers.NET.Tests"; }
+            get { return "NHibernate.Envers.Tests"; }
         }
 
         private void addMappings()

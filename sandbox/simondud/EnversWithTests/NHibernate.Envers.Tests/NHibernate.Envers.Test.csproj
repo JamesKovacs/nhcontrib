@@ -8,8 +8,8 @@
     <ProjectGuid>{D03CBC3B-37CF-4C06-BACE-3B2674399BEE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Envers.NET.Tests</RootNamespace>
-    <AssemblyName>Envers.NET.Tests</AssemblyName>
+    <RootNamespace>NHibernate.Envers.Tests</RootNamespace>
+    <AssemblyName>NHibernate.Envers.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
