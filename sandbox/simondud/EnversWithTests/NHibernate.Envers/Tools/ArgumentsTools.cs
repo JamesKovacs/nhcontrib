@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NHibernate.Envers.Tools
 {
-    /**
-     * @author Adam Warski (adam at warski dot org)
-     */
-    public class ArgumentsTools
+    public static class ArgumentsTools
     {
         public static void CheckNotNull(Object o, String paramName)
         {
             if (o == null)
             {
-                throw new Exception(paramName + " cannot be null.");
+                throw new ArgumentNullException(paramName + " cannot be null.");
             }
         }
 
@@ -22,7 +16,7 @@ namespace NHibernate.Envers.Tools
         {
             if (i <= 0)
             {
-                throw new Exception(paramName + " has to be greater than 0.");
+                throw new ArgumentOutOfRangeException(paramName + " has to be greater than 0.");
             }
         }
     }

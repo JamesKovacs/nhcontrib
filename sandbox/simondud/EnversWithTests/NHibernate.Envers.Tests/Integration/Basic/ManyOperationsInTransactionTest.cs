@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Basic
 {
+    [TestFixture]
     public class ManyOperationsInTransactionTest : TestBase
     {
         private int id1;
