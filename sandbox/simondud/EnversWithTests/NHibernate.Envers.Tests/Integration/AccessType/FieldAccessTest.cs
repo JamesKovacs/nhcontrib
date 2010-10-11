@@ -38,8 +38,11 @@ namespace NHibernate.Envers.Tests.Integration.AccessType
         [Test]
         public void VerifyHistory()
         {
-            Assert.AreEqual("first", AuditReader.Find<FieldAccessEntity>(id, 1));
-            Assert.AreEqual("second", AuditReader.Find<FieldAccessEntity>(id, 2));
+            var ver1 = new FieldAccessEntity { Id = id, Data = "first" };
+            var ver2 = new FieldAccessEntity {Id = id, Data = "second"};
+
+            Assert.AreEqual(ver1, AuditReader.Find<FieldAccessEntity>(id, 1));
+            Assert.AreEqual(ver2, AuditReader.Find<FieldAccessEntity>(id, 2));
         }
     }
 }

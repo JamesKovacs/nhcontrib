@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Envers.Entities;
 using NHibernate.Proxy;
 using NHibernate.Engine;
 using System.Collections;
 using Iesi.Collections.Generic;
 using NHibernate.Properties;
 using System.Reflection;
+using NHibernate.Util;
 
 namespace NHibernate.Envers.Tools
 {
@@ -199,9 +201,10 @@ namespace NHibernate.Envers.Tools
         }
 
 
-        internal static ISetter GetSetter(System.Type revisionInfoType, NHibernate.Envers.Entities.PropertyData revisionInfoTimestampData)
+        internal static ISetter GetSetter(System.Type revisionInfoType, PropertyData revisionInfoTimestampData)
         {
-            throw new NotImplementedException();
+            return PropertyAccessorFactory.GetPropertyAccessor(revisionInfoTimestampData.AccessType)
+                .GetSetter(revisionInfoType, revisionInfoTimestampData.Name);
         }
     }
 }

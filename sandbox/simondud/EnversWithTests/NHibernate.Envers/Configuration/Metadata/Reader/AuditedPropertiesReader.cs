@@ -7,6 +7,7 @@ using NHibernate.Envers.Tools;
 using NHibernate.Mapping;
 using System.Reflection;
 using NHibernate.Envers.Compatibility.Attributes;
+using NHibernate.Util;
 
 namespace NHibernate.Envers.Configuration.Metadata.Reader
 {
@@ -74,23 +75,24 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 
             //ORIG: addFromProperties(clazz.getDeclaredProperties("field"), "field", fieldAccessedPersistentProperties);
             //addFromProperties(clazz.getDeclaredProperties("property"), "property", _propertyAccessedPersistentProperties);
-
-            //only one call is needed, .NET does not differentiate between field and property
-            //AddFromProperties(clazz.GetProperties(BindingFlags.GetField), "field", _fieldAccessedPersistentProperties);
-            AddFromProperties(clazz.GetProperties(), "property", _propertyAccessedPersistentProperties);
+            AddFromProperties(clazz.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), "field", _fieldAccessedPersistentProperties);
+            AddFromProperties(clazz.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), "property", _propertyAccessedPersistentProperties);
 	    }
 
-	    private void AddFromProperties(IEnumerable<PropertyInfo> properties, String accessType, ISet<String> persistentProperties) {
+	    private void AddFromProperties(IEnumerable<MemberInfo> properties, String accessType, ISet<String> persistentProperties) {
 		    //ORIG: foreach (XProperty property in properties) {
-			foreach (PropertyInfo property in properties) {
+			foreach (var property in properties) 
+            {
 			    // If this is not a persistent property, with the same access type as currently checked,
 			    // it's not audited as well.
-			    if (persistentProperties.Contains(property.Name)) {
+			    if (persistentProperties.Contains(property.Name)) 
+                {
 				    IValue propertyValue = _persistentPropertiesSource.GetProperty(property.Name).Value;
 
 				    PropertyAuditingData propertyData;
 				    bool isAudited;
-				    if (propertyValue is Component) {
+				    if (propertyValue is Component) 
+                    {
 					    ComponentAuditingData componentData = new ComponentAuditingData();
 					    isAudited = FillPropertyData(property, componentData, accessType);
 
@@ -122,29 +124,30 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     * @param accessType Access type for the property.
 	     * @return False if this property is not audited.
 	     */
-	    private bool FillPropertyData(PropertyInfo property, PropertyAuditingData propertyData,
+	    private bool FillPropertyData(MemberInfo property, PropertyAuditingData propertyData,
 									     String accessType) {
 
 		    // check if a property is declared as not audited to exclude it
 		    // useful if a class is audited but some properties should be excluded
-            NotAuditedAttribute unVer = (NotAuditedAttribute)Attribute.GetCustomAttribute(property, typeof(NotAuditedAttribute));
-		    if (unVer != null) {
+            var unVer = (NotAuditedAttribute)Attribute.GetCustomAttribute(property, typeof(NotAuditedAttribute));
+		    if (unVer != null) 
+            {
 			    return false;
-		    } else {
-			    // if the optimistic locking field has to be unversioned and the current property
-			    // is the optimistic locking field, don't audit it
-			    if (_globalCfg.isDoNotAuditOptimisticLockingField()) {
-				    //Version jpaVer = property.getAnnotation(typeof(Version));
-                    VersionAttribute jpaVer = (VersionAttribute)Attribute.GetCustomAttribute(property, typeof(VersionAttribute));
-				    if (jpaVer != null) {
-					    return false;
-				    }
-			    }
 		    }
+	        // if the optimistic locking field has to be unversioned and the current property
+	        // is the optimistic locking field, don't audit it
+	        if (_globalCfg.isDoNotAuditOptimisticLockingField()) 
+            {
+	            //Version jpaVer = property.getAnnotation(typeof(Version));
+	            var jpaVer = (VersionAttribute)Attribute.GetCustomAttribute(property, typeof(VersionAttribute));
+	            if (jpaVer != null) {
+	                return false;
+	            }
+	        }
 
-		    // Checking if this property is explicitly audited or if all properties are.
+	        // Checking if this property is explicitly audited or if all properties are.
 		    //AuditedAttribute aud = property.getAnnotation(typeof(AuditedAttribute));
-            AuditedAttribute aud = (AuditedAttribute)Attribute.GetCustomAttribute(property, typeof(AuditedAttribute));
+            var aud = (AuditedAttribute)Attribute.GetCustomAttribute(property, typeof(AuditedAttribute));
 		    if (aud != null) {
 			    propertyData.Store = aud.ModStore;
 			    propertyData.setRelationTargetAuditMode(aud.TargetAuditMode);
@@ -171,9 +174,11 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 		    return true;
 	    }
 
-        private void SetPropertyAuditMappedBy(PropertyInfo property, PropertyAuditingData propertyData) {
-            AuditMappedByAttribute auditMappedBy = (AuditMappedByAttribute)Attribute.GetCustomAttribute(property, typeof(AuditMappedByAttribute));
-            if (auditMappedBy != null) {
+        private void SetPropertyAuditMappedBy(MemberInfo property, PropertyAuditingData propertyData) 
+        {
+            var auditMappedBy = (AuditMappedByAttribute)Attribute.GetCustomAttribute(property, typeof(AuditMappedByAttribute));
+            if (auditMappedBy != null) 
+            {
 		        propertyData.AuditMappedBy = auditMappedBy.MappedBy;
                 if (!"".Equals(auditMappedBy.PositionMappedBy)) {
                     propertyData.PositionMappedBy = auditMappedBy.PositionMappedBy;
@@ -181,21 +186,20 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
             }
         }
 
-	    private void AddPropertyMapKey(PropertyInfo property, PropertyAuditingData propertyData) {
-		    MapKeyAttribute mapKey = (MapKeyAttribute)Attribute.GetCustomAttribute(property, typeof(MapKeyAttribute));
-		    if (mapKey != null) {
+        private void AddPropertyMapKey(MemberInfo property, PropertyAuditingData propertyData) 
+        {
+		    var mapKey = (MapKeyAttribute)Attribute.GetCustomAttribute(property, typeof(MapKeyAttribute));
+		    if (mapKey != null) 
+            {
 			    propertyData.MapKey = mapKey.Name;
 		    }
 	    }
 
-	    private void AddPropertyJoinTables(PropertyInfo property, PropertyAuditingData propertyData) {
+	    private void AddPropertyJoinTables(MemberInfo property, PropertyAuditingData propertyData)
+        {
 		    // first set the join table based on the AuditJoinTable annotation
-		    AuditJoinTableAttribute joinTable = (AuditJoinTableAttribute)Attribute.GetCustomAttribute(property, typeof(AuditJoinTableAttribute));;
-		    if (joinTable != null) {
-			    propertyData.JoinTable = joinTable;
-		    } else {
-			    propertyData.JoinTable = DEFAULT_AUDIT_JOIN_TABLE;
-		    }
+		    var joinTable = (AuditJoinTableAttribute)Attribute.GetCustomAttribute(property, typeof(AuditJoinTableAttribute));;
+		    propertyData.JoinTable = joinTable ?? DEFAULT_AUDIT_JOIN_TABLE;
 	    }
 
 	    /***
@@ -204,13 +208,16 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     * @param property the property being processed
 	     * @param propertyData the Envers auditing data for this property
 	     */
-	    private void AddPropertyAuditingOverrides(PropertyInfo property, PropertyAuditingData propertyData) {
-		    AuditOverrideAttribute annotationOverride = (AuditOverrideAttribute)Attribute.GetCustomAttribute(property, typeof(AuditOverrideAttribute));;
-		    if (annotationOverride != null) {
+        private void AddPropertyAuditingOverrides(MemberInfo property, PropertyAuditingData propertyData)
+        {
+		    var annotationOverride = (AuditOverrideAttribute)Attribute.GetCustomAttribute(property, typeof(AuditOverrideAttribute));
+		    if (annotationOverride != null) 
+            {
 			    propertyData.addAuditingOverride(annotationOverride);
 		    }
-		    AuditOverridesAttribute annotationOverrides = (AuditOverridesAttribute)Attribute.GetCustomAttribute(property, typeof(AuditOverridesAttribute));;
-		    if (annotationOverrides != null) {
+		    var annotationOverrides = (AuditOverridesAttribute)Attribute.GetCustomAttribute(property, typeof(AuditOverridesAttribute));
+		    if (annotationOverrides != null) 
+            {
 			    propertyData.addAuditingOverrides(annotationOverrides);
 		    }
 	    }
@@ -225,22 +232,26 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     *            the Envers auditing data for this property
 	     * @return {@code false} if isAudited() of the override annotation was set to
 	     */
-	    private bool ProcessPropertyAuditingOverrides(PropertyInfo property, PropertyAuditingData propertyData) {
+        private bool ProcessPropertyAuditingOverrides(MemberInfo property, PropertyAuditingData propertyData) 
+        {
 		    // if this property is part of a component, process all override annotations
-		    if (this._auditedPropertiesHolder is ComponentAuditingData) {
-			    IList<AuditOverrideAttribute> overrides = ((ComponentAuditingData) this._auditedPropertiesHolder).AuditingOverrides;
-			    foreach (AuditOverrideAttribute ovr in overrides) {
-				    if (property.Name.Equals(ovr.Name)) {
-					    // the override applies to this property
-					    if (!ovr.IsAudited) {
+		    if (_auditedPropertiesHolder is ComponentAuditingData) {
+			    var overrides = ((ComponentAuditingData) _auditedPropertiesHolder).AuditingOverrides;
+			    foreach (var ovr in overrides) 
+                {
+				    if (property.Name.Equals(ovr.Name))
+				    {
+				        // the override applies to this property
+					    if (!ovr.IsAudited) 
+                        {
 						    return false;
-					    } else {
-						    if (ovr.AuditJoinTable != null) {
-							    propertyData.JoinTable = ovr.AuditJoinTable;
-						    }
 					    }
+				        if (ovr.AuditJoinTable != null) 
+                        {
+				            propertyData.JoinTable = ovr.AuditJoinTable;
+				        }
 				    }
-			    }
+                }
     			
 		    }
 		    return true;

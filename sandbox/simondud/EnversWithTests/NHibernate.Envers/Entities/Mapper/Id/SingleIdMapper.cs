@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.Envers.Exceptions;
 using System.Reflection;
-using NHibernate.Properties;
+using NHibernate.Envers.Tools;
 using NHibernate.Proxy;
 
 namespace NHibernate.Envers.Entities.Mapper.Id
@@ -23,7 +21,8 @@ public class SingleIdMapper : AbstractIdMapper , ISimpleIdMapperBuilder {
         this.propertyData = propertyData;
     }
 
-    public void Add(PropertyData propertyData) {
+    public void Add(PropertyData propertyData) 
+    {
         if (this.propertyData != null) {
             throw new AuditException("Only one property can be added!");
         }
@@ -31,16 +30,13 @@ public class SingleIdMapper : AbstractIdMapper , ISimpleIdMapperBuilder {
         this.propertyData = propertyData;
     }
 
-    public override void MapToEntityFromMap(Object obj, IDictionary<String, Object> data)
-    {//IDictionary<PropertyData, SingleIdMapper>  
+    public override void MapToEntityFromMap(object obj, IDictionary<string, object> data)
+    {
         if (data == null || obj == null) {
             return;
         }
-
-        PropertyInfo propInfo;
-        propInfo = obj.GetType().GetProperty(propertyData.Name);
-        propInfo.SetValue(obj, data[propertyData.Name], null);
-
+        var setter = Toolz.GetSetter(obj.GetType(), propertyData);
+        setter.Set(obj, data[propertyData.Name]);
     }
 
     public override Object MapToIdFromMap(IDictionary<String, Object> data)

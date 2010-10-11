@@ -17,6 +17,19 @@ namespace NHibernate.Envers.Tests.Integration.AccessType
             get { return data; }
             set { data = value; }
         }
+
+        public override bool Equals(object obj)
+        {
+            var bte = obj as FieldAccessEntity;
+            if (bte == null)
+                return false;
+            return (bte.Id == Id && string.Equals(bte.Data, Data));
+        }
+
+        public override int GetHashCode()
+        {
+            return Id ^ Data.GetHashCode();
+        }
     }
 
     public class PropertyAccessEntity
