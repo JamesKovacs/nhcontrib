@@ -11,7 +11,7 @@ namespace NHibernate.Envers.Tests.Integration.Basic
 
         protected override IEnumerable<string> Mappings
         {
-            get { return new[] { "Integration.Basic.Mapping.hbm.xml" }; }
+            get { return new[] { "Entities.Mapping.hbm.xml" }; }
         }
 
         [SetUp]

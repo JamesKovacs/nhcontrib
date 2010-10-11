@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NHibernate.Envers
 {
@@ -10,7 +7,7 @@ namespace NHibernate.Envers
      * @author Simon Duduica, port of Envers omonyme class by Sebastian Komander
      */
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-    class NotAuditedAttribute : Attribute
+    public class NotAuditedAttribute : Attribute
     {
     }
 }

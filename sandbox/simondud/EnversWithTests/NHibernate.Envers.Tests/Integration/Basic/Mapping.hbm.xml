@@ -32,11 +32,4 @@
     <property name="Str1"/>
     <property name="Str2"/>
   </class>
-
-  <class name="NHibernate.Envers.Tests.Entities.IntTestEntity">
-    <id name="Id">
-      <generator class="native"/>
-    </id>
-    <property name="Number"/>
-  </class>
 </hibernate-mapping>
