@@ -76,6 +76,7 @@
     <Compile Include="Integration\Basic\NullPropertiesTest.cs" />
     <Compile Include="Integration\Basic\SimpleTest.cs" />
     <Compile Include="Integration\Basic\SingleOperationInTransactionTest.cs" />
+    <Compile Include="Integration\Basic\UnversionedPropertiesChangeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
