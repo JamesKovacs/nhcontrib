@@ -118,7 +118,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
             }
 
 		    //@SuppressWarnings({"unchecked"})
-            public IEnumerator<Property> PropertyEnumerator {get { return parent.pc.PropertyIterator.GetEnumerator();}}
+            public IEnumerable<Property> PropertyEnumerator {get { return parent.pc.PropertyIterator;}}
 		    public Property GetProperty(String propertyName) { return parent.pc.GetProperty(propertyName); }
 		    public System.Type GetClass() { return typ; }
 	    }

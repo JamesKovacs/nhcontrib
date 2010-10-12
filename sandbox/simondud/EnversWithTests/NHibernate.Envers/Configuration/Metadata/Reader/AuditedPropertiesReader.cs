@@ -51,7 +51,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	    }
 
 	    private void ReadPersistentPropertiesAccess() {
-		    IEnumerator<Property> propertyIter = _persistentPropertiesSource.PropertyEnumerator;
+		    IEnumerator<Property> propertyIter = _persistentPropertiesSource.PropertyEnumerator.GetEnumerator();
 		    while (propertyIter.MoveNext()) {
 			    var property = propertyIter.Current;
                 if ("field".Equals(property.PropertyAccessorName))
@@ -275,7 +275,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 			    this.component = component;
 		    }
 
-		    public IEnumerator<Property> PropertyEnumerator { get { return component.PropertyIterator.GetEnumerator(); } }
+		    public IEnumerable<Property> PropertyEnumerator { get { return component.PropertyIterator; } }
 		    public Property GetProperty(String propertyName) { return component.GetProperty(propertyName); }
 		    public System.Type GetClass() { return xclass; }
 	    }

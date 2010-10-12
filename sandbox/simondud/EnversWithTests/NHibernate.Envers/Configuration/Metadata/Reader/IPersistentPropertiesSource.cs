@@ -12,7 +12,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
      */
     public interface IPersistentPropertiesSource
     {
-        IEnumerator<Property> PropertyEnumerator { get; }
+        IEnumerable<Property> PropertyEnumerator { get; }
         Property GetProperty(String propertyName);
         System.Type GetClass();
     }
