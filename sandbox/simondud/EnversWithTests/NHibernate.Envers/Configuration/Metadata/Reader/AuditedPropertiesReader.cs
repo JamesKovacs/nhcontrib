@@ -18,7 +18,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
      * @author Erik-Berndt Scheper
      */
     public class AuditedPropertiesReader {
-	    private readonly ModificationStore _defaultStore;
+    	private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+    	private readonly ModificationStore _defaultStore;
 	    private readonly IPersistentPropertiesSource _persistentPropertiesSource;
 	    private readonly IAuditedPropertiesHolder _auditedPropertiesHolder;
 	    private readonly GlobalConfiguration _globalCfg;
@@ -65,21 +66,22 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 		    }
 	    }
 
-	    private void AddPropertiesFromClass(System.Type clazz)  {
-            //No need to go to base class, the .NET GetProperty method can bring the base properties also
-            //System.Type superclazz = clazz.BaseType;
-            //if (!"System.Object".Equals(superclazz.FullName))
-            //{
-            //    AddPropertiesFromClass(superclazz);
-            //}
+			private void AddPropertiesFromClass(System.Type clazz)
+			{
+				//No need to go to base class, the .NET GetProperty method can bring the base properties also
+				//System.Type superclazz = clazz.BaseType;
+				//if (!"System.Object".Equals(superclazz.FullName))
+				//{
+				//    AddPropertiesFromClass(superclazz);
+				//}
 
-            //ORIG: addFromProperties(clazz.getDeclaredProperties("field"), "field", fieldAccessedPersistentProperties);
-            //addFromProperties(clazz.getDeclaredProperties("property"), "property", _propertyAccessedPersistentProperties);
-            AddFromProperties(clazz.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), "field", _fieldAccessedPersistentProperties);
-            AddFromProperties(clazz.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), "property", _propertyAccessedPersistentProperties);
-	    }
+				//ORIG: addFromProperties(clazz.getDeclaredProperties("field"), "field", fieldAccessedPersistentProperties);
+				//addFromProperties(clazz.getDeclaredProperties("property"), "property", _propertyAccessedPersistentProperties);
+				AddFromProperties(clazz.GetFields(DefaultBindingFlags), "field", _fieldAccessedPersistentProperties);
+				AddFromProperties(clazz.GetProperties(DefaultBindingFlags), "property", _propertyAccessedPersistentProperties);
+			}
 
-	    private void AddFromProperties(IEnumerable<MemberInfo> properties, String accessType, ISet<String> persistentProperties) {
+    	private void AddFromProperties(IEnumerable<MemberInfo> properties, String accessType, ISet<String> persistentProperties) {
 		    //ORIG: foreach (XProperty property in properties) {
 			foreach (var property in properties) 
             {
