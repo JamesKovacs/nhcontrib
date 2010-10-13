@@ -1,2 +1,0 @@
-RK:
-* IAuditReader.Find(...) now has one generic impl and one non generic impl instead of a combination.
