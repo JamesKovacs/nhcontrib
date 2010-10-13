@@ -49,48 +49,49 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 		    _propertyNamePrefix = propertyNamePrefix;
 	    }
 
-			public void read()
-			{
-				// Adding all properties from the given class.
-				AddPropertiesFromClass(_persistentPropertiesSource.GetClass());
-			}
+		public void read()
+		{
+			// Adding all properties from the given class.
+			AddPropertiesFromClass(_persistentPropertiesSource.GetClass());
+		}
 
     	private class DeclaredPersistentProperty
+		{
+			public MemberInfo Member { get; set; }
+			public Property Property { get; set; }
+		}
+
+		private IEnumerable<DeclaredPersistentProperty> GetPersistentInfo(System.Type @class, IEnumerable<Property> properties)
+		{
+			// a persistent property can be anything including a noop "property" declared in the mapping
+			// for query only. In this case I will apply some trick to get the MemberInfo.
+			var candidateMembers =
+				@class.GetFields(DefaultBindingFlags).Concat(@class.GetProperties(DefaultBindingFlags).Cast<MemberInfo>()).ToList();
+			var candidateMembersNames = candidateMembers.Select(m => m.Name).ToList();
+			foreach (var property in properties)
 			{
-				public MemberInfo Member { get; set; }
-				public Property Property { get; set; }
-			}
-			private IEnumerable<DeclaredPersistentProperty> GetPersistentInfo(System.Type @class, IEnumerable<Property> properties)
-			{
-				// a persistent property can be anything including a noop "property" declared in the mapping
-				// for query only. In this case I will apply some trick to get the MemberInfo.
-				var candidateMembers =
-					@class.GetFields(DefaultBindingFlags).Concat(@class.GetProperties(DefaultBindingFlags).Cast<MemberInfo>()).ToList();
-				var candidateMembersNames = candidateMembers.Select(m => m.Name).ToList();
-				foreach (var property in properties)
+				var exactMemberIdx = candidateMembersNames.IndexOf(property.Name);
+				if (exactMemberIdx >= 0)
 				{
-					var exactMemberIdx = candidateMembersNames.IndexOf(property.Name);
-					if (exactMemberIdx >= 0)
+					// No metter which is the accessor the audit-attribute should be in the property where available and not
+					// to the member used to read-write the value. (This method work even for access="field").
+					yield return new DeclaredPersistentProperty {Member = candidateMembers[exactMemberIdx], Property = property};
+				}
+				else
+				{
+					// try to find the field using field-name-strategy
+					//
+					// This part will run for:
+					// 1) query only property (access="none" or access="noop")
+					// 2) a strange case where the element <property> is declared with a "field.xyz" but only a field is used in the class. (Only God may know way)
+					int exactFieldIdx = GetMemberIdxByFieldNamingStrategies(candidateMembersNames, property);
+					if (exactFieldIdx >= 0)
 					{
-						// No metter which is the accessor the audit-attribute should be in the property where available and not
-						// to the member used to read-write the value. (This method work even for access="field").
-						yield return new DeclaredPersistentProperty {Member = candidateMembers[exactMemberIdx], Property = property};
-					}
-					else
-					{
-						// try to find the field using field-name-strategy
-						//
-						// This part will run for:
-						// 1) query only property (access="none" or access="noop")
-						// 2) a strange case where the element <property> is declared with a "field.xyz" but only a field is used in the class. (Only God may know way)
-						int exactFieldIdx = GetMemberIdxByFieldNamingStrategies(candidateMembersNames, property);
-						if (exactFieldIdx >= 0)
-						{
-							yield return new DeclaredPersistentProperty { Member = candidateMembers[exactFieldIdx], Property = property };
-						}
+						yield return new DeclaredPersistentProperty { Member = candidateMembers[exactFieldIdx], Property = property };
 					}
 				}
 			}
+		}
 
     	private int GetMemberIdxByFieldNamingStrategies(List<string> candidateMembersNames, Property property)
     	{
@@ -107,51 +108,51 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
     		return exactFieldIdx;
     	}
 
-			private void AddPropertiesFromClass(System.Type clazz)
+		private void AddPropertiesFromClass(System.Type clazz)
+		{
+			//No need to go to base class, the .NET GetProperty method can bring the base properties also
+			//System.Type superclazz = clazz.BaseType;
+			//if (!"System.Object".Equals(superclazz.FullName))
+			//{
+			//    AddPropertiesFromClass(superclazz);
+			//}
+
+			foreach (var declaredPersistentProperty in GetPersistentInfo(clazz, _persistentPropertiesSource.PropertyEnumerator))
 			{
-				//No need to go to base class, the .NET GetProperty method can bring the base properties also
-				//System.Type superclazz = clazz.BaseType;
-				//if (!"System.Object".Equals(superclazz.FullName))
-				//{
-				//    AddPropertiesFromClass(superclazz);
-				//}
+				IValue propertyValue = declaredPersistentProperty.Property.Value;
 
-				foreach (var declaredPersistentProperty in GetPersistentInfo(clazz, _persistentPropertiesSource.PropertyEnumerator))
+				PropertyAuditingData propertyData;
+				bool isAudited;
+				if (propertyValue is Component)
 				{
-					IValue propertyValue = declaredPersistentProperty.Property.Value;
+					var componentData = new ComponentAuditingData();
+					isAudited = FillPropertyData(declaredPersistentProperty.Member, componentData,
+					                             declaredPersistentProperty.Property.PropertyAccessorName);
 
-					PropertyAuditingData propertyData;
-					bool isAudited;
-					if (propertyValue is Component)
-					{
-						var componentData = new ComponentAuditingData();
-						isAudited = FillPropertyData(declaredPersistentProperty.Member, componentData,
-						                             declaredPersistentProperty.Property.PropertyAccessorName);
+					IPersistentPropertiesSource componentPropertiesSource = new ComponentPropertiesSource(
+						(Component) propertyValue);
+					new AuditedPropertiesReader(ModificationStore.FULL, componentPropertiesSource, componentData,
+					                            _globalCfg,
+					                            _propertyNamePrefix +
+					                            MappingTools.createComponentPrefix(declaredPersistentProperty.Property.Name))
+						.read();
 
-						IPersistentPropertiesSource componentPropertiesSource = new ComponentPropertiesSource(
-							(Component) propertyValue);
-						new AuditedPropertiesReader(ModificationStore.FULL, componentPropertiesSource, componentData,
-						                            _globalCfg,
-						                            _propertyNamePrefix +
-						                            MappingTools.createComponentPrefix(declaredPersistentProperty.Property.Name))
-							.read();
+					propertyData = componentData;
+				}
+				else
+				{
+					propertyData = new PropertyAuditingData();
+					isAudited = FillPropertyData(declaredPersistentProperty.Member, propertyData,
+					                             declaredPersistentProperty.Property.PropertyAccessorName);
+				}
 
-						propertyData = componentData;
-					}
-					else
-					{
-						propertyData = new PropertyAuditingData();
-						isAudited = FillPropertyData(declaredPersistentProperty.Member, propertyData,
-						                             declaredPersistentProperty.Property.PropertyAccessorName);
-					}
-
-					if (isAudited)
-					{
-						// Now we know that the property is audited
-						_auditedPropertiesHolder.addPropertyAuditingData(declaredPersistentProperty.Property.Name, propertyData);
-					}
+				if (isAudited)
+				{
+					// Now we know that the property is audited
+					_auditedPropertiesHolder.addPropertyAuditingData(declaredPersistentProperty.Property.Name, propertyData);
 				}
 			}
+		}
 
     	/**
 	     * Checks if a property is audited and if yes, fills all of its data.
