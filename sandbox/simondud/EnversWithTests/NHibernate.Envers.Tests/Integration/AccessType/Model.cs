@@ -131,4 +131,45 @@ namespace NHibernate.Envers.Tests.Integration.AccessType
             return id ^ data.GetHashCode();
         }
     }
+
+    public class NoSetterEntity
+    {
+        private string data;
+
+        protected NoSetterEntity()
+        {
+        }
+
+        public NoSetterEntity(string data)
+        {
+            this.data = data;
+        }
+
+        public virtual int Id { get; set; }
+
+        [Audited]
+        public virtual string Data
+        {
+            get { return data; }
+        }
+
+        public virtual void WriteData(string data)
+        {
+            this.data = data;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var casted = obj as NoSetterEntity;
+            if (casted == null)
+                return false;
+
+            return casted.Id == Id && casted.Data.Equals(Data);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id ^ Data.GetHashCode();
+        }
+    }
 }

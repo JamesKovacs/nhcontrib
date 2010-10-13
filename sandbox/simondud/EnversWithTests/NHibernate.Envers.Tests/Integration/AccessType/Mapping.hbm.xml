@@ -29,6 +29,12 @@
       <generator class="native"/>
     </id>
     <property name="Data"/>
-    
+  </class>
+
+  <class name="NoSetterEntity">
+    <id name="Id">
+      <generator class="native"/>
+    </id>
+    <property name="Data" access="nosetter.camelcase"/>
   </class>
 </hibernate-mapping>

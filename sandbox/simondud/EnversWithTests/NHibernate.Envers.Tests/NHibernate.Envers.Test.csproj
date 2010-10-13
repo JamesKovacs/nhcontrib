@@ -70,6 +70,7 @@
     <Compile Include="Integration\AccessType\ImmutableClassAccessTest.cs" />
     <Compile Include="Integration\AccessType\MixedAccessTest.cs" />
     <Compile Include="Integration\AccessType\Model.cs" />
+    <Compile Include="Integration\AccessType\NoSetterTest.cs" />
     <Compile Include="Integration\AccessType\PropertyAccessTest.cs" />
     <Compile Include="Integration\Basic\DeleteTest.cs" />
     <Compile Include="Integration\Basic\GlobalVersionedTest.cs" />
