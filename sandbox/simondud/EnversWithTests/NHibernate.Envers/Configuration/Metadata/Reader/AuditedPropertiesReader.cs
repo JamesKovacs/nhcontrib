@@ -126,8 +126,10 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 				if (propertyValue is Component)
 				{
 					var componentData = new ComponentAuditingData();
-					isAudited = FillPropertyData(declaredPersistentProperty.Member, componentData,
-					                             declaredPersistentProperty.Property.PropertyAccessorName);
+					isAudited = FillPropertyData(declaredPersistentProperty.Member,
+                                                    declaredPersistentProperty.Property.Name,
+                                                    componentData,
+					                                declaredPersistentProperty.Property.PropertyAccessorName);
 
 					IPersistentPropertiesSource componentPropertiesSource = new ComponentPropertiesSource(
 						(Component) propertyValue);
@@ -142,8 +144,10 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 				else
 				{
 					propertyData = new PropertyAuditingData();
-					isAudited = FillPropertyData(declaredPersistentProperty.Member, propertyData,
-					                             declaredPersistentProperty.Property.PropertyAccessorName);
+                    isAudited = FillPropertyData(declaredPersistentProperty.Member, 
+                                                    declaredPersistentProperty.Property.Name, 
+                                                    propertyData,
+					                                declaredPersistentProperty.Property.PropertyAccessorName);
 				}
 
 				if (isAudited)
@@ -161,8 +165,11 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 	     * @param accessType Access type for the property.
 	     * @return False if this property is not audited.
 	     */
-	    private bool FillPropertyData(MemberInfo property, PropertyAuditingData propertyData,
-									     String accessType) {
+	    private bool FillPropertyData(MemberInfo property,
+                                        string mappedPropertyName,
+                                        PropertyAuditingData propertyData,
+									    string accessType) 
+        {
 
 		    // check if a property is declared as not audited to exclude it
 		    // useful if a class is audited but some properties should be excluded
@@ -196,8 +203,8 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 			    }
 		    }
 
-		    propertyData.Name = _propertyNamePrefix + property.Name;
-		    propertyData.BeanName = property.Name;
+		    propertyData.Name = _propertyNamePrefix + mappedPropertyName;
+            propertyData.BeanName = mappedPropertyName;
 		    propertyData.AccessType = accessType;
 
 		    AddPropertyJoinTables(property, propertyData);

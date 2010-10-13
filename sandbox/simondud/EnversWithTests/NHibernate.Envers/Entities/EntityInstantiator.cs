@@ -59,12 +59,13 @@ namespace NHibernate.Envers.Entities
 
             // If it is not in the cache, creating a new entity instance
             Object ret;
-            try {
-                //System.Type cls = ReflectionTools.loadClass(entityName);
-                //ret = ReflectHelper.GetDefaultConstructor(cls).newInstance();
-                ret = Activator.CreateInstance(Toolz.ResolveDotnetType(entityName));
+            try 
+            {
+                var cls = Toolz.ResolveDotnetType(entityName);
+                ret = ReflectHelper.GetDefaultConstructor(cls).Invoke(null);
                 
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
                 throw new AuditException(e);
             }
 
