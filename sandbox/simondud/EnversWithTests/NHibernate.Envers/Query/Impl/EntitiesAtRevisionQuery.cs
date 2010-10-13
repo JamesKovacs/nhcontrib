@@ -25,7 +25,8 @@ namespace NHibernate.Envers.Query.Impl
             this.revision = revision;
         }
 
-        public override IList List { get {
+        public override IList List()
+        {
             /*
             The query that should be executed in the versions table:
             SELECT e FROM ent_ver e WHERE
@@ -48,20 +49,23 @@ namespace NHibernate.Envers.Query.Impl
             maxRevQb.RootParameters.AddWhereWithParam(revisionPropertyPath, "<=", revision);
             // e2.id = e.id
             verCfg.EntCfg[entityName].GetIdMapper().AddIdsEqualToQuery(maxRevQb.RootParameters,
-                    "e." + originalIdPropertyName, "e2." + originalIdPropertyName);
+                                                                       "e." + originalIdPropertyName,
+                                                                       "e2." + originalIdPropertyName);
 
             // e.revision_type != DEL AND
             qb.RootParameters.AddWhereWithParam(verEntCfg.RevisionTypePropName, "<>", RevisionType.DEL.Representation);
             // e.revision = (SELECT max(...) ...)
             qb.RootParameters.AddWhere(revisionPropertyPath, verCfg.GlobalCfg.getCorrelatedSubqueryOperator(), maxRevQb);
             // all specified conditions
-            foreach (IAuditCriterion criterion in criterions) {
+            foreach (IAuditCriterion criterion in criterions)
+            {
                 criterion.AddToQuery(verCfg, entityName, qb, qb.RootParameters);
             }
             IList res = BuildAndExecuteQuery();
             IList queryResult = res;
 
-            if (hasProjection) {
+            if (hasProjection)
+            {
                 return queryResult;
             }
             var result = new ArrayList();
@@ -70,9 +74,9 @@ namespace NHibernate.Envers.Query.Impl
             {
                 queryResultTyped.Add(DictionaryWrapper<string, object>.Wrap(hash));
             }
-            entityInstantiator.AddInstancesFromVersionsEntities(entityName, result, 
+            entityInstantiator.AddInstancesFromVersionsEntities(entityName, result,
                                                                 queryResultTyped, revision);
             return result;
-        }}
+        }
     }
 }

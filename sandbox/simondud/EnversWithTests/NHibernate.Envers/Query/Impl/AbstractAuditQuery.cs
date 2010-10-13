@@ -61,14 +61,14 @@ namespace NHibernate.Envers.Query.Impl
             return query.List();
         }
 
-        public abstract IList List{ get;}
+        public abstract IList List();
 
         public IList GetResultList(){
-            return List;
+            return List();
         }
 
         public Object GetSingleResult(){
-            IList result = List;
+            IList result = List();
 
             if (result == null || result.Count == 0) {
                 //throw new NoResultException();

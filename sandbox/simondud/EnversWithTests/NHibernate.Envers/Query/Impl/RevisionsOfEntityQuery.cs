@@ -39,13 +39,13 @@ namespace NHibernate.Envers.Query.Impl
 
             if (revisionInfoObject is INHibernateProxy) {
                 return (long) ((INHibernateProxy) revisionInfoObject).HibernateLazyInitializer.Identifier;
-            } else {
-                // Not a proxy - must be read from cache or with a join
-                return verCfg.RevisionInfoNumberReader.getRevisionNumber(revisionInfoObject);   
             }
+            // Not a proxy - must be read from cache or with a join
+            return verCfg.RevisionInfoNumberReader.getRevisionNumber(revisionInfoObject);
         }
 
-        public override IList List{ get {
+        public override IList List()
+        {
             AuditEntitiesConfiguration verEntCfg = verCfg.AuditEntCfg;
 
             /*
@@ -55,60 +55,66 @@ namespace NHibernate.Envers.Query.Impl
               e.revision = r.revision AND
               (all specified conditions, transformed, on the "e" entity)
               ORDER BY e.revision ASC (unless another order or projection is specified)
-             */      
-            if (!selectDeletedEntities) {
+             */
+            if (!selectDeletedEntities)
+            {
                 // e.revision_type != DEL AND
                 qb.RootParameters.AddWhereWithParam(verEntCfg.RevisionTypePropName, "<>", RevisionType.DEL);
             }
 
             // all specified conditions, transformed
-            foreach (IAuditCriterion criterion in criterions) {
+            foreach (var criterion in criterions)
+            {
                 criterion.AddToQuery(verCfg, entityName, qb, qb.RootParameters);
             }
 
-            if (!hasProjection && !hasOrder) {
-                String revisionPropertyPath = verEntCfg.RevisionNumberPath;
+            if (!hasProjection && !hasOrder)
+            {
+                var revisionPropertyPath = verEntCfg.RevisionNumberPath;
                 qb.AddOrder(revisionPropertyPath, true);
             }
 
-            if (!selectEntitiesOnly) {
+            if (!selectEntitiesOnly)
+            {
                 qb.AddFrom(verCfg.AuditEntCfg.RevisionInfoEntityFullClassName, "r");
                 qb.RootParameters.AddWhere(verCfg.AuditEntCfg.RevisionNumberPath, true, "=", "r.id", false);
             }
 
-            IList queryResult = BuildAndExecuteQuery();
-            if (hasProjection) {
+            var queryResult = BuildAndExecuteQuery();
+            if (hasProjection)
+            {
                 return queryResult;
-            } else {
-                IList entities = new ArrayList();
-                String revisionTypePropertyName = verEntCfg.RevisionTypePropName;
+            }
+            var entities = new ArrayList();
+            var revisionTypePropertyName = verEntCfg.RevisionTypePropName;
 
-                foreach (Object resultRow in queryResult) {
-                    IDictionary<string,object> versionsEntity;
-                    Object revisionData;
+            foreach (var resultRow in queryResult)
+            {
+                IDictionary<string, object> versionsEntity;
+                Object revisionData;
 
-                    if (selectEntitiesOnly) {
-                        versionsEntity = (IDictionary<string, object>)resultRow;
-                        revisionData = null;
-                    } else {
-                        Object[] arrayResultRow = (Object[]) resultRow;
-                        versionsEntity = (IDictionary<string, object>)arrayResultRow[0];
-                        revisionData = arrayResultRow[1];
-                    }
-
-                    long revision = GetRevisionNumber(versionsEntity);
-                    
-                    Object entity = entityInstantiator.CreateInstanceFromVersionsEntity(entityName, versionsEntity, revision);
-
-                    if (!selectEntitiesOnly) {
-                        entities.Add(new Object[] { entity, revisionData, versionsEntity[revisionTypePropertyName] });
-                    } else {
-                        entities.Add(entity);
-                    }
+                if (selectEntitiesOnly)
+                {
+                    versionsEntity = (IDictionary<string, object>) resultRow;
+                    revisionData = null;
+                }
+                else
+                {
+                    var arrayResultRow = (Object[]) resultRow;
+                    versionsEntity = (IDictionary<string, object>) arrayResultRow[0];
+                    revisionData = arrayResultRow[1];
                 }
 
-                return entities;
+                var revision = GetRevisionNumber(versionsEntity);
+
+                var entity = entityInstantiator.CreateInstanceFromVersionsEntity(entityName, versionsEntity, revision);
+
+                entities.Add(selectEntitiesOnly
+                                 ? entity
+                                 : new[] {entity, revisionData, versionsEntity[revisionTypePropertyName]});
             }
-        }}
+
+            return entities;
+        }
     }
 }
