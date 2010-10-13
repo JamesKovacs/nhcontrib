@@ -23,4 +23,12 @@
     </id>
     <property name="Name" access="field.camelcase-underscore"/>
   </class>
+
+  <class name="MixedAccessEntity">
+    <id name="id" access="field">
+      <generator class="native"/>
+    </id>
+    <property name="Data"/>
+    
+  </class>
 </hibernate-mapping>
