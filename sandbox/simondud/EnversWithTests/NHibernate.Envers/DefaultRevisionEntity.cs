@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NHibernate;
 
 namespace NHibernate.Envers
 {
@@ -18,28 +14,27 @@ public class DefaultRevisionEntity {
     [RevisionTimestamp]
     public virtual DateTime RevisionDate { get; set; }
 
-    //ORIG: @Transient - TODO Simon - see equivalent
-    //[Transient]
-    public bool Equals(Object o) {
+    public override bool Equals(Object o) 
+    {
         if (this == o) return true;
-        if (!(o is DefaultRevisionEntity)) return false;
+        var revisionEntity = o as DefaultRevisionEntity;
+        if (revisionEntity == null) return false;
 
-        DefaultRevisionEntity that = (DefaultRevisionEntity) o;
+        var that = revisionEntity;
 
         if (id != that.id) return false;
-        if (RevisionDate != that.RevisionDate) return false;
-
-        return true;
+        return RevisionDate == that.RevisionDate;
     }
 
-    public int getHashCode() {
-        int result;
-        result = id;
+    public override int GetHashCode() 
+    {
+        var result = id;
         result = 31 * result + (int) (((ulong)RevisionDate.Ticks) ^ (((ulong)RevisionDate.Ticks) >> 32));
         return result;
     }
 
-    public String ToString() {
+    public override string ToString() 
+    {
         return "DefaultRevisionEntity(id = " + id + 
             ", revisionDate = " + RevisionDate.ToShortDateString() + ")";
     }
