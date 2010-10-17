@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernate.Envers.Tests"
+                   namespace="NHibernate.Envers.Tests.Entities.Collection">
+  <class name="StringSetEntity">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <set name="Strings">
+      <key column ="StringSetEntityId" />
+      <element column="string" type="string" />
+    </set>
+  </class>
+</hibernate-mapping>

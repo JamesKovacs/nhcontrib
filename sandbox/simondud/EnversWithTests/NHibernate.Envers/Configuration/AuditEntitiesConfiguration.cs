@@ -89,7 +89,7 @@ namespace NHibernate.Envers.Configuration
             return auditTablePrefix + entityName + auditTableSuffix;
         }
 
-        public String GetAuditTableName(String entityName, String tableName) 
+        public string GetAuditTableName(string entityName, string tableName) 
         {
             if (customAuditTablesNames.Keys.Contains(entityName))
                 return customAuditTablesNames[entityName];

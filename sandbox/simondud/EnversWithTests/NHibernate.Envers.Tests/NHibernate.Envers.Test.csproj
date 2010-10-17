@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Collection\StringSetEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -89,12 +90,14 @@
     <Compile Include="Integration\Basic\UnversionedPropertiesChangeTest.cs" />
     <Compile Include="Integration\Basic\UnversionedPropertyTest.cs" />
     <Compile Include="Integration\Cache\OneToManyTest.cs" />
+    <Compile Include="Integration\Collection\StringSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Entities\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\OneToMany\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\Collection\Mapping.hbm.xml" />
     <Content Include="Envers.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
