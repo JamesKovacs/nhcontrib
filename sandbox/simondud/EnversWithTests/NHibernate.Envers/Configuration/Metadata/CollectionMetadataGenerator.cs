@@ -200,8 +200,10 @@ namespace NHibernate.Envers.Configuration.Metadata
                                             IdMappingData relatedIdMapping) {
             XmlElement properties = (XmlElement) relatedIdMapping.XmlRelationMapping.Clone();
             MetadataTools.PrefixNamesInPropertyElement(properties, prefix, columnNameIterator, true, true);
-            foreach (XmlElement idProperty in (System.Collections.Generic.IList<XmlElement>) properties.ChildNodes) {
-                xmlMapping.AppendChild((XmlElement) idProperty.Clone());
+            foreach (XmlNode idProperty in properties.ChildNodes)
+            {
+                var tempNode = xmlMapping.OwnerDocument.ImportNode(idProperty, true);
+                xmlMapping.AppendChild(tempNode);
             }
         }
 
