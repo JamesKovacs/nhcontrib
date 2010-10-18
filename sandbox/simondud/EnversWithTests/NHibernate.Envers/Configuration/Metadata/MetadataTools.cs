@@ -210,44 +210,49 @@ namespace NHibernate.Envers.Configuration.Metadata
         public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, ColumnNameEnumerator colNameEnumerator,
                                                         bool changeToKey, bool insertable) {
             XmlNodeList nodeList = element.ChildNodes;
-            foreach (XmlElement property in nodeList){
-                if ("property".Equals(property.Name)) {
+            foreach (XmlElement property in nodeList)
+            {
+                if ("property".Equals(property.Name)) 
+                {
                     string value = property.GetAttribute("name");
                     if (!String.IsNullOrEmpty(value)) {
                         property.SetAttribute("name",prefix + value);
                     }
                     ChangeNamesInColumnElement(property, colNameEnumerator);
 
-                    if (changeToKey) {
-                        ChangeElementName(property, "key-property");
+                    if (changeToKey) 
+                    {
+                        ChangeToKeyProperty(property);
                     }
-
-				    property.SetAttribute("insert",insertable?"true":"false");
+                    else
+                    {
+                        property.SetAttribute("insert", insertable ? "true" : "false");                        
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Implements the name change of an element by creating a new element, 
-        /// copying data from the former, deleting the former and attaching 
-        /// the new one to the parent
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="newName"></param>
-        private static void ChangeElementName(XmlElement element, string newName)
+        private static void ChangeToKeyProperty(XmlElement element)
         {
-            XmlElement newElement = element.OwnerDocument.CreateElement(newName);
-            for (int i = 0; i < element.Attributes.Count; i++) {
-                newElement.SetAttributeNode((XmlAttribute)element.Attributes[i].CloneNode(true));    
+            var newElement = element.OwnerDocument.CreateElement("key-property");
+            foreach (XmlAttribute attribute in element.Attributes)
+            {
+                var attrName = attribute.Name;
+                if (!attrName.Equals("insert") && !attrName.Equals("update"))
+                    newElement.SetAttributeNode((XmlAttribute)attribute.CloneNode(true));
             }
-            for (int i = 0; i < element.ChildNodes.Count; i++) {
+            for (var i = 0; i < element.ChildNodes.Count; i++) 
+            {
                 newElement.AppendChild(element.ChildNodes[i].CloneNode(true));
             }
-            XmlNode parent = element.ParentNode;
+            var parent = element.ParentNode;
             parent.RemoveChild(element);
-            try {
+            try 
+            {
                 parent.AppendChild(newElement);
-            }catch(Exception){
+            }
+            catch(Exception)
+            {
                 parent.AppendChild(element);
             }
         }
