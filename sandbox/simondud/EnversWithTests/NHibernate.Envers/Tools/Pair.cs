@@ -1,30 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NHibernate.Envers.Tools
 {
-    /**
-     * A pair of objects.
-     * @param <T1>
-     * @param <T2>
-     * @author Adam Warski (adamw@aster.pl)
-     */
-    public class Pair<T1, T2> {
+    public class Pair<T1, T2> 
+    {
         public T1 First{ get; private set;}
         public T2 Second { get; private set; }
 
-        public Pair(T1 obj1, T2 obj2) {
-            this.First = obj1;
-            this.Second = obj2;
+        private Pair(T1 obj1, T2 obj2) 
+        {
+            First = obj1;
+            Second = obj2;
         }
 
-        public override bool Equals(Object o) {
+        public override bool Equals(Object o) 
+		{
             if (this == o) return true;
-            if (!(o.GetType().Equals(typeof(Pair<,>)))) return false;
 
-            Pair<object, object> pair = (Pair<object,object>) o;
+            var pair = (Pair<T1, T2>) o;
 
             if (First != null ? !First.Equals(pair.First) : pair.First != null) return false;
             if (Second != null ? !Second.Equals(pair.Second) : pair.Second != null) return false;
@@ -32,9 +25,9 @@ namespace NHibernate.Envers.Tools
             return true;
         }
 
-        public override int GetHashCode() {
-            int result;
-            result = (First != null ? First.GetHashCode() : 0);
+        public override int GetHashCode() 
+		{
+        	var result = (First != null ? First.GetHashCode() : 0);
             result = 31 * result + (Second != null ? Second.GetHashCode() : 0);
             return result;
         }
