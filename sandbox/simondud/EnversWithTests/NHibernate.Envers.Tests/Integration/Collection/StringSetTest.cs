@@ -64,5 +64,17 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 			CollectionAssert.AreEquivalent(new[] { "sse1_string1", "sse1_string2" }, rev2.Strings);
 			CollectionAssert.AreEquivalent(new[] { "sse1_string1", "sse1_string2" }, rev3.Strings);
 		}
+
+		[Test]
+		public void VerifyHistoryOf2()
+		{
+			var rev1 = AuditReader.Find<StringSetEntity>(sse2_id, 1);
+			var rev2 = AuditReader.Find<StringSetEntity>(sse2_id, 2);
+			var rev3 = AuditReader.Find<StringSetEntity>(sse2_id, 3);
+
+			CollectionAssert.AreEquivalent(new[] { "sse2_string1", "sse2_string2" }, rev1.Strings);
+			CollectionAssert.AreEquivalent(new[] { "sse2_string1", "sse2_string2" }, rev2.Strings);
+			CollectionAssert.AreEquivalent(new[] { "sse2_string2" }, rev3.Strings);
+		}
     }
 }
