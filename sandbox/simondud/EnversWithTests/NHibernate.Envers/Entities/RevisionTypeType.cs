@@ -33,7 +33,7 @@ namespace NHibernate.Envers.Entities
             {
                 try{
                     Byte representation = (Byte) resultSet[names[0]];            
-                    return RevisionType.fromRepresentation(representation);
+                    return RevisionType.FromRepresentation(representation);
                 }
                 catch ( IndexOutOfRangeException){
                     return null;

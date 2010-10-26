@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
+﻿namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-    public interface IInitializor<T>
+    public interface IInitializor
     {
-        T Initialize();
+        object Initialize();
     }
 }

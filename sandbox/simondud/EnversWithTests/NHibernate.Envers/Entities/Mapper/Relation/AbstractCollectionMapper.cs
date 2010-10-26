@@ -13,28 +13,20 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-    public abstract class AbstractCollectionMapper<T> : IPropertyMapper 
+    public abstract class AbstractCollectionMapper : IPropertyMapper 
     {
         protected readonly CommonCollectionMapperData commonCollectionMapperData;    
         protected readonly System.Type collectionType;
+    	private readonly System.Type proxyType;
+    	protected System.Type[] GenericArguments;
 
-        private readonly ConstructorInfo proxyConstructor;
-
-        protected AbstractCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
+    	protected AbstractCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
                                             System.Type collectionType, 
                                             System.Type proxyType) 
         {
             this.commonCollectionMapperData = commonCollectionMapperData;
             this.collectionType = collectionType;
-
-            try 
-            {
-                proxyConstructor = proxyType.GetConstructor(new[]{typeof(IInitializor<>)});
-            } 
-            catch (ArgumentException e) 
-            {
-                throw new AuditException(e);
-            }
+        	this.proxyType = proxyType;
         }
 
         protected abstract ICollection GetNewCollectionContent(IPersistentCollection newCollection);
@@ -110,7 +102,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             return false;
         }
 
-        protected abstract IInitializor<T> GetInitializor(AuditConfiguration verCfg,
+        protected abstract IInitializor GetInitializor(AuditConfiguration verCfg,
                                                         IAuditReaderImplementor versionsReader, 
                                                         object primaryKey,
                                                         long revision);
@@ -122,16 +114,19 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                                         IAuditReaderImplementor versionsReader, 
                                         long revision) 
         {
-            //ORIG: Setter setter = ReflectionTools.getSetter(obj.getClass(),
-            //        commonCollectionMapperData.CollectionReferencingPropertyData);
+			//rk - rewrite this!
             var propInfo = obj.GetType().GetProperty(
                 commonCollectionMapperData.CollectionReferencingPropertyData.Name);
 
-            try 
+			if (GenericArguments == null)
+				GenericArguments = propInfo.PropertyType.GetGenericArguments();
+
+			var genericProxyType = proxyType.MakeGenericType(GenericArguments);
+
+			try 
 			{
-                //TODO Simon - see if have to catch all exceptions thrown by Invoke
-                propInfo.SetValue(obj, proxyConstructor.Invoke(
-                    new object[]{GetInitializor(verCfg, versionsReader, primaryKey, revision)}), null);
+				var coll = Activator.CreateInstance(genericProxyType, new object[]{GetInitializor(verCfg, versionsReader, primaryKey, revision)});
+                propInfo.SetValue(obj, coll, null);
             } 
 			catch (InstantiationException e) 
 			{

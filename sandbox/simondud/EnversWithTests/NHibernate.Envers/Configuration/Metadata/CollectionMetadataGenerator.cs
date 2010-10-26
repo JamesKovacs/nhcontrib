@@ -32,10 +32,10 @@ namespace NHibernate.Envers.Configuration.Metadata
         private static ILog log = LogManager.GetLogger(typeof(CollectionMetadataGenerator));
 
         private readonly AuditMetadataGenerator mainGenerator;
-        private readonly String propertyName;
-        private readonly NHibernate.Mapping.Collection propertyValue;
+        private readonly string propertyName;
+        private readonly Mapping.Collection propertyValue;
         private readonly ICompositeMapperBuilder currentMapper;
-        private readonly String referencingEntityName;
+        private readonly string referencingEntityName;
         private readonly EntityXmlMappingData xmlMappingData;
         private readonly PropertyAuditingData propertyAuditingData;
 
@@ -43,7 +43,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         /**
          * Null if this collection isn't a relation to another entity.
          */
-        private readonly String referencedEntityName;
+        private readonly string referencedEntityName;
 
 	    /**
          * @param mainGenerator Main generator, giving access to configuration and the basic mapper.
@@ -58,9 +58,12 @@ namespace NHibernate.Envers.Configuration.Metadata
          * table and the value of the <code>@MapKey</code> annotation, if there was one.
          */
         public CollectionMetadataGenerator(AuditMetadataGenerator mainGenerator,
-                                           Mapping.Collection propertyValue, ICompositeMapperBuilder currentMapper,
-                                           String referencingEntityName, EntityXmlMappingData xmlMappingData,
-                                           PropertyAuditingData propertyAuditingData) {
+											Mapping.Collection propertyValue, 
+											ICompositeMapperBuilder currentMapper,
+											string referencingEntityName, 
+											EntityXmlMappingData xmlMappingData,
+											PropertyAuditingData propertyAuditingData) 
+		{
             this.mainGenerator = mainGenerator;
             this.propertyValue = propertyValue;
             this.currentMapper = currentMapper;
@@ -68,33 +71,37 @@ namespace NHibernate.Envers.Configuration.Metadata
             this.xmlMappingData = xmlMappingData;
             this.propertyAuditingData = propertyAuditingData;
 
-            this.propertyName = propertyAuditingData.Name;
+            propertyName = propertyAuditingData.Name;
 
             referencingEntityConfiguration = mainGenerator.EntitiesConfigurations[referencingEntityName];
-            if (referencingEntityConfiguration == null) {
+            if (referencingEntityConfiguration == null) 
+			{
                 throw new MappingException("Unable to read auditing configuration for " + referencingEntityName + "!");
             }
 
             referencedEntityName = MappingTools.getReferencedEntityName(propertyValue.Element);
         }
 
-        public void AddCollection() {
-            IType type = propertyValue.Type;
+        public void AddCollection() 
+		{
+            var type = propertyValue.Type;
 
-            bool oneToManyAttachedType = type is BagType || type is SetType || type is MapType || type is ListType;
-            bool inverseOneToMany = (propertyValue.Element is OneToMany) && (propertyValue.IsInverse);
-            bool fakeOneToManyBidirectional = (propertyValue.Element is OneToMany) && (propertyAuditingData.AuditMappedBy != null);
+            var oneToManyAttachedType = type is BagType || type is SetType || type is MapType || type is ListType;
+            var inverseOneToMany = (propertyValue.Element is OneToMany) && (propertyValue.IsInverse);
+            var fakeOneToManyBidirectional = (propertyValue.Element is OneToMany) && (propertyAuditingData.AuditMappedBy != null);
 
-            if (oneToManyAttachedType && (inverseOneToMany || fakeOneToManyBidirectional)) {
+            if (oneToManyAttachedType && (inverseOneToMany || fakeOneToManyBidirectional)) 
+			{
                 // A one-to-many relation mapped using @ManyToOne and @OneToMany(mappedBy="...")
                 AddOneToManyAttached(fakeOneToManyBidirectional);
-            } else {
+            } else 
+			{
                 // All other kinds of relations require a middle (join) table.
                 AddWithMiddleTable();
             }
         }
 
-        private MiddleIdData CreateMiddleIdData(IdMappingData idMappingData, String prefix, String entityName) {
+        private MiddleIdData CreateMiddleIdData(IdMappingData idMappingData, string prefix, string entityName) {
             return new MiddleIdData(mainGenerator.VerEntCfg, idMappingData, prefix, entityName,
                     mainGenerator.EntitiesConfigurations.ContainsKey(entityName));
         }
@@ -105,7 +112,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             log.Debug("Adding audit mapping for property " + referencingEntityName + "." + propertyName +
                     ": one-to-many collection, using a join column on the referenced entity.");
 
-            String mappedBy = GetMappedBy(propertyValue);
+            string mappedBy = GetMappedBy(propertyValue);
 
             IdMappingData referencedIdMapping = mainGenerator.GetReferencedIdMappingData(referencingEntityName,
                         referencedEntityName, propertyAuditingData, false);
@@ -146,7 +153,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             {
                 // In case of a fake many-to-one bidirectional relation, we have to generate a mapper which maps
                 // the mapped-by property name to the id of the related entity (which is the owner of the collection).
-                String auditMappedBy = propertyAuditingData.AuditMappedBy;
+                string auditMappedBy = propertyAuditingData.AuditMappedBy;
 
                 // Creating a prefixed relation mapper.
                 IIdMapper relMapper = referencingIdMapping.IdMapper.PrefixMappedProperties(
@@ -162,7 +169,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                 // Checking if there's an index defined. If so, adding a mapper for it.
                 if (propertyAuditingData.PositionMappedBy != null)
                 {
-                    String positionMappedBy = propertyAuditingData.PositionMappedBy;
+                    string positionMappedBy = propertyAuditingData.PositionMappedBy;
                     fakeBidirectionalRelationIndexMapper = new SinglePropertyMapper(new PropertyData(positionMappedBy, null, null, ModificationStore._NULL));
 
                     // Also, overwriting the index component data to properly read the index.
@@ -195,7 +202,7 @@ namespace NHibernate.Envers.Configuration.Metadata
          * @param columnNameIterator Iterator over the column names that will be used for properties that form the id.
          * @param relatedIdMapping Id mapping data of the related entity.
          */
-        private void AddRelatedToXmlMapping(XmlElement xmlMapping, String prefix,
+        private void AddRelatedToXmlMapping(XmlElement xmlMapping, string prefix,
                                             MetadataTools.ColumnNameEnumerator columnNameIterator,
                                             IdMappingData relatedIdMapping) {
             XmlElement properties = (XmlElement) relatedIdMapping.XmlRelationMapping.Clone();
@@ -207,18 +214,17 @@ namespace NHibernate.Envers.Configuration.Metadata
             }
         }
 
-        private String GetMiddleTableName(Mapping.Collection value, String entityName) {
+        private string GetMiddleTableName(Mapping.Collection value, string entityName) {
             // We check how Hibernate maps the collection.
             if (value.Element is OneToMany && !value.IsInverse) {
                 // This must be a @JoinColumn+@OneToMany mapping. Generating the table name, as Hibernate doesn't use a
                 // middle table for mapping this relation.
-                String refEntName = MappingTools.getReferencedEntityName(value.Element);
+                string refEntName = MappingTools.getReferencedEntityName(value.Element);
                 return entityName.Substring(entityName.LastIndexOf(".") + 1) + "_" + 
                     refEntName.Substring(refEntName.LastIndexOf(".") + 1);
-            } else {
-                // Hibernate uses a middle table for mapping this relation, so we get it's name directly.
-                return value.CollectionTable.Name;
             }
+        	// Hibernate uses a middle table for mapping this relation, so we get it's name directly.
+        	return value.CollectionTable.Name;
         }
 
         private void AddWithMiddleTable() {
@@ -226,16 +232,16 @@ namespace NHibernate.Envers.Configuration.Metadata
                     ": collection with a join table.");
 
             // Generating the name of the middle table
-            String auditMiddleTableName;
-            String auditMiddleEntityName;
-            if (!String.IsNullOrEmpty(propertyAuditingData.JoinTable.Name))
+            string auditMiddleTableName;
+            string auditMiddleEntityName;
+            if (!string.IsNullOrEmpty(propertyAuditingData.JoinTable.Name))
             {
                 auditMiddleTableName = propertyAuditingData.JoinTable.Name;
                 auditMiddleEntityName = propertyAuditingData.JoinTable.Name;
             }
             else
             {
-                String middleTableName = GetMiddleTableName(propertyValue, referencingEntityName);
+                string middleTableName = GetMiddleTableName(propertyValue, referencingEntityName);
                 auditMiddleTableName = mainGenerator.VerEntCfg.GetAuditTableName(null, middleTableName);
                 auditMiddleEntityName = mainGenerator.VerEntCfg.GetAuditEntityName(middleTableName);
             }
@@ -267,11 +273,11 @@ namespace NHibernate.Envers.Configuration.Metadata
             IdMappingData referencingIdMapping = referencingEntityConfiguration.IdMappingData;
 
             // Only valid for an inverse relation; null otherwise.
-            String mappedBy;
+            string mappedBy;
 
             // The referencing prefix is always for a related entity. So it has always the "_" at the end added.
-            String referencingPrefixRelated;
-            String referencedPrefix;
+            string referencingPrefixRelated;
+            string referencedPrefix;
 
             if (propertyValue.IsInverse)
             {
@@ -279,13 +285,13 @@ namespace NHibernate.Envers.Configuration.Metadata
                 mappedBy = GetMappedBy(propertyValue.CollectionTable, mainGenerator.Cfg.GetClassMapping(referencedEntityName));
 
                 referencingPrefixRelated = mappedBy + "_";
-                referencedPrefix = StringTools.GetLastComponent(referencedEntityName);
+                referencedPrefix = stringTools.GetLastComponent(referencedEntityName);
             }
             else
             {
                 mappedBy = null;
 
-                referencingPrefixRelated = StringTools.GetLastComponent(referencingEntityName) + "_";
+                referencingPrefixRelated = stringTools.GetLastComponent(referencingEntityName) + "_";
                 referencedPrefix = referencedEntityName == null ? "element" : propertyName;
             }
 
@@ -345,37 +351,28 @@ namespace NHibernate.Envers.Configuration.Metadata
             if (propertyValue is IndexedCollection)
             {
                 IndexedCollection indexedValue = (IndexedCollection)propertyValue;
-                String mapKey = propertyAuditingData.MapKey;
+                string mapKey = propertyAuditingData.MapKey;
                 if (mapKey == null)
                 {
                     // This entity doesn't specify a javax.persistence.MapKey. Mapping it to the middle entity.
                     return AddValueToMiddleTable(indexedValue.Index, middleEntityXml,
                             queryGeneratorBuilder, "mapkey", null);
                 }
-                else
-                {
-                    IdMappingData referencedIdMapping = 
-                            mainGenerator.EntitiesConfigurations[referencedEntityName].IdMappingData;
-                    int currentIndex = queryGeneratorBuilder == null ? 0 : queryGeneratorBuilder.CurrentIndex;
-                    if ("".Equals(mapKey))
-                    {
-                        // The key of the map is the id of the entity.
-                        return new MiddleComponentData(new MiddleMapKeyIdComponentMapper(mainGenerator.VerEntCfg,
-                                referencedIdMapping.IdMapper), currentIndex);
-                    }
-                    else
-                    {
-                        // The key of the map is a property of the entity.
-                        return new MiddleComponentData(new MiddleMapKeyPropertyComponentMapper(mapKey,
-                                propertyAuditingData.AccessType), currentIndex);
-                    }
-                }
+            	IdMappingData referencedIdMapping = 
+            		mainGenerator.EntitiesConfigurations[referencedEntityName].IdMappingData;
+            	int currentIndex = queryGeneratorBuilder == null ? 0 : queryGeneratorBuilder.CurrentIndex;
+            	if ("".Equals(mapKey))
+            	{
+            		// The key of the map is the id of the entity.
+            		return new MiddleComponentData(new MiddleMapKeyIdComponentMapper(mainGenerator.VerEntCfg,
+            		                                                                 referencedIdMapping.IdMapper), currentIndex);
+            	}
+            	// The key of the map is a property of the entity.
+            	return new MiddleComponentData(new MiddleMapKeyPropertyComponentMapper(mapKey,
+            	                                                                       propertyAuditingData.AccessType), currentIndex);
             }
-            else
-            {
-                // No index - creating a dummy mapper.
-                return new MiddleComponentData(new MiddleDummyComponentMapper(), 0);
-            }
+        	// No index - creating a dummy mapper.
+        	return new MiddleComponentData(new MiddleDummyComponentMapper(), 0);
         }
 
         /**
@@ -392,12 +389,12 @@ namespace NHibernate.Envers.Configuration.Metadata
         //@SuppressWarnings({"unchecked"})
         private MiddleComponentData AddValueToMiddleTable(IValue value, XmlElement xmlMapping,
                                                           QueryGeneratorBuilder queryGeneratorBuilder,
-                                                          String prefix, JoinColumnAttribute[] joinColumns) {
+                                                          string prefix, JoinColumnAttribute[] joinColumns) {
             IType type = value.Type;
             if (type is ManyToOneType) {
-                String prefixRelated = prefix + "_";
+                string prefixRelated = prefix + "_";
 
-                String referencedEntityName = MappingTools.getReferencedEntityName(value);
+                string referencedEntityName = MappingTools.getReferencedEntityName(value);
 
                 IdMappingData referencedIdMapping = mainGenerator.GetReferencedIdMappingData(referencingEntityName,
                         referencedEntityName, propertyAuditingData, true);
@@ -420,21 +417,19 @@ namespace NHibernate.Envers.Configuration.Metadata
 
                 return new MiddleComponentData(new MiddleRelatedComponentMapper(referencedIdData),
                         queryGeneratorBuilder.CurrentIndex);
-            } else {
-                // Last but one parameter: collection components are always insertable
-                bool mapped = mainGenerator.BasicMetadataGenerator.AddBasic(xmlMapping,
-                        new PropertyAuditingData(prefix, "field", ModificationStore.FULL, RelationTargetAuditMode.AUDITED, null, null, false),
-                        value, null, true, true);
-
-                if (mapped) {
-                    // Simple values are always stored in the first item of the array returned by the query generator.
-                    return new MiddleComponentData(new MiddleSimpleComponentMapper(mainGenerator.VerEntCfg, prefix), 0);
-                } else {
-                    mainGenerator.ThrowUnsupportedTypeException(type, referencingEntityName, propertyName);
-                    // Impossible to get here.
-                    throw new AssertionFailure();
-                }
             }
+        	// Last but one parameter: collection components are always insertable
+        	bool mapped = mainGenerator.BasicMetadataGenerator.AddBasic(xmlMapping,
+        	                                                            new PropertyAuditingData(prefix, "field", ModificationStore.FULL, RelationTargetAuditMode.AUDITED, null, null, false),
+        	                                                            value, null, true, true);
+
+        	if (mapped) {
+        		// Simple values are always stored in the first item of the array returned by the query generator.
+        		return new MiddleComponentData(new MiddleSimpleComponentMapper(mainGenerator.VerEntCfg, prefix), 0);
+        	}
+        	mainGenerator.ThrowUnsupportedTypeException(type, referencingEntityName, propertyName);
+        	// Impossible to get here.
+        	throw new AssertionFailure();
         }
 
         private void AddMapper(CommonCollectionMapperData commonCollectionMapperData, MiddleComponentData elementComponentData,
@@ -442,12 +437,12 @@ namespace NHibernate.Envers.Configuration.Metadata
             IType type = propertyValue.Type;
             if (type is SortedSetType) {
                 currentMapper.AddComposite(propertyAuditingData.getPropertyData(),
-                        new BasicCollectionMapper<IDictionary>(commonCollectionMapperData,
+                        new BasicCollectionMapper(commonCollectionMapperData,
                         typeof(TreeSet<>), typeof(SortedSetProxy<>), elementComponentData));
             } 
             else if (type is SetType) {
                 currentMapper.AddComposite(propertyAuditingData.getPropertyData(),
-                        new BasicCollectionMapper<Set>(commonCollectionMapperData,
+                        new BasicCollectionMapper(commonCollectionMapperData,
                         typeof(HashedSet<>), typeof(SetProxy<>), elementComponentData));
             } 
             else
@@ -476,7 +471,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             //}
         }
 
-        private void StoreMiddleEntityRelationInformation(String mappedBy) {
+        private void StoreMiddleEntityRelationInformation(string mappedBy) {
             // Only if this is a relation (when there is a referenced entity).
             if (referencedEntityName != null)
             {
@@ -491,9 +486,9 @@ namespace NHibernate.Envers.Configuration.Metadata
             }
         }
 
-        private XmlElement CreateMiddleEntityXml(String auditMiddleTableName, String auditMiddleEntityName, String where) {
-            String schema = mainGenerator.GetSchema(propertyAuditingData.JoinTable.Schema, propertyValue.CollectionTable);
-            String catalog = mainGenerator.GetCatalog(propertyAuditingData.JoinTable.Catalog, propertyValue.CollectionTable);
+        private XmlElement CreateMiddleEntityXml(string auditMiddleTableName, string auditMiddleEntityName, string where) {
+            string schema = mainGenerator.GetSchema(propertyAuditingData.JoinTable.Schema, propertyValue.CollectionTable);
+            string catalog = mainGenerator.GetCatalog(propertyAuditingData.JoinTable.Catalog, propertyValue.CollectionTable);
 
             XmlElement middleEntityXml = MetadataTools.CreateEntity(xmlMappingData.newAdditionalMapping(),
                     new AuditTableData(auditMiddleEntityName, auditMiddleTableName, schema, catalog), null);
@@ -519,11 +514,11 @@ namespace NHibernate.Envers.Configuration.Metadata
             return middleEntityXmlId;
         }
 
-        private String GetMappedBy(Mapping.Collection collectionValue) {
+        private string GetMappedBy(Mapping.Collection collectionValue) {
             PersistentClass referencedClass = ((OneToMany)collectionValue.Element).AssociatedClass;
 
             // If there's an @AuditMappedBy specified, returning it directly.
-            String auditMappedBy = propertyAuditingData.AuditMappedBy;
+            string auditMappedBy = propertyAuditingData.AuditMappedBy;
             if (auditMappedBy != null)
             {
                 return auditMappedBy;
@@ -546,9 +541,9 @@ namespace NHibernate.Envers.Configuration.Metadata
                     + referencingEntityName + "!");
         }
 
-        private String GetMappedBy(Table collectionTable, PersistentClass referencedClass) {
+        private string GetMappedBy(Table collectionTable, PersistentClass referencedClass) {
             // If there's an @AuditMappedBy specified, returning it directly.
-            String auditMappedBy = propertyAuditingData.AuditMappedBy;
+            string auditMappedBy = propertyAuditingData.AuditMappedBy;
             if (auditMappedBy != null)
             {
                 return auditMappedBy;
@@ -562,7 +557,7 @@ namespace NHibernate.Envers.Configuration.Metadata
                 {
                     // The equality is intentional. We want to find a collection property with the same collection table.
                     //noinspection ObjectEquality
-                    if (((NHibernate.Mapping.Collection)property.Value).CollectionTable == collectionTable)
+                    if (((Mapping.Collection)property.Value).CollectionTable == collectionTable)
                     {
                         return property.Name;
                     }

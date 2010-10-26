@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security;
-using System.Text;
+using Iesi.Collections;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
 using NHibernate.Envers.Exceptions;
@@ -17,47 +16,62 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
      * T has to implement ICollection.
      * @author Adam Warski (adam at warski dot org)
      */
-    public class BasicCollectionInitializor<T>: AbstractCollectionInitializor<T> {
+    public class BasicCollectionInitializor: AbstractCollectionInitializor
+	{
         private readonly System.Type collectionType;
         private readonly MiddleComponentData elementComponentData;
+    	private readonly System.Type[] _genericArguments;
 
-        public BasicCollectionInitializor(AuditConfiguration verCfg,
-                                           IAuditReaderImplementor versionsReader,
-                                           IRelationQueryGenerator queryGenerator,
-                                           Object primaryKey, long revision,
-                                           System.Type collectionType,
-                                           MiddleComponentData elementComponentData) 
-            :base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
+    	public BasicCollectionInitializor(AuditConfiguration verCfg,
+											IAuditReaderImplementor versionsReader,
+											IRelationQueryGenerator queryGenerator,
+											Object primaryKey, long revision,
+											System.Type collectionType,
+											MiddleComponentData elementComponentData,
+											System.Type[] genericArguments) 
+								:base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
         {
-            if (! (typeof(T).IsSubclassOf(typeof(ICollection)))) throw new NotSupportedException("Type supplied has to be derived from ICollection!");
             this.collectionType = collectionType;
             this.elementComponentData = elementComponentData;
+        	_genericArguments = genericArguments;
         }
 
-        protected override T InitializeCollection(int size) {
-            try {
-                return (T)Activator.CreateInstance(collectionType);
-            } catch (InstantiationException e) {
+        protected override object InitializeCollection(int size) 
+		{
+            try
+            {
+				var collType = collectionType.MakeGenericType(_genericArguments);
+                return Activator.CreateInstance(collType);
+            } 
+			catch (InstantiationException e) 
+			{
                 throw new AuditException(e);
-            } catch (SecurityException e) {
+            } 
+			catch (SecurityException e) 
+			{
                 throw new AuditException(e);
             }
         }
 
-        protected override void AddToCollection(T collection, Object collectionRow) {
-            Object elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
+        protected override void AddToCollection(object collection, Object collectionRow) 
+		{
+            object elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
 
             // If the target entity is not audited, the elements may be the entities already, so we have to check
             // if they are maps or not.
-            Object element;
-            if (elementData is IDictionary) {
+            object element;
+            if (elementData is IDictionary) 
+			{
                 element = elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
                         (IDictionary<String, Object>) elementData, null, revision);
-            } else {
+            } 
+			else 
+			{
                 element = elementData;
             }
-            throw new NotImplementedException("work in progress, figuring out next line");
-            //((ICollection)collection).Add(element);
+
+			//rk fix this, should of course not only support sets!
+			((ISet) collection).Add(element);
         }
     }
 }

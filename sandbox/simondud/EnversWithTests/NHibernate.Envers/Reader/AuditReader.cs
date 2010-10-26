@@ -72,10 +72,10 @@ namespace NHibernate.Envers.Reader
             {
                 throw new AuditException(e);
             }
-            catch (HibernateException e)
-            {//ORIG: NoResultException e
-                result = null;
-            }
+			catch (HibernateException e)
+			{//ORIG: NoResultException e
+				result = null;
+			}
 
             return result;
         }

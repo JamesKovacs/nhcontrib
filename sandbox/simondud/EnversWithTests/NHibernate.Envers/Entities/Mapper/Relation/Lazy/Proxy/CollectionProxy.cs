@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
@@ -14,30 +13,32 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
     [Serializable]
     public abstract class CollectionProxy<U, T> : ICollection<U> {
 
-	    private readonly IInitializor<T> initializor;
+	    private readonly IInitializor initializor;
         protected T delegat;
 
-        protected CollectionProxy() {
-            if (! typeof(T).IsSubclassOf(typeof(ICollection<>))) 
-                throw new NotSupportedException("Type U has to be a subclass of ICollection<>");
+        protected CollectionProxy() 
+		{
         }
 
-        public CollectionProxy(IInitializor<T> initializor) {
-            if (!typeof(T).IsSubclassOf(typeof(ICollection<>)))
-                throw new NotSupportedException("Type U has to be a subclass of ICollection<>");
+        public CollectionProxy(IInitializor initializor) 
+		{
             this.initializor = initializor;
         }
 
         protected void CheckInit() {
             if (delegat == null) {
-                delegat = initializor.Initialize();
+                delegat = (T)initializor.Initialize();
             }
         }
 
-        public int Count {get {
-            CheckInit();
-            return ((ICollection<U>)delegat).Count;
-        }}
+        public int Count 
+		{
+			get 
+			{
+				CheckInit();
+				return ((ICollection<U>)delegat).Count;
+			}
+		}
 
         public bool IsReadOnly
         {
@@ -48,7 +49,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
             }
         }
 
-        public bool Contains(U o) {
+        public bool Contains(U o) 
+		{
             CheckInit();
             return ((ICollection<U>)delegat).Contains<U>(o);
         }
@@ -59,37 +61,44 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
             ((ICollection<U>)delegat).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<U> GetEnumerator() {
+        public IEnumerator<U> GetEnumerator() 
+		{
             CheckInit();
             return ((ICollection<U>)delegat).GetEnumerator();
         }
 
-         public void Add(U o) {
+         public void Add(U o) 
+		 {
             CheckInit();
             ((ICollection<U>)delegat).Add(o);
         }
 
-        public bool Remove(U o) {
+        public bool Remove(U o) 
+		{
             CheckInit();
             return ((ICollection<U>)delegat).Remove(o);
         }
 
-        public void Clear() {
+        public void Clear() 
+		{
             CheckInit();
             ((ICollection<U>)delegat).Clear();
         }
 
-        public override String ToString() {
+        public override string ToString() 
+		{
             CheckInit();
             return delegat.ToString();
         }
 
-        public override bool Equals(Object obj) {
+        public override bool Equals(object obj) 
+		{
             CheckInit();
             return delegat.Equals(obj);
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode() 
+		{
             CheckInit();
             return delegat.GetHashCode();
         }

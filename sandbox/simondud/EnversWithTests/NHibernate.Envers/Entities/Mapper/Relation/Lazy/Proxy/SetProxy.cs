@@ -14,7 +14,7 @@ public class SetProxy<U>: CollectionProxy<U, ISet<U>>, ISet<U> {
     public SetProxy() {
     }
 
-    public SetProxy(IInitializor<ISet<U>> initializor):base(initializor) {
+    public SetProxy(IInitializor initializor):base(initializor) {
     }
 
     public object Clone()
