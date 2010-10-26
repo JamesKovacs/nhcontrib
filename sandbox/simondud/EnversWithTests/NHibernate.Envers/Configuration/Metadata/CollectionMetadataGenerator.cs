@@ -285,13 +285,13 @@ namespace NHibernate.Envers.Configuration.Metadata
                 mappedBy = GetMappedBy(propertyValue.CollectionTable, mainGenerator.Cfg.GetClassMapping(referencedEntityName));
 
                 referencingPrefixRelated = mappedBy + "_";
-                referencedPrefix = stringTools.GetLastComponent(referencedEntityName);
+                referencedPrefix = StringTools.GetLastComponent(referencedEntityName);
             }
             else
             {
                 mappedBy = null;
 
-                referencingPrefixRelated = stringTools.GetLastComponent(referencingEntityName) + "_";
+                referencingPrefixRelated = StringTools.GetLastComponent(referencingEntityName) + "_";
                 referencedPrefix = referencedEntityName == null ? "element" : propertyName;
             }
 

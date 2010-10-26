@@ -17,9 +17,9 @@ namespace NHibernate.Envers.Tests
         public void BaseSetup()
         {
             cfg = new Cfg.Configuration();
-            addListeners();
             cfg.Configure();
             addMappings();
+			addListeners();
             var sf = cfg.BuildSessionFactory();
             Session = sf.OpenSession();
             AuditReader = AuditReaderFactory.Get(Session);
