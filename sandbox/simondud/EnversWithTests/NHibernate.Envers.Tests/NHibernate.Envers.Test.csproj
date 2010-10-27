@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Collection\StringListEntity.cs" />
     <Compile Include="Entities\Collection\StringSetEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Integration\Basic\UnversionedPropertiesChangeTest.cs" />
     <Compile Include="Integration\Basic\UnversionedPropertyTest.cs" />
     <Compile Include="Integration\Cache\OneToManyTest.cs" />
+    <Compile Include="Integration\Collection\StringListTest.cs" />
     <Compile Include="Integration\Collection\StringSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />

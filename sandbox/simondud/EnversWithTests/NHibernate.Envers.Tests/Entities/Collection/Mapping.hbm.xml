@@ -6,9 +6,21 @@
     <id name="Id">
       <generator class="identity"/>
     </id>
-    <set name="Strings">
+    <set name="Strings" table="StringSetStrings">
       <key column ="StringSetEntityId" />
       <element column="string" type="string" />
     </set>
+  </class>
+
+  <class name="StringListEntity">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    
+    <list name="Strings" table="StringListStrings">
+      <key column ="StringListEntityId" />
+      <index type="Byte" column="stringIndex"/>
+      <element column="string" type="string" />
+    </list>
   </class>
 </hibernate-mapping>
