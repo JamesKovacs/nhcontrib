@@ -82,6 +82,7 @@
     <Compile Include="Configuration\Metadata\AuditMetadataGenerator.cs" />
     <Compile Include="Configuration\Metadata\AuditTableData.cs" />
     <Compile Include="Configuration\Metadata\BasicMetadataGenerator.cs" />
+    <Compile Include="Configuration\Metadata\CollectionMapperFactory.cs" />
     <Compile Include="Configuration\Metadata\CollectionMetadataGenerator.cs" />
     <Compile Include="Configuration\Metadata\ComponentMetadataGenerator.cs" />
     <Compile Include="Configuration\Metadata\EntityXmlMappingData.cs" />

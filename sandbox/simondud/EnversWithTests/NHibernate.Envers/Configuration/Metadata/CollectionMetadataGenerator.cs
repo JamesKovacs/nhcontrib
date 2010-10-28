@@ -38,7 +38,7 @@ namespace NHibernate.Envers.Configuration.Metadata
         private readonly PropertyAuditingData propertyAuditingData;
 
         private readonly EntityConfiguration referencingEntityConfiguration;
-    	private readonly CollectionMapperFactory collectionMapperFactory; //todo: make interface and make it injectable
+    	private readonly CollectionMapperFactory collectionMapperFactory; //todo: make interface and make it injectable (?)
         /**
          * Null if this collection isn't a relation to another entity.
          */
@@ -586,49 +586,4 @@ namespace NHibernate.Envers.Configuration.Metadata
                     + referencingEntityName + "!");
         }
     }
-
-
-	//rk: move this one, here just for now
-	internal class CollectionMapperFactory
-	{
-		public IPropertyMapper CreateBasicCollectionMapper(System.Type genericTypeArgument,
-																CommonCollectionMapperData commonCollectionMapperData,
-																System.Type collectionType,
-																System.Type proxyType,
-																MiddleComponentData elementComponentData)
-		{
-			var genericArgs = new[] { genericTypeArgument };
-			var type = typeof (SetCollectionMapper<>).MakeGenericType(genericArgs);
-			var proxyTypeGenerics = proxyType.MakeGenericType(genericArgs);
-			return
-				(IPropertyMapper)
-				Activator.CreateInstance(type, commonCollectionMapperData, collectionType, proxyTypeGenerics, elementComponentData);
-		}
-
-		public IPropertyMapper CreateListCollectionMapper(System.Type genericTypeArgument,
-															CommonCollectionMapperData commonCollectionMapperData,
-															MiddleComponentData elementComponentData,
-															MiddleComponentData indexComponentData)
-		{
-			var type = typeof(ListCollectionMapper<>).MakeGenericType(new[] { genericTypeArgument });
-			return (IPropertyMapper)
-			       Activator.CreateInstance(type, commonCollectionMapperData, elementComponentData, indexComponentData);
-		}
-
-		public IPropertyMapper CreateMapCollectionMapper(System.Type keyType, 
-														System.Type valueType, 
-														CommonCollectionMapperData commonCollectionMapperData, 
-														System.Type dictionaryType, 
-														System.Type proxyType, 
-														MiddleComponentData elementComponentData, 
-														MiddleComponentData indexComponentData)
-		{
-			var genericArgs = new[] {keyType, valueType};
-			var type = typeof (MapCollectionMapper<,>).MakeGenericType(genericArgs);
-			var proxyTypeGeneric = proxyType.MakeGenericType(genericArgs);
-			return (IPropertyMapper)
-			       Activator.CreateInstance(type, commonCollectionMapperData, dictionaryType, proxyTypeGeneric, elementComponentData,
-			                                indexComponentData);
-		}
-	}
 }

@@ -23,7 +23,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 											MiddleComponentData elementComponentData) 
 								:base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
         {
-            this.collectionType = collectionType.MakeGenericType(typeof(T));
+            this.collectionType = collectionType;
             this.elementComponentData = elementComponentData;
         }
 

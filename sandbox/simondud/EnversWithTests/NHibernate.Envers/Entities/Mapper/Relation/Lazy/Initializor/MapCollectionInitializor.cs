@@ -23,7 +23,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 										MiddleComponentData indexComponentData) 
 						: base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
 		{
-			_collectionType = collectionType.MakeGenericType(new[]{typeof(K), typeof(V)});
+			_collectionType = collectionType;
 			_elementComponentData = elementComponentData;
 			_indexComponentData = indexComponentData;
 		}
