@@ -10,12 +10,6 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-
-    /**
-     * Initializes a non-indexed java collection (set or list, eventually sorted).
-     * T has to implement ICollection.
-     * @author Adam Warski (adam at warski dot org)
-     */
     public class BasicCollectionInitializor<T> : AbstractCollectionInitializor<T>
 	{
         private readonly System.Type collectionType;
@@ -51,23 +45,21 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 
         protected override void AddToCollection(object collection, Object collectionRow) 
 		{
-            object elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
+            var elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
 
             // If the target entity is not audited, the elements may be the entities already, so we have to check
             // if they are maps or not.
-            object element;
+            T element;
             if (elementData is IDictionary) 
 			{
-                element = elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
+                element = (T)elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
                         (IDictionary<String, Object>) elementData, null, revision);
             } 
 			else 
 			{
-                element = elementData;
+                element = (T)elementData;
             }
-
-			//rk fix this, should of course not only support sets!
-			((ISet) collection).Add(element);
+			((ICollection<T>) collection).Add(element);
         }
     }
 }

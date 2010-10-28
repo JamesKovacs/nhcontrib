@@ -64,9 +64,9 @@ namespace NHibernate.Envers.Tests.Integration.Basic
         [Test]
         public void VerifyRevisionDates()
         {
-            for (int i=1; i<7; i++)
+            for (var i=1; i<7; i++)
             {
-                Assert.GreaterOrEqual(AuditReader.GetRevisionDate(i), AuditReader.GetRevisionDate(i + 1));
+                Assert.GreaterOrEqual(AuditReader.GetRevisionDate(i + 1), AuditReader.GetRevisionDate(i));
             }
         }
 
