@@ -19,11 +19,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
         protected readonly long revision;
         protected readonly EntityInstantiator entityInstantiator;
 
-        public AbstractCollectionInitializor(AuditConfiguration verCfg,
+    	protected AbstractCollectionInitializor(AuditConfiguration verCfg,
 											IAuditReaderImplementor versionsReader,
 											IRelationQueryGenerator queryGenerator,
 											object primaryKey, 
-											long revision) {
+											long revision) 
+		{
             this.versionsReader = versionsReader;
             this.queryGenerator = queryGenerator;
             this.primaryKey = primaryKey;
@@ -34,7 +35,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 
         protected abstract ICollection<T> InitializeCollection(int size);
 
-        protected abstract void AddToCollection(object collection, object collectionRow);
+        protected abstract void AddToCollection(ICollection<T> collection, object collectionRow);
 
         public ICollection<T> Initialize() 
 		{

@@ -43,7 +43,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
             }
         }
 
-        protected override void AddToCollection(object collection, Object collectionRow) 
+        protected override void AddToCollection(ICollection<T> collection, Object collectionRow) 
 		{
             var elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
 
@@ -59,7 +59,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 			{
                 element = (T)elementData;
             }
-			((ICollection<T>) collection).Add(element);
+			collection.Add(element);
         }
     }
 }

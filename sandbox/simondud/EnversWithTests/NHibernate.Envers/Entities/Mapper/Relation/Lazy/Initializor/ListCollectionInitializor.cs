@@ -34,7 +34,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 			return ret;
 		}
 
-		protected override void AddToCollection(object collection, object collectionRow)
+		protected override void AddToCollection(ICollection<T> collection, object collectionRow)
 		{
 			var elementData = ((System.Collections.IList)collectionRow)[_elementComponentData.ComponentIndex];
 			var element = _elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
