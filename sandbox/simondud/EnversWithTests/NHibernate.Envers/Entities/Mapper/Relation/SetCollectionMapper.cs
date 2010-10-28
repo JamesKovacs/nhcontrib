@@ -35,12 +35,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 											elementComponentData);
         }
 
-        protected override ICollection GetNewCollectionContent(IPersistentCollection newCollection) 
+        protected override IEnumerable GetNewCollectionContent(IPersistentCollection newCollection) 
         {
             return  (ICollection) newCollection;
         }
 
-		protected override ICollection GetOldCollectionContent(object oldCollection)
+		protected override IEnumerable GetOldCollectionContent(object oldCollection)
         {
             if (oldCollection == null) 
             {
@@ -51,7 +51,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             {
                 return oldCollAsDic.Keys;
             }
-            return (ICollection) oldCollection;
+            return (IEnumerable) oldCollection;
         }
 
         protected override void MapToMapFromObject(IDictionary<string, object> data, object changed) 

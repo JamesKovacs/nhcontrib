@@ -24,22 +24,22 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 			_indexComponentData = indexComponentData;
 		}
 
-		protected override ICollection GetNewCollectionContent(IPersistentCollection newCollection)
+		protected override IEnumerable GetNewCollectionContent(IPersistentCollection newCollection)
 		{
 			if (newCollection == null)
 			{
 				return null;
 			}
-			return (ICollection)newCollection;
+			return (IEnumerable) newCollection;
 		}
 
-		protected override ICollection GetOldCollectionContent(object oldCollection)
+		protected override IEnumerable GetOldCollectionContent(object oldCollection)
 		{
 			if (oldCollection == null)
 			{
 				return null;
 			}
-			return ((ICollection)oldCollection);
+			return (IEnumerable)oldCollection;
 		}
 
 		protected override void MapToMapFromObject(IDictionary<string, object> data, object changed)

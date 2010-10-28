@@ -442,7 +442,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 			IPropertyMapper collectionMapper;
 			if (type is SetType)
 			{
-				collectionMapper = collectionMapperFactory.CreateBasicCollectionMapper(genericArguments[0],
+				collectionMapper = collectionMapperFactory.CreateSetCollectionMapper(genericArguments[0],
 																				commonCollectionMapperData,
 																				typeof(HashedSet<>),
 																				typeof(SetProxy<>),

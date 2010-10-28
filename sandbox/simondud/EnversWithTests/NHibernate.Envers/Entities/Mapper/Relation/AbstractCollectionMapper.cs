@@ -33,8 +33,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
         	this.proxyType = proxyType;
         }
 
-        protected abstract ICollection GetNewCollectionContent(IPersistentCollection newCollection);
-        protected abstract ICollection GetOldCollectionContent(object oldCollection);
+        protected abstract IEnumerable GetNewCollectionContent(IPersistentCollection newCollection);
+        protected abstract IEnumerable GetOldCollectionContent(object oldCollection);
 
         /**
          * Maps the changed collection element to the given map.

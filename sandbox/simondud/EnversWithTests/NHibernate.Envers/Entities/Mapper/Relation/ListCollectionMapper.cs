@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using NHibernate.Collection;
@@ -12,8 +11,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 {
 	public class ListCollectionMapper<T> : AbstractCollectionMapper<IList<T>> 
 	{
-		private MiddleComponentData _elementComponentData;
-		private MiddleComponentData _indexComponentData;
+		private readonly MiddleComponentData _elementComponentData;
+		private readonly MiddleComponentData _indexComponentData;
 
 		public ListCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
 									MiddleComponentData elementComponentData, 
@@ -24,22 +23,14 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 			_indexComponentData = indexComponentData;
 		}
 
-		protected override ICollection GetNewCollectionContent(IPersistentCollection newCollection)
+		protected override IEnumerable GetNewCollectionContent(IPersistentCollection newCollection)
 		{
-			if (newCollection == null)
-			{
-				return null;
-			}
-			return (ICollection) Toolz.ListToIndexElementPairList<T>((IList)newCollection);
+			return newCollection == null ? null : Toolz.ListToIndexElementPairList<T>((IList)newCollection);
 		}
 
-		protected override ICollection GetOldCollectionContent(object oldCollection)
+		protected override IEnumerable GetOldCollectionContent(object oldCollection)
 		{
-			if (oldCollection == null)
-			{
-				return null;
-			}
-			return (ICollection) Toolz.ListToIndexElementPairList<T>((IList)oldCollection);
+			return oldCollection == null ? null : Toolz.ListToIndexElementPairList<T>((IList)oldCollection);
 		}
 
 		protected override void MapToMapFromObject(IDictionary<string, object> data, object changed)

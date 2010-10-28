@@ -6,7 +6,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 {
 	public class CollectionMapperFactory
 	{
-		public IPropertyMapper CreateBasicCollectionMapper(System.Type genericTypeArgument,
+		public IPropertyMapper CreateSetCollectionMapper(System.Type genericTypeArgument,
 																CommonCollectionMapperData commonCollectionMapperData,
 																System.Type collectionType,
 																System.Type proxyType,
