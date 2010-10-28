@@ -6,30 +6,27 @@ using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 {
-    /**
-     * @author Adam Warski (adam at warski dot org)
-     */
-    //T extends Collection<U>
     [Serializable]
-    public abstract class CollectionProxy<U, T> : ICollection<U> {
-
-	    private readonly IInitializor<U> initializor;
-        protected ICollection<U> delegat;
+    public abstract class CollectionProxy<T, TDelegate> : ICollection<T>
+										where TDelegate : class, ICollection<T>
+	{
+		private readonly IInitializor<T> initializor;
+		protected TDelegate delegat;
 
         protected CollectionProxy() 
 		{
         }
 
-        public CollectionProxy(IInitializor<U> initializor) 
+    	protected CollectionProxy(IInitializor<T> initializor) 
 		{
             this.initializor = initializor;
         }
 
         protected void CheckInit() 
 		{
-            if (delegat == null) 
-			{
-                delegat = initializor.Initialize();
+            if (delegat == null)
+            {
+                delegat = (TDelegate) initializor.Initialize();
             }
         }
 
@@ -51,31 +48,31 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
             }
         }
 
-        public bool Contains(U o) 
+        public bool Contains(T o) 
 		{
             CheckInit();
-            return delegat.Contains<U>(o);
+            return delegat.Contains<T>(o);
         }
 
-        public void CopyTo(U[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             CheckInit();
             delegat.CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<U> GetEnumerator() 
+        public IEnumerator<T> GetEnumerator() 
 		{
             CheckInit();
             return delegat.GetEnumerator();
         }
 
-         public void Add(U o) 
+         public void Add(T o) 
 		 {
             CheckInit();
             delegat.Add(o);
         }
 
-        public bool Remove(U o) 
+        public bool Remove(T o) 
 		{
             CheckInit();
             return delegat.Remove(o);
