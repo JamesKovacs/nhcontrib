@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security;
 using Iesi.Collections;
-using Iesi.Collections.Generic;
 using NHibernate.Collection;
 using NHibernate.Engine;
 using NHibernate.Envers.Configuration;
@@ -14,10 +13,6 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-	/// <summary>
-	/// Abstract type for collection mappers
-	/// </summary>
-	/// <typeparam name="T">Type of generic collection argument, eg string, IPerson or int</typeparam>
     public abstract class AbstractCollectionMapper<T> : IPropertyMapper
     {
         protected readonly CommonCollectionMapperData commonCollectionMapperData;    

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security;
 using Iesi.Collections.Generic;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
-using NHibernate.Envers.Exceptions;
 using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
@@ -29,18 +27,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 
         protected override ISet<T> InitializeCollection(int size) 
 		{
-            try
-            {
-                return (ISet<T>) Activator.CreateInstance(collectionType);
-            } 
-			catch (InstantiationException e) 
-			{
-                throw new AuditException(e);
-            } 
-			catch (SecurityException e) 
-			{
-                throw new AuditException(e);
-            }
+			return (ISet<T>) Activator.CreateInstance(collectionType);
         }
 
         protected override void AddToCollection(ISet<T> collection, object collectionRow) 

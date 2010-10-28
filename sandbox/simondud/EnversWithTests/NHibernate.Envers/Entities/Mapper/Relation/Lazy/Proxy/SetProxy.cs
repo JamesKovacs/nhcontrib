@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Iesi.Collections.Generic;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
@@ -18,57 +17,71 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 
 		public object Clone()
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.Clone();
 		}
 
 		public ISet<T> Union(ISet<T> a)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.Union(a);
 		}
 
 		public ISet<T> Intersect(ISet<T> a)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.Intersect(a);
 		}
 
 		public ISet<T> Minus(ISet<T> a)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.Minus(a);
 		}
 
 		public ISet<T> ExclusiveOr(ISet<T> a)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.ExclusiveOr(a);
 		}
 
 		public bool ContainsAll(ICollection<T> c)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.ContainsAll(c);
 		}
 
-		public bool Add(T o)
+		public new bool Add(T o)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.Add(o);
 		}
 
 		public bool AddAll(ICollection<T> c)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.AddAll(c);
 		}
 
 		public bool RemoveAll(ICollection<T> c)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.RemoveAll(c);
 		}
 
 		public bool RetainAll(ICollection<T> c)
 		{
-			throw new NotImplementedException();
+			CheckInit();
+			return delegat.RetainAll(c);
 		}
 
 		public bool IsEmpty
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				CheckInit();
+				return delegat.IsEmpty;
+			}
 		}
 	}
 }

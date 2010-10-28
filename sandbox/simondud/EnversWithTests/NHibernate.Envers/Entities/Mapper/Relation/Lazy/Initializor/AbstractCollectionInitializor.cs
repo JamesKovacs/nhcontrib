@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using NHibernate.Envers.Configuration;
+﻿using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
 using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-    /**
-     * Initializes a persistent collection.
-     * @author Adam Warski (adam at warski dot org)
-     */
     public abstract class AbstractCollectionInitializor<T> : IInitializor<T>
 	{
         private readonly IAuditReaderImplementor versionsReader;
@@ -39,14 +33,11 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
         public T Initialize() 
 		{
             var collectionContent = queryGenerator.GetQuery(versionsReader, primaryKey, revision).List();
-
             var collection = InitializeCollection(collectionContent.Count);
-
             foreach (var collectionRow in collectionContent) 
 			{
                 AddToCollection(collection, collectionRow);
             }
-
             return collection;
         }
     }
