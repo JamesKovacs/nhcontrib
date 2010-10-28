@@ -10,7 +10,7 @@ using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-	public class ListCollectionMapper<T> : AbstractCollectionMapper<T> 
+	public class ListCollectionMapper<T> : AbstractCollectionMapper<IList<T>> 
 	{
 		private MiddleComponentData _elementComponentData;
 		private MiddleComponentData _indexComponentData;
@@ -18,7 +18,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 		public ListCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
 									MiddleComponentData elementComponentData, 
 									MiddleComponentData indexComponentData) 
-						: base(commonCollectionMapperData, typeof(List<>), typeof(ListProxy<>))
+						: base(commonCollectionMapperData, typeof(List<>), typeof(ListProxy<T>))
 		{
 			_elementComponentData = elementComponentData;
 			_indexComponentData = indexComponentData;
@@ -49,7 +49,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 			_indexComponentData.ComponentMapper.MapToMapFromObject(data, indexValuePair.First);
 		}
 
-		protected override IInitializor<T> GetInitializor(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader, object primaryKey, long revision)
+		protected override IInitializor<IList<T>> GetInitializor(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader, object primaryKey, long revision)
 		{
 			return new ListCollectionInitializor<T>(verCfg, 
 												versionsReader, 

@@ -124,7 +124,7 @@
     <Compile Include="Entities\Mapper\PersistentCollectionChangeData.cs" />
     <Compile Include="Entities\Mapper\Relation\AbstractCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\AbstractDelegateSessionImplementor.cs" />
-    <Compile Include="Entities\Mapper\Relation\BasicCollectionMapper.cs" />
+    <Compile Include="Entities\Mapper\Relation\SetCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\CommonCollectionMapperData.cs" />
     <Compile Include="Entities\Mapper\Relation\Component\IMiddleComponentMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\Component\MiddleDummyComponentMapper.cs" />
@@ -134,14 +134,16 @@
     <Compile Include="Entities\Mapper\Relation\Component\MiddleSimpleComponentMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\Component\MiddleStraightComponentMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\AbstractCollectionInitializor.cs" />
-    <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\BasicCollectionInitializor.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\SetCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\IInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\ListCollectionInitializor.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\MapCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\CollectionProxy.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\ListProxy.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\MapProxy.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\SetProxy.cs" />
-    <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\SortedSetProxy.cs" />
     <Compile Include="Entities\Mapper\Relation\ListCollectionMapper.cs" />
+    <Compile Include="Entities\Mapper\Relation\MapCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\MiddleComponentData.cs" />
     <Compile Include="Entities\Mapper\Relation\MiddleIdData.cs" />
     <Compile Include="Entities\Mapper\Relation\OneToOneNotOwningMapper.cs" />

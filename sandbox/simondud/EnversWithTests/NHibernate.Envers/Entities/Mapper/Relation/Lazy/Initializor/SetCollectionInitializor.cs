@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security;
-using Iesi.Collections;
+using Iesi.Collections.Generic;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
 using NHibernate.Envers.Exceptions;
@@ -10,12 +10,12 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-    public class BasicCollectionInitializor<T> : AbstractCollectionInitializor<T>
+    public class SetCollectionInitializor<T> : AbstractCollectionInitializor<ISet<T>>
 	{
         private readonly System.Type collectionType;
         private readonly MiddleComponentData elementComponentData;
 
-    	public BasicCollectionInitializor(AuditConfiguration verCfg,
+    	public SetCollectionInitializor(AuditConfiguration verCfg,
 											IAuditReaderImplementor versionsReader,
 											IRelationQueryGenerator queryGenerator,
 											Object primaryKey, long revision,
@@ -27,11 +27,11 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
             this.elementComponentData = elementComponentData;
         }
 
-        protected override ICollection<T> InitializeCollection(int size) 
+        protected override ISet<T> InitializeCollection(int size) 
 		{
             try
             {
-                return (ICollection<T>) Activator.CreateInstance(collectionType);
+                return (ISet<T>) Activator.CreateInstance(collectionType);
             } 
 			catch (InstantiationException e) 
 			{
@@ -43,7 +43,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
             }
         }
 
-        protected override void AddToCollection(ICollection<T> collection, Object collectionRow) 
+        protected override void AddToCollection(ISet<T> collection, object collectionRow) 
 		{
             var elementData = ((IList) collectionRow)[elementComponentData.ComponentIndex];
 

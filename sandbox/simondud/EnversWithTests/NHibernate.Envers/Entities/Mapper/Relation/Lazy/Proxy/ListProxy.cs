@@ -9,7 +9,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 		{
 		}
 
-		public ListProxy(IInitializor<T> initializor):base(initializor) 
+		public ListProxy(IInitializor<IList<T>> initializor)
+					:base(initializor) 
 		{
 		}
 

@@ -23,7 +23,6 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
         protected readonly CommonCollectionMapperData commonCollectionMapperData;    
         protected readonly System.Type collectionType;
     	private readonly System.Type proxyType;
-    	protected System.Type[] GenericArguments;
 
     	protected AbstractCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
                                             System.Type collectionType, 
@@ -31,7 +30,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
         {
             this.commonCollectionMapperData = commonCollectionMapperData;
             this.collectionType = collectionType;
-        	this.proxyType = proxyType.MakeGenericType(typeof(T));
+        	this.proxyType = proxyType;
         }
 
         protected abstract ICollection GetNewCollectionContent(IPersistentCollection newCollection);
@@ -44,7 +43,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
          */
         protected abstract void MapToMapFromObject(IDictionary<string, object> data, object changed);
 
-        private void addCollectionChanges(IList<PersistentCollectionChangeData> collectionChanges, 
+        private void addCollectionChanges(ICollection<PersistentCollectionChangeData> collectionChanges, 
                                             IEnumerable changed, 
                                             RevisionType revisionType, 
                                             object id) 
@@ -148,12 +147,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                                         IAuditReaderImplementor versionsReader, 
                                         long revision) 
         {
-			//rk - rewrite this!
             var propInfo = obj.GetType().GetProperty(
                 commonCollectionMapperData.CollectionReferencingPropertyData.Name);
-
-			if (GenericArguments == null)
-				GenericArguments = propInfo.PropertyType.GetGenericArguments();
 
 			try 
 			{

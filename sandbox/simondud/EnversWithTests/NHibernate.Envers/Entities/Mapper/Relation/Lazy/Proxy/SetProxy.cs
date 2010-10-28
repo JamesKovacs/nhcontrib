@@ -5,12 +5,15 @@ using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 {
-	public class SetProxy<T>: CollectionProxy<T, ISet<T>>, ISet<T> {
-
-		public SetProxy() {
+	public class SetProxy<T>: CollectionProxy<T, ISet<T>>, ISet<T> 
+	{
+		public SetProxy() 
+		{
 		}
 
-		public SetProxy(IInitializor<T> initializor):base(initializor) {
+		public SetProxy(IInitializor<ISet<T>> initializor)
+						:base(initializor) 
+		{
 		}
 
 		public object Clone()

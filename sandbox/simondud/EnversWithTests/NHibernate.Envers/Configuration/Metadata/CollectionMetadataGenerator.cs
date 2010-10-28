@@ -17,7 +17,6 @@ using NHibernate.Envers.Entities;
 using NHibernate.Envers.Entities.Mapper.Id;
 using System.Xml;
 using NHibernate.Envers.Entities.Mapper.Relation;
-using C5;
 
 namespace NHibernate.Envers.Configuration.Metadata
 {
@@ -456,6 +455,16 @@ namespace NHibernate.Envers.Configuration.Metadata
 				                                                                            elementComponentData,
 				                                                                            indexComponentData);
 			}
+			else if (type is MapType)
+			{
+				collectionMapper = collectionMapperFactory.CreateMapCollectionMapper(genericArguments[0],
+				                                                                     genericArguments[1],
+				                                                                     commonCollectionMapperData,
+				                                                                     typeof (Dictionary<,>),
+				                                                                     typeof (MapProxy<,>),
+				                                                                     elementComponentData,
+				                                                                     indexComponentData);
+			}
 			else
 				throw new NotImplementedException();
 
@@ -472,7 +481,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 				//            HashMap.class, MapProxy.class, elementComponentData, indexComponentData));
 				//} else if (type is BagType) {
 				//    currentMapper.addComposite(propertyAuditingData.getPropertyData(),
-				//            new BasicCollectionMapper<List>(commonCollectionMapperData,
+				//            new SetCollectionMapper<List>(commonCollectionMapperData,
 				//            ArrayList.class, ListProxy.class, elementComponentData));
 				//} else {
 				//    mainGenerator.ThrowUnsupportedTypeException(type, referencingEntityName, propertyName);
@@ -588,10 +597,12 @@ namespace NHibernate.Envers.Configuration.Metadata
 																System.Type proxyType,
 																MiddleComponentData elementComponentData)
 		{
-			var type = typeof (BasicCollectionMapper<>).MakeGenericType(new[] {genericTypeArgument});
+			var genericArgs = new[] { genericTypeArgument };
+			var type = typeof (SetCollectionMapper<>).MakeGenericType(genericArgs);
+			var proxyTypeGenerics = proxyType.MakeGenericType(genericArgs);
 			return
 				(IPropertyMapper)
-				Activator.CreateInstance(type, commonCollectionMapperData, collectionType, proxyType, elementComponentData);
+				Activator.CreateInstance(type, commonCollectionMapperData, collectionType, proxyTypeGenerics, elementComponentData);
 		}
 
 		public IPropertyMapper CreateListCollectionMapper(System.Type genericTypeArgument,
@@ -602,6 +613,22 @@ namespace NHibernate.Envers.Configuration.Metadata
 			var type = typeof(ListCollectionMapper<>).MakeGenericType(new[] { genericTypeArgument });
 			return (IPropertyMapper)
 			       Activator.CreateInstance(type, commonCollectionMapperData, elementComponentData, indexComponentData);
+		}
+
+		public IPropertyMapper CreateMapCollectionMapper(System.Type keyType, 
+														System.Type valueType, 
+														CommonCollectionMapperData commonCollectionMapperData, 
+														System.Type dictionaryType, 
+														System.Type proxyType, 
+														MiddleComponentData elementComponentData, 
+														MiddleComponentData indexComponentData)
+		{
+			var genericArgs = new[] {keyType, valueType};
+			var type = typeof (MapCollectionMapper<,>).MakeGenericType(genericArgs);
+			var proxyTypeGeneric = proxyType.MakeGenericType(genericArgs);
+			return (IPropertyMapper)
+			       Activator.CreateInstance(type, commonCollectionMapperData, dictionaryType, proxyTypeGeneric, elementComponentData,
+			                                indexComponentData);
 		}
 	}
 }

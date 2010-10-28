@@ -23,6 +23,17 @@
     </list>
   </class>
 
+  <class name="StringMapEntity">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <map name="Strings" table="StringMapStrings">
+      <key column ="StringListEntityId" />
+      <index type="string" column="stringKey"/>
+      <element column="string" type="string" />
+    </map>
+  </class>
+
   <class name="EnumSetEntity">
     <id name="Id">
       <generator class="identity"/>

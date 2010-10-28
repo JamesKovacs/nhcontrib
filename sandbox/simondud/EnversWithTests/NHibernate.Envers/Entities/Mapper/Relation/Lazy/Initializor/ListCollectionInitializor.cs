@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
@@ -6,7 +7,7 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-	public class ListCollectionInitializor<T> : AbstractCollectionInitializor<T>
+	public class ListCollectionInitializor<T> : AbstractCollectionInitializor<IList<T>>
 	{
 		private readonly MiddleComponentData _elementComponentData;
 		private readonly MiddleComponentData _indexComponentData;
@@ -24,7 +25,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 			_indexComponentData = indexComponentData;
 		}
 
-		protected override ICollection<T> InitializeCollection(int size)
+		protected override IList<T> InitializeCollection(int size)
 		{
 			var ret = new List<T>(size);
 			for (var i = 0; i < size; i++)
@@ -34,20 +35,20 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 			return ret;
 		}
 
-		protected override void AddToCollection(ICollection<T> collection, object collectionRow)
+		protected override void AddToCollection(IList<T> collection, object collectionRow)
 		{
-			var elementData = ((System.Collections.IList)collectionRow)[_elementComponentData.ComponentIndex];
-			var element = _elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
+			var elementData = ((IList)collectionRow)[_elementComponentData.ComponentIndex];
+			var element = (T)_elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
 																				(IDictionary<String, Object>)elementData, 
 																				null, 
 																				revision);
 
-			var indexData = ((System.Collections.IList)collectionRow)[_indexComponentData.ComponentIndex];
+			var indexData = ((IList)collectionRow)[_indexComponentData.ComponentIndex];
 			var index = (int)_indexComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
 																				(IDictionary<String, Object>)indexData, 
 																				element, 
 																				revision);
-			((IList<T>)collection)[index] = (T)element;
+			collection[index] = element;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Iesi.Collections.Generic;
 using NHibernate.Collection;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
@@ -7,11 +8,11 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-	public sealed class BasicCollectionMapper<T> : AbstractCollectionMapper<T>
+	public sealed class SetCollectionMapper<T> : AbstractCollectionMapper<ISet<T>>
     {
         private readonly MiddleComponentData elementComponentData;
 
-        public BasicCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
+        public SetCollectionMapper(CommonCollectionMapperData commonCollectionMapperData,
                                     System.Type collectionType, 
 									System.Type proxyType,
                                     MiddleComponentData elementComponentData) 
@@ -20,12 +21,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             this.elementComponentData = elementComponentData;
         }
 
-        protected override IInitializor<T> GetInitializor(AuditConfiguration verCfg, 
+        protected override IInitializor<ISet<T>> GetInitializor(AuditConfiguration verCfg, 
 														IAuditReaderImplementor versionsReader,
 														object primaryKey, 
 														long revision) 
         {
-            return new BasicCollectionInitializor<T>(verCfg, 
+            return new SetCollectionInitializor<T>(verCfg, 
 											versionsReader, 
 											commonCollectionMapperData.QueryGenerator,
 											primaryKey, 

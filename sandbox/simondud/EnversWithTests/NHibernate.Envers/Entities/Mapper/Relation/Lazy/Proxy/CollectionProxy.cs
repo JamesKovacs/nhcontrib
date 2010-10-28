@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 {
-    [Serializable]
-    public abstract class CollectionProxy<T, TDelegate> : ICollection<T>
-										where TDelegate : class, ICollection<T>
+    public abstract class CollectionProxy<TItem, TCollection> : ICollection<TItem>
+							where TCollection : class, ICollection<TItem>
 	{
-		private readonly IInitializor<T> initializor;
-		protected TDelegate delegat;
+		private readonly IInitializor<TCollection> initializor;
+		protected TCollection delegat;
 
         protected CollectionProxy() 
 		{
         }
 
-    	protected CollectionProxy(IInitializor<T> initializor) 
+		protected CollectionProxy(IInitializor<TCollection> initializor) 
 		{
             this.initializor = initializor;
         }
@@ -26,7 +23,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 		{
             if (delegat == null)
             {
-                delegat = (TDelegate) initializor.Initialize();
+                delegat = initializor.Initialize();
             }
         }
 
@@ -48,31 +45,31 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
             }
         }
 
-        public bool Contains(T o) 
+        public bool Contains(TItem o) 
 		{
             CheckInit();
-            return delegat.Contains<T>(o);
+            return delegat.Contains(o);
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+		public void CopyTo(TItem[] array, int arrayIndex)
         {
             CheckInit();
             delegat.CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<T> GetEnumerator() 
+		public IEnumerator<TItem> GetEnumerator() 
 		{
             CheckInit();
             return delegat.GetEnumerator();
         }
 
-         public void Add(T o) 
-		 {
+		public void Add(TItem o) 
+		{
             CheckInit();
             delegat.Add(o);
         }
 
-        public bool Remove(T o) 
+		public bool Remove(TItem o) 
 		{
             CheckInit();
             return delegat.Remove(o);
