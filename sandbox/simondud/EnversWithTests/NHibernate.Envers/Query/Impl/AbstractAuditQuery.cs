@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities;
@@ -116,59 +115,69 @@ namespace NHibernate.Envers.Query.Impl
         private int? timeout;
         private LockMode lockMode;
 
-        public IAuditQuery SetMaxResults(int _maxResults) {
-            this.maxResults = _maxResults;
+        public IAuditQuery SetMaxResults(int _maxResults) 
+		{
+            maxResults = _maxResults;
             return this;
         }
 
-        public IAuditQuery SetFirstResult(int firstResult) {
+        public IAuditQuery SetFirstResult(int firstResult) 
+		{
             this.firstResult = firstResult;
             return this;
         }
 
-        public IAuditQuery SetCacheable(bool cacheable) {
+        public IAuditQuery SetCacheable(bool cacheable) 
+		{
             this.cacheable = cacheable;
             return this;
         }
 
-        public IAuditQuery SetCacheRegion(String cacheRegion) {
+        public IAuditQuery SetCacheRegion(string cacheRegion) 
+		{
             this.cacheRegion = cacheRegion;
             return this;
         }
 
-        public IAuditQuery SetComment(String comment) {
+        public IAuditQuery SetComment(string comment) 
+		{
             this.comment = comment;
             return this;
         }
 
-        public IAuditQuery SetFlushMode(FlushMode flushMode) {
+        public IAuditQuery SetFlushMode(FlushMode flushMode) 
+		{
             this.flushMode = flushMode;
             return this;
         }
 
-        public IAuditQuery SetCacheMode(CacheMode cacheMode) {
+        public IAuditQuery SetCacheMode(CacheMode cacheMode) 
+		{
             this.cacheMode = cacheMode;
             return this;
         }
 
-        public IAuditQuery SetTimeout(int timeout) {
+        public IAuditQuery SetTimeout(int timeout) 
+		{
             this.timeout = timeout;
             return this;
         }
 
-        public IAuditQuery SetLockMode(LockMode lockMode) {
+        public IAuditQuery SetLockMode(LockMode lockMode) 
+		{
             this.lockMode = lockMode;
             return this;
         }
 
-        protected void setQueryProperties(IQuery query) {
+        protected void setQueryProperties(IQuery query) 
+		{
             if (maxResults != null) query.SetMaxResults((int)maxResults);
             if (firstResult != null) query.SetFirstResult((int)firstResult);
             if (cacheable != null) query.SetCacheable((bool)cacheable);
             if (cacheRegion != null) query.SetCacheRegion(cacheRegion);
             if (comment != null) query.SetComment(comment);
-            if (flushMode != null) query.SetFlushMode(flushMode);
-            if (cacheMode != null) query.SetCacheMode(cacheMode);
+            query.SetFlushMode(flushMode);
+            query.SetCacheMode(cacheMode);
             if (timeout != null) query.SetTimeout((int)timeout);
             if (lockMode != null) query.SetLockMode("e", lockMode);
         }

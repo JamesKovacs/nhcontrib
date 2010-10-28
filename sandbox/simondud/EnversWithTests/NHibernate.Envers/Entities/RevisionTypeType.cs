@@ -77,7 +77,7 @@ namespace NHibernate.Envers.Entities
             return x.GetHashCode();
         }
 
-        public bool Equals(Object x, Object y){
+        public new bool Equals(Object x, Object y){
             //noinspection ObjectEquality
             if (x == y) {
                 return true;
