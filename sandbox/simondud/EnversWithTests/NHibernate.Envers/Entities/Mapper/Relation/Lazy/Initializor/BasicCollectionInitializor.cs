@@ -16,7 +16,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
      * T has to implement ICollection.
      * @author Adam Warski (adam at warski dot org)
      */
-    public class BasicCollectionInitializor: AbstractCollectionInitializor
+    public class BasicCollectionInitializor<T> : AbstractCollectionInitializor<T>
 	{
         private readonly System.Type collectionType;
         private readonly MiddleComponentData elementComponentData;
@@ -36,12 +36,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
         	_genericArguments = genericArguments;
         }
 
-        protected override object InitializeCollection(int size) 
+        protected override ICollection<T> InitializeCollection(int size) 
 		{
             try
             {
 				var collType = collectionType.MakeGenericType(_genericArguments);
-                return Activator.CreateInstance(collType);
+                return (ICollection<T>) Activator.CreateInstance(collType);
             } 
 			catch (InstantiationException e) 
 			{

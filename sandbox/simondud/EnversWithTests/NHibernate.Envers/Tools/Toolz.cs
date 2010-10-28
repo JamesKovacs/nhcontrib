@@ -106,14 +106,14 @@ namespace NHibernate.Envers.Tools
          * @param list List to transform.
          * @return A list of pairs: ((0, element_at_index_0), (1, element_at_index_1), ...)
          */
-        public static IList<Pair<int, T>> ListToIndexElementPairList<T>(IList<T> list)
+        public static IList<Pair<int, T>> ListToIndexElementPairList<T>(IList list)
         {
-            IList<Pair<int, T>> ret = new List<Pair<int, T>>();
-            IEnumerator<T> listEnum = list.GetEnumerator();
-            for (int i=0; i<list.Count; i++) {
-                ret.Add(Pair<int,T>.Make(i, listEnum.Current));
-                listEnum.MoveNext();
-            }
+            var ret = new List<Pair<int, T>>();
+
+        	for (var i = 0; i < list.Count; i++)
+        	{
+        		ret.Add(Pair<int,T>.Make(i, (T)list[i]));
+        	}
 
             return ret;
         }

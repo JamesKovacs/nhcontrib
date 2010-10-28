@@ -136,9 +136,12 @@
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\AbstractCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\BasicCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\IInitializor.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\ListCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\CollectionProxy.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\ListProxy.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\SetProxy.cs" />
     <Compile Include="Entities\Mapper\Relation\Lazy\Proxy\SortedSetProxy.cs" />
+    <Compile Include="Entities\Mapper\Relation\ListCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\MiddleComponentData.cs" />
     <Compile Include="Entities\Mapper\Relation\MiddleIdData.cs" />
     <Compile Include="Entities\Mapper\Relation\OneToOneNotOwningMapper.cs" />

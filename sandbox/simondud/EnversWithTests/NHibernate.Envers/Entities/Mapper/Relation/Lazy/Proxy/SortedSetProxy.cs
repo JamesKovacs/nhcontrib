@@ -19,7 +19,7 @@ public class SortedSetProxy<U> : CollectionProxy<U, SortedSet<U>>, ISortedSet<U>
             throw new NotSupportedException("Type U has to be a subclass of ISortedSet<>");
     }
 
-    public SortedSetProxy(IInitializor initializor)
+    public SortedSetProxy(IInitializor<U> initializor)
 						:base(initializor)
     {
         if (!typeof(U).IsSubclassOf(typeof(ISortedSet<>)))

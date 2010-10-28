@@ -1,7 +1,9 @@
-﻿namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
+﻿using System.Collections.Generic;
+
+namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
-    public interface IInitializor
+    public interface IInitializor<T> 
     {
-        object Initialize();
+        ICollection<T> Initialize();
     }
 }

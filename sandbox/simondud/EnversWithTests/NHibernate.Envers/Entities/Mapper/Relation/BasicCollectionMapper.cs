@@ -7,7 +7,7 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-    public sealed class BasicCollectionMapper: AbstractCollectionMapper 
+	public sealed class BasicCollectionMapper<T> : AbstractCollectionMapper<T>
     {
         private readonly MiddleComponentData elementComponentData;
 
@@ -20,13 +20,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             this.elementComponentData = elementComponentData;
         }
 
-        protected override IInitializor GetInitializor(AuditConfiguration verCfg, 
+        protected override IInitializor<T> GetInitializor(AuditConfiguration verCfg, 
 														IAuditReaderImplementor versionsReader,
 														object primaryKey, 
 														long revision) 
         {
-			//rk fix
-            return new BasicCollectionInitializor(verCfg, 
+            return new BasicCollectionInitializor<T>(verCfg, 
 											versionsReader, 
 											commonCollectionMapperData.QueryGenerator,
 											primaryKey, 
@@ -38,10 +37,10 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 
         protected override ICollection GetNewCollectionContent(IPersistentCollection newCollection) 
         {
-            return (ICollection) newCollection;
+            return  (ICollection) newCollection;
         }
 
-        protected override ICollection GetOldCollectionContent(object oldCollection)
+		protected override ICollection GetOldCollectionContent(object oldCollection)
         {
             if (oldCollection == null) 
             {
@@ -52,7 +51,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             {
                 return oldCollAsDic.Keys;
             }
-            return (ICollection)oldCollection;
+            return (ICollection) oldCollection;
         }
 
         protected override void MapToMapFromObject(IDictionary<string, object> data, object changed) 

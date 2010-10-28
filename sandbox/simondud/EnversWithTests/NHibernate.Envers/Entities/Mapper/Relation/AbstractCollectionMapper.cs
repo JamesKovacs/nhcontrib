@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security;
 using Iesi.Collections;
+using Iesi.Collections.Generic;
 using NHibernate.Collection;
 using NHibernate.Engine;
 using NHibernate.Envers.Configuration;
@@ -13,7 +14,11 @@ using NHibernate.Envers.Reader;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-    public abstract class AbstractCollectionMapper : IPropertyMapper 
+	/// <summary>
+	/// Abstract type for collection mappers
+	/// </summary>
+	/// <typeparam name="T">Type of generic collection argument, eg string, IPerson or int</typeparam>
+    public abstract class AbstractCollectionMapper<T> : IPropertyMapper
     {
         protected readonly CommonCollectionMapperData commonCollectionMapperData;    
         protected readonly System.Type collectionType;
@@ -37,10 +42,10 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
          * @param data Where to map the data.
          * @param changed The changed collection element to map.
          */
-        protected abstract void MapToMapFromObject(IDictionary<String, Object> data, Object changed);
+        protected abstract void MapToMapFromObject(IDictionary<string, object> data, object changed);
 
         private void addCollectionChanges(IList<PersistentCollectionChangeData> collectionChanges, 
-                                            ISet changed, 
+                                            IEnumerable changed, 
                                             RevisionType revisionType, 
                                             object id) 
         {
@@ -75,21 +80,50 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             var collectionChanges = new List<PersistentCollectionChangeData>();
 
             // Comparing new and old collection content.
+			// check if generic works here instead!
             var newCollection = GetNewCollectionContent(newColl);
             var oldCollection = GetOldCollectionContent(oldColl);
 
             var added = new HashedSet();
-            if (newColl != null) { added.AddAll(newCollection); }
+            if (newColl != null)
+            {
+            	foreach (var item in newCollection)
+            	{
+            		added.Add(item);
+            	}
+            }
 		    // Re-hashing the old collection as the hash codes of the elements there may have changed, and the
 		    // removeAll in AbstractSet has an implementation that is hashcode-change sensitive (as opposed to addAll).
-            if (oldColl != null) { added.RemoveAll(new HashedSet(oldCollection)); }
+            if (oldColl != null)
+            {
+            	var itemsToRemove = new HashedSet();
+            	foreach (var item in oldCollection)
+            	{
+            		itemsToRemove.Add(item);
+            	}
+            	added.RemoveAll(itemsToRemove);
+            }
 
             addCollectionChanges(collectionChanges, added, RevisionType.ADD, id);
 
             var deleted = new HashedSet();
-            if (oldColl != null) { deleted.AddAll(oldCollection); }
+            if (oldColl != null)
+            {
+            	foreach (var item in oldCollection)
+            	{
+            		deleted.Add(item);
+            	}
+            }
 		    // The same as above - re-hashing new collection.
-            if (newColl != null) { deleted.RemoveAll(new HashedSet(newCollection)); }
+            if (newColl != null)
+            {
+				var itemsToRemove = new HashedSet();
+				foreach (var item in newCollection)
+				{
+					itemsToRemove.Add(item);
+				}
+            	deleted.RemoveAll(itemsToRemove);
+            }
 
             addCollectionChanges(collectionChanges, deleted, RevisionType.DEL, id);
 
@@ -102,7 +136,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             return false;
         }
 
-        protected abstract IInitializor GetInitializor(AuditConfiguration verCfg,
+        protected abstract IInitializor<T> GetInitializor(AuditConfiguration verCfg,
                                                         IAuditReaderImplementor versionsReader, 
                                                         object primaryKey,
                                                         long revision);

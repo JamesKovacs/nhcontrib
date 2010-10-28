@@ -13,21 +13,23 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
     [Serializable]
     public abstract class CollectionProxy<U, T> : ICollection<U> {
 
-	    private readonly IInitializor initializor;
-        protected T delegat;
+	    private readonly IInitializor<U> initializor;
+        protected ICollection<U> delegat;
 
         protected CollectionProxy() 
 		{
         }
 
-        public CollectionProxy(IInitializor initializor) 
+        public CollectionProxy(IInitializor<U> initializor) 
 		{
             this.initializor = initializor;
         }
 
-        protected void CheckInit() {
-            if (delegat == null) {
-                delegat = (T)initializor.Initialize();
+        protected void CheckInit() 
+		{
+            if (delegat == null) 
+			{
+                delegat = initializor.Initialize();
             }
         }
 
@@ -36,7 +38,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 			get 
 			{
 				CheckInit();
-				return ((ICollection<U>)delegat).Count;
+				return delegat.Count;
 			}
 		}
 
@@ -45,44 +47,44 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
             get
             {
                 CheckInit();
-                return ((ICollection<U>)delegat).IsReadOnly;
+                return delegat.IsReadOnly;
             }
         }
 
         public bool Contains(U o) 
 		{
             CheckInit();
-            return ((ICollection<U>)delegat).Contains<U>(o);
+            return delegat.Contains<U>(o);
         }
 
         public void CopyTo(U[] array, int arrayIndex)
         {
             CheckInit();
-            ((ICollection<U>)delegat).CopyTo(array, arrayIndex);
+            delegat.CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<U> GetEnumerator() 
 		{
             CheckInit();
-            return ((ICollection<U>)delegat).GetEnumerator();
+            return delegat.GetEnumerator();
         }
 
          public void Add(U o) 
 		 {
             CheckInit();
-            ((ICollection<U>)delegat).Add(o);
+            delegat.Add(o);
         }
 
         public bool Remove(U o) 
 		{
             CheckInit();
-            return ((ICollection<U>)delegat).Remove(o);
+            return delegat.Remove(o);
         }
 
         public void Clear() 
 		{
             CheckInit();
-            ((ICollection<U>)delegat).Clear();
+            delegat.Clear();
         }
 
         public override string ToString() 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Iesi.Collections.Generic;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
@@ -14,7 +13,7 @@ public class SetProxy<U>: CollectionProxy<U, ISet<U>>, ISet<U> {
     public SetProxy() {
     }
 
-    public SetProxy(IInitializor initializor):base(initializor) {
+    public SetProxy(IInitializor<U> initializor):base(initializor) {
     }
 
     public object Clone()

@@ -72,9 +72,9 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 		[Test]
 		public void VerifyHistoryOf2()
 		{
-			var rev1 = AuditReader.Find<StringListEntity>(sle1_id, 1);
-			var rev2 = AuditReader.Find<StringListEntity>(sle1_id, 2);
-			var rev3 = AuditReader.Find<StringListEntity>(sle1_id, 3);
+			var rev1 = AuditReader.Find<StringListEntity>(sle2_id, 1);
+			var rev2 = AuditReader.Find<StringListEntity>(sle2_id, 2);
+			var rev3 = AuditReader.Find<StringListEntity>(sle2_id, 3);
 
 			CollectionAssert.AreEquivalent(new[] { "sle2_string1", "sle2_string2" }, rev1.Strings);
 			CollectionAssert.AreEquivalent(new[] { "sle2_string1", "sle2_string2", "sle2_string1" }, rev2.Strings);
