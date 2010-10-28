@@ -353,7 +353,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             // Adding the "revision type" property
             AddRevisionType(class_mapping);
 
-            return Triple<XmlElement, IExtendedPropertyMapper, string>.Make<XmlElement, IExtendedPropertyMapper, string>(class_mapping, propertyMapper, null);
+            return Triple<XmlElement, IExtendedPropertyMapper, string>.Make(class_mapping, propertyMapper, null);
         }
 
         private Triple<XmlElement, IExtendedPropertyMapper, String> GenerateInheritanceMappingData(
@@ -379,7 +379,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             IExtendedPropertyMapper parentPropertyMapper = parentConfiguration.PropertyMapper;
             IExtendedPropertyMapper propertyMapper = new SubclassPropertyMapper(new MultiPropertyMapper(), parentPropertyMapper);
 
-            return Triple<XmlElement, IExtendedPropertyMapper, String>.Make<XmlElement, IExtendedPropertyMapper, String>(class_mapping, propertyMapper, parentEntityName);
+            return Triple<XmlElement, IExtendedPropertyMapper, String>.Make(class_mapping, propertyMapper, parentEntityName);
         }
 
         //@SuppressWarnings({"unchecked"})

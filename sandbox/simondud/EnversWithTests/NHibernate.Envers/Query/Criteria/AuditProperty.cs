@@ -223,7 +223,7 @@ namespace NHibernate.Envers.Query.Criteria
         // Projection on this property
 
         public Triple<String, String, Boolean> GetData(AuditConfiguration auditCfg) {
-            return Triple<String, String, Boolean>.Make<String, String, Boolean>(null, propertyNameGetter.Get(auditCfg), false);
+            return Triple<String, String, Boolean>.Make(null, propertyNameGetter.Get(auditCfg), false);
         }
 
         // Order

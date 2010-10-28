@@ -32,7 +32,7 @@ namespace NHibernate.Envers.Tools
             return result;
         }
 
-        public static Pair<T1, T2> Make<T1, T2>(T1 obj1, T2 obj2)
+        public static Pair<T1, T2> Make(T1 obj1, T2 obj2)
         {
             return new Pair<T1, T2>(obj1, obj2);
         }
