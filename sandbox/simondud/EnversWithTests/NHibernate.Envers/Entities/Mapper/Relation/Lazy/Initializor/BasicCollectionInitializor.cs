@@ -20,28 +20,24 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 	{
         private readonly System.Type collectionType;
         private readonly MiddleComponentData elementComponentData;
-    	private readonly System.Type[] _genericArguments;
 
     	public BasicCollectionInitializor(AuditConfiguration verCfg,
 											IAuditReaderImplementor versionsReader,
 											IRelationQueryGenerator queryGenerator,
 											Object primaryKey, long revision,
 											System.Type collectionType,
-											MiddleComponentData elementComponentData,
-											System.Type[] genericArguments) 
+											MiddleComponentData elementComponentData) 
 								:base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
         {
-            this.collectionType = collectionType;
+            this.collectionType = collectionType.MakeGenericType(typeof(T));
             this.elementComponentData = elementComponentData;
-        	_genericArguments = genericArguments;
         }
 
         protected override ICollection<T> InitializeCollection(int size) 
 		{
             try
             {
-				var collType = collectionType.MakeGenericType(_genericArguments);
-                return (ICollection<T>) Activator.CreateInstance(collType);
+                return (ICollection<T>) Activator.CreateInstance(collectionType);
             } 
 			catch (InstantiationException e) 
 			{

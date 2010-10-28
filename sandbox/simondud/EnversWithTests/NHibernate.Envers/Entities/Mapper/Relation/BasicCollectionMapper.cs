@@ -31,8 +31,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 											primaryKey, 
 											revision, 
 											collectionType, 
-											elementComponentData,
-											GenericArguments);
+											elementComponentData);
         }
 
         protected override ICollection GetNewCollectionContent(IPersistentCollection newCollection) 

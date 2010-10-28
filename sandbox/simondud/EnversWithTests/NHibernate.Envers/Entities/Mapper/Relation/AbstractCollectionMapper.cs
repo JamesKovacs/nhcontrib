@@ -31,7 +31,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
         {
             this.commonCollectionMapperData = commonCollectionMapperData;
             this.collectionType = collectionType;
-        	this.proxyType = proxyType;
+        	this.proxyType = proxyType.MakeGenericType(typeof(T));
         }
 
         protected abstract ICollection GetNewCollectionContent(IPersistentCollection newCollection);
@@ -155,11 +155,9 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 			if (GenericArguments == null)
 				GenericArguments = propInfo.PropertyType.GetGenericArguments();
 
-			var genericProxyType = proxyType.MakeGenericType(GenericArguments);
-
 			try 
 			{
-				var coll = Activator.CreateInstance(genericProxyType, new object[]{GetInitializor(verCfg, versionsReader, primaryKey, revision)});
+				var coll = Activator.CreateInstance(proxyType, new object[]{GetInitializor(verCfg, versionsReader, primaryKey, revision)});
                 propInfo.SetValue(obj, coll, null);
             } 
 			catch (InstantiationException e) 
