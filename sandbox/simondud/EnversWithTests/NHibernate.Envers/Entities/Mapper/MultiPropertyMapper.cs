@@ -8,6 +8,9 @@ using NHibernate.Collection;
 using NHibernate.Engine;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Reader;
+using NHibernate.Envers.Tools.Reflection;
+using NHibernate.Linq;
+using NHibernate.Properties;
 
 namespace NHibernate.Envers.Entities.Mapper
 {
@@ -30,8 +33,10 @@ namespace NHibernate.Envers.Entities.Mapper
             propertyDatas.Add(propertyData.Name, propertyData);
         }
 
-        public ICompositeMapperBuilder AddComponent(PropertyData propertyData, String componentClassName) {
-            if (Properties[propertyData] != null) {
+        public ICompositeMapperBuilder AddComponent(PropertyData propertyData, String componentClassName) 
+		{
+            if (Properties.ContainsKey(propertyData)) 
+			{
 			    // This is needed for second pass to work properly in the components mapper
                 return (ICompositeMapperBuilder) Properties[propertyData];
             }
@@ -65,25 +70,31 @@ namespace NHibernate.Envers.Entities.Mapper
             return ret;
         }
 
-        public bool MapToMapFromEntity(ISessionImplementor session, IDictionary<String, Object> data,
-                                        Object newObj, Object oldObj)
+        public bool MapToMapFromEntity(ISessionImplementor session, 
+										IDictionary<string, object> data,
+                                        object newObj, 
+										object oldObj)
         {
-            bool ret = false;
-            foreach (PropertyData propertyData in Properties.Keys) {
-                //ORIG: Getter getter;
-                PropertyInfo propInfo;
-                if (newObj != null) {
-                    //ORIG: getter = ReflectionTools.getGetter(newObj.getClass(), propertyData);
-                    propInfo = newObj.GetType().GetProperty(propertyData.Name);
-                } else if (oldObj != null) {
-                    propInfo = oldObj.GetType().GetProperty(propertyData.Name);
-                } else {
+            var ret = false;
+            foreach (var propertyData in Properties.Keys) 
+			{
+                IGetter getter;
+                if (newObj != null) 
+				{
+					getter = ReflectionTools.GetGetter(newObj.GetType(), propertyData);
+                } 
+				else if (oldObj != null) 
+				{
+					getter = ReflectionTools.GetGetter(oldObj.GetType(), propertyData);
+                } 
+				else 
+				{
                     return false;
                 }
 
                 ret |= Properties[propertyData].MapToMapFromEntity(session, data,
-                        newObj == null ? null : propInfo.GetValue(newObj, null),// ORIG: getter.get(newObj),
-                        oldObj == null ? null : propInfo.GetValue(oldObj, null));
+                        newObj == null ? null : getter.Get(newObj),
+                        oldObj == null ? null : getter.Get(oldObj));
             }
 
             return ret;

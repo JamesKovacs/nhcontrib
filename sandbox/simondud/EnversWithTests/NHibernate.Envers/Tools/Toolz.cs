@@ -199,12 +199,5 @@ namespace NHibernate.Envers.Tools
             }
             return clazz;
         }
-
-
-        internal static ISetter GetSetter(System.Type revisionInfoType, PropertyData revisionInfoTimestampData)
-        {
-            return PropertyAccessorFactory.GetPropertyAccessor(revisionInfoTimestampData.AccessType)
-                .GetSetter(revisionInfoType, revisionInfoTimestampData.Name);
-        }
     }
 }

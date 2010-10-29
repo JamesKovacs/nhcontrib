@@ -253,6 +253,7 @@
     <Compile Include="Tools\MutableInteger.cs" />
     <Compile Include="Tools\Pair.cs" />
     <Compile Include="Tools\Query\Parameters.cs" />
+    <Compile Include="Tools\Reflection\ReflectionTools.cs" />
     <Compile Include="Tools\StringTools.cs" />
     <Compile Include="Tools\Toolz.cs" />
     <Compile Include="Tools\Triple.cs" />

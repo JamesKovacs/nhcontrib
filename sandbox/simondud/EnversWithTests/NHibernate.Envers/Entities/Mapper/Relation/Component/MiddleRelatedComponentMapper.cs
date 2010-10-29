@@ -17,8 +17,11 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Component
             this.relatedIdData = relatedIdData;
         }
 
-        public Object MapToObjectFromFullMap(EntityInstantiator entityInstantiator, IDictionary<String, Object> data,
-                                             Object dataObject, long revision) {
+        public object MapToObjectFromFullMap(EntityInstantiator entityInstantiator, 
+											IDictionary<String, Object> data,
+                                            object dataObject, 
+											long revision) 
+		{
             return entityInstantiator.CreateInstanceFromVersionsEntity(relatedIdData.EntityName, data, revision);
         }
 

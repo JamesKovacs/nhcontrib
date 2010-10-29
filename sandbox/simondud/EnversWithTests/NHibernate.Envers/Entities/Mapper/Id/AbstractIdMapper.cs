@@ -29,20 +29,16 @@ namespace NHibernate.Envers.Entities.Mapper.Id
 
         public void AddIdsEqualToQuery(Parameters parameters, String prefix1, IIdMapper mapper2, String prefix2)
         {
-            IList<QueryParameterData> paramDatas1 = MapToQueryParametersFromId(null);
-            IList<QueryParameterData> paramDatas2 = mapper2.MapToQueryParametersFromId(null); 
+            var paramDatas1 = MapToQueryParametersFromId(null);
+            var paramDatas2 = mapper2.MapToQueryParametersFromId(null); 
 
-            Parameters parametersToUse = GetParametersToUse(parameters, paramDatas1);
+            var parametersToUse = GetParametersToUse(parameters, paramDatas1);
 
-            IEnumerator<QueryParameterData> paramDataIter1 = paramDatas1.GetEnumerator();
-            IEnumerator<QueryParameterData> paramDataIter2 = paramDatas2.GetEnumerator();
-            while (paramDataIter1.MoveNext())
-            {
-                QueryParameterData paramData1 = paramDataIter1.Current;
-                QueryParameterData paramData2 = paramDataIter2.Current;
-
-                parametersToUse.AddWhere(paramData1.getProperty(prefix1), false, "=", paramData2.getProperty(prefix2), false);
-            }
+        	var paramData2 = paramDatas2[0];
+        	foreach (var paramData1 in paramDatas1)
+        	{
+				parametersToUse.AddWhere(paramData1.getProperty(prefix1), false, "=", paramData2.getProperty(prefix2), false);        		
+        	}
         }
 
         public void AddIdEqualsToQuery(Parameters parameters, Object id, String prefix, bool equals) {

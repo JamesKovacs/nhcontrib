@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernate.Envers.Tests"
+                   namespace="NHibernate.Envers.Tests.Entities.Components">
+  <class name="ComponentTestEntity">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <component name="Comp1">
+      <property name="Str1"/>
+      <property name="Str2"/>
+    </component>
+    <component name="Comp2">
+      <property name="Str5"/>
+      <property name="Str6"/>
+    </component>
+  </class>
+
+</hibernate-mapping>

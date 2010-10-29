@@ -72,6 +72,9 @@
     <Compile Include="Entities\Collection\StringListEntity.cs" />
     <Compile Include="Entities\Collection\StringMapEntity.cs" />
     <Compile Include="Entities\Collection\StringSetEntity.cs" />
+    <Compile Include="Entities\Components\Component1.cs" />
+    <Compile Include="Entities\Components\Component2.cs" />
+    <Compile Include="Entities\Components\ComponentTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -94,6 +97,8 @@
     <Compile Include="Integration\Basic\UnversionedPropertyTest.cs" />
     <Compile Include="Integration\Cache\OneToManyTest.cs" />
     <Compile Include="Integration\Collection\EnumSetTest.cs" />
+    <Compile Include="Integration\Collection\MapKey\ComponentMapKeyTest.cs" />
+    <Compile Include="Integration\Collection\MapKey\ComponentMapKeyEntity.cs" />
     <Compile Include="Integration\Collection\StringListTest.cs" />
     <Compile Include="Integration\Collection\StringMapTest.cs" />
     <Compile Include="Integration\Collection\StringSetTest.cs" />
@@ -104,9 +109,11 @@
     <EmbeddedResource Include="Entities\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\OneToMany\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Collection\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\Components\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Integration\Collection\MapKey\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Basic\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\AccessType\Mapping.hbm.xml" />
   </ItemGroup>

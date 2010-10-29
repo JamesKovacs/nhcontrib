@@ -170,9 +170,9 @@ namespace NHibernate.Envers.Configuration.Metadata
         {
             while (properties.MoveNext())
             {
-                Property property = properties.Current;
-                String propertyName = property.Name;
-                PropertyAuditingData propertyAuditingData = auditingData.getPropertyAuditingData(propertyName);
+                var property = properties.Current;
+                var propertyName = property.Name;
+                var propertyAuditingData = auditingData.getPropertyAuditingData(propertyName);
                 if (propertyAuditingData != null)
                 {
                     AddValue(parent, property.Value, currentMapper, entityName, xmlMappingData, propertyAuditingData,
@@ -483,7 +483,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             xmlMappingData.ClassMapping = class_mapping;
 
             // Mapping unjoined properties
-            AddProperties(class_mapping, (IEnumerator<Property>)pc.UnjoinedPropertyIterator.GetEnumerator(), propertyMapper,
+            AddProperties(class_mapping, pc.UnjoinedPropertyIterator.GetEnumerator(), propertyMapper,
                     auditingData, pc.EntityName, xmlMappingData,
                     true);
 

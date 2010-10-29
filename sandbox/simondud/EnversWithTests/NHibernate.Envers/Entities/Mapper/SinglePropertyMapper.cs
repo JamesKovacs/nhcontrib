@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Envers.Tools.Reflection;
 using NHibernate.Linq;
 using NHibernate.Properties;
 using NHibernate.Envers.Tools;
@@ -55,7 +56,7 @@ namespace NHibernate.Envers.Entities.Mapper
                 return;
             }
             var objType = obj.GetType();
-            var setter = Toolz.GetSetter(objType, propertyData);
+            var setter = ReflectionTools.GetSetter(objType, propertyData);
 
             var value = data[propertyData.Name];
 		    // We only set a null value if the field is not primitive. Otherwise, we leave it intact.

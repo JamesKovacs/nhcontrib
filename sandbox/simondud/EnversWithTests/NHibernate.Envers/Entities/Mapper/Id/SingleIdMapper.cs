@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Exceptions;
 using System.Reflection;
 using NHibernate.Envers.Tools;
+using NHibernate.Envers.Tools.Reflection;
 using NHibernate.Proxy;
 
 namespace NHibernate.Envers.Entities.Mapper.Id
@@ -35,7 +36,7 @@ public class SingleIdMapper : AbstractIdMapper , ISimpleIdMapperBuilder {
         if (data == null || obj == null) {
             return;
         }
-        var setter = Toolz.GetSetter(obj.GetType(), propertyData);
+        var setter = ReflectionTools.GetSetter(obj.GetType(), propertyData);
         setter.Set(obj, data[propertyData.Name]);
     }
 

@@ -9,7 +9,7 @@ namespace NHibernate.Envers.Compatibility.Attributes
      *
      * @author Simon Duduica, port of javax.persistence annotation by Emmanuel Bernard
      */
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class MapKeyAttribute: Attribute {
 	    /**
 	     * The name of the persistent field or property of the associated entity that is used as the map key.

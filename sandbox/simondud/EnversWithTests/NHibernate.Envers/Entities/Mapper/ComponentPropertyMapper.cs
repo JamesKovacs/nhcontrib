@@ -9,6 +9,7 @@ using System.Reflection;
 using NHibernate.Envers.Configuration;
 using NHibernate.Collection;
 using NHibernate.Envers.Tools;
+using NHibernate.Envers.Tools.Reflection;
 
 namespace NHibernate.Envers.Entities.Mapper
 {
@@ -46,33 +47,36 @@ namespace NHibernate.Envers.Entities.Mapper
         public void MapToEntityFromMap(AuditConfiguration verCfg, Object obj, IDictionary<String, Object> data, 
                                        Object primaryKey, IAuditReaderImplementor versionsReader, long revision)
         {
-            if (data == null || obj == null) {
+            if (data == null || obj == null) 
+			{
                 return;
             }
 
-            //ORIG: Setter setter = ReflectionTools.getSetter(obj.getClass(), propertyData);
-            PropertyInfo propInfo = obj.GetType().GetProperty(propertyData.Name);
+            var setter = ReflectionTools.GetSetter(obj.GetType(), propertyData);
 
 		    // If all properties are null and single, then the component has to be null also.
-		    bool allNullAndSingle = true;
-		    foreach (KeyValuePair<PropertyData, IPropertyMapper> property in _delegate.Properties) {
-			    if (data[property.Key.Name] != null || !(property.Value is SinglePropertyMapper)) {
+		    var allNullAndSingle = true;
+		    foreach (KeyValuePair<PropertyData, IPropertyMapper> property in _delegate.Properties) 
+			{
+			    if (data[property.Key.Name] != null || !(property.Value is SinglePropertyMapper)) 
+				{
 				    allNullAndSingle = false;
 				    break;
 			    }
 		    }
 
 		    // And we don't have to set anything on the object - the default value is null
-		    if (!allNullAndSingle) {
-			    try {
-                    //ORIG: Object subObj = ReflectHelper.getDefaultConstructor(
-                    //        Thread.currentThread().getContextClassLoader().loadClass(componentClassName)).newInstance();
-                    //setter.set(obj, subObj, null);
-                    object subObj = Activator.CreateInstance(Toolz.ResolveDotnetType(componentClassName));
-                    propInfo.SetValue(obj, subObj, null);
+		    if (!allNullAndSingle) 
+			{
+			    try 
+				{
+                    var subObj = Activator.CreateInstance(Toolz.ResolveDotnetType(componentClassName));
+                    setter.Set(obj, subObj);
 
 				    _delegate.MapToEntityFromMap(verCfg, subObj, data, primaryKey, versionsReader, revision);
-			    } catch (Exception e) {
+			    } 
+				catch (Exception e) 
+				{
 				    throw new AuditException(e);
 			    }
 		    }

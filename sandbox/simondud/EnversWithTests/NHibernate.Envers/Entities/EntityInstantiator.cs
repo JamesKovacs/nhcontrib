@@ -34,15 +34,21 @@ namespace NHibernate.Envers.Entities
          * @return An entity instance, with versioned properties set as in the versionsEntity map, and proxies
          * created for collections.
          */
-        public Object CreateInstanceFromVersionsEntity(String entityName, IDictionary<string,object> versionsEntity, long revision) {
+        public object CreateInstanceFromVersionsEntity(string entityName, IDictionary<string,object> versionsEntity, long revision) 
+		{
             if (versionsEntity == null) {
                 return null;
             }
 
-            // The $type$ property holds the name of the (versions) entity
-            String name = verCfg.EntCfg.GetEntityNameForVersionsEntityName(((String) versionsEntity["$type$"]));
+        	object type;
+        	string name = null;
+			if(versionsEntity.TryGetValue("$type$", out type))
+			{
+				name = verCfg.EntCfg.GetEntityNameForVersionsEntityName((string)type);
+			}
 
-            if (name != null) {
+            if (name != null) 
+			{
                 entityName = name;
             }
 
