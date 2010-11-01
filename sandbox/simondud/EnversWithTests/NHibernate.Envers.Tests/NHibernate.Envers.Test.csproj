@@ -78,6 +78,7 @@
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
+    <Compile Include="Entities\StrTestEntity.cs" />
     <Compile Include="Entities\UnversionedEntity.cs" />
     <Compile Include="Integration\AccessType\FieldAccessTest.cs" />
     <Compile Include="Integration\AccessType\ImmutableClassAccessTest.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="Integration\Collection\EnumSetTest.cs" />
     <Compile Include="Integration\Collection\MapKey\ComponentMapKeyTest.cs" />
     <Compile Include="Integration\Collection\MapKey\ComponentMapKeyEntity.cs" />
+    <Compile Include="Integration\Collection\MapKey\IdMapKeyEntity.cs" />
+    <Compile Include="Integration\Collection\MapKey\IdMapKeyTest.cs" />
     <Compile Include="Integration\Collection\StringListTest.cs" />
     <Compile Include="Integration\Collection\StringMapTest.cs" />
     <Compile Include="Integration\Collection\StringSetTest.cs" />

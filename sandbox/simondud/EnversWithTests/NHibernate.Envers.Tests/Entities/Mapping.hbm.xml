@@ -9,6 +9,13 @@
     <property name="Number"/>
   </class>
 
+	<class name="StrTestEntity">
+		<id name="Id">
+			<generator class="native"/>
+		</id>
+		<property name="Str"/>
+	</class>
+
   <class name="UnversionedEntity">
     <id name="Id">
       <generator class="native"/>
