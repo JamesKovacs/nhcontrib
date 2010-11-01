@@ -8,16 +8,20 @@ namespace NHibernate.Envers.Tests.Entities.Components
 		public override bool Equals(object obj)
 		{
 			var other = obj as Component1;
-			if (obj == null || GetType() != obj.GetType())
+			if (other == null)
 			{
 				return false;
 			}
-			return Str1.Equals(other.Str1) && Str2.Equals(other.Str2);
+			if (Str1 != null ? !Str1.Equals(other.Str1) : other.Str1 != null) return false;
+			if (Str2 != null ? !Str2.Equals(other.Str2) : other.Str2 != null) return false;
+
+			return true;
 		}
 
 		public override int GetHashCode()
 		{
-			return Str1.GetHashCode() ^ Str2.GetHashCode();
+			var result = (Str1 != null ? Str1.GetHashCode() : 0);
+			return 31 * result + (Str2 != null ? Str2.GetHashCode() : 0);
 		}
 	}
 }
