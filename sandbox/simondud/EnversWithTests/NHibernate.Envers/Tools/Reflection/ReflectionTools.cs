@@ -10,7 +10,7 @@ namespace NHibernate.Envers.Tools.Reflection
             return GetGetter(cls, propertyData.BeanName, propertyData.AccessType);
         }
 
-		private static IGetter GetGetter(System.Type cls, string propertyName, string accessorType)
+		public static IGetter GetGetter(System.Type cls, string propertyName, string accessorType)
         {
 			//rk:  todo: cache result			
             //var key = Pair<System.Type, string>.Make(cls, propertyName);

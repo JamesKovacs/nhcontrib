@@ -13,7 +13,7 @@ namespace NHibernate.Envers.Tests.Integration.Collection.MapKey
 
 		public virtual int Id { get; set; }
 		[Audited]
-		[MapKey]
+		[MapKey(Name = "Comp1")]
 		public virtual IDictionary<Component1, ComponentTestEntity> IdMap { get; set; }
 	}
 }

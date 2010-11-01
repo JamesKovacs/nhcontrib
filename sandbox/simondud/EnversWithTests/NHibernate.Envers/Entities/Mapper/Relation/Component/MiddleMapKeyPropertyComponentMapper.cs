@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using NHibernate.Envers.Tools.Query;
+using NHibernate.Envers.Tools.Reflection;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Component
 {
@@ -13,28 +11,32 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Component
      * so <code>mapToMapFromObject</code> is empty.
      * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
      */
-    public class MiddleMapKeyPropertyComponentMapper : IMiddleComponentMapper {
+    public class MiddleMapKeyPropertyComponentMapper : IMiddleComponentMapper 
+	{
         private readonly String propertyName;
         private readonly String accessType;
 
-        public MiddleMapKeyPropertyComponentMapper(String propertyName, String accessType) {
+        public MiddleMapKeyPropertyComponentMapper(string propertyName, string accessType) 
+		{
             this.propertyName = propertyName;
             this.accessType = accessType;
         }
 
-        public Object MapToObjectFromFullMap(EntityInstantiator entityInstantiator, 
-                    IDictionary<String, Object> data,
-                    Object dataObject, long revision) {
+        public object MapToObjectFromFullMap(EntityInstantiator entityInstantiator, 
+											IDictionary<string, object> data,
+											object dataObject, long revision) 
+		{
             // dataObject is not null, as this mapper can only be used in an index.
-            //ORIG: return ReflectionTools.getGetter(dataObject.getClass(), propertyName, accessType).get(dataObject);
-            return dataObject.GetType().GetProperty(propertyName).GetValue(dataObject, null);
+        	return ReflectionTools.GetGetter(dataObject.GetType(), propertyName, accessType).Get(dataObject);
         }
 
-        public void MapToMapFromObject(IDictionary<String, Object> data, Object obj) {
+        public void MapToMapFromObject(IDictionary<string, object> data, object obj) 
+		{
             // Doing nothing.
         }
 
-        public void AddMiddleEqualToQuery(Parameters parameters, String prefix1, String prefix2) {
+        public void AddMiddleEqualToQuery(Parameters parameters, string prefix1, string prefix2) 
+		{
             // Doing nothing.
         }
     }

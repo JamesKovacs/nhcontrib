@@ -27,7 +27,8 @@ namespace NHibernate.Envers.Tests.Integration.Collection.MapKey
 			           	};
 			var cte2 = new ComponentTestEntity
 			           	{
-			           		Comp1 = new Component1 {Str1 = "x1", Str2 = "y2"},
+							//changed from Envers test here. Doubt that org test is doing the right thing...
+			           		Comp1 = new Component1 {Str1 = "x11", Str2 = "y2"},
 			           		Comp2 = new Component2 {Str5 = "a1", Str6 = "b2"}
 			           	};
 			using(var tx = Session.BeginTransaction())
