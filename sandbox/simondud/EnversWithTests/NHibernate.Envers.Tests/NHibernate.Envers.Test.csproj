@@ -76,6 +76,8 @@
     <Compile Include="Entities\Components\Component2.cs" />
     <Compile Include="Entities\Components\ComponentSetTestEntity.cs" />
     <Compile Include="Entities\Components\ComponentTestEntity.cs" />
+    <Compile Include="Entities\Components\Relations\OneToManyComponent.cs" />
+    <Compile Include="Entities\Components\Relations\OneToManyComponentTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Integration\Collection\StringSetTest.cs" />
     <Compile Include="Integration\Components\Collections\CollectionOfComponentsTest.cs" />
     <Compile Include="Integration\Components\ComponentsTest.cs" />
+    <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
@@ -116,6 +119,7 @@
     <EmbeddedResource Include="Entities\OneToMany\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Collection\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Components\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\Components\Relations\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

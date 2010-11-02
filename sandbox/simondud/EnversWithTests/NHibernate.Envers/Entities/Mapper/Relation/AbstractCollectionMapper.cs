@@ -10,6 +10,7 @@ using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 using NHibernate.Envers.Exceptions;
 using NHibernate.Envers.Reader;
+using NHibernate.Envers.Tools.Reflection;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
@@ -142,13 +143,13 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                                         IAuditReaderImplementor versionsReader, 
                                         long revision) 
         {
-            var propInfo = obj.GetType().GetProperty(
-                commonCollectionMapperData.CollectionReferencingPropertyData.Name);
+        	var setter = ReflectionTools.GetSetter(obj.GetType(),
+        	                                       commonCollectionMapperData.CollectionReferencingPropertyData);
 
 			try 
 			{
 				var coll = Activator.CreateInstance(proxyType, new object[]{GetInitializor(verCfg, versionsReader, primaryKey, revision)});
-                propInfo.SetValue(obj, coll, null);
+                setter.Set(obj, coll);
             } 
 			catch (InstantiationException e) 
 			{
