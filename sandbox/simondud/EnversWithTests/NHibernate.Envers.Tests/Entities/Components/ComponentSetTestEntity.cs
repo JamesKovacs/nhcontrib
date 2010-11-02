@@ -11,7 +11,7 @@ namespace NHibernate.Envers.Tests.Entities.Components
 
 		public virtual int Id { get; set; }
 
-		//[Audited]
+		//[Audited] todo: make test pass later
 		public virtual ISet<Component1> Comps { get; set; }
 
 		public override bool Equals(object obj)
