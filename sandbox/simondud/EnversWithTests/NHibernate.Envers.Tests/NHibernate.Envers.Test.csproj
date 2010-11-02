@@ -74,6 +74,7 @@
     <Compile Include="Entities\Collection\StringSetEntity.cs" />
     <Compile Include="Entities\Components\Component1.cs" />
     <Compile Include="Entities\Components\Component2.cs" />
+    <Compile Include="Entities\Components\ComponentSetTestEntity.cs" />
     <Compile Include="Entities\Components\ComponentTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Integration\Collection\StringListTest.cs" />
     <Compile Include="Integration\Collection\StringMapTest.cs" />
     <Compile Include="Integration\Collection\StringSetTest.cs" />
+    <Compile Include="Integration\Components\Collections\CollectionOfComponentsTest.cs" />
     <Compile Include="Integration\Components\ComponentsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />

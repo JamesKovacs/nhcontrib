@@ -15,5 +15,17 @@
       <property name="Str6"/>
     </component>
   </class>
-
+	
+	<class name="ComponentSetTestEntity">
+		<id name="Id">
+			<generator class="identity"/>
+		</id>
+		<set name="Comps" table="arne">
+			<key column="CompId"/>
+			<composite-element class="Component1">
+				<property name="Str1"/>
+				<property name="Str2"/>
+			</composite-element>
+		</set>
+	</class>
 </hibernate-mapping>
