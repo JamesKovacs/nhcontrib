@@ -76,6 +76,8 @@
     <Compile Include="Entities\Components\Component2.cs" />
     <Compile Include="Entities\Components\ComponentSetTestEntity.cs" />
     <Compile Include="Entities\Components\ComponentTestEntity.cs" />
+    <Compile Include="Entities\Components\Relations\ManyToOneComponent.cs" />
+    <Compile Include="Entities\Components\Relations\ManyToOneComponentTestEntity.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponent.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponentTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Integration\Collection\StringSetTest.cs" />
     <Compile Include="Integration\Components\Collections\CollectionOfComponentsTest.cs" />
     <Compile Include="Integration\Components\ComponentsTest.cs" />
+    <Compile Include="Integration\Components\Relations\ManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
