@@ -39,6 +39,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharedLibs\nhibernate\Required_Bins\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharedLibs\nhibernate\Tests\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.0.0.2001, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharedLibs\nhibernate\Required_Bins\NHibernate.dll</HintPath>
@@ -119,6 +123,7 @@
     <Compile Include="Integration\Components\Relations\NotAuditedManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupNunit.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +134,9 @@
     <EmbeddedResource Include="Entities\Components\Relations\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Integration\Collection\MapKey\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Basic\Mapping.hbm.xml" />
