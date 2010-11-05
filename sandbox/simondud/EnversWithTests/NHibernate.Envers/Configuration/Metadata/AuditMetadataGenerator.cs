@@ -502,7 +502,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             String entityName = pc.EntityName;
             if (log.IsDebugEnabled)
             {
-                log.Debug("Generating first-pass auditing mapping for entity " + entityName + ".");
+                log.Debug("Generating second-pass auditing mapping for entity " + entityName + ".");
             }
 
             ICompositeMapperBuilder propertyMapper = EntitiesConfigurations[entityName].PropertyMapper;
