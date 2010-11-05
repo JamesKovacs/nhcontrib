@@ -57,7 +57,7 @@ namespace NHibernate.Envers.Configuration
                 PersistentClass pc = classAuditingDataEntry.Key;
                 ClassAuditingData classAuditingData = classAuditingDataEntry.Value;
                 foreach (String propertyName in classAuditingData.getPropertyNames()) {
-                    PropertyAuditingData propertyAuditingData = classAuditingData.getPropertyAuditingData(propertyName);
+                    PropertyAuditingData propertyAuditingData = classAuditingData.GetPropertyAuditingData(propertyName);
                     // If a property had the @AuditMappedBy annotation, setting the referenced fields to be always insertable.
                     if (propertyAuditingData.AuditMappedBy != null) {
                         String referencedEntityName = MappingTools.getReferencedEntityName(pc.GetProperty(propertyName).Value);
@@ -77,7 +77,7 @@ namespace NHibernate.Envers.Configuration
         private static void ForcePropertyInsertable(ClassAuditingData classAuditingData, String propertyName,
                                              String entityName, String referencedEntityName) {
             if (propertyName != null) {
-                if (classAuditingData.getPropertyAuditingData(propertyName) == null) {
+                if (classAuditingData.GetPropertyAuditingData(propertyName) == null) {
                     throw new MappingException("@AuditMappedBy points to a property that doesn't exist: " +
                         referencedEntityName + "." + propertyName);
                 }
@@ -87,7 +87,7 @@ namespace NHibernate.Envers.Configuration
                         entityName + " entity.");
 
                 classAuditingData
-                        .getPropertyAuditingData(propertyName)
+                        .GetPropertyAuditingData(propertyName)
                         .ForceInsertable = true;
             }
         }

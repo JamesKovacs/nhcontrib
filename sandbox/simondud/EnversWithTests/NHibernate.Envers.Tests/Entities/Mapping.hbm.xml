@@ -23,4 +23,11 @@
     <property name="Str1"/>
     <property name="Str2"/>
   </class>
+
+	<class name="UnversionedStrTestEntity">
+		<id name="Id">
+			<generator class="native"/>
+		</id>
+		<property name="Str"/>
+	</class>
 </hibernate-mapping>

@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Cache
 {
-    [TestFixture, Explicit("Not green yet - also missing test in this fixture")]
+    [TestFixture, Explicit("The impl need NH Support for <properties> - also missing test in this fixture")]
     public class OneToManyTest : TestBase
     {
         private int ed1_id;

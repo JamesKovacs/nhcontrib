@@ -172,7 +172,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             {
                 var property = properties.Current;
                 var propertyName = property.Name;
-                var propertyAuditingData = auditingData.getPropertyAuditingData(propertyName);
+                var propertyAuditingData = auditingData.GetPropertyAuditingData(propertyName);
                 if (propertyAuditingData != null)
                 {
                     AddValue(parent, property.Value, currentMapper, entityName, xmlMappingData, propertyAuditingData,
@@ -187,7 +187,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             {
                 Property property = properties.Current;
                 String propertyName = property.Name;
-                PropertyAuditingData propertyAuditingData = auditingData.getPropertyAuditingData(propertyName);
+                PropertyAuditingData propertyAuditingData = auditingData.GetPropertyAuditingData(propertyName);
                 if (propertyAuditingData == null)
                 {
                     return false;

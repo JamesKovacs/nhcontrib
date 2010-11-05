@@ -27,11 +27,11 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
             SecondaryTableDictionary = Toolz.NewDictionary<String, String>();
         }
 
-	    public void addPropertyAuditingData(String propertyName, PropertyAuditingData auditingData) {
+	    public void AddPropertyAuditingData(String propertyName, PropertyAuditingData auditingData) {
 		    Properties.Add(propertyName, auditingData);
 	    }
 
-        public PropertyAuditingData getPropertyAuditingData(String propertyName) {
+        public PropertyAuditingData GetPropertyAuditingData(String propertyName) {
             try{
                 return Properties[propertyName];
             }

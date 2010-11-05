@@ -78,6 +78,8 @@
     <Compile Include="Entities\Components\ComponentTestEntity.cs" />
     <Compile Include="Entities\Components\Relations\ManyToOneComponent.cs" />
     <Compile Include="Entities\Components\Relations\ManyToOneComponentTestEntity.cs" />
+    <Compile Include="Entities\Components\Relations\NotAuditedManyToOneComponent.cs" />
+    <Compile Include="Entities\Components\Relations\NotAuditedManyToOneComponentTestEntity.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponent.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponentTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
     <Compile Include="Entities\StrTestEntity.cs" />
     <Compile Include="Entities\UnversionedEntity.cs" />
+    <Compile Include="Entities\UnversionedStrTestEntity.cs" />
     <Compile Include="Integration\AccessType\FieldAccessTest.cs" />
     <Compile Include="Integration\AccessType\ImmutableClassAccessTest.cs" />
     <Compile Include="Integration\AccessType\MixedAccessTest.cs" />
@@ -113,6 +116,7 @@
     <Compile Include="Integration\Components\Collections\CollectionOfComponentsTest.cs" />
     <Compile Include="Integration\Components\ComponentsTest.cs" />
     <Compile Include="Integration\Components\Relations\ManyToOneInComponentTest.cs" />
+    <Compile Include="Integration\Components\Relations\NotAuditedManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />

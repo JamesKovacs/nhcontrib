@@ -16,12 +16,12 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
          * @param propertyName Name of the audited property.
          * @param auditingData Data for the audited property.
          */
-        void addPropertyAuditingData(String propertyName, PropertyAuditingData auditingData);
+        void AddPropertyAuditingData(String propertyName, PropertyAuditingData auditingData);
 
         /**
          * @param propertyName Name of a property.
          * @return Auditing data for the property.
          */
-        PropertyAuditingData getPropertyAuditingData(String propertyName);
+        PropertyAuditingData GetPropertyAuditingData(String propertyName);
     }
 }

@@ -153,7 +153,7 @@ namespace NHibernate.Envers.Configuration.Metadata.Reader
 				if (isAudited)
 				{
 					// Now we know that the property is audited
-					_auditedPropertiesHolder.addPropertyAuditingData(declaredPersistentProperty.Property.Name, propertyData);
+					_auditedPropertiesHolder.AddPropertyAuditingData(declaredPersistentProperty.Property.Name, propertyData);
 				}
 			}
 		}

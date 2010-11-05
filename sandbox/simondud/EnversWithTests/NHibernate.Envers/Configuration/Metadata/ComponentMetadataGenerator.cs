@@ -38,7 +38,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 			    Property property = properties.Current;
 
 			    PropertyAuditingData componentPropertyAuditingData =
-					    componentAuditingData.getPropertyAuditingData(property.Name);
+					    componentAuditingData.GetPropertyAuditingData(property.Name);
 
 			    // Checking if that property is audited
 			    if (componentPropertyAuditingData != null) {

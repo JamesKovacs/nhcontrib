@@ -25,5 +25,16 @@
 			<property name="Data"/>
 			<many-to-one name="Entity" class="NHibernate.Envers.Tests.Entities.StrTestEntity" />
 		</component>
-	</class>-->
+	</class>
+	-->
+
+	<class name="NotAuditedManyToOneComponentTestEntity">
+		<id name="Id">
+			<generator class="identity"/>
+		</id>
+		<component name="Comp1">
+			<property name="Data"/>
+			<many-to-one name="Entity" class="NHibernate.Envers.Tests.Entities.UnversionedStrTestEntity" />
+		</component>
+	</class>
 </hibernate-mapping>
