@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net-2.0", "NHibernate.Tool.hbm2net\NHibernate.Tool.hbm2net-2.0.csproj", "{136FFE16-EE3B-4556-90FB-E265113CB13F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tool.hbm2net.Console-2.0", "NHibernate.Tool.hbm2net.Console\NHibernate.Tool.hbm2net.Console-2.0.csproj", "{E7D3A1AB-23A6-4924-8D36-DE18DBAD2D54}"
