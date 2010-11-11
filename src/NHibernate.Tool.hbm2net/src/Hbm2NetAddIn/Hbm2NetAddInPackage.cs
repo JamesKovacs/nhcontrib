@@ -52,7 +52,9 @@ namespace FelicePollano.Hbm2NetAddIn
                 string s = Path.ChangeExtension(e.SavedPath, string.Empty).Trim('.');
                 if (Path.GetExtension(s).Equals(".hbm", StringComparison.OrdinalIgnoreCase))
                 {
-                    
+                    string folder = Path.GetDirectoryName(s);
+                    Hbm2NetRunner runner = new Hbm2NetRunner(s,rdtManager);
+                    runner.Run();
                 }
             }
         }

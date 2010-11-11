@@ -180,50 +180,57 @@ namespace NHibernate.Tool.hbm2net
             ICanProvideStream streamProvider = renderer as ICanProvideStream;
             string fileName=null;
             bool performGeneration = true;
-            if (null == streamProvider)
+            try
             {
-                fileName = Path.Combine(dir.FullName, this.GetFileName(saveToClassName));
-                FileInfo file = new FileInfo(fileName);
-                if (checkIfNewer)
+                if (null == streamProvider)
                 {
-                    FileInfo sourceFileinfo = SourceFileInfoMap.Instance.LookupByMapping(classMapping);
-                    performGeneration = sourceFileinfo.LastWriteTimeUtc >= file.LastWriteTimeUtc;
-                    if (false == performGeneration)
-                        LogFileSkipped(sourceFileinfo, file);
-                }
-                if (performGeneration)
-                {
-                    log.Debug("Writing " + file);
-                    writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
-                }
-            }
-            else
-            {
-                if (performGeneration)
-                {
+                    fileName = Path.Combine(dir.FullName, this.GetFileName(saveToClassName));
+                    FileInfo file = new FileInfo(fileName);
                     if (checkIfNewer)
                     {
                         FileInfo sourceFileinfo = SourceFileInfoMap.Instance.LookupByMapping(classMapping);
-                        FileInfo target;
-                        performGeneration = streamProvider.CheckIfSourceIsNewer(sourceFileinfo.LastWriteTimeUtc,dir.FullName,classMapping,out target);
+                        performGeneration = sourceFileinfo.LastWriteTimeUtc >= file.LastWriteTimeUtc;
                         if (false == performGeneration)
-                            LogFileSkipped(sourceFileinfo, target);
-
+                            LogFileSkipped(sourceFileinfo, file);
                     }
                     if (performGeneration)
-                        writer = new StreamWriter(streamProvider.GetStream(classMapping, dir.FullName, out fileName));
-                    log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
+                    {
+                        log.Debug("Writing " + file);
+                        writer = new StreamWriter(new FileStream(file.FullName, FileMode.Create));
+                    }
+                }
+                else
+                {
+                    if (performGeneration)
+                    {
+                        if (checkIfNewer)
+                        {
+                            FileInfo sourceFileinfo = SourceFileInfoMap.Instance.LookupByMapping(classMapping);
+                            FileInfo target;
+                            performGeneration = streamProvider.CheckIfSourceIsNewer(sourceFileinfo.LastWriteTimeUtc, dir.FullName, classMapping, out target);
+                            if (false == performGeneration)
+                                LogFileSkipped(sourceFileinfo, target);
+
+                        }
+                        if (performGeneration)
+                            writer = new StreamWriter(streamProvider.GetStream(classMapping, dir.FullName, out fileName));
+                        log.Debug("Renderer:" + renderer.GetType().Name + " provided a stream for output.");
+                    }
+                }
+
+                if (performGeneration)
+                {
+                    renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
+                    writer.Close();
+                    if (null != fileObserver)
+                    {
+                        fileObserver.FileCreated(fileName);
+                    }
                 }
             }
-
-            if (performGeneration)
+            catch (Exception e)
             {
-                renderer.Render(GetPackageName(saveToPackage), GetName(saveToClassName), classMapping, class2classmap, writer);
-                writer.Close();
-                if (null != fileObserver)
-                {
-                    fileObserver.FileCreated(fileName);
-                }
+                log.Error("Error writing file:", e);
             }
 		}
 

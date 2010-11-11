@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Guids.cs" />
     <Compile Include="Hbm2NetRunner.cs" />
+    <Compile Include="Helpers\IRdtHelper.cs" />
     <Compile Include="Helpers\ProjectEventManager.cs" />
     <Compile Include="Helpers\RdtManager.cs" />
     <Compile Include="Helpers\SavedProjectItemEventArgs.cs" />

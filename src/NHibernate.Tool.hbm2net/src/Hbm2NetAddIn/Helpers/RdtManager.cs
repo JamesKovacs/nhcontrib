@@ -10,7 +10,7 @@ using System.IO;
 
 namespace FelicePollano.Hbm2NetAddIn.Helpers
 {
-    class RdtManager:IVsRunningDocTableEvents
+    class RdtManager:IVsRunningDocTableEvents, IRdtHelper
     {
         uint cookie;
         IVsRunningDocumentTable rdt;
@@ -22,6 +22,19 @@ namespace FelicePollano.Hbm2NetAddIn.Helpers
             rdt.AdviseRunningDocTableEvents(this, out cookie);
             var dte = provider.GetService(typeof(DTE)) as DTE;
             
+           
+        }
+
+        public ProjectItem GetProjectItemByName(string lpszname)
+        {
+            IVsHierarchy hierarchy;
+            uint  pitemid,cookie;
+            IntPtr ppunkDocData;
+            if( VSConstants.S_OK == rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock,lpszname,out hierarchy,out pitemid,out ppunkDocData,out cookie) )
+            {
+                return GetProjectItem(hierarchy, pitemid);
+            }
+            return null;
         }
 
         #region IVsRunningDocTableEvents Members

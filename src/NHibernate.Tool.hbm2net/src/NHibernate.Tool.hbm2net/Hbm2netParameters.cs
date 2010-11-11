@@ -21,5 +21,6 @@ namespace NHibernate.Tool.hbm2net
         public string OutputDir { get; set; }
         [Option("ct", LongHelp = "Does not generate file if target is newer than the hbm (defaults to false) ", Optional = true, Default = "", ShortHelp = "check target time")]
         public string CheckTime { get; set; }
+       
     }
 }

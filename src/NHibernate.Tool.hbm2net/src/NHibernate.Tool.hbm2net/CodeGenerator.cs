@@ -126,7 +126,8 @@ namespace NHibernate.Tool.hbm2net
 			Hashtable classMappings = new Hashtable();
             for (IEnumerator iter = mappingFiles.GetEnumerator(); iter.MoveNext(); )
             {
-                log.Info(iter.Current.ToString());
+                log.Info(string.Concat("Handling:",iter.Current.ToString()));
+
 
                 string mappingFile = (string)iter.Current;
                 if (!Path.IsPathRooted(mappingFile))
