@@ -64,7 +64,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			Assert.AreEqual(2, ed1_rev1.Reffering.Count);
 			foreach (var setRefIngEntity in ed1_rev1.Reffering)
 			{
-				Assert.AreSame(setRefIngEntity, ed1_rev1);
+				Assert.AreSame(setRefIngEntity.Reference, ed1_rev1);
 			}
 		}
 
@@ -75,7 +75,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			Assert.AreEqual(2, ed1_rev2.Reffering.Count);
 			foreach (var setRefIngEntity in ed1_rev2.Reffering)
 			{
-				Assert.AreSame(setRefIngEntity, ed1_rev2);
+				Assert.AreSame(setRefIngEntity.Reference, ed1_rev2);
 			}
 		}
 
