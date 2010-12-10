@@ -1,35 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.Envers.Entities.Mapper.Id;
 using NHibernate.Engine;
-using Iesi.Collections;
-using NHibernate.Util;
+using NHibernate.Envers.Tools.Reflection;
 using NHibernate.Envers.Tools;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Reader;
-using NHibernate.Properties;
-using System.Runtime.Serialization;
 using NHibernate.Collection;
-using System.Reflection;
-using System.Runtime.Remoting;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation
 {
-/**
- * @author Catalina Panait, port of Envers omonyme class by Adam Warski (adam at warski dot org)
- */
-
     public class ToOneIdMapper : IPropertyMapper
     {
         private IIdMapper delegat;
         private PropertyData propertyData;
-        private String referencedEntityName;
+        private string referencedEntityName;
         private bool nonInsertableFake;
 
-        public ToOneIdMapper(IIdMapper delegat, PropertyData propertyData, String referencedEntityName, bool nonInsertableFake)
+        public ToOneIdMapper(IIdMapper delegat, PropertyData propertyData, string referencedEntityName, bool nonInsertableFake)
         {
             this.delegat = delegat;
             this.propertyData = propertyData;
@@ -37,10 +26,10 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             this.nonInsertableFake = nonInsertableFake;
         }
 
-        public bool MapToMapFromEntity(ISessionImplementor session, IDictionary<String, Object> data, Object newObj, Object oldObj)
+        public bool MapToMapFromEntity(ISessionImplementor session, IDictionary<string, object> data, object newObj, object oldObj)
         {
             //Simon 27/06/2010 - era new LinkedHashMap
-            IDictionary<String, Object> newData = new Dictionary<String, Object>();
+            var newData = new Dictionary<String, Object>();
             data.Add(propertyData.Name, newData);
 
             // If this property is originally non-insertable, but made insertable because it is in a many-to-one "fake"
@@ -52,7 +41,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
             return nonInsertableFake ? false : !Toolz.EntitiesEqual(session, newObj, oldObj);
         }
 
-        public void MapToEntityFromMap(AuditConfiguration verCfg, Object obj, IDictionary<String, Object> data, Object primaryKey,
+        public void MapToEntityFromMap(AuditConfiguration verCfg, object obj, IDictionary<string, object> data, object primaryKey,
                                        IAuditReaderImplementor versionsReader, long revision)
         {
             if (obj == null)
@@ -60,8 +49,8 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                 return;
             }
 
-            Object entityId = delegat.MapToIdFromMap(DictionaryWrapper<String, Object>.Wrap((IDictionary)data[propertyData.Name]));
-            Object value;
+            object entityId = delegat.MapToIdFromMap(DictionaryWrapper<string, object>.Wrap((IDictionary)data[propertyData.Name]));
+            object value;
             if (entityId == null)
             {
                 value = null;
@@ -79,18 +68,16 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
                         entityId, new ToOneDelegateSessionImplementor(versionsReader, Toolz.ResolveDotnetType(referencedEntityName), entityId, revision, verCfg));
                 }
             }
-            PropertyInfo propInfo = obj.GetType().GetProperty(propertyData.Name);
-            propInfo.SetValue(obj, value, null);
+        	var setter = ReflectionTools.GetSetter(obj.GetType(), propertyData);
+			setter.Set(obj, value);
         }
 
-        public IList<PersistentCollectionChangeData> MapCollectionChanges(String referencingPropertyName,
+        public IList<PersistentCollectionChangeData> MapCollectionChanges(string referencingPropertyName,
                                                                          IPersistentCollection newColl,
-                                                                         Object oldColl,
-                                                                         Object id)
+                                                                         object oldColl,
+                                                                         object id)
         {
             return null;
         }
-
-
     }
 }

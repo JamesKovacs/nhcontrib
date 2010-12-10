@@ -4,12 +4,10 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Cache
 {
-	[TestFixture, Ignore("Not working at the moment. Need to find work around for NH lack of <properties>")]
+	[TestFixture]
 	public class OneToManyCacheTest : TestBase
 	{
 		private int ed1_id;
-		private int ed2_id;
-
 		private int ing1_id;
 		private int ing2_id;
 
@@ -30,7 +28,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			using (var tx = Session.BeginTransaction()) //rev1
 			{
 				ed1_id = (int)Session.Save(ed1);
-				ed2_id = (int)Session.Save(ed2);
+				Session.Save(ed2);
 				ing1.Reference = ed1;
 				ing2.Reference = ed1;
 				ing1_id = (int)Session.Save(ing1);

@@ -15,8 +15,6 @@
     </component>
   </class>
 
-	<!--
-	Remarked until NH supports <properties>
 	<class name="ManyToOneComponentTestEntity">
 		<id name="Id">
 			<generator class="identity"/>
@@ -26,7 +24,6 @@
 			<many-to-one name="Entity" class="NHibernate.Envers.Tests.Entities.StrTestEntity" />
 		</component>
 	</class>
-	-->
 
 	<class name="NotAuditedManyToOneComponentTestEntity">
 		<id name="Id">
