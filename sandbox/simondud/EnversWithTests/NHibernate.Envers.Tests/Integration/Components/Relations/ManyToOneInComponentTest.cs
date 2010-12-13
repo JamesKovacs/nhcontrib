@@ -6,7 +6,6 @@ using NUnit.Framework;
 namespace NHibernate.Envers.Tests.Integration.Components.Relations
 {
 	[TestFixture]
-	[Ignore("The impl needs NH support for <properties> (won't work even then, but can continue)")]
 	public class ManyToOneInComponentTest : TestBase
 	{
 		private int mtocte_id1;
