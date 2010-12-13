@@ -90,6 +90,8 @@
     <Compile Include="Entities\CustomType\Component.cs" />
     <Compile Include="Entities\CustomType\CompositeCustomTypeEntity.cs" />
     <Compile Include="Entities\CustomType\CompositeTestUserType.cs" />
+    <Compile Include="Entities\CustomType\ParametrizedCustomTypeEntity.cs" />
+    <Compile Include="Entities\CustomType\ParametrizedTestUserType.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Integration\Components\Relations\NotAuditedManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Integration\CustomType\CompositeCustomTest.cs" />
+    <Compile Include="Integration\CustomType\ParametrizedCustomTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
