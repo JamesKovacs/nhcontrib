@@ -87,6 +87,9 @@
     <Compile Include="Entities\Components\Relations\NotAuditedManyToOneComponentTestEntity.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponent.cs" />
     <Compile Include="Entities\Components\Relations\OneToManyComponentTestEntity.cs" />
+    <Compile Include="Entities\CustomType\Component.cs" />
+    <Compile Include="Entities\CustomType\CompositeCustomTypeEntity.cs" />
+    <Compile Include="Entities\CustomType\CompositeTestUserType.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Integration\Components\Relations\ManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\NotAuditedManyToOneInComponentTest.cs" />
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
+    <Compile Include="Integration\CustomType\CompositeCustomTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,6 +141,7 @@
     <EmbeddedResource Include="Entities\Collection\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Components\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Components\Relations\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\CustomType\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,4 +1,5 @@
-﻿using NHibernate.Envers.Entities;
+﻿using System;
+using NHibernate.Envers.Entities;
 using NHibernate.Envers.Tools.Reflection;
 using NHibernate.Properties;
 
@@ -13,9 +14,9 @@ namespace NHibernate.Envers.RevisionInfo
     		getter = ReflectionTools.GetGetter(revisionInfoType, revisionInfoIdData);
 		}
 
-		public long RevisionNumber(object revision) 
+		public long RevisionNumber(object revision)
 		{
-			return (long)getter.Get(revision);
+			return Convert.ToInt64(getter.Get(revision));
 		}
 	}
 }

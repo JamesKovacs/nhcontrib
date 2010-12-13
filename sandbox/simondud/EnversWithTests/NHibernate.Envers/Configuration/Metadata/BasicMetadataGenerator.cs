@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml;
 using NHibernate.Envers.Configuration.Metadata.Reader;
 using NHibernate.Envers.Entities.Mapper;
-using NHibernate.Envers.Configuration.Metadata;
-using NHibernate.Envers.Tools.Graph;
-using NHibernate.Envers.Entities;
+using NHibernate.Envers.Tools;
 using NHibernate.Mapping;
-using NHibernate.Properties;
 using NHibernate.Type;
-using Iesi.Collections.Generic;
-using log4net;
-
 
 
 namespace NHibernate.Envers.Configuration.Metadata
@@ -26,11 +17,13 @@ namespace NHibernate.Envers.Configuration.Metadata
     {
         public bool AddBasic(XmlElement parent, PropertyAuditingData propertyAuditingData,
 					 IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) {
-            NHibernate.Type.IType  type = value.Type;
+            var  type = value.Type;
                 
-		    if (type is ImmutableType || type is MutableType) {
+		    if (type is ImmutableType || type is MutableType) 
+			{
 			    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
-		    } else if (type is CustomType || type is CompositeCustomType) {
+		    } 
+			else if (type is CustomType || type is CompositeCustomType) {
 			    AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key);
             }
             // TODO Simon: There is no equivalent of PrimitiveByteArrayBlobType in NHibernate, will see later if needed
@@ -39,55 +32,63 @@ namespace NHibernate.Envers.Configuration.Metadata
             //{
             //    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
             //}
-		    else {
+		    else 
+			{
 			    return false;
 		    }
 
 		    return true;
 	    }
 
-            private void AddSimpleValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
-                                    IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
+        private void AddSimpleValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
+                                IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
             {
-		    if (parent != null) {
-                XmlElement prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
+		    if (parent != null) 
+			{
+                var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
                         value.Type.Name, propertyAuditingData.ForceInsertable || insertable, key);
-                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator());
+                MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.GetEnumerator());
 		    }
 
 		    // A null mapper means that we only want to add xml mappings
-		    if (mapper != null) {
+		    if (mapper != null) 
+			{
 			    mapper.Add(propertyAuditingData.getPropertyData());
 		    }
 	    }
 
 	    private void AddCustomValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
-								    IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) {
-		    if (parent != null) {
-			    XmlElement prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
+								    IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) 
+		{
+		    if (parent != null) 
+			{
+			    var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
 					    null, insertable, key);
 
-			    //CustomType propertyType = (CustomType) value.getType();
+		    	var userType = Toolz.ResolveDotnetType(value.Type.Name);
+			    prop_mapping.SetAttribute("type", userType.AssemblyQualifiedName);
 
-			    XmlElement type_mapping = parent.OwnerDocument.CreateElement("type");
-                prop_mapping.AppendChild(type_mapping);
-			    type_mapping.SetAttribute("name", value.GetType().Name);
+		    	var simpleValue = value as SimpleValue;
 
-			    if (value is SimpleValue) {
-	                IDictionary<string, string> typeParameters = ((SimpleValue)value).TypeParameters;
-				    if (typeParameters != null) {
-					    foreach (KeyValuePair<string,string> paramKeyValue in typeParameters) {
-                            XmlElement type_param = parent.OwnerDocument.CreateElement("param");
-						    type_param.SetAttribute("name", (String) paramKeyValue.Key);
+			    if (simpleValue != null) 
+				{
+					var typeParameters = simpleValue.TypeParameters;
+				    if (typeParameters != null) 
+					{
+					    foreach (var paramKeyValue in typeParameters) 
+						{
+                            var type_param = parent.OwnerDocument.CreateElement("param");
+						    type_param.SetAttribute("name", paramKeyValue.Key);
 						    type_param["name"].Value =  paramKeyValue.Value;
 					    }
 				    }
 			    }
 
-                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator);
+                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator());
 		    }
 
-		    if (mapper != null) {
+		    if (mapper != null) 
+			{
 			    mapper.Add(propertyAuditingData.getPropertyData());
 		    }
 	    }

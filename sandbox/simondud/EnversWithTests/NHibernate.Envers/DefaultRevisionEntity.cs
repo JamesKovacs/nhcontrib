@@ -2,41 +2,38 @@
 
 namespace NHibernate.Envers
 {
-/**
- * @author Adam Warski (adam at warski dot org)
- */
-[Serializable]
-public class DefaultRevisionEntity {
-    //ORIG: @Id - TODO Simon - see if @Id is necessary
-    [RevisionNumber]
-    public virtual int Id {get; set;}
+	[Serializable]
+	public class DefaultRevisionEntity 
+	{
+		[RevisionNumber]
+		public virtual int Id {get; set;}
 
-    [RevisionTimestamp]
-    public virtual DateTime RevisionDate { get; set; }
+		[RevisionTimestamp]
+		public virtual DateTime RevisionDate { get; set; }
 
-    public override bool Equals(Object o) 
-    {
-        if (this == o) return true;
-        var revisionEntity = o as DefaultRevisionEntity;
-        if (revisionEntity == null) return false;
+		public override bool Equals(Object o) 
+		{
+			if (this == o) return true;
+			var revisionEntity = o as DefaultRevisionEntity;
+			if (revisionEntity == null) return false;
 
-        var that = revisionEntity;
+			var that = revisionEntity;
 
-        if (Id != that.Id) return false;
-        return RevisionDate == that.RevisionDate;
-    }
+			if (Id != that.Id) return false;
+			return RevisionDate == that.RevisionDate;
+		}
 
-    public override int GetHashCode() 
-    {
-        var result = Id;
-        result = 31 * result + (int) (((ulong)RevisionDate.Ticks) ^ (((ulong)RevisionDate.Ticks) >> 32));
-        return result;
-    }
+		public override int GetHashCode() 
+		{
+			var result = Id;
+			result = 31 * result + (int) (((ulong)RevisionDate.Ticks) ^ (((ulong)RevisionDate.Ticks) >> 32));
+			return result;
+		}
 
-    public override string ToString() 
-    {
-        return "DefaultRevisionEntity(id = " + Id + 
-            ", revisionDate = " + RevisionDate.ToShortDateString() + ")";
-    }
-}
+		public override string ToString() 
+		{
+			return "DefaultRevisionEntity(id = " + Id + 
+				", revisionDate = " + RevisionDate.ToShortDateString() + ")";
+		}
+	}
 }
