@@ -41,7 +41,7 @@ namespace NHibernate.Envers.Query.Impl
                 return (long) ((INHibernateProxy) revisionInfoObject).HibernateLazyInitializer.Identifier;
             }
             // Not a proxy - must be read from cache or with a join
-            return verCfg.RevisionInfoNumberReader.getRevisionNumber(revisionInfoObject);
+            return verCfg.RevisionInfoNumberReader.RevisionNumber(revisionInfoObject);
         }
 
         public override IList List()

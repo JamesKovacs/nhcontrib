@@ -9,7 +9,7 @@ namespace NHibernate.Envers
 public class DefaultRevisionEntity {
     //ORIG: @Id - TODO Simon - see if @Id is necessary
     [RevisionNumber]
-    public virtual int id {get; set;}
+    public virtual int Id {get; set;}
 
     [RevisionTimestamp]
     public virtual DateTime RevisionDate { get; set; }
@@ -22,20 +22,20 @@ public class DefaultRevisionEntity {
 
         var that = revisionEntity;
 
-        if (id != that.id) return false;
+        if (Id != that.Id) return false;
         return RevisionDate == that.RevisionDate;
     }
 
     public override int GetHashCode() 
     {
-        var result = id;
+        var result = Id;
         result = 31 * result + (int) (((ulong)RevisionDate.Ticks) ^ (((ulong)RevisionDate.Ticks) >> 32));
         return result;
     }
 
     public override string ToString() 
     {
-        return "DefaultRevisionEntity(id = " + id + 
+        return "DefaultRevisionEntity(id = " + Id + 
             ", revisionDate = " + RevisionDate.ToShortDateString() + ")";
     }
 }

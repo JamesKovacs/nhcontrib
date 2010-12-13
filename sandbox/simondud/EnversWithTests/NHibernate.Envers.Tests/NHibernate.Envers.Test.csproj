@@ -69,9 +69,6 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -114,6 +111,7 @@
     <Compile Include="Integration\Basic\UnversionedPropertyTest.cs" />
     <Compile Include="Integration\Cache\OneToManyCacheTest.cs" />
     <Compile Include="Integration\Cache\OneToOneCacheTest.cs" />
+    <Compile Include="Integration\Cache\QueryCacheTest.cs" />
     <Compile Include="Integration\Collection\EnumSetTest.cs" />
     <Compile Include="Integration\Collection\MapKey\ComponentMapKeyTest.cs" />
     <Compile Include="Integration\Collection\MapKey\ComponentMapKeyEntity.cs" />

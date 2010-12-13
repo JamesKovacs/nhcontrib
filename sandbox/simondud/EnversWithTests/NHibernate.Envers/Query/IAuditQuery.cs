@@ -13,9 +13,12 @@ namespace NHibernate.Envers.Query
      * @author Adam Warski (adam at warski dot org)
      * @see org.hibernate.Criteria
      */
-    public interface IAuditQuery {
+    public interface IAuditQuery 
+	{
+		//rk: offer generic method here
         IList GetResultList();
 
+		//rk: offer generic method here
         Object GetSingleResult();
 
         IAuditQuery Add(IAuditCriterion criterion);

@@ -52,7 +52,7 @@ namespace NHibernate.Envers.Configuration
 
             //ReflectionManager reflectionManager = ((AnnotationConfiguration) cfg).getReflectionManager();
             RevisionInfoConfiguration revInfoCfg = new RevisionInfoConfiguration();
-            RevisionInfoConfigurationResult revInfoCfgResult = revInfoCfg.configure(cfg);
+            RevisionInfoConfigurationResult revInfoCfgResult = revInfoCfg.Configure(cfg);
             AuditEntCfg = new AuditEntitiesConfiguration(properties, revInfoCfgResult.RevisionInfoEntityName);
             GlobalCfg = new GlobalConfiguration(properties);
             AuditSyncManager = new AuditSyncManager(revInfoCfgResult.RevisionInfoGenerator);
