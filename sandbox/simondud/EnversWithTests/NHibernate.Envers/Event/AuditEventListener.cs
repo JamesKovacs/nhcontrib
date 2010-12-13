@@ -26,8 +26,6 @@ namespace NHibernate.Envers.Event
             IPostDeleteEventListener, IPreCollectionUpdateEventListener, IPreCollectionRemoveEventListener,
             IPostCollectionRecreateEventListener, IInitializable 
     {
-        private static readonly long serialVersionUID = -2499904286323112715L;
-
         private AuditConfiguration verCfg;
 
         private void GenerateBidirectionalCollectionChangeWorkUnits(AuditSync verSync, IEntityPersister entityPersister,

@@ -148,8 +148,6 @@ namespace NHibernate.Envers.Synchronization.Work
          */
         private class PersistentCollectionChangeWorkUnitId
 		{
-            private static readonly long serialVersionUID = -8007831518629167537L;
-            
             private readonly object ownerId;
             private readonly string role;
 

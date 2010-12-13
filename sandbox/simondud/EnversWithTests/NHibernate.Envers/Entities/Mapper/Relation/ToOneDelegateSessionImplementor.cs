@@ -10,8 +10,6 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
      */
     public class ToOneDelegateSessionImplementor : AbstractDelegateSessionImplementor 
     {
-	    private static readonly long serialVersionUID = 4770438372940785488L;
-    	
         private readonly IAuditReaderImplementor versionsReader;
         private readonly System.Type entityClass; 
         private readonly Object entityId;
