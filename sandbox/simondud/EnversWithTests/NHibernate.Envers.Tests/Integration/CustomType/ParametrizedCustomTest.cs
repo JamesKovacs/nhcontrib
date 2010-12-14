@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.CustomType
 {
-	[TestFixture, Ignore("Waiting with this one. Need to find a way to get the user type in runtime")]
+	[TestFixture]
 	public class ParametrizedCustomTest : TestBase
 	{
 		private int pcte_id;
@@ -39,14 +39,14 @@ namespace NHibernate.Envers.Tests.Integration.CustomType
 			CollectionAssert.AreEquivalent(new[] { 1, 2 }, AuditReader.GetRevisions(typeof(ParametrizedCustomTypeEntity), pcte_id));
 		}
 
-		[Test]
+		[Test, Ignore("Will fix this very soon")]
 		public void VerifyHistoryOfPcte()
 		{
 			var rev1 = AuditReader.Find<ParametrizedCustomTypeEntity>(pcte_id, 1);
 			var rev2 = AuditReader.Find<ParametrizedCustomTypeEntity>(pcte_id, 2);
 
-			Assert.AreEqual(rev1.Str, "xUy");
-			Assert.AreEqual(rev2.Str, "xVy");
+			Assert.AreEqual("xUy", rev1.Str);
+			Assert.AreEqual("xVy", rev2.Str);
 		}
 	}
 }

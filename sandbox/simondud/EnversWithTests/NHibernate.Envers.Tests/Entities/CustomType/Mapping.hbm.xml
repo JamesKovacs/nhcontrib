@@ -17,10 +17,10 @@
 		</property>
 	</class>
 
-	<!--<class name="ParametrizedCustomTypeEntity">
+	<class name="ParametrizedCustomTypeEntity">
 		<id name="Id">
 			<generator class="native"/>
 		</id>
 		<property name="Str" type="Param"/>
-	</class>-->
+	</class>
 </hibernate-mapping>

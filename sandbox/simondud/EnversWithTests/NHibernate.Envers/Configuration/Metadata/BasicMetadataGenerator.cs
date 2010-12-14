@@ -2,31 +2,32 @@
 using System.Xml;
 using NHibernate.Envers.Configuration.Metadata.Reader;
 using NHibernate.Envers.Entities.Mapper;
-using NHibernate.Envers.Tools;
 using NHibernate.Mapping;
 using NHibernate.Type;
 
-
 namespace NHibernate.Envers.Configuration.Metadata
 {
-    /**
-     * Generates metadata for basic properties: immutable types (including enums).
-     * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
-     */
     public class BasicMetadataGenerator 
     {
         public bool AddBasic(XmlElement parent, PropertyAuditingData propertyAuditingData,
-					 IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) {
-            var  type = value.Type;
-                
+					 IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) 
+		{
+            var type = value.Type;
+            var custType = type as CustomType;
+			var compType = type as CompositeCustomType;
 		    if (type is ImmutableType || type is MutableType) 
 			{
 			    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
-		    } 
-			else if (type is CustomType || type is CompositeCustomType) {
-			    AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key);
-            }
-            // TODO Simon: There is no equivalent of PrimitiveByteArrayBlobType in NHibernate, will see later if needed
+		    }
+			else if (custType != null)
+			{
+				AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key, custType.UserType.GetType());
+			}
+			else if (compType != null)
+			{
+				AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key, compType.UserType.GetType());
+			}
+        	// TODO Simon: There is no equivalent of PrimitiveByteArrayBlobType in NHibernate, will see later if needed
             // ORIG:
             //else if ("org.hibernate.type.PrimitiveByteArrayBlobType".equals(type.getClass().getName()))
             //{
@@ -42,7 +43,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 
         private void AddSimpleValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
                                 IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
-            {
+        {
 		    if (parent != null) 
 			{
                 var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
@@ -58,18 +59,18 @@ namespace NHibernate.Envers.Configuration.Metadata
 	    }
 
 	    private void AddCustomValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
-								    IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) 
+								    IValue value, ISimpleMapperBuilder mapper, bool insertable, 
+									bool key, System.Type typeOfUserImplementation) 
 		{
 		    if (parent != null) 
 			{
 			    var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
 					    null, insertable, key);
-
-		    	var userType = Toolz.ResolveDotnetType(value.Type.Name);
-			    prop_mapping.SetAttribute("type", userType.AssemblyQualifiedName);
+				MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.GetEnumerator());
+				var typeElement = parent.OwnerDocument.CreateElement("type");
+				typeElement.SetAttribute("name", typeOfUserImplementation.AssemblyQualifiedName);
 
 		    	var simpleValue = value as SimpleValue;
-
 			    if (simpleValue != null) 
 				{
 					var typeParameters = simpleValue.TypeParameters;
@@ -77,14 +78,14 @@ namespace NHibernate.Envers.Configuration.Metadata
 					{
 					    foreach (var paramKeyValue in typeParameters) 
 						{
-                            var type_param = parent.OwnerDocument.CreateElement("param");
+                            var type_param = typeElement.OwnerDocument.CreateElement("param");
 						    type_param.SetAttribute("name", paramKeyValue.Key);
-						    type_param["name"].Value =  paramKeyValue.Value;
-					    }
+						    type_param.InnerText =  paramKeyValue.Value;
+							typeElement.AppendChild(type_param);
+						}
 				    }
 			    }
-
-                MetadataTools.AddColumns(prop_mapping, (IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator());
+				prop_mapping.AppendChild(typeElement);
 		    }
 
 		    if (mapper != null) 
