@@ -159,7 +159,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Envers\NHibernate.Envers.csproj">
       <Project>{16492F52-0C2E-4847-9CBF-696907808FD6}</Project>
-      <Name>Envers.NET.NH3</Name>
+      <Name>NHibernate.Envers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
