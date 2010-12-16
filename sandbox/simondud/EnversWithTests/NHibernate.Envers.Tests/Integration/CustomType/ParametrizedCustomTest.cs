@@ -14,8 +14,7 @@ namespace NHibernate.Envers.Tests.Integration.CustomType
 			get { return new[] { "Entities.CustomType.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var pcte = new ParametrizedCustomTypeEntity();
 

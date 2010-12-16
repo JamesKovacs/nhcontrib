@@ -15,8 +15,7 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 			get { return new[] { "Entities.Collection.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var sle1 = new StringListEntity();
 			var sle2 = new StringListEntity();

@@ -13,8 +13,7 @@ namespace NHibernate.Envers.Tests.Integration.AccessType
             get { return new[] { "Integration.AccessType.Mapping.hbm.xml" }; }
         }
 
-        [SetUp]
-        public void Setup()
+		protected override void Initialize()
         {
             var nse = new NoSetterEntity("data");
             using (var tx = Session.BeginTransaction())

@@ -17,8 +17,7 @@ namespace NHibernate.Envers.Tests.Integration.Components
 			get { return new[] { "Entities.Components.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var cte1 = new ComponentTestEntity
 			{

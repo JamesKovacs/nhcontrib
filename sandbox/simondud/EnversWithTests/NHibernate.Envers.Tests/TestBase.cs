@@ -23,9 +23,10 @@ namespace NHibernate.Envers.Tests
             Session = sf.OpenSession();
             AuditReader = AuditReaderFactory.Get(Session);
             createDropSchema(true);
+			Initialize();
         }
 
-
+    	protected abstract void Initialize();
 
         private void createDropSchema(bool both)
         {

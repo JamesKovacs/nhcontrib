@@ -16,8 +16,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			get { return new[] { "Entities.OneToMany.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var ed1 = new SetRefEdEntity { Id = 1, Data = "data_ed_1" };
 			var ed2 = new SetRefEdEntity { Id = 2, Data = "data_ed_2" };

@@ -16,8 +16,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			get { return new[]{"Integration.OneToOne.BiDirectional.Mapping.hbm.xml"}; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var ed1 = new BiRefEdEntity { Id = 1, Data = "data_ed_1" };
 			var ed2 = new BiRefEdEntity { Id = 2, Data = "data_ed_2" };

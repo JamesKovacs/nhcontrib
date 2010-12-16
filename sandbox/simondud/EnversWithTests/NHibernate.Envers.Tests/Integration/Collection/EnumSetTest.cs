@@ -14,8 +14,7 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 			get { return new[] { "Entities.Collection.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var sse1 = new EnumSetEntity();
 			using(var tx = Session.BeginTransaction())

@@ -35,8 +35,7 @@ namespace NHibernate.Envers.Tests.Integration.Basic
             }
         }
 
-        [SetUp]
-        public void Setup()
+		protected override void Initialize()
         {
             id1 = addNewEntity("x", "a"); //rev 1
             modifyEntity(id1, "x", "a"); // no rev

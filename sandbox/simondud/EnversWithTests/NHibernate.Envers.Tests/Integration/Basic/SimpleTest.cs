@@ -14,8 +14,7 @@ namespace NHibernate.Envers.Tests.Integration.Basic
             get { return new[] { "Entities.Mapping.hbm.xml" }; }
         }
 
-        [SetUp]
-        public void Setup()
+		protected override void Initialize()
         {
             var ite = new IntTestEntity { Number = 10 };
             using(var tx = Session.BeginTransaction())

@@ -15,8 +15,7 @@ namespace NHibernate.Envers.Tests.Integration.Components.Relations
 			get { return new[] { "Entities.Components.Relations.Mapping.hbm.xml", "Entities.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var ste1 = new UnversionedStrTestEntity {Str = "str1"};
 			var ste2 = new UnversionedStrTestEntity {Str = "str2"};

@@ -14,8 +14,7 @@ namespace NHibernate.Envers.Tests.Integration.Basic
             get { return new[] { "Entities.Mapping.hbm.xml" }; }
         }
 
-        [SetUp]
-        public void Setup()
+		protected override void Initialize()
         {
             var ue1 = new UnversionedEntity { Str1 = "a1", Str2 = "b1" };
             using(var tx = Session.BeginTransaction())

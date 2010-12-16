@@ -15,8 +15,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 			get { return new[] { "Entities.Mapping.hbm.xml" }; }
 		}
 
-		[SetUp]
-		public void Setup()
+		protected override void Initialize()
 		{
 			var ite = new IntTestEntity { Number = 10 };
 
