@@ -177,7 +177,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 			}
 		}
 
-		private ISession session;
+		protected ISession session;
 
 		protected override void OnSetUp()
 		{
@@ -401,7 +401,7 @@ namespace Tests.NHibernate.Spatial.NtsTestCases
 		}
 
 		[Test]
-		public void StringRelate()
+		public virtual void StringRelate()
 		{
 			IList results = session.CreateCriteria(typeof(NtsTestCase))
 				.Add(Restrictions.Eq("Operation", "Relate"))

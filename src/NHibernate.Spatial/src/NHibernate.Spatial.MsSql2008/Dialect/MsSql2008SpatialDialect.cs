@@ -325,25 +325,27 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public SqlString GetSpatialRelateString(object geometry, object anotherGeometry, object pattern, bool isStringPattern, bool criterion)
 		{
-			SqlStringBuilder builder = new SqlStringBuilder();
+			if (pattern == null)
+			{
+				throw new ArgumentNullException("pattern", 
+					"Ms SQL 2008 does not supports the syntax returning a DE-9IM for the two geometries. For STRelate the 'intersection_pattern_matrix' is mandatory and the result is a boolean.");
+			}
+			var builder = new SqlStringBuilder();
 			builder
 				.AddObject(geometry)
 				.Add(".STRelate(")
 				.AddObject(anotherGeometry);
-			if (pattern != null)
+			builder.Add(", ");
+			if (isStringPattern)
 			{
-				builder.Add(", ");
-				if (isStringPattern)
-				{
-					builder
-						.Add("'")
-						.Add((string)pattern)
-						.Add("'");
-				}
-				else
-				{
-					builder.AddObject(pattern);
-				}
+				builder
+					.Add("'")
+					.Add((string) pattern)
+					.Add("'");
+			}
+			else
+			{
+				builder.AddObject(pattern);
 			}
 			return builder
 				.Add(")")
