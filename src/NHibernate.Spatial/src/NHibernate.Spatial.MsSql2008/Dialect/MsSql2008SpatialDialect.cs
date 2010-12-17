@@ -301,11 +301,15 @@ namespace NHibernate.Spatial.Dialect
 		/// <returns></returns>
 		public SqlString GetSpatialValidationString(object geometry, SpatialValidation validation, bool criterion)
 		{
+			// the MSDN say that "STIsValid" should return a CLR-SqlBoolean but our test "TestBooleanUnaryOperation" say that it may return null
+			// when the geometry is null.
 			return new SqlStringBuilder()
+				.Add("COALESCE(")
 				.AddObject(geometry)
 				.Add(".ST")
 				.Add(validation.ToString())
 				.Add("()")
+				.Add(", 0)")
 				.Add(criterion ? " = 1" : "")
 				.ToSqlString();
 		}
