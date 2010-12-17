@@ -83,7 +83,7 @@ namespace NHibernate.Spatial.Criterion
 		/// </returns>
 		public override SqlString ToSqlString(ICriteria criteria, ICriteriaQuery criteriaQuery, IDictionary<string, IFilter> enabledFilters)
 		{
-			criteriaQuery.AddUsedTypedValues(GetTypedValues(criteria, criteriaQuery));
+			//criteriaQuery.AddUsedTypedValues(GetTypedValues(criteria, criteriaQuery));
 			ISpatialDialect spatialDialect = (ISpatialDialect)criteriaQuery.Factory.Dialect;
 			string[] columns1 = GetColumnNames(criteria, criteriaQuery, this.propertyName);
 			string[] columns2 = null;
