@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Configuration;
 using NHibernate.Envers.Entities.Mapper.Relation.Query;
 using NHibernate.Envers.Reader;
+using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
@@ -38,14 +39,18 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 		protected override void AddToCollection(IList<T> collection, object collectionRow)
 		{
 			var elementData = ((IList)collectionRow)[_elementComponentData.ComponentIndex];
+			var indexData = ((IList)collectionRow)[_indexComponentData.ComponentIndex];
+
+			//rk - have a look at this later. 
+			var wrappedElementData = DictionaryWrapper<string, object>.Wrap((IDictionary)elementData);
+			var wrappedIndexData = DictionaryWrapper<string, object>.Wrap((IDictionary)indexData);
 			var element = (T)_elementComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
-																				(IDictionary<String, Object>)elementData, 
+																				wrappedElementData, 
 																				null, 
 																				revision);
 
-			var indexData = ((IList)collectionRow)[_indexComponentData.ComponentIndex];
 			var index = (int)_indexComponentData.ComponentMapper.MapToObjectFromFullMap(entityInstantiator,
-																				(IDictionary<String, Object>)indexData, 
+																				wrappedIndexData, 
 																				element, 
 																				revision);
 			collection[index] = element;

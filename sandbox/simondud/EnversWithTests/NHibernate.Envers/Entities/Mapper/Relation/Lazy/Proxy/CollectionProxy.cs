@@ -4,30 +4,30 @@ using NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 {
-    public abstract class CollectionProxy<TItem, TCollection> : ICollection<TItem>
+	public abstract class CollectionProxy<TItem, TCollection> : ICollection<TItem>
 							where TCollection : class, ICollection<TItem>
 	{
 		private readonly IInitializor<TCollection> initializor;
 		protected TCollection delegat;
 
-        protected CollectionProxy() 
+		protected CollectionProxy() 
 		{
-        }
+		}
 
 		protected CollectionProxy(IInitializor<TCollection> initializor) 
 		{
-            this.initializor = initializor;
-        }
+			this.initializor = initializor;
+		}
 
-        protected void CheckInit() 
+		protected void CheckInit() 
 		{
-            if (delegat == null)
-            {
-                delegat = initializor.Initialize();
-            }
-        }
+			if (delegat == null)
+			{
+				delegat = initializor.Initialize();
+			}
+		}
 
-        public int Count 
+		public int Count 
 		{
 			get 
 			{
@@ -36,72 +36,72 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Proxy
 			}
 		}
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                CheckInit();
-                return delegat.IsReadOnly;
-            }
-        }
-
-        public bool Contains(TItem o) 
+		public bool IsReadOnly
 		{
-            CheckInit();
-            return delegat.Contains(o);
-        }
+			get
+			{
+				CheckInit();
+				return delegat.IsReadOnly;
+			}
+		}
+
+		public bool Contains(TItem o) 
+		{
+			CheckInit();
+			return delegat.Contains(o);
+		}
 
 		public void CopyTo(TItem[] array, int arrayIndex)
-        {
-            CheckInit();
-            delegat.CopyTo(array, arrayIndex);
-        }
+		{
+			CheckInit();
+			delegat.CopyTo(array, arrayIndex);
+		}
 
 		public IEnumerator<TItem> GetEnumerator() 
 		{
-            CheckInit();
-            return delegat.GetEnumerator();
-        }
+			CheckInit();
+			return delegat.GetEnumerator();
+		}
 
 		public void Add(TItem o) 
 		{
-            CheckInit();
-            delegat.Add(o);
-        }
+			CheckInit();
+			delegat.Add(o);
+		}
 
 		public bool Remove(TItem o) 
 		{
-            CheckInit();
-            return delegat.Remove(o);
-        }
+			CheckInit();
+			return delegat.Remove(o);
+		}
 
-        public void Clear() 
+		public void Clear() 
 		{
-            CheckInit();
-            delegat.Clear();
-        }
+			CheckInit();
+			delegat.Clear();
+		}
 
-        public override string ToString() 
+		public override string ToString() 
 		{
-            CheckInit();
-            return delegat.ToString();
-        }
+			CheckInit();
+			return delegat.ToString();
+		}
 
-        public override bool Equals(object obj) 
+		public override bool Equals(object obj) 
 		{
-            CheckInit();
-            return delegat.Equals(obj);
-        }
+			CheckInit();
+			return delegat.Equals(obj);
+		}
 
-        public override int GetHashCode() 
+		public override int GetHashCode() 
 		{
-            CheckInit();
-            return delegat.GetHashCode();
-        }
+			CheckInit();
+			return delegat.GetHashCode();
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+	}
 }

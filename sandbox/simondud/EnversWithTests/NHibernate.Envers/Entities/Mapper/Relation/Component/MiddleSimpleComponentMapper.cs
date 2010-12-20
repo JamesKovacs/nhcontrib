@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Component
 
         public object MapToObjectFromFullMap(EntityInstantiator entityInstantiator, IDictionary<string, object> data, object dataObject, long revision)
         {
-            return ((IDictionary<String, Object>)data[verEntCfg.OriginalIdPropName])[propertyName];
+            return ((IDictionary)data[verEntCfg.OriginalIdPropName])[propertyName];
         }
 
         public void MapToMapFromObject(IDictionary<string, object> data, object obj)

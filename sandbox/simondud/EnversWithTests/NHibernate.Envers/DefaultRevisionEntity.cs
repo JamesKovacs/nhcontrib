@@ -11,7 +11,7 @@ namespace NHibernate.Envers
 		[RevisionTimestamp]
 		public virtual DateTime RevisionDate { get; set; }
 
-		public override bool Equals(Object o) 
+		public override bool Equals(object o) 
 		{
 			if (this == o) return true;
 			var revisionEntity = o as DefaultRevisionEntity;

@@ -1,58 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.UserTypes;
 using NHibernate.SqlTypes;
 using System.Data;
-using System.Data.Common;
 
 namespace NHibernate.Envers.Entities
 {
-    /**
-     * A hibernate type for the {@link RevisionType} enum.
-     * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
-     */
-    public class RevisionTypeType: IUserType {
+    public class RevisionTypeType: IUserType 
+	{
         private static readonly SqlType[] SQL_TYPES = { new SqlType(DbType.Byte) };
 
-        public SqlType[] SqlTypes { 
-            get {
+        public SqlType[] SqlTypes 
+		{ 
+            get 
+			{
                 return SQL_TYPES;
             }
         }
 
-        public System.Type ReturnedType {
-            get{
+        public System.Type ReturnedType 
+		{
+            get
+			{
                 return typeof(RevisionType);
             }
         }
 
-        public object NullSafeGet(IDataReader resultSet, String[] names, Object owner){
-            if( resultSet.Read())
-            {
-                try{
-                    Byte representation = (Byte) resultSet[names[0]];            
-                    return RevisionType.FromRepresentation(representation);
-                }
-                catch ( IndexOutOfRangeException){
-                    return null;
-                }
-            }
-            return null;
+        public object NullSafeGet(IDataReader resultSet, String[] names, object owner)
+        {
+        	var enumAsInt = NHibernateUtil.Int16.NullSafeGet(resultSet, names);
+        	return RevisionType.FromRepresentation(enumAsInt);
         }
 
-        public void NullSafeSet(IDbCommand cmd, Object value, int index){
+        public void NullSafeSet(IDbCommand cmd, object value, int index)
+		{
             if (null == value) {
                 cmd.Parameters[index] = null;
-            } else {
+            } 
+			else 
+			{
                 ((IDbDataParameter)cmd.Parameters[index]).Value = value;
                 //DbParameter param = DbParameter;
                 //cmd.Parameters[index] = param.Value();
             }
         }
 
-        public Object DeepCopy(Object value){
+        public Object DeepCopy(object value)
+		{
             return value;
         }
 
@@ -61,23 +54,28 @@ namespace NHibernate.Envers.Entities
             get { return false; }
         }
 
-        public Object Assemble(object cached, Object owner){
+		public Object Assemble(object cached, object owner)
+		{
             return cached;
         }
 
-        public object Disassemble(Object value){
+		public object Disassemble(object value)
+		{
             return value;
         }
 
-        public Object Replace(Object original, Object target, Object owner){
+		public Object Replace(object original, object target, object owner)
+		{
             return original;
         }
 
-        public int GetHashCode(Object x){
+		public int GetHashCode(object x)
+		{
             return x.GetHashCode();
         }
 
-        public new bool Equals(Object x, Object y){
+		public new bool Equals(object x, object y)
+		{
             //noinspection ObjectEquality
             if (x == y) {
                 return true;

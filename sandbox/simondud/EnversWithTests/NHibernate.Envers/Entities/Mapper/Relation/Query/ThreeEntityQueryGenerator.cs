@@ -8,6 +8,7 @@ using NHibernate.Envers.Query;
 using NHibernate.Envers.Reader;
 using NHibernate.Envers.Tools;
 using NHibernate.Envers.Tools.Query;
+using NHibernate.Transform;
 
 namespace NHibernate.Envers.Entities.Mapper.Relation.Query
 {
@@ -15,17 +16,19 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Query
      * Selects data from a relation middle-table and a two related versions entity.
      * @author Simon Duduica, port of Envers omonyme class by Adam Warski (adam at warski dot org)
      */
-    public sealed class ThreeEntityQueryGenerator : IRelationQueryGenerator {
-        private readonly String queryString;
+    public sealed class ThreeEntityQueryGenerator : IRelationQueryGenerator 
+	{
+        private readonly string queryString;
         private readonly MiddleIdData referencingIdData;
 
         public ThreeEntityQueryGenerator(GlobalConfiguration globalCfg,
-                                         AuditEntitiesConfiguration verEntCfg,
-                                         String versionsMiddleEntityName,
-                                         MiddleIdData referencingIdData,
-                                         MiddleIdData referencedIdData,
-                                         MiddleIdData indexIdData,
-                                       IEnumerable<MiddleComponentData> componentDatas) {
+                                        AuditEntitiesConfiguration verEntCfg,
+                                        string versionsMiddleEntityName,
+                                        MiddleIdData referencingIdData,
+                                        MiddleIdData referencedIdData,
+                                        MiddleIdData indexIdData,
+										IEnumerable<MiddleComponentData> componentDatas) 
+		{
             this.referencingIdData = referencingIdData;
 
             /*
@@ -52,18 +55,18 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Query
              *     e.revision_type != DEL AND
              *     f.revision_type != DEL
              */
-            String revisionPropertyPath = verEntCfg.RevisionNumberPath;
-            String originalIdPropertyName = verEntCfg.OriginalIdPropName;
+            var revisionPropertyPath = verEntCfg.RevisionNumberPath;
+            var originalIdPropertyName = verEntCfg.OriginalIdPropName;
 
-            String eeOriginalIdPropertyPath = "ee." + originalIdPropertyName;
+            var eeOriginalIdPropertyPath = "ee." + originalIdPropertyName;
 
             // SELECT new list(ee) FROM middleEntity ee
-            QueryBuilder qb = new QueryBuilder(versionsMiddleEntityName, "ee");
+            var qb = new QueryBuilder(versionsMiddleEntityName, "ee");
             qb.AddFrom(referencedIdData.AuditEntityName, "e");
             qb.AddFrom(indexIdData.AuditEntityName, "f");
             qb.AddProjection("new list", "ee, e, f", false, false);
             // WHERE
-            Parameters rootParameters = qb.RootParameters;
+            var rootParameters = qb.RootParameters;
             // ee.id_ref_ed = e.id_ref_ed
             referencedIdData.PrefixedMapper.AddIdsEqualToQuery(rootParameters, eeOriginalIdPropertyPath,
                     referencedIdData.OriginalMapper, "e." + originalIdPropertyName);
@@ -92,17 +95,17 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Query
             // f.revision_type != DEL
             rootParameters.AddWhereWithNamedParam("f." + verEntCfg.RevisionTypePropName, false, "!=", "delrevisiontype");
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             qb.Build(sb, EmptyDictionary<String, Object>.Instance);
             queryString = sb.ToString();
-                                       }
+        }
 
-        public IQuery GetQuery(IAuditReaderImplementor versionsReader, Object primaryKey, long revision)
+        public IQuery GetQuery(IAuditReaderImplementor versionsReader, object primaryKey, long revision)
         {
-            IQuery query = versionsReader.Session.CreateQuery(queryString);
+            var query = versionsReader.Session.CreateQuery(queryString);
             query.SetParameter("revision", revision);
             query.SetParameter("delrevisiontype", RevisionType.DEL.Representation);
-            foreach (QueryParameterData paramData in referencingIdData.PrefixedMapper.MapToQueryParametersFromId(primaryKey))
+            foreach (var paramData in referencingIdData.PrefixedMapper.MapToQueryParametersFromId(primaryKey))
             {
                 paramData.SetParameterValue(query);
             }

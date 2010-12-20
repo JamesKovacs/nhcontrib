@@ -17,11 +17,13 @@ namespace NHibernate.Envers.Entities
      * @author Adam Warski (adam at warski dot org)
      */
     //TODO Simon
-    public class EntityInstantiator {
+    public class EntityInstantiator 
+	{
         private readonly AuditConfiguration verCfg;
         private readonly IAuditReaderImplementor versionsReader;
 
-        public EntityInstantiator(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader) {
+        public EntityInstantiator(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader) 
+		{
             this.verCfg = verCfg;
             this.versionsReader = versionsReader;
         }
@@ -36,7 +38,8 @@ namespace NHibernate.Envers.Entities
          */
         public object CreateInstanceFromVersionsEntity(string entityName, IDictionary<string,object> versionsEntity, long revision) 
 		{
-            if (versionsEntity == null) {
+            if (versionsEntity == null) 
+			{
                 return null;
             }
 

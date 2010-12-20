@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NHibernate.Envers.Entities.Mapper.Relation.Query;
 using NHibernate.Envers.Tests.Entities.OneToMany;
 using NUnit.Framework;
 

@@ -38,7 +38,7 @@ namespace NHibernate.Envers.Tests.Integration.CustomType
 			CollectionAssert.AreEquivalent(new[] { 1, 2 }, AuditReader.GetRevisions(typeof(ParametrizedCustomTypeEntity), pcte_id));
 		}
 
-		[Test, Ignore("Will fix this very soon - need to clear session/new session after setup everywhere. This leads to bugs...")]
+		[Test]
 		public void VerifyHistoryOfPcte()
 		{
 			var rev1 = AuditReader.Find<ParametrizedCustomTypeEntity>(pcte_id, 1);

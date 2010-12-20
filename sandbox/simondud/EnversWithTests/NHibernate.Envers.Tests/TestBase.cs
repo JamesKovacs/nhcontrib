@@ -6,57 +6,57 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests
 {
-    public abstract class TestBase
-    {
-        public ISession Session{ get; private set; }
-        public IAuditReader AuditReader { get; private set; }
-        private Cfg.Configuration cfg;
+	public abstract class TestBase
+	{
+		private Cfg.Configuration cfg;
+		private const string MappingAssembly = "NHibernate.Envers.Tests";
+		public ISession Session { get; private set; }
+		public IAuditReader AuditReader { get; private set; }
 
-        [SetUp]
-        public void BaseSetup()
-        {
-            cfg = new Cfg.Configuration();
-            cfg.Configure();
-            addMappings();
-        	cfg.IntegrateWithEnvers();
-            var sf = cfg.BuildSessionFactory();
-            Session = sf.OpenSession();
-            AuditReader = AuditReaderFactory.Get(Session);
-            createDropSchema(true);
-			Initialize();
-        }
 
-    	protected abstract void Initialize();
+		[SetUp]
+		public void BaseSetup()
+		{
+			cfg = new Cfg.Configuration();
+			cfg.Configure();
+			addMappings();
+			cfg.IntegrateWithEnvers();
+			var sf = cfg.BuildSessionFactory();
+			createDropSchema(true);
+			using (Session = sf.OpenSession())
+			{
+				Initialize();				
+			}
+			Session = sf.OpenSession();
+			AuditReader = AuditReaderFactory.Get(Session);
+		}
 
-        private void createDropSchema(bool both)
-        {
-            var se = new SchemaExport(cfg);
-            se.Drop(false, true);
-            if(both)
-                se.Create(false,true);
-        }
+		protected abstract void Initialize();
 
-        [TearDown]
-        public void BaseTearDown()
-        {
-            Session.Close();
-            createDropSchema(false);
-        }
+		private void createDropSchema(bool both)
+		{
+			var se = new SchemaExport(cfg);
+			se.Drop(false, true);
+			if(both)
+				se.Create(false,true);
+		}
 
-        protected abstract IEnumerable<string> Mappings { get; }
+		[TearDown]
+		public void BaseTearDown()
+		{
+			Session.Close();
+			createDropSchema(false);
+		}
 
-        protected virtual string MappingAssembly
-        {
-            get { return "NHibernate.Envers.Tests"; }
-        }
+		protected abstract IEnumerable<string> Mappings { get; }
 
-        private void addMappings()
-        {
-            var ass = Assembly.Load(MappingAssembly);
-            foreach (var mapping in Mappings)
-            {
-                cfg.AddResource(MappingAssembly + "." + mapping, ass);
-            }
-        }
-    }
+		private void addMappings()
+		{
+			var ass = Assembly.Load(MappingAssembly);
+			foreach (var mapping in Mappings)
+			{
+				cfg.AddResource(MappingAssembly + "." + mapping, ass);
+			}
+		}
+	}
 }

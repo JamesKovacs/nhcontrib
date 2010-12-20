@@ -12,174 +12,176 @@ using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Query.Impl
 {
-    /**
-     * @author Adam Warski (adam at warski dot org)
-     */
-    public abstract class AbstractAuditQuery : IAuditQuery {
-        protected EntityInstantiator entityInstantiator;
-        protected IList<IAuditCriterion> criterions;
+	/**
+	 * @author Adam Warski (adam at warski dot org)
+	 */
+	public abstract class AbstractAuditQuery : IAuditQuery {
+		protected EntityInstantiator entityInstantiator;
+		protected IList<IAuditCriterion> criterions;
 
-        protected String entityName;
-        protected String versionsEntityName;
-        protected QueryBuilder qb;
+		protected String entityName;
+		protected String versionsEntityName;
+		protected QueryBuilder qb;
 
-        protected bool hasProjection;
-        protected bool hasOrder;
+		protected bool hasProjection;
+		protected bool hasOrder;
 
-        protected readonly AuditConfiguration verCfg;
-        private readonly IAuditReaderImplementor versionsReader;
+		protected readonly AuditConfiguration verCfg;
+		private readonly IAuditReaderImplementor versionsReader;
 
-        protected AbstractAuditQuery(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader,
-                                        System.Type cls) {
-            this.verCfg = verCfg;
-            this.versionsReader = versionsReader;
+		protected AbstractAuditQuery(AuditConfiguration verCfg, IAuditReaderImplementor versionsReader,
+										System.Type cls) {
+			this.verCfg = verCfg;
+			this.versionsReader = versionsReader;
 
-            criterions = new List<IAuditCriterion>();
-            entityInstantiator = new EntityInstantiator(verCfg, versionsReader);
+			criterions = new List<IAuditCriterion>();
+			entityInstantiator = new EntityInstantiator(verCfg, versionsReader);
 
-            entityName = cls.FullName;
-            
-            versionsEntityName = verCfg.AuditEntCfg.GetAuditEntityName(entityName);
+			entityName = cls.FullName;
+			
+			versionsEntityName = verCfg.AuditEntCfg.GetAuditEntityName(entityName);
 
-            qb = new QueryBuilder(versionsEntityName, "e");
-        }
+			qb = new QueryBuilder(versionsEntityName, "e");
+		}
 
-        protected IList BuildAndExecuteQuery() {
-            StringBuilder querySb = new StringBuilder();
-            IDictionary<String, Object> queryParamValues = new Dictionary<String, Object>();
+		protected IList BuildAndExecuteQuery() {
+			StringBuilder querySb = new StringBuilder();
+			IDictionary<String, Object> queryParamValues = new Dictionary<String, Object>();
 
-            qb.Build(querySb, queryParamValues);
+			qb.Build(querySb, queryParamValues);
 
-            IQuery query = versionsReader.Session.CreateQuery(querySb.ToString());
-            foreach (KeyValuePair<String, Object> paramValue in queryParamValues) {
-                query.SetParameter(paramValue.Key, paramValue.Value);
-            }
+			IQuery query = versionsReader.Session.CreateQuery(querySb.ToString());
+			foreach (KeyValuePair<String, Object> paramValue in queryParamValues) {
+				query.SetParameter(paramValue.Key, paramValue.Value);
+			}
 
-            setQueryProperties(query);
+			setQueryProperties(query);
 
-            return query.List();
-        }
+			return query.List();
+		}
 
-        public abstract IList List();
+		public abstract IList List();
 
-        public IList GetResultList(){
-            return List();
-        }
-
-        public Object GetSingleResult(){
-            IList result = List();
-
-            if (result == null || result.Count == 0) {
-                //throw new NoResultException();
-                throw new HibernateException("No result!");
-            }
-
-            if (result.Count > 1) {
-                throw new NonUniqueResultException(result.Count);
-            }
-
-            return result[0];
-        }
-
-        public IAuditQuery Add(IAuditCriterion criterion) {
-            criterions.Add(criterion);
-            return this;
-        }
-
-        // Projection and order
-
-        public IAuditQuery AddProjection(IAuditProjection projection) {
-            Triple<String, String, Boolean> projectionData = projection.GetData(verCfg);
-            hasProjection = true;
-            qb.AddProjection(projectionData.First, projectionData.Second, projectionData.Third);
-            return this;
-        }
-
-        public IAuditQuery AddOrder(IAuditOrder order) {
-            hasOrder = true;
-
-            Pair<String, Boolean> orderData = order.getData(verCfg);
-            qb.AddOrder(orderData.First, orderData.Second);
-            return this;
-        }
-
-        // Query properties
-
-        private int? maxResults;
-        private int? firstResult;
-        private bool? cacheable;
-        private String cacheRegion;
-        private String comment;
-        private FlushMode flushMode;
-        private CacheMode cacheMode;
-        private int? timeout;
-        private LockMode lockMode;
-
-        public IAuditQuery SetMaxResults(int _maxResults) 
+		public IList GetResultList()
 		{
-            maxResults = _maxResults;
-            return this;
-        }
+			return List();
+		}
 
-        public IAuditQuery SetFirstResult(int firstResult) 
+		public object GetSingleResult()
 		{
-            this.firstResult = firstResult;
-            return this;
-        }
+			var result = List();
 
-        public IAuditQuery SetCacheable(bool cacheable) 
-		{
-            this.cacheable = cacheable;
-            return this;
-        }
+			if (result == null || result.Count == 0) {
+				//throw new NoResultException();
+				throw new HibernateException("No result!");
+			}
 
-        public IAuditQuery SetCacheRegion(string cacheRegion) 
-		{
-            this.cacheRegion = cacheRegion;
-            return this;
-        }
+			if (result.Count > 1) {
+				throw new NonUniqueResultException(result.Count);
+			}
 
-        public IAuditQuery SetComment(string comment) 
-		{
-            this.comment = comment;
-            return this;
-        }
+			return result[0];
+		}
 
-        public IAuditQuery SetFlushMode(FlushMode flushMode) 
-		{
-            this.flushMode = flushMode;
-            return this;
-        }
+		public IAuditQuery Add(IAuditCriterion criterion) {
+			criterions.Add(criterion);
+			return this;
+		}
 
-        public IAuditQuery SetCacheMode(CacheMode cacheMode) 
-		{
-            this.cacheMode = cacheMode;
-            return this;
-        }
+		// Projection and order
 
-        public IAuditQuery SetTimeout(int timeout) 
-		{
-            this.timeout = timeout;
-            return this;
-        }
+		public IAuditQuery AddProjection(IAuditProjection projection) {
+			Triple<String, String, Boolean> projectionData = projection.GetData(verCfg);
+			hasProjection = true;
+			qb.AddProjection(projectionData.First, projectionData.Second, projectionData.Third);
+			return this;
+		}
 
-        public IAuditQuery SetLockMode(LockMode lockMode) 
-		{
-            this.lockMode = lockMode;
-            return this;
-        }
+		public IAuditQuery AddOrder(IAuditOrder order) {
+			hasOrder = true;
 
-        protected void setQueryProperties(IQuery query) 
+			Pair<String, Boolean> orderData = order.getData(verCfg);
+			qb.AddOrder(orderData.First, orderData.Second);
+			return this;
+		}
+
+		// Query properties
+
+		private int? maxResults;
+		private int? firstResult;
+		private bool? cacheable;
+		private String cacheRegion;
+		private String comment;
+		private FlushMode flushMode;
+		private CacheMode cacheMode;
+		private int? timeout;
+		private LockMode lockMode;
+
+		public IAuditQuery SetMaxResults(int _maxResults) 
 		{
-            if (maxResults != null) query.SetMaxResults((int)maxResults);
-            if (firstResult != null) query.SetFirstResult((int)firstResult);
-            if (cacheable != null) query.SetCacheable((bool)cacheable);
-            if (cacheRegion != null) query.SetCacheRegion(cacheRegion);
-            if (comment != null) query.SetComment(comment);
-            query.SetFlushMode(flushMode);
-            query.SetCacheMode(cacheMode);
-            if (timeout != null) query.SetTimeout((int)timeout);
-            if (lockMode != null) query.SetLockMode("e", lockMode);
-        }
-    }
+			maxResults = _maxResults;
+			return this;
+		}
+
+		public IAuditQuery SetFirstResult(int firstResult) 
+		{
+			this.firstResult = firstResult;
+			return this;
+		}
+
+		public IAuditQuery SetCacheable(bool cacheable) 
+		{
+			this.cacheable = cacheable;
+			return this;
+		}
+
+		public IAuditQuery SetCacheRegion(string cacheRegion) 
+		{
+			this.cacheRegion = cacheRegion;
+			return this;
+		}
+
+		public IAuditQuery SetComment(string comment) 
+		{
+			this.comment = comment;
+			return this;
+		}
+
+		public IAuditQuery SetFlushMode(FlushMode flushMode) 
+		{
+			this.flushMode = flushMode;
+			return this;
+		}
+
+		public IAuditQuery SetCacheMode(CacheMode cacheMode) 
+		{
+			this.cacheMode = cacheMode;
+			return this;
+		}
+
+		public IAuditQuery SetTimeout(int timeout) 
+		{
+			this.timeout = timeout;
+			return this;
+		}
+
+		public IAuditQuery SetLockMode(LockMode lockMode) 
+		{
+			this.lockMode = lockMode;
+			return this;
+		}
+
+		protected void setQueryProperties(IQuery query) 
+		{
+			if (maxResults != null) query.SetMaxResults((int)maxResults);
+			if (firstResult != null) query.SetFirstResult((int)firstResult);
+			if (cacheable != null) query.SetCacheable((bool)cacheable);
+			if (cacheRegion != null) query.SetCacheRegion(cacheRegion);
+			if (comment != null) query.SetComment(comment);
+			query.SetFlushMode(flushMode);
+			query.SetCacheMode(cacheMode);
+			if (timeout != null) query.SetTimeout((int)timeout);
+			if (lockMode != null) query.SetLockMode("e", lockMode);
+		}
+	}
 }
