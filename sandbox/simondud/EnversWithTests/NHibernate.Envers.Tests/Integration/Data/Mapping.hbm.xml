@@ -1,0 +1,11 @@
+﻿<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+    assembly="NHibernate.Envers.Tests"
+    namespace="NHibernate.Envers.Tests.Integration.Data">
+<class name="DateTestEntity">
+  <id name="Id">
+    <generator class="identity"/>
+  </id>
+  <property name="Date" />
+</class>
+</hibernate-mapping>
+

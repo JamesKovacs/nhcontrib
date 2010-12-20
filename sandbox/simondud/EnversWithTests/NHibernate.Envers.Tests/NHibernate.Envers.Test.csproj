@@ -132,6 +132,8 @@
     <Compile Include="Integration\Components\Relations\OneToManyInComponentTest.cs" />
     <Compile Include="Integration\CustomType\CompositeCustomTest.cs" />
     <Compile Include="Integration\CustomType\ParametrizedCustomTest.cs" />
+    <Compile Include="Integration\Data\DateTest.cs" />
+    <Compile Include="Integration\Data\DateTestEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -149,6 +151,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Integration\OneToOne\BiDirectional\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Data\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
