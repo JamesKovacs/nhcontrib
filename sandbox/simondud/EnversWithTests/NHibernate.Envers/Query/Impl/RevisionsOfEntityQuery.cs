@@ -84,13 +84,12 @@ namespace NHibernate.Envers.Query.Impl
 			foreach (var resultRow in queryResult)
 			{
 				IDictionary<string, object> versionsEntity;
-				Object revisionData;
+				object revisionData = null;
 
 				if (selectEntitiesOnly)
 				{
 					//rk - check this
 					versionsEntity = DictionaryWrapper<string, object>.Wrap((IDictionary) resultRow);
-					revisionData = null;
 				}
 				else
 				{

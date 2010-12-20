@@ -8,14 +8,11 @@ using NHibernate.Envers.Query.Criteria;
 using NHibernate.Envers.Query.Order;
 using NHibernate.Envers.Query.Projection;
 using NHibernate.Envers.Reader;
-using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Query.Impl
 {
-	/**
-	 * @author Adam Warski (adam at warski dot org)
-	 */
-	public abstract class AbstractAuditQuery : IAuditQuery {
+	public abstract class AbstractAuditQuery : IAuditQuery 
+	{
 		protected EntityInstantiator entityInstantiator;
 		protected IList<IAuditCriterion> criterions;
 
@@ -71,36 +68,40 @@ namespace NHibernate.Envers.Query.Impl
 		{
 			var result = List();
 
-			if (result == null || result.Count == 0) {
+			if (result == null || result.Count == 0) 
+			{
 				//throw new NoResultException();
 				throw new HibernateException("No result!");
 			}
 
-			if (result.Count > 1) {
+			if (result.Count > 1) 
+			{
 				throw new NonUniqueResultException(result.Count);
 			}
 
 			return result[0];
 		}
 
-		public IAuditQuery Add(IAuditCriterion criterion) {
+		public IAuditQuery Add(IAuditCriterion criterion) 
+		{
 			criterions.Add(criterion);
 			return this;
 		}
 
 		// Projection and order
 
-		public IAuditQuery AddProjection(IAuditProjection projection) {
-			Triple<String, String, Boolean> projectionData = projection.GetData(verCfg);
+		public IAuditQuery AddProjection(IAuditProjection projection) 
+		{
+			var projectionData = projection.GetData(verCfg);
 			hasProjection = true;
 			qb.AddProjection(projectionData.First, projectionData.Second, projectionData.Third);
 			return this;
 		}
 
-		public IAuditQuery AddOrder(IAuditOrder order) {
+		public IAuditQuery AddOrder(IAuditOrder order) 
+		{
 			hasOrder = true;
-
-			Pair<String, Boolean> orderData = order.getData(verCfg);
+			var orderData = order.getData(verCfg);
 			qb.AddOrder(orderData.First, orderData.Second);
 			return this;
 		}

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NHibernate.Envers.Tools
 {
-    class DictionaryWrapper<TKey, TValue>: IDictionary<TKey, TValue>
+    public class DictionaryWrapper<TKey, TValue>: IDictionary<TKey, TValue>
     {
-        private IDictionary dictionary;
+        private readonly IDictionary dictionary;
 
         private DictionaryWrapper(IDictionary dic)
         {

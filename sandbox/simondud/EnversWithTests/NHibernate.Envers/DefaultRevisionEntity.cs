@@ -32,8 +32,7 @@ namespace NHibernate.Envers
 
 		public override string ToString() 
 		{
-			return "DefaultRevisionEntity(id = " + Id + 
-				", revisionDate = " + RevisionDate.ToShortDateString() + ")";
+			return "DefaultRevisionEntity(id = " + Id + ", revisionDate = " + RevisionDate.ToShortDateString() + ")";
 		}
 	}
 }

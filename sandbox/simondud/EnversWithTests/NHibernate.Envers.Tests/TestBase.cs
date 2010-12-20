@@ -10,8 +10,8 @@ namespace NHibernate.Envers.Tests
 	{
 		private Cfg.Configuration cfg;
 		private const string MappingAssembly = "NHibernate.Envers.Tests";
-		public ISession Session { get; private set; }
-		public IAuditReader AuditReader { get; private set; }
+		protected ISession Session { get; set; }
+		protected IAuditReader AuditReader { get; set; }
 
 
 		[SetUp]
@@ -31,6 +31,13 @@ namespace NHibernate.Envers.Tests
 			AuditReader = AuditReaderFactory.Get(Session);
 		}
 
+		[TearDown]
+		public void BaseTearDown()
+		{
+			Session.Close();
+			createDropSchema(false);
+		}
+
 		protected abstract void Initialize();
 
 		private void createDropSchema(bool both)
@@ -39,13 +46,6 @@ namespace NHibernate.Envers.Tests
 			se.Drop(false, true);
 			if(both)
 				se.Create(false,true);
-		}
-
-		[TearDown]
-		public void BaseTearDown()
-		{
-			Session.Close();
-			createDropSchema(false);
 		}
 
 		protected abstract IEnumerable<string> Mappings { get; }
