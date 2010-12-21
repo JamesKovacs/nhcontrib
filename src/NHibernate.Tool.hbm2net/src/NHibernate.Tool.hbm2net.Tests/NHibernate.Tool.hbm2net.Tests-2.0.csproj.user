@@ -18,4 +18,11 @@
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartProgram>C:\Program Files (x86)\NUnit 2.5.3\bin\net-2.0\nunit-x86.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <StartProgram>C:\Program Files\NUnit 2.5\bin\net-2.0\nunit.exe</StartProgram>
+  </PropertyGroup>
 </Project>
