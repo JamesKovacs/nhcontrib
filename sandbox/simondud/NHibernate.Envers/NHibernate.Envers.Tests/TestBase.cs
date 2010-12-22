@@ -23,12 +23,19 @@ namespace NHibernate.Envers.Tests
 			cfg.IntegrateWithEnvers();
 			var sf = cfg.BuildSessionFactory();
 			createDropSchema(true);
-			using (Session = sf.OpenSession())
+			using (Session = openSession(sf))
 			{
 				Initialize();				
 			}
-			Session = sf.OpenSession();
+			Session = openSession(sf);
 			AuditReader = AuditReaderFactory.Get(Session);
+		}
+
+		private ISession openSession(ISessionFactory sessionFactory)
+		{
+			var session = sessionFactory.OpenSession();
+			session.FlushMode = FlushMode;
+			return session;
 		}
 
 		[TearDown]
@@ -36,6 +43,11 @@ namespace NHibernate.Envers.Tests
 		{
 			Session.Close();
 			createDropSchema(false);
+		}
+
+		protected virtual FlushMode FlushMode
+		{
+			get { return FlushMode.Auto; }
 		}
 
 		protected abstract void Initialize();

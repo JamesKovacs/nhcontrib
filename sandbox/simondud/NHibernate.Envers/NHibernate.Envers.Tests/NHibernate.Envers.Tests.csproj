@@ -138,6 +138,7 @@
     <Compile Include="Integration\Data\SerializableTest.cs" />
     <Compile Include="Integration\Data\SerializableTestEntity.cs" />
     <Compile Include="Integration\Data\SerObj.cs" />
+    <Compile Include="Integration\Flush\DoubleFlushAddDelTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -169,6 +170,7 @@
       <Name>NHibernate.Envers</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
