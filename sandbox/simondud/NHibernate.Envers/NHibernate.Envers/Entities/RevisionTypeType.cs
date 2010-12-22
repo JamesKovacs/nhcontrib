@@ -5,87 +5,88 @@ using System.Data;
 
 namespace NHibernate.Envers.Entities
 {
-    public class RevisionTypeType: IUserType 
+	public class RevisionTypeType: IUserType 
 	{
-        private static readonly SqlType[] SQL_TYPES = { new SqlType(DbType.Byte) };
+		private static readonly SqlType[] SQL_TYPES = { new SqlType(DbType.Byte) };
 
-        public SqlType[] SqlTypes 
+		public SqlType[] SqlTypes 
 		{ 
-            get 
+			get 
 			{
-                return SQL_TYPES;
-            }
-        }
+				return SQL_TYPES;
+			}
+		}
 
-        public System.Type ReturnedType 
+		public System.Type ReturnedType 
 		{
-            get
+			get
 			{
-                return typeof(RevisionType);
-            }
-        }
+				return typeof(RevisionType);
+			}
+		}
 
-        public object NullSafeGet(IDataReader resultSet, String[] names, object owner)
-        {
-        	var enumAsInt = NHibernateUtil.Int16.NullSafeGet(resultSet, names);
-        	return RevisionType.FromRepresentation(enumAsInt);
-        }
-
-        public void NullSafeSet(IDbCommand cmd, object value, int index)
+		public object NullSafeGet(IDataReader resultSet, String[] names, object owner)
 		{
-            if (null == value) {
-                cmd.Parameters[index] = null;
-            } 
+			var enumAsInt = Convert.ToByte(NHibernateUtil.Int16.NullSafeGet(resultSet, names));
+			return RevisionType.FromRepresentation(enumAsInt);
+		}
+
+		public void NullSafeSet(IDbCommand cmd, object value, int index)
+		{
+			if (null == value) 
+			{
+				cmd.Parameters[index] = null;
+			} 
 			else 
 			{
-                ((IDbDataParameter)cmd.Parameters[index]).Value = value;
-                //DbParameter param = DbParameter;
-                //cmd.Parameters[index] = param.Value();
-            }
-        }
+				((IDbDataParameter)cmd.Parameters[index]).Value = value;
+				//DbParameter param = DbParameter;
+				//cmd.Parameters[index] = param.Value();
+			}
+		}
 
-        public Object DeepCopy(object value)
+		public object DeepCopy(object value)
 		{
-            return value;
-        }
+			return value;
+		}
 
-        public bool IsMutable
-        {
-            get { return false; }
-        }
-
-		public Object Assemble(object cached, object owner)
+		public bool IsMutable
 		{
-            return cached;
-        }
+			get { return false; }
+		}
+
+		public object Assemble(object cached, object owner)
+		{
+			return cached;
+		}
 
 		public object Disassemble(object value)
 		{
-            return value;
-        }
+			return value;
+		}
 
 		public Object Replace(object original, object target, object owner)
 		{
-            return original;
-        }
+			return original;
+		}
 
 		public int GetHashCode(object x)
 		{
-            return x.GetHashCode();
-        }
+			return x.GetHashCode();
+		}
 
 		public new bool Equals(object x, object y)
 		{
-            //noinspection ObjectEquality
-            if (x == y) {
-                return true;
-            }
+			//noinspection ObjectEquality
+			if (x == y) {
+				return true;
+			}
 
-            if (null == x || null == y) {
-                return false;
-            }
+			if (null == x || null == y) {
+				return false;
+			}
 
-            return x.Equals(y);
-        }
-    }
+			return x.Equals(y);
+		}
+	}
 }

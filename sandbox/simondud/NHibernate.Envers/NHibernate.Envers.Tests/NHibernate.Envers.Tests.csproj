@@ -139,6 +139,7 @@
     <Compile Include="Integration\Data\SerializableTestEntity.cs" />
     <Compile Include="Integration\Data\SerObj.cs" />
     <Compile Include="Integration\Flush\DoubleFlushAddDelTest.cs" />
+    <Compile Include="Integration\Flush\DoubleFlushAddModTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
