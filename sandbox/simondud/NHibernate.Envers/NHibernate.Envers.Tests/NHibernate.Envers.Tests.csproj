@@ -133,6 +133,8 @@
     <Compile Include="Integration\Data\DateTestEntity.cs" />
     <Compile Include="Integration\Data\EnumTest.cs" />
     <Compile Include="Integration\Data\EnumTestEntity.cs" />
+    <Compile Include="Integration\Data\LobsTest.cs" />
+    <Compile Include="Integration\Data\LobTestEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

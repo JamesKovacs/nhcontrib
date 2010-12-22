@@ -19,5 +19,14 @@
     <property name="Enum1" type="EnumString"/>
     <property name="Enum2" />
   </class>
+
+  <class name="LobTestEntity">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="StringLob" type="StringClob"/>
+    <property name="ByteLob" type="BinaryBlob"/>
+    
+  </class>
 </hibernate-mapping>
 
