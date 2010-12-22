@@ -30,7 +30,6 @@ namespace NHibernate.Envers.Tests.Integration.Data
 			}
 		}
 
-
 		[Test]
 		public void VerifyRevisionCount()
 		{
