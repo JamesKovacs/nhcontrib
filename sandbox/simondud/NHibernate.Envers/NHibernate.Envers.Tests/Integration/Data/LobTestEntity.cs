@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace NHibernate.Envers.Tests.Integration.Data
 {
 	public class LobTestEntity
