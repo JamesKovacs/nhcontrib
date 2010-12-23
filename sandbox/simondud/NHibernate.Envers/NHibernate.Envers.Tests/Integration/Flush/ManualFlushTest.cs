@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace NHibernate.Envers.Tests.Integration.Flush
 {
 	[TestFixture]
-	public class DoubleFlushModModTest :TestBase
+	public class ManualFlushTest :TestBase
 	{
 		private int id;
 
@@ -31,10 +31,15 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 			}
 			using (var tx = Session.BeginTransaction())
 			{
+		        // No revision - we change the data, but do not flush the session
 				fe.Str = "y";
-				Session.Flush();
+				tx.Commit();
+			}
+			using (var tx = Session.BeginTransaction())
+			{
 				fe.Str = "z";
 				Session.Flush();
+				fe.Str = "z2";
 				tx.Commit();
 			}
 		}
@@ -53,6 +58,13 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 
 			Assert.AreEqual(ver1, AuditReader.Find<StrTestEntity>(id, 1));
 			Assert.AreEqual(ver2, AuditReader.Find<StrTestEntity>(id, 2));
+		}
+
+		[Test]
+		public void VerifyCurrent()
+		{
+			var expected = new StrTestEntity {Id = id, Str = "z"};
+			Assert.AreEqual(expected, Session.Get<StrTestEntity>(id));
 		}
 
 		[Test]

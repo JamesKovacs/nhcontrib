@@ -142,6 +142,7 @@
     <Compile Include="Integration\Flush\DoubleFlushAddModTest.cs" />
     <Compile Include="Integration\Flush\DoubleFlushModDelTest.cs" />
     <Compile Include="Integration\Flush\DoubleFlushModModTest.cs" />
+    <Compile Include="Integration\Flush\ManualFlushTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
