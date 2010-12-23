@@ -5,6 +5,7 @@ using System.Data;
 
 namespace NHibernate.Envers.Entities
 {
+	[Serializable]
 	public class RevisionTypeType: IUserType 
 	{
 		private static readonly SqlType[] SQL_TYPES = { new SqlType(DbType.Byte) };

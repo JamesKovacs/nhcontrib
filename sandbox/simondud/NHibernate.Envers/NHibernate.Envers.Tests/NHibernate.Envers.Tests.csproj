@@ -89,6 +89,10 @@
     <Compile Include="Entities\CustomType\CompositeTestUserType.cs" />
     <Compile Include="Entities\CustomType\ParametrizedCustomTypeEntity.cs" />
     <Compile Include="Entities\CustomType\ParametrizedTestUserType.cs" />
+    <Compile Include="Entities\Ids\EmbId.cs" />
+    <Compile Include="Entities\Ids\EmbIdTestEntity.cs" />
+    <Compile Include="Entities\Ids\MulId.cs" />
+    <Compile Include="Entities\Ids\MulIdTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -146,6 +150,7 @@
     <Compile Include="Integration\HashCode\ChangingHashcodeTest.cs" />
     <Compile Include="Integration\HashCode\WikiImage.cs" />
     <Compile Include="Integration\HashCode\WikiPage.cs" />
+    <Compile Include="Integration\Ids\CompositeIdTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -159,6 +164,7 @@
     <EmbeddedResource Include="Entities\Components\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Components\Relations\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\CustomType\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\Ids\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

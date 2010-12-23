@@ -1,103 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using NHibernate.Envers.Tools.Reflection;
 using NHibernate.Util;
-using NHibernate.Properties;
 using NHibernate.Envers.Exceptions;
 using System.Reflection;
 
 namespace NHibernate.Envers.Entities.Mapper.Id
 {
+	public class EmbeddedIdMapper  : AbstractCompositeIdMapper , ISimpleIdMapperBuilder
+	{
+		private readonly PropertyData idPropertyData;
 
-/**
- * @author Catalina Panait, port of Envers omonyme class by Adam Warski (adam at warski dot org)
- */
-public class EmbeddedIdMapper  : AbstractCompositeIdMapper , ISimpleIdMapperBuilder
-    {
-        private PropertyData idPropertyData;
+		public EmbeddedIdMapper(PropertyData idPropertyData, System.Type compositeIdClass)
+								: base(compositeIdClass)
+		{
+			this.idPropertyData = idPropertyData;
+		}
 
-        public EmbeddedIdMapper(PropertyData idPropertyData, System.Type compositeIdClass)
-        : base(compositeIdClass)
-        {
-            this.idPropertyData = idPropertyData;
-        }
+		public override void MapToMapFromId(IDictionary<string, object> data, object obj)
+		{
+			foreach (var idMapper in ids.Values) 
+			{
+				idMapper.MapToMapFromEntity(data, obj);
+			}
+		}
 
-        public override void MapToMapFromId(IDictionary<string, object> data, Object obj)
-        {
-        foreach (IIdMapper idMapper in ids.Values) {
-            idMapper.MapToMapFromEntity(data, obj);
-        }
-    }
+		public override void MapToMapFromEntity(IDictionary<string, object> data, Object obj)
+		{
+			if (obj == null)
+			{
+				return;
+			}
+			var getter = ReflectionTools.GetGetter(obj.GetType(), idPropertyData);
+			MapToMapFromId(data, getter.Get(obj));
+		}
 
-        public override void MapToMapFromEntity(IDictionary<string, object> data, Object obj)
-        {
-            if (obj == null)
-            {
-                return;
-            }
-            PropertyInfo propInfo;
-            //IGetter getter = ReflectionTools.getGetter(obj.getClass(), idPropertyData);
-            propInfo = obj.GetType().GetProperty(idPropertyData.Name);
-            MapToMapFromId(data, propInfo.GetValue(obj,null));
-        }
+		public override void MapToEntityFromMap(object obj, IDictionary<string, object> data)
+		{
+			if (data == null || obj == null) 
+			{
+				return;
+			}
+			var objType = obj.GetType();
+			var getter = ReflectionTools.GetGetter(objType, idPropertyData);
+			var setter = ReflectionTools.GetSetter(objType, idPropertyData);
 
-        public override void MapToEntityFromMap(Object obj, IDictionary<string, object> data)
-        {
-        if (data == null || obj == null) {
-            return;
-        }
-        PropertyInfo propInfo = obj.GetType().GetProperty(idPropertyData.Name);
+			try 
+			{
+				var subObj = ReflectHelper.GetDefaultConstructor(getter.ReturnType).Invoke(null); 
+				setter.Set(obj, subObj);
 
-        try {
-            Object subObj = ReflectHelper.GetDefaultConstructor(propInfo.ReflectedType); //getter.getReturnType()).newInstance();
-           
-            propInfo.SetValue(obj, subObj, null);
+				foreach(var idMapper in ids.Values) 
+				{
+					idMapper.MapToEntityFromMap(subObj, data);
+				}
+			} 
+			catch (Exception e) 
+			{
+				throw new AuditException(e);
+			}
+		}
 
-            foreach(IIdMapper idMapper in ids.Values) {
-            idMapper.MapToEntityFromMap(subObj, data);
-            }
-        } catch (Exception e) {
-            throw new AuditException(e);
-        }
-    }
+		public override IIdMapper PrefixMappedProperties(string prefix)
+		{
+			var ret = new EmbeddedIdMapper(idPropertyData, compositeIdClass);
 
-        public override IIdMapper PrefixMappedProperties(String prefix)
-        {
-        EmbeddedIdMapper ret = new EmbeddedIdMapper(idPropertyData, compositeIdClass);
+			foreach (var propertyData in ids.Keys) 
+			{
+				var propertyName = propertyData.Name;
+				ret.ids.Add(propertyData, new SingleIdMapper(new PropertyData(prefix + propertyName, propertyData)));
+			}
 
-        foreach (PropertyData propertyData in ids.Keys) {
-            String propertyName = propertyData.Name;
-            ret.ids.Add(propertyData, new SingleIdMapper(new PropertyData(prefix + propertyName, propertyData)));
-        }
+			return ret;
+		}
 
-        return ret;
-    }
+		public override object MapToIdFromEntity(object data)
+		{
+			if (data == null)
+			{
+				return null;
+			}
+			var getter = ReflectionTools.GetGetter(data.GetType(), idPropertyData);
+			return getter.Get(data);
+		}
 
-        public override Object MapToIdFromEntity(object data)
-        {
-            if (data == null)
-            {
-                return null;
-            }
+		public override IList<QueryParameterData> MapToQueryParametersFromId(object obj) 
+		{
+			//Simon 27/06/2010 - era LinkedHashMap
+			var data = new Dictionary<String, Object>();
+			MapToMapFromId(data, obj);
 
-            PropertyInfo propInfo = data.GetType().GetProperty(idPropertyData.Name);
-            return propInfo.GetValue(data, null);
-        }
+			var ret = new List<QueryParameterData>();
 
-        public override IList<QueryParameterData> MapToQueryParametersFromId(object obj) {
-            //Simon 27/06/2010 - era LinkedHashMap
-            IDictionary<String, Object> data = new Dictionary<String, Object>();
-            MapToMapFromId(data, obj);
+			foreach (var propertyData in data) 
+			{
+				ret.Add(new QueryParameterData(propertyData.Key, propertyData.Value));
+			}
 
-            IList<QueryParameterData> ret = new List<QueryParameterData>();
+			return ret;
+		}
 
-            foreach (KeyValuePair<String, Object> propertyData in data) {
-                ret.Add(new QueryParameterData(propertyData.Key, propertyData.Value));
-            }
-
-            return ret;
-        }
-
-    }
+	}
 }
