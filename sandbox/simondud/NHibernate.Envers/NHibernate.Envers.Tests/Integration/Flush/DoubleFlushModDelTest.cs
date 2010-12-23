@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Flush
 {
-	public class DoubleFlushAddModTest :TestBase
+	public class DoubleFlushModDelTest :TestBase
 	{
 		private int id;
 
@@ -26,14 +26,13 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 			using (var tx = Session.BeginTransaction())
 			{
 				id = (int) Session.Save(fe);
-				Session.Flush();
-				fe.Str = "y";
-				Session.Flush();
 				tx.Commit();
 			}
 			using (var tx = Session.BeginTransaction())
 			{
-				fe.Str = "z";
+				fe.Str = "y";
+				Session.Flush();
+				Session.Delete(fe);
 				Session.Flush();
 				tx.Commit();
 			}
@@ -46,13 +45,12 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 		}
 
 		[Test]
-		public void VerifyHistoryOfId1()
+		public void VerifyHistoryOfId()
 		{
-			var ver1 = new StrTestEntity { Id = id, Str = "y"};
-			var ver2 = new StrTestEntity { Id = id, Str = "z" };
+			var ver1 = new StrTestEntity { Id = id, Str = "x"};
 
 			Assert.AreEqual(ver1, AuditReader.Find<StrTestEntity>(id, 1));
-			Assert.AreEqual(ver2, AuditReader.Find<StrTestEntity>(id, 2));
+			Assert.IsNull(AuditReader.Find<StrTestEntity>(id, 2));
 		}
 
 		[Test]
@@ -64,7 +62,7 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 		                .Add(AuditEntity.Id().Eq(id))
 		                .GetResultList();
 			Assert.AreEqual(RevisionType.ADD, ((IList)results[0])[2]);
-			Assert.AreEqual(RevisionType.MOD, ((IList)results[1])[2]);
+			Assert.AreEqual(RevisionType.DEL, ((IList)results[1])[2]);
 		}
 	}
 }
