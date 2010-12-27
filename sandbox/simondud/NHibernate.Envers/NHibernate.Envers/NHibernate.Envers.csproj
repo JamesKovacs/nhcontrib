@@ -157,6 +157,7 @@
     <Compile Include="Entities\RelationDescription.cs" />
     <Compile Include="Entities\RelationType.cs" />
     <Compile Include="Entities\RevisionTypeType.cs" />
+    <Compile Include="Entity\EnversJoinedSubclassEntityPersister.cs" />
     <Compile Include="Event\AuditEventListener.cs" />
     <Compile Include="Exceptions\AuditException.cs" />
     <Compile Include="Exceptions\NotAuditedException.cs" />

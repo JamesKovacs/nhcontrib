@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Xml;
 using NHibernate.Envers.Configuration.Metadata.Reader;
 using NHibernate.Envers.Entities.Mapper;
@@ -7,18 +7,18 @@ using NHibernate.Type;
 
 namespace NHibernate.Envers.Configuration.Metadata
 {
-    public class BasicMetadataGenerator 
-    {
-        public bool AddBasic(XmlElement parent, PropertyAuditingData propertyAuditingData,
+	public class BasicMetadataGenerator 
+	{
+		public bool AddBasic(XmlElement parent, PropertyAuditingData propertyAuditingData,
 					 IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key) 
 		{
-            var type = value.Type;
-            var custType = type as CustomType;
+			var type = value.Type;
+			var custType = type as CustomType;
 			var compType = type as CompositeCustomType;
-		    if (type is ImmutableType || type is MutableType) 
+			if (type is ImmutableType || type is MutableType) 
 			{
-			    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
-		    }
+				AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
+			}
 			else if (custType != null)
 			{
 				AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key, custType.UserType.GetType());
@@ -27,71 +27,71 @@ namespace NHibernate.Envers.Configuration.Metadata
 			{
 				AddCustomValue(parent, propertyAuditingData, value, mapper, insertable, key, compType.UserType.GetType());
 			}
-        	// TODO Simon: There is no equivalent of PrimitiveByteArrayBlobType in NHibernate, will see later if needed
-            // ORIG:
-            //else if ("org.hibernate.type.PrimitiveByteArrayBlobType".equals(type.getClass().getName()))
-            //{
-            //    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
-            //}
-		    else 
+			// TODO Simon: There is no equivalent of PrimitiveByteArrayBlobType in NHibernate, will see later if needed
+			// ORIG:
+			//else if ("org.hibernate.type.PrimitiveByteArrayBlobType".equals(type.getClass().getName()))
+			//{
+			//    AddSimpleValue(parent, propertyAuditingData, value, mapper, insertable, key);
+			//}
+			else 
 			{
-			    return false;
-		    }
+				return false;
+			}
 
-		    return true;
-	    }
+			return true;
+		}
 
-        private void AddSimpleValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
-                                IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
-        {
-		    if (parent != null) 
+		private void AddSimpleValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
+								IValue value, ISimpleMapperBuilder mapper, bool insertable, bool key)
+		{
+			if (parent != null) 
 			{
-                var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
-                        value.Type.Name, propertyAuditingData.ForceInsertable || insertable, key);
-                MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.GetEnumerator());
-		    }
+				var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
+						value.Type.Name, propertyAuditingData.ForceInsertable || insertable, key);
+				MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.OfType<Column>());
+			}
 
-		    // A null mapper means that we only want to add xml mappings
-		    if (mapper != null) 
+			// A null mapper means that we only want to add xml mappings
+			if (mapper != null) 
 			{
-			    mapper.Add(propertyAuditingData.getPropertyData());
-		    }
-	    }
+				mapper.Add(propertyAuditingData.getPropertyData());
+			}
+		}
 
-	    private void AddCustomValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
-								    IValue value, ISimpleMapperBuilder mapper, bool insertable, 
+		private void AddCustomValue(XmlElement parent, PropertyAuditingData propertyAuditingData,
+									IValue value, ISimpleMapperBuilder mapper, bool insertable, 
 									bool key, System.Type typeOfUserImplementation) 
 		{
-		    if (parent != null) 
+			if (parent != null) 
 			{
-			    var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
-					    null, insertable, key);
-				MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.GetEnumerator());
+				var prop_mapping = MetadataTools.AddProperty(parent, propertyAuditingData.Name,
+						null, insertable, key);
+				MetadataTools.AddColumns(prop_mapping, value.ColumnIterator.OfType<Column>());
 				var typeElement = parent.OwnerDocument.CreateElement("type");
 				typeElement.SetAttribute("name", typeOfUserImplementation.AssemblyQualifiedName);
 
-		    	var simpleValue = value as SimpleValue;
-			    if (simpleValue != null) 
+				var simpleValue = value as SimpleValue;
+				if (simpleValue != null) 
 				{
 					var typeParameters = simpleValue.TypeParameters;
-				    if (typeParameters != null) 
+					if (typeParameters != null) 
 					{
-					    foreach (var paramKeyValue in typeParameters) 
+						foreach (var paramKeyValue in typeParameters) 
 						{
-                            var type_param = typeElement.OwnerDocument.CreateElement("param");
-						    type_param.SetAttribute("name", paramKeyValue.Key);
-						    type_param.InnerText =  paramKeyValue.Value;
+							var type_param = typeElement.OwnerDocument.CreateElement("param");
+							type_param.SetAttribute("name", paramKeyValue.Key);
+							type_param.InnerText =  paramKeyValue.Value;
 							typeElement.AppendChild(type_param);
 						}
-				    }
-			    }
+					}
+				}
 				prop_mapping.AppendChild(typeElement);
-		    }
+			}
 
-		    if (mapper != null) 
+			if (mapper != null) 
 			{
-			    mapper.Add(propertyAuditingData.getPropertyData());
-		    }
-	    }
-    }
+				mapper.Add(propertyAuditingData.getPropertyData());
+			}
+		}
+	}
 }

@@ -151,6 +151,9 @@
     <Compile Include="Integration\HashCode\WikiImage.cs" />
     <Compile Include="Integration\HashCode\WikiPage.cs" />
     <Compile Include="Integration\Ids\CompositeIdTest.cs" />
+    <Compile Include="Integration\Inheritance\Joined\ChildAuditingTest.cs" />
+    <Compile Include="Integration\Inheritance\Joined\ChildEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\ParentEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,6 +174,7 @@
     <EmbeddedResource Include="Integration\OneToOne\BiDirectional\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Data\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\HashCode\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Joined\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
