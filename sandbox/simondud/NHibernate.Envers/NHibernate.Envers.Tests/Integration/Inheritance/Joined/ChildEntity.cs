@@ -3,7 +3,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined
 	[Audited]
 	public class ChildEntity : ParentEntity
 	{
-		public virtual long Number { get; set; }
+		public virtual long? Number { get; set; }
 
 		public override bool Equals(object obj)
 		{

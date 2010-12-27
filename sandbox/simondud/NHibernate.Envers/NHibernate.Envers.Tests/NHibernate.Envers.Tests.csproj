@@ -153,6 +153,7 @@
     <Compile Include="Integration\Ids\CompositeIdTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\ChildNullAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ParentEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
