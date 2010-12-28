@@ -169,6 +169,10 @@
     <Compile Include="Integration\Inheritance\Joined\ParentEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\PrimaryKeyJoin\ChildPrimaryKeyJoinAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\PrimaryKeyJoin\ChildPrimaryKeyJoinEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\Relation\ChildNotIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\Relation\ParentIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\Relation\PolymorphicCollectionTest.cs" />
+    <Compile Include="Integration\Inheritance\Joined\Relation\ReferencedEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,6 +200,7 @@
     <EmbeddedResource Include="Integration\Inheritance\Joined\EmptyChild\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Joined\NotOwnedRelation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Joined\PrimaryKeyJoin\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Joined\Relation\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
