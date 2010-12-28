@@ -158,6 +158,9 @@
     <Compile Include="Integration\Inheritance\Joined\ChildRelation\ChildReferencingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildRelation\ParentNotIngEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildRelation\ReferencedEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildAuditingTest.cs" />
+    <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\EmptyChild\ParentEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\ParentAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ParentEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
@@ -181,7 +184,10 @@
     <EmbeddedResource Include="Integration\Data\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\HashCode\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Joined\Mapping.hbm.xml" />
-    <EmbeddedResource Include="Integration\Inheritance\Joined\ChildRelation\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Joined\ChildRelation\Mapping.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Integration\Inheritance\Joined\EmptyChild\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
