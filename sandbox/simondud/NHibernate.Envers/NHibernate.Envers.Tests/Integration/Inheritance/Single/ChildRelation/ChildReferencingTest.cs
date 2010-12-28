@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.ChildRelation
 {
-	[TestFixture, Ignore("Subclass needs to support <properties> for this to work")]
+	[TestFixture]
 	public class ChildReferencingTest : TestBase
 	{
 		private int re_id1;

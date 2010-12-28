@@ -12,7 +12,7 @@
     </set>
   </class>
 
-  <!--<class name="ParentNotIngEntity" discriminator-value="1">
+  <class name="ParentNotIngEntity" discriminator-value="1">
     <id name="Id">
       <generator class="assigned"/>
     </id>
@@ -23,5 +23,5 @@
       <property name="Number"/>
       <many-to-one name="Referenced" column="refId" />
     </subclass>
-  </class>-->
+  </class>
 </hibernate-mapping>
