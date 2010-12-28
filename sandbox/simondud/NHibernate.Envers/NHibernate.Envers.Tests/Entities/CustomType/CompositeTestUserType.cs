@@ -32,7 +32,7 @@ namespace NHibernate.Envers.Tests.Entities.CustomType
 			}
 		}
 
-		public bool Equals(object x, object y)
+		public new bool Equals(object x, object y)
 		{
 			if (x == y)
 			{

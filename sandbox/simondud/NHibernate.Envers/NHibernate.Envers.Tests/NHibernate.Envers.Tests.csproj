@@ -161,6 +161,10 @@
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\ParentEntity.cs" />
+    <Compile Include="Integration\Inheritance\Joined\NotOwnedRelation\Address.cs" />
+    <Compile Include="Integration\Inheritance\Joined\NotOwnedRelation\Contact.cs" />
+    <Compile Include="Integration\Inheritance\Joined\NotOwnedRelation\NotOwnBidirectionalTest.cs" />
+    <Compile Include="Integration\Inheritance\Joined\NotOwnedRelation\PersonalContact.cs" />
     <Compile Include="Integration\Inheritance\Joined\ParentAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\ParentEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
@@ -188,6 +192,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Integration\Inheritance\Joined\EmptyChild\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Joined\NotOwnedRelation\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -11,7 +11,7 @@ namespace NHibernate.Envers.Tests.Entities.CustomType
 		private string param1;
 		private string param2;
 
-		public bool Equals(object x, object y)
+		public new bool Equals(object x, object y)
 		{
 			//noinspection ObjectEquality
 			if (x == y)
