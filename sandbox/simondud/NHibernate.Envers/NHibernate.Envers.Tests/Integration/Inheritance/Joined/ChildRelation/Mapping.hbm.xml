@@ -20,7 +20,7 @@
     <property name="Data"/>
     
     <joined-subclass name="ChildIngEntity">
-      <key column="ParentId"/>
+      <key column="Id"/>
       <property name="Number"/>
       <many-to-one name="Referenced" column="refId" />  
     </joined-subclass>

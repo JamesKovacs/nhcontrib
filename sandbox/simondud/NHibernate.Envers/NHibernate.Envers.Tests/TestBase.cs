@@ -8,8 +8,8 @@ namespace NHibernate.Envers.Tests
 {
 	public abstract class TestBase
 	{
-		private Cfg.Configuration cfg;
-		private const string MappingAssembly = "NHibernate.Envers.Tests";
+		protected const string MappingAssembly = "NHibernate.Envers.Tests";
+		protected Cfg.Configuration Cfg { get; private set; }
 		protected ISession Session { get; set; }
 		protected IAuditReader AuditReader { get; set; }
 
@@ -17,11 +17,11 @@ namespace NHibernate.Envers.Tests
 		[SetUp]
 		public void BaseSetup()
 		{
-			cfg = new Cfg.Configuration();
-			cfg.Configure();
+			Cfg = new Cfg.Configuration();
+			Cfg.Configure();
 			addMappings();
-			cfg.IntegrateWithEnvers();
-			var sf = cfg.BuildSessionFactory();
+			Cfg.IntegrateWithEnvers();
+			var sf = Cfg.BuildSessionFactory();
 			createDropSchema(true);
 			using (Session = openSession(sf))
 			{
@@ -54,7 +54,7 @@ namespace NHibernate.Envers.Tests
 
 		private void createDropSchema(bool both)
 		{
-			var se = new SchemaExport(cfg);
+			var se = new SchemaExport(Cfg);
 			se.Drop(false, true);
 			if(both)
 				se.Create(false,true);
@@ -67,7 +67,7 @@ namespace NHibernate.Envers.Tests
 			var ass = Assembly.Load(MappingAssembly);
 			foreach (var mapping in Mappings)
 			{
-				cfg.AddResource(MappingAssembly + "." + mapping, ass);
+				Cfg.AddResource(MappingAssembly + "." + mapping, ass);
 			}
 		}
 	}

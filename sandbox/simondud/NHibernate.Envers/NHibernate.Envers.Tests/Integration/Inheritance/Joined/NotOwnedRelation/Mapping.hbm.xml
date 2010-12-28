@@ -13,7 +13,7 @@
       <one-to-many class="Address"/>
     </set>
     <joined-subclass name="PersonalContact">
-      <key column="ParentId" />
+      <key column="Id" />
       <property name="FirstName" />
     </joined-subclass>
   </class>

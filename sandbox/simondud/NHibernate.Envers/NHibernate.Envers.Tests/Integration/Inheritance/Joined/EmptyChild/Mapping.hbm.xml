@@ -9,7 +9,7 @@
     </id>
     <property name="Data" />
     <joined-subclass name="EmptyChildEntity">
-      <key column="ParentId"/>
+      <key column="Id"/>
     </joined-subclass>
   </class>
 </hibernate-mapping>
