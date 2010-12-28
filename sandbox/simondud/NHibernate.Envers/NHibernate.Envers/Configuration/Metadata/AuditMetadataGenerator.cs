@@ -279,21 +279,6 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 		}
 
-		private void AddSingleInheritancePersisterHack(XmlElement class_mapping)
-		{
-			class_mapping.SetAttribute("persister", "NHibernate.Envers.Entity.EnversSingleTableEntityPersister");
-		}
-
-		private void AddJoinedInheritancePersisterHack(XmlElement class_mapping)
-		{
-			//class_mapping.SetAttribute("persister", "NHibernate.Envers.Entity.EnversJoinedSubclassEntityPersister");
-		}
-
-		private void AddTablePerClassInheritancePersisterHack(XmlElement class_mapping)
-		{
-			class_mapping.SetAttribute("persister", "NHibernate.Envers.Entity.EnversUnionSubclassEntityPersister");
-		}
-
 		private Triple<XmlElement, IExtendedPropertyMapper, String> GenerateMappingData(
 				PersistentClass pc, EntityXmlMappingData xmlMappingData, AuditTableData auditTableData,
 				IdMappingData idMapper)
@@ -304,6 +289,10 @@ namespace NHibernate.Envers.Configuration.Metadata
 					hasDiscriminator ? pc.DiscriminatorValue : null);
 			var propertyMapper = new MultiPropertyMapper();
 
+			// Adding the id mapping
+			var xmlMp = class_mapping.OwnerDocument.ImportNode(idMapper.XmlMapping,true);
+			class_mapping.AppendChild(xmlMp);
+
 			// Checking if there is a discriminator column
 			if (hasDiscriminator)
 			{
@@ -312,29 +301,6 @@ namespace NHibernate.Envers.Configuration.Metadata
 				MetadataTools.AddColumns(discriminator_element, pc.Discriminator.ColumnIterator.OfType<Column>());
 				discriminator_element.SetAttribute("type", pc.Discriminator.Type.Name);
 			}
-
-			var parentInheritance = InheritanceType.GetForParent(pc);
-			switch (parentInheritance)
-			{
-				case InheritanceType.Type.NONE:
-					break;
-
-				case InheritanceType.Type.SINGLE:
-					AddSingleInheritancePersisterHack(class_mapping);
-					break;
-
-				case InheritanceType.Type.JOINED:
-					AddJoinedInheritancePersisterHack(class_mapping);
-					break;
-
-				case InheritanceType.Type.TABLE_PER_CLASS:
-					AddTablePerClassInheritancePersisterHack(class_mapping);
-					break;
-			}
-
-			// Adding the id mapping
-			var xmlMp = class_mapping.OwnerDocument.ImportNode(idMapper.XmlMapping,true);
-			class_mapping.AppendChild(xmlMp);
 
 			// Adding the "revision type" property
 			AddRevisionType(class_mapping);
@@ -430,13 +396,12 @@ namespace NHibernate.Envers.Configuration.Metadata
 					break;
 
 				case InheritanceType.Type.SINGLE:
+					auditTableData = new AuditTableData(auditEntityName, null, schema, catalog);
 					mappingData = GenerateInheritanceMappingData(pc, xmlMappingData, auditTableData, "subclass");
 					break;
 
 				case InheritanceType.Type.JOINED:
 					mappingData = GenerateInheritanceMappingData(pc, xmlMappingData, auditTableData, "joined-subclass");
-
-					AddJoinedInheritancePersisterHack(mappingData.First);
 
 					// Adding the "key" element with all id columns...
 					var keyMapping = mappingData.First.OwnerDocument.CreateElement("key");
@@ -449,8 +414,6 @@ namespace NHibernate.Envers.Configuration.Metadata
 
 				case InheritanceType.Type.TABLE_PER_CLASS:
 					mappingData = GenerateInheritanceMappingData(pc, xmlMappingData, auditTableData, "union-subclass");
-
-					AddTablePerClassInheritancePersisterHack(mappingData.First);
 
 					break;
 

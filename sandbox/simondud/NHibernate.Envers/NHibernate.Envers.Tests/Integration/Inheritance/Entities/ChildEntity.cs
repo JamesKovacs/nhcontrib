@@ -1,4 +1,4 @@
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	[Audited]
 	public class ChildEntity : ParentEntity

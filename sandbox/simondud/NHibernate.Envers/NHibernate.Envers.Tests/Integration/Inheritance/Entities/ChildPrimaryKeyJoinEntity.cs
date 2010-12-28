@@ -1,4 +1,4 @@
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.PrimaryKeyJoin
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	[Audited]
 	public class ChildPrimaryKeyJoinEntity : ParentEntity

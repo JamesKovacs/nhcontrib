@@ -127,9 +127,9 @@ namespace NHibernate.Envers.Configuration.Metadata
 			var class_mapping = document.CreateElement(type);
 			hibernate_mapping.AppendChild(class_mapping);
 
-			if (auditTableData.getAuditEntityName() != null) 
+			if (auditTableData.AuditEntityName != null) 
 			{
-				class_mapping.SetAttribute("entity-name", auditTableData.getAuditEntityName());
+				class_mapping.SetAttribute("entity-name", auditTableData.AuditEntityName);
 			}
 
 			if (discriminatorValue != null) 
@@ -137,19 +137,19 @@ namespace NHibernate.Envers.Configuration.Metadata
 				class_mapping.SetAttribute("discriminator-value", discriminatorValue);
 			}
 
-			if (!string.IsNullOrEmpty(auditTableData.getAuditTableName())) 
+			if (!string.IsNullOrEmpty(auditTableData.AuditTableName)) 
 			{
-				class_mapping.SetAttribute("table", auditTableData.getAuditTableName());
+				class_mapping.SetAttribute("table", auditTableData.AuditTableName);
 			}
 
-			if (!string.IsNullOrEmpty(auditTableData.getSchema())) 
+			if (!string.IsNullOrEmpty(auditTableData.Schema)) 
 			{
-				class_mapping.SetAttribute("schema", auditTableData.getSchema());
+				class_mapping.SetAttribute("schema", auditTableData.Schema);
 			}
 
-			if (!string.IsNullOrEmpty(auditTableData.getCatalog())) 
+			if (!string.IsNullOrEmpty(auditTableData.Catalog)) 
 			{
-				class_mapping.SetAttribute("catalog", auditTableData.getCatalog());
+				class_mapping.SetAttribute("catalog", auditTableData.Catalog);
 			}
 
 			return class_mapping;
