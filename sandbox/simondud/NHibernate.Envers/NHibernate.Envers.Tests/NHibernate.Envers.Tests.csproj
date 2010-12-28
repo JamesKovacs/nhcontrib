@@ -179,6 +179,7 @@
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\SetEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\UnidirectionalDoubleAbstractTest.cs" />
     <Compile Include="Integration\Inheritance\Single\ChildAuditingTest.cs" />
+    <Compile Include="Integration\Inheritance\Single\ParentAuditingTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
