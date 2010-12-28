@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.ChildRelation
 {
+	[TestFixture, Ignore("Subclass needs to support <properties> for this to work")]
 	public class ChildReferencingTest : TestBase
 	{
 		private int re_id1;
@@ -18,7 +19,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
 
 			var re1 = new ReferencedEntity { Id = re_id1 };
 			var re2 = new ReferencedEntity { Id = re_id2 };
-			var cie = new ChildIngEntity {Id = c_id, Data = "y", Number = 1};
+			var cie = new ChildIngEntity { Id = c_id, Data = "y", Number = 1 };
 
 			using (var tx = Session.BeginTransaction())
 			{
@@ -52,7 +53,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
 		public void VerifyHistoryOfReferencedCollection1()
 		{
 			CollectionAssert.IsEmpty(AuditReader.Find<ReferencedEntity>(re_id1, 1).Referencing);
-			CollectionAssert.AreEquivalent(new[] { new ChildIngEntity{Id = c_id, Data = "y", Number = 1 }}, AuditReader.Find<ReferencedEntity>(re_id1, 2).Referencing);
+			CollectionAssert.AreEquivalent(new[] { new ChildIngEntity { Id = c_id, Data = "y", Number = 1 } }, AuditReader.Find<ReferencedEntity>(re_id1, 2).Referencing);
 			CollectionAssert.IsEmpty(AuditReader.Find<ReferencedEntity>(re_id1, 3).Referencing);
 		}
 
@@ -74,7 +75,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[] { "Integration.Inheritance.Joined.ChildRelation.Mapping.hbm.xml" }; }
+			get { return new[] { "Integration.Inheritance.Single.ChildRelation.Mapping.hbm.xml" }; }
 		}
 	}
 }

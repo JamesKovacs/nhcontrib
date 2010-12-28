@@ -154,10 +154,10 @@
     <Compile Include="Integration\Inheritance\Joined\ChildAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Entities\ChildEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildNullAuditingTest.cs" />
-    <Compile Include="Integration\Inheritance\Joined\ChildRelation\ChildIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ChildIngEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildRelation\ChildReferencingTest.cs" />
-    <Compile Include="Integration\Inheritance\Joined\ChildRelation\ParentNotIngEntity.cs" />
-    <Compile Include="Integration\Inheritance\Joined\ChildRelation\ReferencedEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ParentNotIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ReferencedEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\ParentEntity.cs" />
@@ -179,6 +179,7 @@
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\SetEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\UnidirectionalDoubleAbstractTest.cs" />
     <Compile Include="Integration\Inheritance\Single\ChildAuditingTest.cs" />
+    <Compile Include="Integration\Inheritance\Single\ChildRelation\ChildReferencingTest.cs" />
     <Compile Include="Integration\Inheritance\Single\ParentAuditingTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
@@ -210,6 +211,7 @@
     <EmbeddedResource Include="Integration\Inheritance\Joined\Relation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Joined\Relation\Unidirectional\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Single\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Single\ChildRelation\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

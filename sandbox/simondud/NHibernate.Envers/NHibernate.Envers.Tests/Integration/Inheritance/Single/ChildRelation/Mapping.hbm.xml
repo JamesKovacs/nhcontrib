@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+﻿<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
     assembly="NHibernate.Envers.Tests"
     namespace="NHibernate.Envers.Tests.Integration.Inheritance.Entities">
 
@@ -13,16 +12,16 @@
     </set>
   </class>
 
-  <class name="ParentNotIngEntity">
+  <!--<class name="ParentNotIngEntity" discriminator-value="1">
     <id name="Id">
       <generator class="assigned"/>
     </id>
+    <discriminator column="disc" type="int"/>
     <property name="Data"/>
-    
-    <joined-subclass name="ChildIngEntity">
-      <key column="Id"/>
+
+    <subclass name="ChildIngEntity" discriminator-value="2">
       <property name="Number"/>
-      <many-to-one name="Referenced" column="refId" />  
-    </joined-subclass>
-  </class>
+      <many-to-one name="Referenced" column="refId" />
+    </subclass>
+  </class>-->
 </hibernate-mapping>

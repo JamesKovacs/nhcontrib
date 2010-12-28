@@ -1,6 +1,6 @@
 ﻿using Iesi.Collections.Generic;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	[Audited]
 	public class ReferencedEntity
