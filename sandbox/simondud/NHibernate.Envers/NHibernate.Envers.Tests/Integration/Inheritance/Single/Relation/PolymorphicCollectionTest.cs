@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.Relation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.Relation
 {
-	[TestFixture]
 	public class PolymorphicCollectionTest : TestBase
 	{
 		private int ed_id1;
@@ -56,7 +55,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.Relation
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[] { "Integration.Inheritance.Joined.Relation.Mapping.hbm.xml" }; }
+			get { return new[] { "Integration.Inheritance.Single.Relation.Mapping.hbm.xml" }; }
 		}
 	}
 }

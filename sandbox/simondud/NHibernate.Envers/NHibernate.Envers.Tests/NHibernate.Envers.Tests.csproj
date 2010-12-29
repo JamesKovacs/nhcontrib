@@ -157,7 +157,7 @@
     <Compile Include="Integration\Inheritance\Entities\ChildIngEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\ChildRelation\ChildReferencingTest.cs" />
     <Compile Include="Integration\Inheritance\Entities\ParentNotIngEntity.cs" />
-    <Compile Include="Integration\Inheritance\Entities\ReferencedEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ReferencedToChildEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\EmptyChildEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\EmptyChild\ParentEntity.cs" />
@@ -169,10 +169,10 @@
     <Compile Include="Integration\Inheritance\Entities\ParentEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\PrimaryKeyJoin\ChildPrimaryKeyJoinAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\Entities\ChildPrimaryKeyJoinEntity.cs" />
-    <Compile Include="Integration\Inheritance\Joined\Relation\ChildNotIngEntity.cs" />
-    <Compile Include="Integration\Inheritance\Joined\Relation\ParentIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ChildNotIngEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ParentIngEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\PolymorphicCollectionTest.cs" />
-    <Compile Include="Integration\Inheritance\Joined\Relation\ReferencedEntity.cs" />
+    <Compile Include="Integration\Inheritance\Entities\ReferencedToParentEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\AbstractContainedEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\AbstractSetEntity.cs" />
     <Compile Include="Integration\Inheritance\Joined\Relation\Unidirectional\ContainedEntity.cs" />
@@ -182,6 +182,7 @@
     <Compile Include="Integration\Inheritance\Single\ChildRelation\ChildReferencingTest.cs" />
     <Compile Include="Integration\Inheritance\Single\NotOwnedRelation\NotOwnBidirectionalTest.cs" />
     <Compile Include="Integration\Inheritance\Single\ParentAuditingTest.cs" />
+    <Compile Include="Integration\Inheritance\Single\Relation\PolymorphicCollectionTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -214,6 +215,7 @@
     <EmbeddedResource Include="Integration\Inheritance\Single\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Single\ChildRelation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\Single\NotOwnedRelation\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Inheritance\Single\Relation\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

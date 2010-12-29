@@ -4,7 +4,7 @@
 	public class ChildIngEntity : ParentNotIngEntity
 	{
 		public virtual int Number { get; set; }
-		public virtual ReferencedEntity Referenced { get; set; }
+		public virtual ReferencedToChildEntity Referenced { get; set; }
 
 		public override bool Equals(object obj)
 		{

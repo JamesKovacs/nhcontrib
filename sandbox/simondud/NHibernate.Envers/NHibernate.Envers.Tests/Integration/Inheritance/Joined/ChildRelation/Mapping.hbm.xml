@@ -3,7 +3,7 @@
     assembly="NHibernate.Envers.Tests"
     namespace="NHibernate.Envers.Tests.Integration.Inheritance.Entities">
 
-  <class name="ReferencedEntity">
+  <class name="ReferencedToChildEntity">
     <id name="Id">
       <generator class="assigned"/>
     </id>

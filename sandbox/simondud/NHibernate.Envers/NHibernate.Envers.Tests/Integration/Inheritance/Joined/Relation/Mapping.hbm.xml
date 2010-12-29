@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
     assembly="NHibernate.Envers.Tests"
-    namespace="NHibernate.Envers.Tests.Integration.Inheritance.Joined.Relation">
+    namespace="NHibernate.Envers.Tests.Integration.Inheritance.Entities">
 
-  <class name="ReferencedEntity">
+  <class name="ReferencedToParentEntity">
     <id name="Id">
       <generator class="assigned"/>
     </id>

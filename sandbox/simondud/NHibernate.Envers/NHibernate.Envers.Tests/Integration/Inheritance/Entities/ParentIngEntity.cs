@@ -1,24 +1,23 @@
-﻿using Iesi.Collections.Generic;
-
 namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	[Audited]
-	public class ReferencedEntity
+	public class ParentIngEntity
 	{
 		public virtual int Id { get; set; }
-		public virtual ISet<ChildIngEntity> Referencing { get; set; }
+		public virtual string Data { get; set; }
+		public virtual ReferencedToParentEntity Referenced { get; set; }
 
 		public override bool Equals(object obj)
 		{
-			var casted = obj as ReferencedEntity;
+			var casted = obj as ParentIngEntity;
 			if (casted == null)
 				return false;
-			return (Id == casted.Id);
+			return (Id == casted.Id && Data == casted.Data);
 		}
 
 		public override int GetHashCode()
 		{
-			return Id;
+			return Id ^ Data.GetHashCode();
 		}
 	}
 }
