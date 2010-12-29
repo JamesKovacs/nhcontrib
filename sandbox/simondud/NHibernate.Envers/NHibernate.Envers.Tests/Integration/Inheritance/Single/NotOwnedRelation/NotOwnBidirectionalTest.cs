@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.NotOwnedRelation
 {
 	[TestFixture]
 	public class NotOwnBidirectionalTest : TestBase
@@ -16,8 +16,8 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelatio
 			pc_id = 1;
 			a1_id = 10;
 			a2_id = 100;
-			var pc = new PersonalContact {Id = pc_id, Email = "e", FirstName = "f"};
-			var a1 = new Address {Id = a1_id, Address1 = "a1", Contact = pc};
+			var pc = new PersonalContact { Id = pc_id, Email = "e", FirstName = "f" };
+			var a1 = new Address { Id = a1_id, Address1 = "a1", Contact = pc };
 			var a2 = new Address { Id = a2_id, Address1 = "a2", Contact = pc };
 			using (var tx = Session.BeginTransaction())
 			{
@@ -45,9 +45,9 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelatio
 		[Test]
 		public void VerifyHistoryOfContact()
 		{
-			CollectionAssert.AreEquivalent(new[] {new Address{Id = a1_id, Address1 = "a1"}}, 
+			CollectionAssert.AreEquivalent(new[] { new Address { Id = a1_id, Address1 = "a1" } },
 							AuditReader.Find<Contact>(pc_id, 1).Addresses);
-			CollectionAssert.AreEquivalent(new[] { new Address { Id = a1_id, Address1 = "a1" }, new Address { Id = a2_id, Address1 = "a2" } }, 
+			CollectionAssert.AreEquivalent(new[] { new Address { Id = a1_id, Address1 = "a1" }, new Address { Id = a2_id, Address1 = "a2" } },
 							AuditReader.Find<Contact>(pc_id, 2).Addresses);
 		}
 
@@ -62,7 +62,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelatio
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[]{"Integration.Inheritance.Joined.NotOwnedRelation.Mapping.hbm.xml"}; }
+			get { return new[] { "Integration.Inheritance.Single.NotOwnedRelation.Mapping.hbm.xml" }; }
 		}
 	}
 }

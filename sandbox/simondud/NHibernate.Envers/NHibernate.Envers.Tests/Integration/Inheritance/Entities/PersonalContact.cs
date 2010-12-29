@@ -1,4 +1,4 @@
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	public class PersonalContact : Contact
 	{

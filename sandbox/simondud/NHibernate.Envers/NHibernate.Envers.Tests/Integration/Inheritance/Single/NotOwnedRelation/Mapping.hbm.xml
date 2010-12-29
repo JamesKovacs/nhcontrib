@@ -3,19 +3,19 @@
     assembly="NHibernate.Envers.Tests"
     namespace="NHibernate.Envers.Tests.Integration.Inheritance.Entities">
 
-  <class name="Contact">
+  <class name="Contact" discriminator-value="Contact">
     <id name="Id">
       <generator class="assigned"/>
     </id>
+    <discriminator column="disc" type="string"/>
     <property name="Email" />
     <set name="Addresses" inverse="true">
       <key column="contactId"/>
       <one-to-many class="Address"/>
     </set>
-    <joined-subclass name="PersonalContact">
-      <key column="Id" />
+    <subclass name="PersonalContact" discriminator-value="PersonalContact">
       <property name="FirstName" />
-    </joined-subclass>
+    </subclass>
   </class>
 
   <class name="Address">

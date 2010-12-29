@@ -1,6 +1,6 @@
 using Iesi.Collections.Generic;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.NotOwnedRelation
+namespace NHibernate.Envers.Tests.Integration.Inheritance.Entities
 {
 	[Audited]
 	public class Contact
