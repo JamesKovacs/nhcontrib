@@ -2,15 +2,14 @@
     assembly="NHibernate.Envers.Tests"
     namespace="NHibernate.Envers.Tests.Integration.Inheritance.Entities">
 
-  <class name="ParentEntity" discriminator-value="1">
+  <class name="ParentEntity">
     <id name="Id">
       <generator class="assigned"/>
     </id>
-    <discriminator column="disc" type="int" />
     <property name="Data"/>
-    
-    <subclass name="ChildEntity" discriminator-value="2">
+
+    <union-subclass name="ChildEntity">
       <property name="Number" />
-    </subclass>
+    </union-subclass>
   </class>
 </hibernate-mapping>

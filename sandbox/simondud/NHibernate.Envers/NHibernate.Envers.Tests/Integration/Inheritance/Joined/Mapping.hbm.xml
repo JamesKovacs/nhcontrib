@@ -5,7 +5,7 @@
 
   <class name="ParentEntity">
     <id name="Id">
-      <generator class="identity"/>
+      <generator class="assigned"/>
     </id>
     <property name="Data"/>
     <joined-subclass name="ChildEntity" >

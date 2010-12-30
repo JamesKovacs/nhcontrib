@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
+namespace NHibernate.Envers.Tests.Integration.Inheritance.TablePerClass
 {
 	[TestFixture]
 	public class ChildAuditingTest : TestBase
@@ -11,7 +11,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
 
 		protected override void Initialize()
 		{
-			id1 = 11111;
+
 			var ce = new ChildEntity { Id = id1, Data = "x", Number = 1 };
 
 			using (var tx = Session.BeginTransaction())
@@ -53,7 +53,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[] { "Integration.Inheritance.Single.Mapping.hbm.xml" }; }
+			get { return new[] { "Integration.Inheritance.TablePerClass.Mapping.hbm.xml" }; }
 		}
 	}
 }

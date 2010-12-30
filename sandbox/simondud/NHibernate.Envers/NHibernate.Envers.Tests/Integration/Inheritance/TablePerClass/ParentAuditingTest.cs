@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
-namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
+namespace NHibernate.Envers.Tests.Integration.Inheritance.TablePerClass
 {
 	[TestFixture]
 	public class ParentAuditingTest : TestBase
@@ -59,7 +59,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[] { "Integration.Inheritance.Single.Mapping.hbm.xml" }; }
+			get { return new[] { "Integration.Inheritance.TablePerClass.Mapping.hbm.xml" }; }
 		}
 	}
 }
