@@ -191,6 +191,10 @@
     <Compile Include="Integration\Interfaces\Components\ComponentTestEntity.cs" />
     <Compile Include="Integration\Interfaces\Components\IComponent.cs" />
     <Compile Include="Integration\Interfaces\Components\InterfacesComponentsTest.cs" />
+    <Compile Include="Integration\Interfaces\Relation\InterfacesRelationTest.cs" />
+    <Compile Include="Integration\Interfaces\Relation\ISetRefEdEntity.cs" />
+    <Compile Include="Integration\Interfaces\Relation\SetRefEdEntity.cs" />
+    <Compile Include="Integration\Interfaces\Relation\SetRefIngEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -231,6 +235,7 @@
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\NotOwnedRelation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\Relation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Interfaces\Components\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Interfaces\Relation\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
