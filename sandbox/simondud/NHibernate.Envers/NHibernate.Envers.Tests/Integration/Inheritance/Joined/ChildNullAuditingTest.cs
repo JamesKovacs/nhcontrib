@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -51,11 +50,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined
 			var childVersion1 = new ChildEntity { Id = id1, Data = "x", Number = null };
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ChildEntity), 1).GetSingleResult());
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ParentEntity), 1).GetSingleResult());
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Joined.Mapping.hbm.xml" }; }
 		}
 	}
 }

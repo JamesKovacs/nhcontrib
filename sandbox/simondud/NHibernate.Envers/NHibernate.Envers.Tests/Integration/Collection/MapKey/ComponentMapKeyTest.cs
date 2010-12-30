@@ -13,7 +13,10 @@ namespace NHibernate.Envers.Tests.Integration.Collection.MapKey
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[] { "Integration.Collection.MapKey.Mapping.hbm.xml", "Entities.Mapping.hbm.xml", "Entities.Components.Mapping.hbm.xml" }; }
+			get { return new[] { "Integration.Collection.MapKey.Mapping.hbm.xml", 
+								"Entities.Mapping.hbm.xml", 
+								"Entities.Components.Mapping.hbm.xml" };
+			}
 		}
 
 		protected override void Initialize()

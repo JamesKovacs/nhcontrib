@@ -11,7 +11,7 @@ namespace NHibernate.Envers.Tests.Integration.Flush
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[]{"Entities.Mapping.hbm.xml"}; }
+			get { return new[] { "Entities.Mapping.hbm.xml" }; }
 		}
 
 		protected override FlushMode FlushMode

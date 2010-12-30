@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -11,7 +10,7 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.TablePerClass
 
 		protected override void Initialize()
 		{
-
+			id1 = 111;
 			var ce = new ChildEntity { Id = id1, Data = "x", Number = 1 };
 
 			using (var tx = Session.BeginTransaction())
@@ -49,11 +48,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.TablePerClass
 			var childVersion1 = new ChildEntity { Id = id1, Data = "x", Number = 1 };
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ChildEntity), 1).GetSingleResult());
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ParentEntity), 1).GetSingleResult());
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.TablePerClass.Mapping.hbm.xml" }; }
 		}
 	}
 }

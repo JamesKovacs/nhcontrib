@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NHibernate.Mapping;
@@ -59,14 +58,9 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.PrimaryKeyJoin
 		[Test]
 		public void VerifyChildIdColumnName()
 		{
-			const string auditName = MappingAssembly + ".Integration.Inheritance.Entities.ChildPrimaryKeyJoinEntity_AUD";
+			const string auditName = TestAssembly + ".Integration.Inheritance.Entities.ChildPrimaryKeyJoinEntity_AUD";
 			var keyColumn = (Column)Cfg.GetClassMapping(auditName).Key.ColumnIterator.First();
 			Assert.AreEqual("OtherId", keyColumn.Name);
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] {"Integration.Inheritance.Joined.PrimaryKeyJoin.Mapping.hbm.xml"}; }
 		}
 	}
 } 

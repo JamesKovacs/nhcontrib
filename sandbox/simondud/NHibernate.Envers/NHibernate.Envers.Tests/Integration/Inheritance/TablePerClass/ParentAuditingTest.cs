@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -55,11 +54,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.TablePerClass
 			var childVersion1 = new ParentEntity { Id = id1, Data = "x" };
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ParentEntity), 1).GetSingleResult());
 			CollectionAssert.IsEmpty(AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ChildEntity), 1).GetResultList());
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.TablePerClass.Mapping.hbm.xml" }; }
 		}
 	}
 }

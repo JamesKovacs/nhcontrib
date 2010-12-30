@@ -13,7 +13,7 @@ namespace NHibernate.Envers.Tests.Integration.Cache
 
 		protected override IEnumerable<string> Mappings
 		{
-			get { return new[]{"Integration.OneToOne.BiDirectional.Mapping.hbm.xml"}; }
+			get { return new[] { "Integration.OneToOne.BiDirectional.Mapping.hbm.xml" }; }
 		}
 
 		protected override void Initialize()

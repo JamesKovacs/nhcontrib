@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -47,11 +46,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.EmptyChild
 
 			Assert.AreEqual(childVer1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(EmptyChildEntity), 1).GetSingleResult());
 			Assert.AreEqual(childVer1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ParentEntity), 1).GetSingleResult());
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Joined.EmptyChild.Mapping.hbm.xml" }; }
 		}
 	}
 }

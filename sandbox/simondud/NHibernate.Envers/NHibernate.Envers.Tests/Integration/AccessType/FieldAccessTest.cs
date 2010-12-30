@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.AccessType
@@ -7,11 +6,6 @@ namespace NHibernate.Envers.Tests.Integration.AccessType
     public class FieldAccessTest : TestBase
     {
         private int id;
-
-        protected override IEnumerable<string> Mappings
-        {
-            get { return new[] {"Integration.AccessType.Mapping.hbm.xml"}; }
-        }
 
         protected override void Initialize()
         {

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.Relation.Unidirectional
@@ -37,11 +36,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.Relation.Unidir
 			var entities = AuditReader.Find<SetEntity>(cse1_id, 1).Entities;
 			Assert.AreEqual(1, entities.Count);
 			CollectionAssert.Contains(entities, cce1);
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Joined.Relation.Unidirectional.Mapping.hbm.xml" }; }
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Entities.Components;
 using NUnit.Framework;
 
@@ -9,11 +8,6 @@ namespace NHibernate.Envers.Tests.Integration.Components.Collections
 	public class CollectionOfComponentsTest : TestBase
 	{
 		private int id1;
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Entities.Components.Mapping.hbm.xml" }; }
-		}
 
 		protected override void Initialize()
 		{

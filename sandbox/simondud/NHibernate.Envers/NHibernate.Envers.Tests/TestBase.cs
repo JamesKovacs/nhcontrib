@@ -8,7 +8,7 @@ namespace NHibernate.Envers.Tests
 {
 	public abstract class TestBase
 	{
-		protected const string MappingAssembly = "NHibernate.Envers.Tests";
+		protected const string TestAssembly = "NHibernate.Envers.Tests";
 		protected Cfg.Configuration Cfg { get; private set; }
 		protected ISession Session { get; set; }
 		protected IAuditReader AuditReader { get; set; }
@@ -60,14 +60,29 @@ namespace NHibernate.Envers.Tests
 				se.Create(false,true);
 		}
 
-		protected abstract IEnumerable<string> Mappings { get; }
+		private string nameSpaceAssemblyExtracted()
+		{
+			var fullNamespace = GetType().Namespace;
+			return fullNamespace.TrimStart(TestAssembly.ToCharArray());
+		}
+
+		protected virtual IEnumerable<string> Mappings
+		{
+			get
+			{
+				return new[]
+				       	{
+				       		nameSpaceAssemblyExtracted() + ".Mapping.hbm.xml"
+				       	};
+			}
+		}
 
 		private void addMappings()
 		{
-			var ass = Assembly.Load(MappingAssembly);
+			var ass = Assembly.Load(TestAssembly);
 			foreach (var mapping in Mappings)
 			{
-				Cfg.AddResource(MappingAssembly + "." + mapping, ass);
+				Cfg.AddResource(TestAssembly + "." + mapping, ass);
 			}
 		}
 	}

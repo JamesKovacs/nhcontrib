@@ -12,6 +12,12 @@ namespace NHibernate.Envers.Tests.Integration.Ids
 		private MulId id3;
 		private MulId id4;
 
+		protected override IEnumerable<string> Mappings
+		{
+			get { return new[] { "Entities.Ids.Mapping.hbm.xml" }; }
+		}
+
+
 		protected override void Initialize()
 		{
 			id1 = new EmbId { X = 1, Y = 2 };
@@ -60,12 +66,6 @@ namespace NHibernate.Envers.Tests.Integration.Ids
 				tx.Commit();
 			}
 		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[]{"Entities.Ids.Mapping.hbm.xml"}; }
-		}
-
 
 		[Test]
 		public void VerifyRevisionCount()

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -51,11 +50,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.Relation
 										AuditReader.Find<ReferencedToParentEntity>(ed_id1, 2).Referencing);
 			CollectionAssert.AreEquivalent(new[] { new ParentIngEntity { Id = p_id, Data = "x" }, new ChildNotIngEntity{ Id = c_id, Data = "y", Number = 1} },
 										AuditReader.Find<ReferencedToParentEntity>(ed_id1, 3).Referencing);
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Single.Relation.Mapping.hbm.xml" }; }
 		}
 	}
 }

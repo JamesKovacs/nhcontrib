@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Data
@@ -7,11 +6,6 @@ namespace NHibernate.Envers.Tests.Integration.Data
 	public class EnumTest : TestBase
 	{
 		private int id1;
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Data.Mapping.hbm.xml" }; }
-		}
 
 		protected override void Initialize()
 		{

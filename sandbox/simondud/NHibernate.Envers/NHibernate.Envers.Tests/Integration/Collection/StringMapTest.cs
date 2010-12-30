@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
 using NHibernate.Envers.Tests.Entities.Collection;
 using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.Collection
 {
-    public class StringMapTest : TestBase
-    {
-        private int sme1_id;
-        private int sme2_id;
+	public class StringMapTest : TestBase
+	{
+		private int sme1_id;
+		private int sme2_id;
 
 		protected override IEnumerable<string> Mappings
 		{
@@ -16,17 +15,17 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 		}
 
 		protected override void Initialize()
-        {
-            var sme1 = new StringMapEntity();
-            var sme2 = new StringMapEntity();
+		{
+			var sme1 = new StringMapEntity();
+			var sme2 = new StringMapEntity();
 			// Revision 1 (sme1: initialy empty, sme2: initialy 1 mapping)
-            using(var tx = Session.BeginTransaction())
-            {
+			using(var tx = Session.BeginTransaction())
+			{
 				sme2.Strings["1"] = "a";
-            	sme1_id = (int)Session.Save(sme1);
-            	sme2_id = (int)Session.Save(sme2);
+				sme1_id = (int)Session.Save(sme1);
+				sme2_id = (int)Session.Save(sme2);
 				tx.Commit();
-            }
+			}
 			// Revision 2 (sme1: adding 2 mappings, sme2: no changes)
 			using(var tx = Session.BeginTransaction())
 			{
@@ -48,7 +47,7 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 				sme2.Strings["1"] = "b";
 				tx.Commit();
 			}
-        }
+		}
 
 		[Test]
 		public void VerifyRevisionCount()
@@ -84,5 +83,5 @@ namespace NHibernate.Envers.Tests.Integration.Collection
 			Assert.AreEqual(new Dictionary<string, string> { { "1", "b" } }, rev3.Strings);
 			Assert.AreEqual(new Dictionary<string, string> { { "1", "b" } }, rev4.Strings);
 		}
-    }
+	}
 }

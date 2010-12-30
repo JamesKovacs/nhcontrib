@@ -187,6 +187,7 @@
     <Compile Include="Integration\Inheritance\TablePerClass\NotOwnedRelation\NotOwnBidirectionalTest.cs" />
     <Compile Include="Integration\Inheritance\TablePerClass\ParentAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\TablePerClass\Relation\PolymorphicCollectionTest.cs" />
+    <Compile Include="Integration\Interfaces\Components\InterfacesComponentsTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

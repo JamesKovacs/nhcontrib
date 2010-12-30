@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -70,11 +69,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Joined.ChildRelation
 			Assert.IsNull(AuditReader.Find<ChildIngEntity>(c_id, 1));
 			Assert.AreEqual(new ReferencedToChildEntity { Id = re_id1 }, AuditReader.Find<ChildIngEntity>(c_id, 2).Referenced);
 			Assert.AreEqual(new ReferencedToChildEntity { Id = re_id2 }, AuditReader.Find<ChildIngEntity>(c_id, 3).Referenced);
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Joined.ChildRelation.Mapping.hbm.xml" }; }
 		}
 	}
 }

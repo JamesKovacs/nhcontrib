@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.HashCode
@@ -30,11 +29,6 @@ namespace NHibernate.Envers.Tests.Integration.HashCode
 				image.Name = "name2";
 				tx.Commit();
 			}
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[]{"Integration.HashCode.Mapping.hbm.xml"}; }
 		}
 
 		[Test]

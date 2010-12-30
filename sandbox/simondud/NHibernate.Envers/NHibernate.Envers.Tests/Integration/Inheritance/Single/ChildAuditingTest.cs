@@ -50,10 +50,5 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ChildEntity), 1).GetSingleResult());
 			Assert.AreEqual(childVersion1, AuditReader.CreateQuery().ForEntitiesAtRevision(typeof(ParentEntity), 1).GetSingleResult());
 		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Single.Mapping.hbm.xml" }; }
-		}
 	}
 }

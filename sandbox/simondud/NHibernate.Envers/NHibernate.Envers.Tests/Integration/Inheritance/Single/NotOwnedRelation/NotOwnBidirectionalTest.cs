@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NHibernate.Envers.Tests.Integration.Inheritance.Entities;
 using NUnit.Framework;
 
@@ -58,11 +57,6 @@ namespace NHibernate.Envers.Tests.Integration.Inheritance.Single.NotOwnedRelatio
 							AuditReader.Find<PersonalContact>(pc_id, 1).Addresses);
 			CollectionAssert.AreEquivalent(new[] { new Address { Id = a1_id, Address1 = "a1" }, new Address { Id = a2_id, Address1 = "a2" } },
 							AuditReader.Find<PersonalContact>(pc_id, 2).Addresses);
-		}
-
-		protected override IEnumerable<string> Mappings
-		{
-			get { return new[] { "Integration.Inheritance.Single.NotOwnedRelation.Mapping.hbm.xml" }; }
 		}
 	}
 }
