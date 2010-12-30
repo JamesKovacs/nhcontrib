@@ -94,6 +94,8 @@
     <Compile Include="Entities\Ids\MulId.cs" />
     <Compile Include="Entities\Ids\MulIdTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
+    <Compile Include="Entities\ManyToMany\ListOwnedEntity.cs" />
+    <Compile Include="Entities\ManyToMany\ListOwningEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
     <Compile Include="Entities\StrTestEntity.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="Integration\Interfaces\Relation\ISetRefEdEntity.cs" />
     <Compile Include="Integration\Interfaces\Relation\SetRefEdEntity.cs" />
     <Compile Include="Integration\Interfaces\Relation\SetRefIngEntity.cs" />
+    <Compile Include="Integration\ManyToMany\BasicListTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -209,6 +212,7 @@
     <EmbeddedResource Include="Entities\Components\Relations\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\CustomType\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Ids\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\ManyToMany\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

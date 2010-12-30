@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NHibernate.Envers.Tests"
+                   namespace="NHibernate.Envers.Tests.Entities.ManyToMany">
+  <class name="ListOwningEntity">
+    <id name="Id">
+      <generator class="assigned"/>
+    </id>
+    <property name="Data" />
+    <list name="References" table="linkTable">
+      <key column="owningId" />
+      <list-index column="listindex"/>
+      <many-to-many class="ListOwnedEntity" column="ownedId" />
+    </list>
+  </class>
+  
+  <class name="ListOwnedEntity">
+    <id name="Id">
+      <generator class="assigned"/>
+    </id>
+    <property name="Data"/>
+    <list name="Referencing" table="linkTable" inverse="true">
+      <key column="ownedId" />
+      <list-index column="listindex"/>
+      <many-to-many class="ListOwningEntity" column="owningId"/>
+    </list>
+  </class>
+</hibernate-mapping>
+

@@ -240,6 +240,7 @@
     <Compile Include="Tools\Graph\IGraphDefiner.cs" />
     <Compile Include="Tools\Graph\TopologicalSort.cs" />
     <Compile Include="Tools\Graph\Vertex.cs" />
+    <Compile Include="Tools\IPair.cs" />
     <Compile Include="Tools\ListOfDictionariesWrapper.cs" />
     <Compile Include="Tools\ListWrapper.cs" />
     <Compile Include="Tools\MappingTools.cs" />

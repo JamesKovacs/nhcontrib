@@ -1,10 +1,19 @@
-﻿//rk - byt ut till Tuple<T1, T2> (?)
-namespace NHibernate.Envers.Tools
+﻿namespace NHibernate.Envers.Tools
 {
-	public class Pair<T1, T2> 
+	public class Pair<T1, T2> : IPair
 	{
 		public T1 First{ get; private set;}
 		public T2 Second { get; private set; }
+
+		object IPair.First
+		{
+			get { return First; }
+		}
+
+		object IPair.Second
+		{
+			get { return Second; }
+		}
 
 		private Pair(T1 obj1, T2 obj2)
 		{
