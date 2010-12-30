@@ -187,6 +187,9 @@
     <Compile Include="Integration\Inheritance\TablePerClass\NotOwnedRelation\NotOwnBidirectionalTest.cs" />
     <Compile Include="Integration\Inheritance\TablePerClass\ParentAuditingTest.cs" />
     <Compile Include="Integration\Inheritance\TablePerClass\Relation\PolymorphicCollectionTest.cs" />
+    <Compile Include="Integration\Interfaces\Components\Component1.cs" />
+    <Compile Include="Integration\Interfaces\Components\ComponentTestEntity.cs" />
+    <Compile Include="Integration\Interfaces\Components\IComponent.cs" />
     <Compile Include="Integration\Interfaces\Components\InterfacesComponentsTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
@@ -227,6 +230,7 @@
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\ChildRelation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\NotOwnedRelation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\Relation\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Interfaces\Components\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
