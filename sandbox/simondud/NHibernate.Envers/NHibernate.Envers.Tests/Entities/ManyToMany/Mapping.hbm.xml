@@ -7,11 +7,10 @@
       <generator class="assigned"/>
     </id>
     <property name="Data" />
-    <list name="References" table="linkTable">
+    <bag name="References" table="linkTable">
       <key column="owningId" />
-      <list-index column="listindex"/>
       <many-to-many class="ListOwnedEntity" column="ownedId" />
-    </list>
+    </bag>
   </class>
   
   <class name="ListOwnedEntity">
@@ -19,11 +18,10 @@
       <generator class="assigned"/>
     </id>
     <property name="Data"/>
-    <list name="Referencing" table="linkTable" inverse="true">
+    <bag name="Referencing" table="linkTable" inverse="true">
       <key column="ownedId" />
-      <list-index column="listindex"/>
-      <many-to-many class="ListOwningEntity" column="owningId"/>
-    </list>
+      <many-to-many class="ListOwningEntity"  column="owningId"/>
+    </bag>
   </class>
 </hibernate-mapping>
 
