@@ -13,7 +13,6 @@ using NHibernate.Envers.Tools;
 using NHibernate.Type;
 using NHibernate.Mapping;
 using NHibernate.Envers.Entities;
-using NHibernate.Envers.Entities.Mapper.Id;
 using System.Xml;
 using NHibernate.Envers.Entities.Mapper.Relation;
 
@@ -21,7 +20,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 {
 	public sealed class CollectionMetadataGenerator 
 	{
-		private static ILog log = LogManager.GetLogger(typeof(CollectionMetadataGenerator));
+		private static readonly ILog log = LogManager.GetLogger(typeof(CollectionMetadataGenerator));
 
 		private readonly AuditMetadataGenerator mainGenerator;
 		private readonly string propertyName;
@@ -472,25 +471,37 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 			else
 				throw new NotImplementedException();
+			/*
+			 * 
+			 *         if (type instanceof SortedSetType) {
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new BasicCollectionMapper<Set>(commonCollectionMapperData,
+					TreeSet.class, SortedSetProxy.class, elementComponentData));
+		} else if (type instanceof SetType) {
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new BasicCollectionMapper<Set>(commonCollectionMapperData,
+					HashSet.class, SetProxy.class, elementComponentData));
+		} else if (type instanceof SortedMapType) {
+			// Indexed collection, so <code>indexComponentData</code> is not null.
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new MapCollectionMapper<Map>(commonCollectionMapperData,
+					TreeMap.class, SortedMapProxy.class, elementComponentData, indexComponentData));
+		} else if (type instanceof MapType) {
+			// Indexed collection, so <code>indexComponentData</code> is not null.
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new MapCollectionMapper<Map>(commonCollectionMapperData,
+					HashMap.class, MapProxy.class, elementComponentData, indexComponentData));
+		} else if (type instanceof BagType) {
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new BasicCollectionMapper<List>(commonCollectionMapperData,
+					ArrayList.class, ListProxy.class, elementComponentData));
+		} else if (type instanceof ListType) {
+			// Indexed collection, so <code>indexComponentData</code> is not null.
+			currentMapper.addComposite(propertyAuditingData.getPropertyData(),
+					new ListCollectionMapper(commonCollectionMapperData,
+					elementComponentData, indexComponentData));
+			 */
 
-
-				//else if (type is SortedMapType) {
-				//    // Indexed collection, so <code>indexComponentData</code> is not null.
-				//    currentMapper.addComposite(propertyAuditingData.getPropertyData(),
-				//            new MapCollectionMapper<Map>(commonCollectionMapperData,
-				//            TreeMap.class, SortedMapProxy.class, elementComponentData, indexComponentData));
-				//} else if (type is MapType) {
-				//    // Indexed collection, so <code>indexComponentData</code> is not null.
-				//    currentMapper.addComposite(propertyAuditingData.getPropertyData(),
-				//            new MapCollectionMapper<Map>(commonCollectionMapperData,
-				//            HashMap.class, MapProxy.class, elementComponentData, indexComponentData));
-				//} else if (type is BagType) {
-				//    currentMapper.addComposite(propertyAuditingData.getPropertyData(),
-				//            new SetCollectionMapper<List>(commonCollectionMapperData,
-				//            ArrayList.class, ListProxy.class, elementComponentData));
-				//} else {
-				//    mainGenerator.ThrowUnsupportedTypeException(type, referencingEntityName, propertyName);
-				//}
 			currentMapper.AddComposite(propertyAuditingData.getPropertyData(), collectionMapper);
 		}
 
