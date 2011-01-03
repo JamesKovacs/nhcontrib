@@ -197,7 +197,7 @@ namespace NHibernate.Tool.Db2hbm
                 ForeignKeyColumnName = cref.localcolumn;
                 ForeignKeyTableCatalog = metaData.Catalog;
                 ForeignKeyTableSchema = metaData.Schema;
-                ForeignKeyTableSchema = metaData.Name;
+                ForeignKeyTableName = metaData.Name;
             }
             #region IForeignKeyColumnInfo Members
 
