@@ -36,37 +36,22 @@ namespace NHibernate.Envers.Tests.Integration.ManyToMany
 			}
 			using (var tx = Session.BeginTransaction())
 			{
-				ing1 = Session.Get<ListOwningEntity>(ing1_id);
-				ing2 = Session.Get<ListOwningEntity>(ing2_id);
-				ed1 = Session.Get<ListOwnedEntity>(ed1_id);
-				ed2 = Session.Get<ListOwnedEntity>(ed2_id);
-
 				ing1.References = new List<ListOwnedEntity> {ed1};
 				ing2.References = new List<ListOwnedEntity> {ed1, ed2};
 				tx.Commit();
 			}
 			using (var tx = Session.BeginTransaction())
 			{
-				ing1 = Session.Get<ListOwningEntity>(ing1_id);
-				ed2 = Session.Get<ListOwnedEntity>(ed2_id);
-				ed1 = Session.Get<ListOwnedEntity>(ed1_id);
-				
 				ing1.References.Add(ed2);
 				tx.Commit();
 			}
 			using (var tx = Session.BeginTransaction())
 			{
-				ing1 = Session.Get<ListOwningEntity>(ing1_id);
-				ed2 = Session.Get<ListOwnedEntity>(ed2_id);
-				ed1 = Session.Get<ListOwnedEntity>(ed1_id);
-
 				ing1.References.Remove(ed1);
 				tx.Commit();
 			}
 			using (var tx = Session.BeginTransaction())
 			{
-				ing1 = Session.Get<ListOwningEntity>(ing1_id);
-
 				ing1.References = null;
 				tx.Commit();
 			}
