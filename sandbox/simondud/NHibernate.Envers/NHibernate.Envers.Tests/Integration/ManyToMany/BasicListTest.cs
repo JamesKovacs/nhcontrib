@@ -4,8 +4,9 @@ using NUnit.Framework;
 
 namespace NHibernate.Envers.Tests.Integration.ManyToMany
 {
-    //rk - using bag instead of list. Isn't supported in NH Core (?)
-	[TestFixture, Ignore("Fix this later")]
+	//rk - using bag instead of list. Birefs lists aren't supported in NH Core (?)
+	//and also... AFAIK - even Hibernate tests actually use bags.
+	[TestFixture, Ignore("Don't work yet")]
 	public class BasicListTest : TestBase
 	{
 		private int ed1_id;
@@ -80,24 +81,24 @@ namespace NHibernate.Envers.Tests.Integration.ManyToMany
 			CollectionAssert.AreEquivalent(new[] { 1, 2 }, AuditReader.GetRevisions(typeof(ListOwningEntity), ing2_id));
 		}
 
-        [Test]
-        public void VerifyHistoryOfEd1()
-        {
-            var ing1 = Session.Get<ListOwningEntity>(ing1_id);
-            var ing2 = Session.Get<ListOwningEntity>(ing2_id);
+		[Test]
+		public void VerifyHistoryOfEd1()
+		{
+			var ing1 = Session.Get<ListOwningEntity>(ing1_id);
+			var ing2 = Session.Get<ListOwningEntity>(ing2_id);
 
-            var rev1 = AuditReader.Find<ListOwnedEntity>(ed1_id, 1);
-            var rev2 = AuditReader.Find<ListOwnedEntity>(ed1_id, 2);
-            var rev3 = AuditReader.Find<ListOwnedEntity>(ed1_id, 3);
-            var rev4 = AuditReader.Find<ListOwnedEntity>(ed1_id, 4);
-            var rev5 = AuditReader.Find<ListOwnedEntity>(ed1_id, 5);
+			var rev1 = AuditReader.Find<ListOwnedEntity>(ed1_id, 1);
+			var rev2 = AuditReader.Find<ListOwnedEntity>(ed1_id, 2);
+			var rev3 = AuditReader.Find<ListOwnedEntity>(ed1_id, 3);
+			var rev4 = AuditReader.Find<ListOwnedEntity>(ed1_id, 4);
+			var rev5 = AuditReader.Find<ListOwnedEntity>(ed1_id, 5);
 
-            CollectionAssert.IsEmpty(rev1.Referencing);
-            CollectionAssert.AreEquivalent(new[]{ing1, ing2}, rev2.Referencing);
-            CollectionAssert.AreEquivalent(new[]{ing1, ing2}, rev3.Referencing);
-            CollectionAssert.AreEquivalent(new[]{ing2}, rev4.Referencing);
-            CollectionAssert.AreEquivalent(new[]{ing2}, rev5.Referencing);
-        }
+			CollectionAssert.IsEmpty(rev1.Referencing);
+			CollectionAssert.AreEquivalent(new[]{ing1, ing2}, rev2.Referencing);
+			CollectionAssert.AreEquivalent(new[]{ing1, ing2}, rev3.Referencing);
+			CollectionAssert.AreEquivalent(new[]{ing2}, rev4.Referencing);
+			CollectionAssert.AreEquivalent(new[]{ing2}, rev5.Referencing);
+		}
 
 		protected override IEnumerable<string> Mappings
 		{
