@@ -96,6 +96,8 @@
     <Compile Include="Entities\IntTestEntity.cs" />
     <Compile Include="Entities\ManyToMany\ListOwnedEntity.cs" />
     <Compile Include="Entities\ManyToMany\ListOwningEntity.cs" />
+    <Compile Include="Entities\ManyToMany\MapOwnedEntity.cs" />
+    <Compile Include="Entities\ManyToMany\MapOwningEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
     <Compile Include="Entities\StrTestEntity.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="Integration\Interfaces\Relation\SetRefEdEntity.cs" />
     <Compile Include="Integration\Interfaces\Relation\SetRefIngEntity.cs" />
     <Compile Include="Integration\ManyToMany\BasicListTest.cs" />
+    <Compile Include="Integration\ManyToMany\BasicMapTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

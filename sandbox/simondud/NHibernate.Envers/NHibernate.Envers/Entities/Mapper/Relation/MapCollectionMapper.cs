@@ -26,20 +26,12 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 
 		protected override IEnumerable GetNewCollectionContent(IPersistentCollection newCollection)
 		{
-			if (newCollection == null)
-			{
-				return null;
-			}
-			return (IEnumerable) newCollection;
+			return newCollection == null ? null : (IEnumerable) newCollection;
 		}
 
 		protected override IEnumerable GetOldCollectionContent(object oldCollection)
 		{
-			if (oldCollection == null)
-			{
-				return null;
-			}
-			return (IEnumerable)oldCollection;
+			return oldCollection == null ? null : (IEnumerable) oldCollection;
 		}
 
 		protected override void MapToMapFromObject(IDictionary<string, object> data, object changed)

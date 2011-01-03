@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate.Event;
-using System.Runtime.Serialization;
 using NHibernate.Proxy;
 using NHibernate.Engine;
 using NHibernate.Collection;
@@ -29,28 +26,32 @@ namespace NHibernate.Envers.Event
 		private AuditConfiguration verCfg;
 
 		private void GenerateBidirectionalCollectionChangeWorkUnits(AuditSync verSync, IEntityPersister entityPersister,
-																	String entityName, Object[] newState, Object[] oldState,
+																	string entityName, object[] newState, object[] oldState,
 																	ISessionImplementor session) {
 			// Checking if this is enabled in configuration ...
-			if (!verCfg.GlobalCfg.isGenerateRevisionsForCollections()) {
+			if (!verCfg.GlobalCfg.isGenerateRevisionsForCollections()) 
+			{
 				return;
 			}
 
 			// Checks every property of the entity, if it is an "owned" to-one relation to another entity.
 			// If the value of that property changed, and the relation is bi-directional, a new revision
 			// for the related entity is generated.
-			String[] propertyNames = entityPersister.PropertyNames;
+			var propertyNames = entityPersister.PropertyNames;
 
-			for (int i=0; i<propertyNames.GetLength(0); i++) {
-				String propertyName = propertyNames[i];
-				RelationDescription relDesc = verCfg.EntCfg.GetRelationDescription(entityName, propertyName);
+			for (var i=0; i<propertyNames.GetLength(0); i++) 
+			{
+				var propertyName = propertyNames[i];
+				var relDesc = verCfg.EntCfg.GetRelationDescription(entityName, propertyName);
 				if (relDesc != null && relDesc.Bidirectional && relDesc.RelationType == RelationType.TO_ONE &&
-						relDesc.Insertable) {
+						relDesc.Insertable) 
+				{
 					// Checking for changes
-					Object oldValue = oldState == null ? null : oldState[i];
-					Object newValue = newState == null ? null : newState[i];
+					var oldValue = oldState == null ? null : oldState[i];
+					var newValue = newState == null ? null : newState[i];
 
-					if (!Toolz.EntitiesEqual(session, oldValue, newValue)) {
+					if (!Toolz.EntitiesEqual(session, oldValue, newValue)) 
+					{
 						// We have to generate changes both in the old collection (size decreses) and new collection
 						// (size increases).
 
@@ -182,7 +183,7 @@ namespace NHibernate.Envers.Event
 				var relatedEntityName = rd.ToEntityName;
 				var relatedIdMapper = verCfg.EntCfg[relatedEntityName].GetIdMapper();
 				
-				foreach (PersistentCollectionChangeData changeData in workUnit.getCollectionChanges()) 
+				foreach (var changeData in workUnit.CollectionChanges) 
 				{
 					var relatedObj = changeData.GetChangedElement();
 					var relatedId = relatedIdMapper.MapToIdFromEntity(relatedObj);
@@ -210,7 +211,7 @@ namespace NHibernate.Envers.Event
 			foreach (PersistentCollectionChangeData changeData in collectionChanges) {
 				Object relatedObj = changeData.GetChangedElement();
 				object relatedId = relatedIdMapper.MapToIdFromEntity(relatedObj);
-				RevisionType revType = (RevisionType) changeData.getData()[verCfg.AuditEntCfg.RevisionTypePropName];
+				RevisionType revType = (RevisionType) changeData.Data[verCfg.AuditEntCfg.RevisionTypePropName];
 
 				// This can be different from relatedEntityName, in case of inheritance (the real entity may be a subclass
 				// of relatedEntityName).
