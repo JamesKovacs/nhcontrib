@@ -119,6 +119,8 @@
     <Compile Include="Entities\Mapper\PersistentCollectionChangeData.cs" />
     <Compile Include="Entities\Mapper\Relation\AbstractCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\AbstractDelegateSessionImplementor.cs" />
+    <Compile Include="Entities\Mapper\Relation\BagCollectionMapper.cs" />
+    <Compile Include="Entities\Mapper\Relation\Lazy\Initializor\BagCollectionInitializor.cs" />
     <Compile Include="Entities\Mapper\Relation\SetCollectionMapper.cs" />
     <Compile Include="Entities\Mapper\Relation\CommonCollectionMapperData.cs" />
     <Compile Include="Entities\Mapper\Relation\Component\IMiddleComponentMapper.cs" />

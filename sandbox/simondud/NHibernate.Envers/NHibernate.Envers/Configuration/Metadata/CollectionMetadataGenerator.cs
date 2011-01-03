@@ -449,9 +449,9 @@ namespace NHibernate.Envers.Configuration.Metadata
 			else if (type is ListType)
 			{
 				collectionMapper = collectionMapperFactory.CreateListCollectionMapper(genericArguments[0],
-																							commonCollectionMapperData,
-																							elementComponentData,
-																							indexComponentData);
+																				commonCollectionMapperData,
+																				elementComponentData,
+																				indexComponentData);
 			}
 			else if (type is MapType)
 			{
@@ -462,6 +462,13 @@ namespace NHibernate.Envers.Configuration.Metadata
 																					 typeof (MapProxy<,>),
 																					 elementComponentData,
 																					 indexComponentData);
+			}
+			else if (type is BagType)
+			{
+				collectionMapper = collectionMapperFactory.CreateBagCollectionMapper(genericArguments[0],
+																				commonCollectionMapperData,
+																				elementComponentData);
+				
 			}
 			else
 				throw new NotImplementedException();

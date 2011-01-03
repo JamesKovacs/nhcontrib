@@ -21,6 +21,17 @@ namespace NHibernate.Envers.Configuration.Metadata
 				Activator.CreateInstance(type, commonCollectionMapperData, collectionTypeGenerics, proxyTypeGenerics, elementComponentData);
 		}
 
+		public IPropertyMapper CreateBagCollectionMapper(System.Type genericTypeArgument,
+																CommonCollectionMapperData commonCollectionMapperData,
+																MiddleComponentData elementComponentData)
+		{
+			var type = typeof(BagCollectionMapper<>).MakeGenericType(new[] { genericTypeArgument });
+			return
+				(IPropertyMapper)
+				Activator.CreateInstance(type, commonCollectionMapperData, elementComponentData);
+
+		}
+
 		public IPropertyMapper CreateListCollectionMapper(System.Type genericTypeArgument,
 															CommonCollectionMapperData commonCollectionMapperData,
 															MiddleComponentData elementComponentData,
