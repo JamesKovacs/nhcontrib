@@ -10,18 +10,16 @@ namespace NHibernate.Envers.Entities.Mapper.Relation.Lazy.Initializor
 {
 	public class BagCollectionInitializor<T> : AbstractCollectionInitializor<IList<T>>
 	{
-		private readonly System.Type collectionType;
 		private readonly MiddleComponentData elementComponentData;
 
 		public BagCollectionInitializor(AuditConfiguration verCfg,
 											IAuditReaderImplementor versionsReader,
 											IRelationQueryGenerator queryGenerator,
-											object primaryKey, long revision,
-											System.Type collectionType,
+											object primaryKey, 
+											long revision,
 											MiddleComponentData elementComponentData) 
 								:base(verCfg, versionsReader, queryGenerator, primaryKey, revision)
 		{
-			this.collectionType = collectionType;
 			this.elementComponentData = elementComponentData;
 		}
 

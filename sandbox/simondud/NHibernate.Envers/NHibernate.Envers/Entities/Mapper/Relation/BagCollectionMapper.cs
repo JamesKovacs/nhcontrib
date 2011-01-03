@@ -28,8 +28,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 											versionsReader, 
 											commonCollectionMapperData.QueryGenerator,
 											primaryKey, 
-											revision, 
-											collectionType, 
+											revision,
 											elementComponentData);
 		}
 
