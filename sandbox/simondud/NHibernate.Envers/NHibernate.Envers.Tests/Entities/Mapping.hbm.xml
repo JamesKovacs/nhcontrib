@@ -30,4 +30,11 @@
 		</id>
 		<property name="Str"/>
 	</class>
+
+	<class name="IntNoAutoIdTestEntity">
+		<id name="Id">
+			<generator class="assigned"/>
+		</id>
+		<property name="Number"/>
+	</class>
 </hibernate-mapping>
