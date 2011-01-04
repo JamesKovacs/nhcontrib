@@ -1,4 +1,4 @@
-namespace NHibernate.Envers.Tests.Entities
+namespace NHibernate.Envers.Tests.Entities.ManyToMany
 {
 	public class IntNoAutoIdTestEntity
 	{

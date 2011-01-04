@@ -76,12 +76,19 @@
 		<property name="Data"/>
 		<bag name="References1" table="linkTableWhere"  where="ownedId &lt; 20" >
 			<key column="owningId" />
-			<many-to-many class="NHibernate.Envers.Tests.Entities.IntNoAutoIdTestEntity" column="ownedId" />
+			<many-to-many class="IntNoAutoIdTestEntity" column="ownedId" />
 		</bag>
 		<bag name="References2" table="linkTableWhere" where="ownedId &gt;= 20" >
 			<key column="owningId" />
-			<many-to-many class="NHibernate.Envers.Tests.Entities.IntNoAutoIdTestEntity" column="ownedId" />
+			<many-to-many class="IntNoAutoIdTestEntity" column="ownedId" />
 		</bag>
+	</class>
+
+	<class name="IntNoAutoIdTestEntity">
+		<id name="Id">
+			<generator class="assigned"/>
+		</id>
+		<property name="Number"/>
 	</class>
 </hibernate-mapping>
 
