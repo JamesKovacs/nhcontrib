@@ -95,6 +95,8 @@
     <Compile Include="Entities\Ids\MulIdTestEntity.cs" />
     <Compile Include="Entities\IntNoAutoIdTestEntity.cs" />
     <Compile Include="Entities\IntTestEntity.cs" />
+    <Compile Include="Entities\ManyToMany\BiOwned\ListBiOwning1Entity.cs" />
+    <Compile Include="Entities\ManyToMany\BiOwned\ListBiOwning2Entity.cs" />
     <Compile Include="Entities\ManyToMany\ListOwnedEntity.cs" />
     <Compile Include="Entities\ManyToMany\ListOwningEntity.cs" />
     <Compile Include="Entities\ManyToMany\MapOwnedEntity.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Integration\ManyToMany\BasicMapTest.cs" />
     <Compile Include="Integration\ManyToMany\BasicSetTest.cs" />
     <Compile Include="Integration\ManyToMany\BasicWhereJoinTableTest.cs" />
+    <Compile Include="Integration\ManyToMany\BiOwned\BasicBiOwnedTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -224,6 +227,7 @@
     <EmbeddedResource Include="Entities\CustomType\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\Ids\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\ManyToMany\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\ManyToMany\BiOwned\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
