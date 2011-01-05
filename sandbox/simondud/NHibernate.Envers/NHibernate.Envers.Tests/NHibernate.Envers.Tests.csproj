@@ -214,6 +214,8 @@
     <Compile Include="Integration\ManyToMany\BasicWhereJoinTableTest.cs" />
     <Compile Include="Integration\ManyToMany\BiOwned\BasicBiOwnedTest.cs" />
     <Compile Include="Integration\ManyToMany\SameTable\BasicSameTableTest.cs" />
+    <Compile Include="Integration\ManyToMany\Ternary\TernaryMapEntity.cs" />
+    <Compile Include="Integration\ManyToMany\Ternary\TernaryMapTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -260,6 +262,7 @@
     <EmbeddedResource Include="Integration\Inheritance\TablePerClass\Relation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Interfaces\Components\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Interfaces\Relation\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\ManyToMany\Ternary\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
