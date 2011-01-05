@@ -38,14 +38,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Iesi.Collections">
-      <HintPath>..\SharedLibs\nhibernate\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\lib\nhibernate\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\SharedLibs\Misc\log4net.dll</HintPath>
+      <HintPath>..\..\lib\Misc\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate, Version=3.0.0.2001, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharedLibs\nhibernate\NHibernate.dll</HintPath>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\lib\nhibernate\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
