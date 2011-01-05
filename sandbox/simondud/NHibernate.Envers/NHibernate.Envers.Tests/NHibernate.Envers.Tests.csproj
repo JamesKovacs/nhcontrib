@@ -215,6 +215,7 @@
     <Compile Include="Integration\ManyToMany\BiOwned\BasicBiOwnedTest.cs" />
     <Compile Include="Integration\ManyToMany\SameTable\BasicSameTableTest.cs" />
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapEntity.cs" />
+    <Compile Include="Integration\ManyToMany\Ternary\TernaryMapFlushTest.cs" />
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />

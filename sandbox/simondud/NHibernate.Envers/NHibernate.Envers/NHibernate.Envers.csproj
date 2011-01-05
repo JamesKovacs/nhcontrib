@@ -234,6 +234,7 @@
     <Compile Include="Tools\ArgumentsTools.cs" />
     <Compile Include="Tools\ArraysTools.cs" />
     <Compile Include="Tools\CollectionWrapper.cs" />
+    <Compile Include="Tools\DictionaryComparer.cs" />
     <Compile Include="Tools\DictionaryWrapper.cs" />
     <Compile Include="Tools\EmptyDictionary.cs" />
     <Compile Include="Tools\EnumeratorOfDictionariesWrapper.cs" />

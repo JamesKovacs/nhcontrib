@@ -5,6 +5,7 @@ using NHibernate.Engine;
 using NHibernate.Envers.Configuration;
 using NHibernate.Collection;
 using NHibernate.Envers.Entities.Mapper;
+using NHibernate.Envers.Tools;
 
 namespace NHibernate.Envers.Synchronization.Work
 {
@@ -29,7 +30,7 @@ namespace NHibernate.Envers.Synchronization.Work
 					.MapCollectionChanges(referencingPropertyName, collection, snapshot, id);
 		}
 
-		public String ReferencingPropertyName { get; private set; }
+		public string ReferencingPropertyName { get; private set; }
 
 		public PersistentCollectionChangeWorkUnit(ISessionImplementor sessionImplementor, 
 												string entityName,
@@ -99,15 +100,17 @@ namespace NHibernate.Envers.Synchronization.Work
 
 		public override IAuditWorkUnit Dispatch(IWorkUnitMergeVisitor first)
 		{
-			if (first is PersistentCollectionChangeWorkUnit) {
-				var original = (PersistentCollectionChangeWorkUnit) first;
+			var original = first as PersistentCollectionChangeWorkUnit;
 
+			if (original != null) 
+			{
+			
 				// Merging the collection changes in both work units.
 
 				// First building a map from the ids of the collection-entry-entities from the "second" collection changes,
 				// to the PCCD objects. That way, we will be later able to check if an "original" collection change
 				// should be added, or if it is overshadowed by a new one.
-				var newChangesIdMap = new Dictionary<Object, PersistentCollectionChangeData>();
+				var newChangesIdMap = new Dictionary<IDictionary<string, object>, PersistentCollectionChangeData>(new DictionaryComparer<string, object>());
 				foreach (PersistentCollectionChangeData persistentCollectionChangeData in CollectionChanges) 
 				{
 					newChangesIdMap.Add(
@@ -119,7 +122,7 @@ namespace NHibernate.Envers.Synchronization.Work
 				var mergedChanges = new List<PersistentCollectionChangeData>();
 
 				// Including only those original changes, which are not overshadowed by new ones.
-				foreach (PersistentCollectionChangeData originalCollectionChangeData in original.CollectionChanges) 
+				foreach (var originalCollectionChangeData in original.CollectionChanges) 
 				{
 					if (!newChangesIdMap.ContainsKey(OriginalId(originalCollectionChangeData))) 
 					{
@@ -137,9 +140,9 @@ namespace NHibernate.Envers.Synchronization.Work
 								"This is not really possible.");
 		}
 
-		private object OriginalId(PersistentCollectionChangeData persistentCollectionChangeData) 
+		private IDictionary<string, object> OriginalId(PersistentCollectionChangeData persistentCollectionChangeData) 
 		{
-			return persistentCollectionChangeData.Data[verCfg.AuditEntCfg.OriginalIdPropName];
+			return (IDictionary<string, object>) persistentCollectionChangeData.Data[verCfg.AuditEntCfg.OriginalIdPropName];
 		}
 
 		/**
