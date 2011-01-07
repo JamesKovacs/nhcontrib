@@ -40,4 +40,15 @@
 			<many-to-many class="NHibernate.Envers.Tests.Entities.StrTestEntity" unique="true" column="ID_2"/>
 		</set>
 	</class>
+
+	<class name="VersionsJoinTableTestEntity">
+		<id name="Id">
+			<generator class="assigned"/>
+		</id>
+		<property name="Data" />
+		<set name="Collection">
+			<key column="VJT_ID"/>
+			<one-to-many class="NHibernate.Envers.Tests.Entities.StrTestEntity"/>
+		</set>
+	</class>
 </hibernate-mapping>

@@ -197,11 +197,11 @@ namespace NHibernate.Envers.Configuration.Metadata
 		 * @param relatedIdMapping Id mapping data of the related entity.
 		 */
 		private void AddRelatedToXmlMapping(XmlElement xmlMapping, string prefix,
-											MetadataTools.ColumnNameEnumerator columnNameIterator,
+											IEnumerable<string> columnNames,
 											IdMappingData relatedIdMapping) 
 		{
 			var properties = (XmlElement) relatedIdMapping.XmlRelationMapping.Clone();
-			MetadataTools.PrefixNamesInPropertyElement(properties, prefix, columnNameIterator, true, true);
+			MetadataTools.PrefixNamesInPropertyElement(properties, prefix, columnNames, true, true);
 			foreach (XmlNode idProperty in properties.ChildNodes)
 			{
 				var tempNode = xmlMapping.OwnerDocument.ImportNode(idProperty, true);
@@ -306,7 +306,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 			{
 				// Adding related-entity (in this case: the referencing's entity id) id mapping to the xml.
 				AddRelatedToXmlMapping(middleEntityXml, referencingPrefixRelated,
-						MetadataTools.GetColumnNameEnumerator(propertyValue.Key.ColumnIterator.GetEnumerator()),
+						MetadataTools.GetColumnNameEnumerator(propertyValue.Key.ColumnIterator),
 						referencingIdMapping);
 			}
 
@@ -383,7 +383,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 		 */
 		private MiddleComponentData AddValueToMiddleTable(IValue value, XmlElement xmlMapping,
 														  QueryGeneratorBuilder queryGeneratorBuilder,
-														  string prefix, JoinColumnAttribute[] joinColumns) 
+														  string prefix, string[] joinColumns) 
 		{
 			var type = value.Type;
 			if (type is ManyToOneType) 
@@ -400,8 +400,8 @@ namespace NHibernate.Envers.Configuration.Metadata
 				{
 					AddRelatedToXmlMapping(xmlMapping, prefixRelated,
 							joinColumns != null && joinColumns.Length > 0
-									? MetadataTools.GetColumnNameEnumerator(joinColumns)
-									: MetadataTools.GetColumnNameEnumerator(value.ColumnIterator.GetEnumerator()),
+									? joinColumns
+									: MetadataTools.GetColumnNameEnumerator(value.ColumnIterator),
 							referencedIdMapping);
 				}
 

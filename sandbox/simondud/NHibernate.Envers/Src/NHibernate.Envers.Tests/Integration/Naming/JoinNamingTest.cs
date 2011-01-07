@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Mapping;
 using NUnit.Framework;
@@ -79,6 +80,14 @@ namespace NHibernate.Envers.Tests.Integration.Naming
 			var columns = Cfg.GetClassMapping(auditName).GetProperty("Reference").ColumnIterator;
 			Assert.AreEqual(1, columns.Count());
 			Assert.AreEqual("jnree_column_reference", ((Column)columns.First()).Name);
+		}
+
+		protected override IEnumerable<string> Mappings
+		{
+			get
+			{
+				return new[] { "Integration.Naming.Mapping.hbm.xml", "Entities.Mapping.hbm.xml" };
+			}
 		}
 	}
 }

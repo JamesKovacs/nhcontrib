@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using NHibernate.Mapping;
 using System.Collections;
@@ -205,7 +206,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 		}
 
-		private static void ChangeNamesInColumnElement(XmlElement element, ColumnNameEnumerator colNameEnumerator) 
+		private static void ChangeNamesInColumnElement(XmlElement element, IEnumerable<string> columnNames) 
 		{
 			var nodeList = element.ChildNodes;
 			foreach (XmlElement property in nodeList)
@@ -216,14 +217,13 @@ namespace NHibernate.Envers.Configuration.Metadata
 					if (!string.IsNullOrEmpty(value)) 
 					{
 						//nameAttr.setText(columnNameIterator.next());
-						colNameEnumerator.MoveNext();
-						property.SetAttribute("name", colNameEnumerator.Current);
+						property.SetAttribute("name", columnNames.First());
 					}
 				}
 			}
 		}
 
-		public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, ColumnNameEnumerator colNameEnumerator,
+		public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, IEnumerable<string> columnNames,
 														bool changeToKey, bool insertable) 
 		{
 			var nodeList = element.ChildNodes;
@@ -231,12 +231,12 @@ namespace NHibernate.Envers.Configuration.Metadata
 			{
 				if ("property".Equals(property.Name)) 
 				{
-					string value = property.GetAttribute("name");
+					var value = property.GetAttribute("name");
 					if (!String.IsNullOrEmpty(value)) 
 					{
 						property.SetAttribute("name",prefix + value);
 					}
-					ChangeNamesInColumnElement(property, colNameEnumerator);
+					ChangeNamesInColumnElement(property, columnNames);
 
 					if (changeToKey) 
 					{
@@ -275,68 +275,9 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 		}
 
-		/**
-		 * An iterator over column names.
-		 */
-		public abstract class ColumnNameEnumerator : IEnumerator<String>
+		public static IEnumerable<string> GetColumnNameEnumerator(IEnumerable<ISelectable> columnEnumerator)
 		{
-			#region IEnumerator<string> Members
-
-			public abstract string Current
-			{
-				get;
-			}
-
-			#endregion
-
-			#region IDisposable Members
-			public abstract void Dispose();
-			#endregion
-
-			#region IEnumerator Members
-
-			object IEnumerator.Current
-			{
-				get { throw new NotImplementedException(); }
-			}
-			public abstract bool MoveNext();
-			public abstract void Reset();
-			#endregion
-		}
-
-		public class ColumnNameEnumeratorFromEnum : ColumnNameEnumerator {
-			private IEnumerator<ISelectable> _columnEnumerator;
-			public ColumnNameEnumeratorFromEnum(IEnumerator<ISelectable> columnEnumerator) { _columnEnumerator = columnEnumerator; }
-			public override bool MoveNext() { return _columnEnumerator.MoveNext(); }
-			//TODO Simon: see if value is the intended return. 27/06/2010 - It seems not, it is the name
-			public override String Current { get {return ((Column)_columnEnumerator.Current).Name;} }
-			public override void Reset() { _columnEnumerator.Reset(); }
-			public override void Dispose() { _columnEnumerator.Dispose(); }
-		}
-		public class ColumnNameEnumeratorFromArray : ColumnNameEnumerator {
-			private JoinColumnAttribute[] _joinColumns;
-			public ColumnNameEnumeratorFromArray(JoinColumnAttribute[] joinColumns){_joinColumns = joinColumns;}
-				int counter = 0;
-				public override bool MoveNext() 
-				{ 
-					throw new NotImplementedException();//return counter <= joinColumns < joinColumns.length; 
-				}
-				public override String Current 
-				{ 
-					get{throw new NotImplementedException();// return joinColumns[counter++].name(); 
-					}
-				}
-				public override void Reset() { throw new NotImplementedException(); }
-				public override void Dispose() { throw new NotImplementedException(); }
-
-		}
-
-		public static ColumnNameEnumerator GetColumnNameEnumerator(IEnumerator<ISelectable> columnEnumerator) {
-			return new ColumnNameEnumeratorFromEnum(columnEnumerator);
-		}
-
-		public static ColumnNameEnumerator GetColumnNameEnumerator(JoinColumnAttribute[] joinColumns) {
-			return new ColumnNameEnumeratorFromArray(joinColumns);
+			return (from Column column in columnEnumerator select column.Name).ToList();
 		}
 	}
 }

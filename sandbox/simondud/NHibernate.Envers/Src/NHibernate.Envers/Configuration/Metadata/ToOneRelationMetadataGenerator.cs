@@ -70,7 +70,7 @@ namespace NHibernate.Envers.Configuration.Metadata
             properties.SetAttribute("name",propertyAuditingData.Name);
 
             MetadataTools.PrefixNamesInPropertyElement(properties, lastPropertyPrefix,
-                    MetadataTools.GetColumnNameEnumerator((IEnumerator<ISelectable>)value.ColumnIterator.GetEnumerator()), false, insertable);
+                    MetadataTools.GetColumnNameEnumerator(value.ColumnIterator), false, insertable);
             parent.AppendChild(properties);
 
 
