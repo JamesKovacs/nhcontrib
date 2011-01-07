@@ -100,6 +100,7 @@
     <Compile Include="Entities\ManyToMany\SameTable\ParentEntity.cs" />
     <Compile Include="Entities\ManyToMany\SetOwnedEntity.cs" />
     <Compile Include="Entities\ManyToMany\SetOwningEntity.cs" />
+    <Compile Include="Entities\ManyToMany\UniDirectional\ListUniEntity.cs" />
     <Compile Include="Entities\ManyToMany\WhereJoinTableEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapEntity.cs" />
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapFlushTest.cs" />
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapTest.cs" />
+    <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniListTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -230,6 +232,7 @@
     <EmbeddedResource Include="Entities\ManyToMany\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\ManyToMany\BiOwned\Mapping.hbm.xml" />
     <EmbeddedResource Include="Entities\ManyToMany\SameTable\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Entities\ManyToMany\UniDirectional\Mapping.hbm.xml" />
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
