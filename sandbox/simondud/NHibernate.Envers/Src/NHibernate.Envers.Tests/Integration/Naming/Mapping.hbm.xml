@@ -29,4 +29,15 @@
 								class="JoinNamingRefEdEntity" 
 								column="jnree_column_reference" />
 	</class>
+
+	<class name="DetachedNamingTestEntity">
+		<id name="Id">
+			<generator class="assigned"/>
+		</id>
+		<property name="Data" />
+		<set name="Collection" table="UNI_NAMING_TEST">
+			<key column="ID_1"/>
+			<many-to-many class="NHibernate.Envers.Tests.Entities.StrTestEntity" unique="true" column="ID_2"/>
+		</set>
+	</class>
 </hibernate-mapping>
