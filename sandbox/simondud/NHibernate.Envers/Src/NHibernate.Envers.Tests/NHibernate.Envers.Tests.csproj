@@ -229,6 +229,11 @@
     <Compile Include="Integration\Naming\NamingTestEntity1.cs" />
     <Compile Include="Integration\Naming\OneToManyUniDirectionalNamingTest.cs" />
     <Compile Include="Integration\Naming\VersionsJoinTableNamingTest.cs" />
+    <Compile Include="Integration\Naming\VersionsJoinTableRangeComponent.cs" />
+    <Compile Include="Integration\Naming\VersionsJoinTableRangeComponentNamingTest.cs" />
+    <Compile Include="Integration\Naming\VersionsJoinTableRangeComponentTestEntity.cs" />
+    <Compile Include="Integration\Naming\VersionsJoinTableRangeTestAlternateEntity.cs" />
+    <Compile Include="Integration\Naming\VersionsJoinTableRangeTestEntity.cs" />
     <Compile Include="Integration\Naming\VersionsJoinTableRangeTestEntityBaseClass.cs" />
     <Compile Include="Integration\Naming\VersionsJoinTableTestEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />

@@ -1,7 +1,7 @@
 namespace NHibernate.Envers.Tests.Integration.Naming
 {
 	[Audited]
-	public class VersionsJoinTableRangeTestEntityBaseClass
+	public abstract class VersionsJoinTableRangeTestEntityBaseClass
 	{
 		public virtual int Id { get; set; }
 		public virtual string GenericValue { get; set; }

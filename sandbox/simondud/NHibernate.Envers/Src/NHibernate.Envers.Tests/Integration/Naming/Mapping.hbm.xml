@@ -51,4 +51,41 @@
 			<one-to-many class="NHibernate.Envers.Tests.Entities.StrTestEntity"/>
 		</set>
 	</class>
+
+	<class name="VersionsJoinTableRangeComponentTestEntity" table="COMPONENT_TEST_ENTITY">
+		<id name="Id" column="ID">
+			<generator class="identity"/>
+		</id>
+		<component name="Component1">
+			<bag name="Range" fetch="subselect" cascade="all-delete-orphan">
+				<key column="VJTRCTE_ID" update="false" />
+				<one-to-many class="VersionsJoinTableRangeTestEntity"/>
+			</bag>
+		</component>
+		<component name="Component2">
+  		<bag name="Range" fetch="subselect" cascade="all-delete-orphan">
+				<key column="VJTRCTE2_ID" update="false" />
+				<one-to-many class="VersionsJoinTableRangeTestAlternateEntity" />
+			</bag>
+		</component>
+		<component name="Component3">
+			<property name="Str1" column="STR1"/>
+			<property name="Str2" column="STR2"/>
+		</component>
+	</class>
+
+  <class name="VersionsJoinTableRangeTestAlternateEntity" table="RANGE_TEST_ALTERNATE_ENTITY">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="GenericValue" />
+		<property name="AlternativeValue" />
+	</class>
+	<class name="VersionsJoinTableRangeTestEntity" table="RANGE_TEST_ENTITY">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="GenericValue" />
+    <property name="Value" />
+	</class>
 </hibernate-mapping>
