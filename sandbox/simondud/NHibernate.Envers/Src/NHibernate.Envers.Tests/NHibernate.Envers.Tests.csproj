@@ -217,6 +217,7 @@
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapTest.cs" />
     <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniListTest.cs" />
     <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniMapTest.cs" />
+    <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniSetTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
