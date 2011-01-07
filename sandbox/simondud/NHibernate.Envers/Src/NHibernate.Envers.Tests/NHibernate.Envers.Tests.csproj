@@ -222,6 +222,9 @@
     <Compile Include="Integration\ManyToMany\UniDirectional\M2MRelationNotAuditedTargetTest.cs" />
     <Compile Include="Integration\ManyToOne\UniDirectional\RelationNotAuditedTargetTest.cs" />
     <Compile Include="Integration\Naming\BasicNamingTest.cs" />
+    <Compile Include="Integration\Naming\JoinNamingRefEdEntity.cs" />
+    <Compile Include="Integration\Naming\JoinNamingRefIngEntity.cs" />
+    <Compile Include="Integration\Naming\JoinNamingTest.cs" />
     <Compile Include="Integration\Naming\NamingTestEntity1.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />

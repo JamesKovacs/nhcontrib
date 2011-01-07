@@ -8,4 +8,25 @@
 		</id>
 		<property name="Data" column="nte_data" />
 	</class>
+
+	<class name="JoinNamingRefEdEntity">
+		<id name="Id" column="jnree_id">
+			<generator class="identity"/>
+		</id>
+		<property name="Data"/>
+		<bag name="Reffering" inverse="true">
+			<key column="jnree_column_reference" />
+			<one-to-many class ="JoinNamingRefIngEntity" />
+		</bag>
+	</class>
+
+	<class name="JoinNamingRefIngEntity">
+		<id name="Id" column="jnrie_id">
+			<generator class="identity"/>
+		</id>
+		<property name="Data" />
+		<many-to-one name="Reference"
+								class="JoinNamingRefEdEntity" 
+								column="jnree_column_reference" />
+	</class>
 </hibernate-mapping>
