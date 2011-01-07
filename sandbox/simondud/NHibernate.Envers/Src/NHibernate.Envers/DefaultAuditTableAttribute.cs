@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NHibernate.Envers
+﻿namespace NHibernate.Envers
 {
-    class DefaultAuditTableAttribute : AuditTableAttribute
+    public class DefaultAuditTableAttribute : AuditTableAttribute
     {
-        public System.Type AttributeType()
+    	public DefaultAuditTableAttribute(string value) : base(value)
+    	{
+    	}
+
+    	public System.Type AttributeType()
         {
             return typeof(DefaultAuditTableAttribute);
         }

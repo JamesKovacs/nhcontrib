@@ -248,8 +248,8 @@ namespace NHibernate.Envers.Configuration.Metadata
 				var auditTableName = auditingData.SecondaryTableDictionary[originalTableName] ??
 				                     VerEntCfg.GetAuditEntityName(originalTableName);
 
-				var schema = GetSchema(auditingData.AuditTable.schema, join.Table);
-				var catalog = GetCatalog(auditingData.AuditTable.catalog, join.Table);
+				var schema = GetSchema(auditingData.AuditTable.Schema, join.Table);
+				var catalog = GetCatalog(auditingData.AuditTable.Catalog, join.Table);
 
 				var joinElement = MetadataTools.CreateJoin(parent, auditTableName, schema, catalog);
 				JoinElements.Add(join, joinElement);
@@ -338,8 +338,8 @@ namespace NHibernate.Envers.Configuration.Metadata
 		public void GenerateFirstPass(PersistentClass pc, ClassAuditingData auditingData,
 									  EntityXmlMappingData xmlMappingData, bool isAudited)
 		{
-			var schema = GetSchema(auditingData.AuditTable.schema, pc.Table);
-			var catalog = GetCatalog(auditingData.AuditTable.catalog, pc.Table);
+			var schema = GetSchema(auditingData.AuditTable.Schema, pc.Table);
+			var catalog = GetCatalog(auditingData.AuditTable.Catalog, pc.Table);
 
 			var entityName = pc.EntityName;
 			if (!isAudited)

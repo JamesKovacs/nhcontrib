@@ -221,6 +221,8 @@
     <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniSetTest.cs" />
     <Compile Include="Integration\ManyToMany\UniDirectional\M2MRelationNotAuditedTargetTest.cs" />
     <Compile Include="Integration\ManyToOne\UniDirectional\RelationNotAuditedTargetTest.cs" />
+    <Compile Include="Integration\Naming\BasicNamingTest.cs" />
+    <Compile Include="Integration\Naming\NamingTestEntity1.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -270,6 +272,7 @@
     <EmbeddedResource Include="Integration\Interfaces\Components\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Interfaces\Relation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\ManyToMany\Ternary\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Naming\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

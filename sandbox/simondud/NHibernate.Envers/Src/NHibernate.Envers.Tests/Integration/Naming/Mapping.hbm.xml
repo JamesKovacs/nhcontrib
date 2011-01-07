@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+									 assembly="NHibernate.Envers.Tests"
+									 namespace="NHibernate.Envers.Tests.Integration.Naming">
+	<class name="NamingTestEntity1" table="naming_test_entity_1">
+		<id name="Id" column="nte_id">
+			<generator class="identity"/>
+		</id>
+		<property name="Data" column="nte_data" />
+	</class>
+</hibernate-mapping>
