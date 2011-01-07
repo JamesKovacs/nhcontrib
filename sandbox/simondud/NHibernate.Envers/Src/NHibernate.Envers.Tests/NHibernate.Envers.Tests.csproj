@@ -101,6 +101,9 @@
     <Compile Include="Entities\ManyToMany\SetOwnedEntity.cs" />
     <Compile Include="Entities\ManyToMany\SetOwningEntity.cs" />
     <Compile Include="Entities\ManyToMany\UniDirectional\ListUniEntity.cs" />
+    <Compile Include="Entities\ManyToMany\UniDirectional\M2MTargetNotAuditedEntity.cs" />
+    <Compile Include="Entities\ManyToMany\UniDirectional\MapUniEntity.cs" />
+    <Compile Include="Entities\ManyToMany\UniDirectional\SetUniEntity.cs" />
     <Compile Include="Entities\ManyToMany\WhereJoinTableEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefEdEntity.cs" />
     <Compile Include="Entities\OneToMany\SetRefIngEntity.cs" />
@@ -213,6 +216,7 @@
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapFlushTest.cs" />
     <Compile Include="Integration\ManyToMany\Ternary\TernaryMapTest.cs" />
     <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniListTest.cs" />
+    <Compile Include="Integration\ManyToMany\UniDirectional\BasicUniMapTest.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefIngEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
