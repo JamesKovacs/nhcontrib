@@ -241,6 +241,9 @@
     <Compile Include="Integration\Naming\VersionsJoinTableRangeTestEntity.cs" />
     <Compile Include="Integration\Naming\VersionsJoinTableRangeTestEntityBaseClass.cs" />
     <Compile Include="Integration\Naming\VersionsJoinTableTestEntity.cs" />
+    <Compile Include="Integration\NotInsertable\ManyToOne\ManyToOneNotInsertableEntity.cs" />
+    <Compile Include="Integration\NotInsertable\ManyToOne\ManyToOneNotInsertableTest.cs" />
+    <Compile Include="Integration\NotInsertable\ManyToOne\NotInsertableEntityType.cs" />
     <Compile Include="Integration\NotInsertable\NotInsertableTest.cs" />
     <Compile Include="Integration\NotInsertable\NotInsertableTestEntity.cs" />
     <Compile Include="Integration\OneToOne\BiDirectional\BiRefEdEntity.cs" />
@@ -295,6 +298,7 @@
     <EmbeddedResource Include="Integration\Naming\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Naming\Ids\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\NotInsertable\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\NotInsertable\ManyToOne\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
