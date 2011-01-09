@@ -37,7 +37,7 @@ namespace NHibernate.Envers.Tests.Integration.Naming
 		}
 
 		[Test]
-		public void VerifyHistoryUfUniId1()
+		public void VerifyHistoryOfUniId1()
 		{
 			var str1 = Session.Get<StrTestEntity>(str1_id);
 
