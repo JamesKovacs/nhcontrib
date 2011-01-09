@@ -3,6 +3,7 @@
 namespace NHibernate.Envers
 {
 	//rk - make enum instead
+    [Serializable]
 	public class RevisionType 
 	{
 		public static readonly RevisionType ADD = new RevisionType(0);

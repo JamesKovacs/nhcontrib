@@ -50,7 +50,7 @@ namespace NHibernate.Envers.Tools
                 dictionary.Remove(item.Key);
                 return true;
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return false;
             }
@@ -83,7 +83,7 @@ namespace NHibernate.Envers.Tools
                 dictionary.Remove(key);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

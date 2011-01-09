@@ -51,7 +51,7 @@ namespace NHibernate.Envers.Entities.Mapper.Relation
 			//{
 			//    value = null;
 			//}
-			catch (NonUniqueResultException e)
+			catch (NonUniqueResultException)
 			{
 				throw new AuditException("Many versions results for one-to-one relationship: (" + owningEntityName +
 						", " + owningReferencePropertyName + ")");
