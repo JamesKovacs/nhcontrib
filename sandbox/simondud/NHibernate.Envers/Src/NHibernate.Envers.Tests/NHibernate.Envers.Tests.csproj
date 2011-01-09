@@ -227,6 +227,7 @@
     <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingRefEdEntity.cs" />
     <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingRefIngEntity.cs" />
     <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingTest.cs" />
+    <Compile Include="Integration\Naming\Ids\JoinMulIdNamingTest.cs" />
     <Compile Include="Integration\Naming\JoinNamingRefEdEntity.cs" />
     <Compile Include="Integration\Naming\JoinNamingRefIngEntity.cs" />
     <Compile Include="Integration\Naming\JoinNamingTest.cs" />
