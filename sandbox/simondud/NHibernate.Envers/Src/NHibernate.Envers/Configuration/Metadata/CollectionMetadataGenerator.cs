@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Iesi.Collections.Generic;
 using log4net;
 using NHibernate.Envers.Entities.Mapper;
@@ -197,7 +198,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 		 * @param relatedIdMapping Id mapping data of the related entity.
 		 */
 		private void AddRelatedToXmlMapping(XmlElement xmlMapping, string prefix,
-											IEnumerable<string> columnNames,
+											IEnumerator<string> columnNames,
 											IdMappingData relatedIdMapping) 
 		{
 			var properties = (XmlElement) relatedIdMapping.XmlRelationMapping.Clone();
@@ -400,7 +401,7 @@ namespace NHibernate.Envers.Configuration.Metadata
 				{
 					AddRelatedToXmlMapping(xmlMapping, prefixRelated,
 							joinColumns != null && joinColumns.Length > 0
-									? joinColumns
+                                    ? joinColumns.ToList().GetEnumerator()
 									: MetadataTools.GetColumnNameEnumerator(value.ColumnIterator),
 							referencedIdMapping);
 				}

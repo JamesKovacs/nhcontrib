@@ -206,24 +206,24 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 		}
 
-		private static void ChangeNamesInColumnElement(XmlElement element, IEnumerable<string> columnNames) 
+		private static void ChangeNamesInColumnElement(XmlElement element, IEnumerator<string> columnEnumerator) 
 		{
 			var nodeList = element.ChildNodes;
 			foreach (XmlElement property in nodeList)
 			{
 				if ("column".Equals(property.Name)) 
 				{
-					string value = property.GetAttribute("name");
-					if (!string.IsNullOrEmpty(value)) 
+					var value = property.GetAttribute("name");
+					if (!string.IsNullOrEmpty(value))
 					{
-						//nameAttr.setText(columnNameIterator.next());
-						property.SetAttribute("name", columnNames.First());
+					    columnEnumerator.MoveNext();
+						property.SetAttribute("name", columnEnumerator.Current);
 					}
 				}
 			}
 		}
 
-		public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, IEnumerable<string> columnNames,
+		public static void PrefixNamesInPropertyElement(XmlElement element, String prefix, IEnumerator<string> columnNames,
 														bool changeToKey, bool insertable) 
 		{
 			var nodeList = element.ChildNodes;
@@ -275,9 +275,9 @@ namespace NHibernate.Envers.Configuration.Metadata
 			}
 		}
 
-		public static IEnumerable<string> GetColumnNameEnumerator(IEnumerable<ISelectable> columnEnumerator)
+		public static IEnumerator<string> GetColumnNameEnumerator(IEnumerable<ISelectable> columns)
 		{
-			return (from Column column in columnEnumerator select column.Name).ToList();
+            return (from Column column in columns select column.Name).GetEnumerator();
 		}
 	}
 }

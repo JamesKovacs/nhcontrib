@@ -223,6 +223,10 @@
     <Compile Include="Integration\ManyToOne\UniDirectional\RelationNotAuditedTargetTest.cs" />
     <Compile Include="Integration\Naming\BasicNamingTest.cs" />
     <Compile Include="Integration\Naming\DetachedNamingTestEntity.cs" />
+    <Compile Include="Integration\Naming\Ids\EmbIdNaming.cs" />
+    <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingRefEdEntity.cs" />
+    <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingRefIngEntity.cs" />
+    <Compile Include="Integration\Naming\Ids\JoinEmbIdNamingTest.cs" />
     <Compile Include="Integration\Naming\JoinNamingRefEdEntity.cs" />
     <Compile Include="Integration\Naming\JoinNamingRefIngEntity.cs" />
     <Compile Include="Integration\Naming\JoinNamingTest.cs" />
@@ -286,6 +290,7 @@
     <EmbeddedResource Include="Integration\Interfaces\Relation\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\ManyToMany\Ternary\Mapping.hbm.xml" />
     <EmbeddedResource Include="Integration\Naming\Mapping.hbm.xml" />
+    <EmbeddedResource Include="Integration\Naming\Ids\Mapping.hbm.xml" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
