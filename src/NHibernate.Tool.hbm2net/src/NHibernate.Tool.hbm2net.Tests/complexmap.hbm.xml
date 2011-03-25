@@ -7,6 +7,7 @@
     <id name="Id">
       <generator class="hilo"/>
     </id>
+    
     <map name="ComplexFavoritePlaces" table="UsersComplexFavoritePlaces" >
       <key column="UserId"/>
       <composite-index class="FavPlaceKey">
@@ -18,5 +19,14 @@
         <property name="Lat"/>
       </composite-element>
     </map>
+
+    
+    
+    
+  </class>
+  <class name="Boo">
+    <id name="Id" type="Int32">
+      <generator class="native"></generator>
+    </id>
   </class>
 </hibernate-mapping>

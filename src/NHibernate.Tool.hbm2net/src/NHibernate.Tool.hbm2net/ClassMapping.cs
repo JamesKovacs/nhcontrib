@@ -888,7 +888,8 @@ namespace NHibernate.Tool.hbm2net
 					//implementEquals();
 					propertyList.AddAll(0, cmpid.SelectNodes("urn:key-property", CodeGenerator.nsmgr));
 					manyToOneList.AddAll(0, cmpid.SelectNodes("urn:key-many-to-one", CodeGenerator.nsmgr));
-                    ImplementEquals();
+                    if( manyToOneList.Count == 0 )
+                        ImplementEquals();
 				}
 				else
 				{
