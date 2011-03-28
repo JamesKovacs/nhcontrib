@@ -11,6 +11,5 @@ using System.Security;
 [assembly: AssemblyVersionAttribute("2.0.0.1001")]
 [assembly: AssemblyInformationalVersionAttribute("2.0.0.1001")]
 [assembly: AssemblyFileVersionAttribute("2.0.0.1001")]
-//[assembly: AssemblyKeyFileAttribute("../../src/NHibernate.snk")]
 [assembly: AssemblyDelaySignAttribute(false)]
 [assembly: AllowPartiallyTrustedCallers()]
