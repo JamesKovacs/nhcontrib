@@ -87,6 +87,9 @@ namespace NHibernate.JetDriver
                     case DbType.Int64:
                         FixLongValue(p);
                         break;
+                    case DbType.Decimal:
+                        FixDecimalValue(p);
+                        break;
                 }
             }
         }
@@ -122,6 +125,14 @@ namespace NHibernate.JetDriver
             p.DbType = DbType.Int32;
             p.Value = normalizedLongValue;
             Log.DebugFormat("Changing Int64 parameter value to [{0}] as Int32, to avoid DB confusion", normalizedLongValue);
+        }
+
+        private void FixDecimalValue(IDataParameter p)
+        {
+            if(p.Value == DBNull.Value)
+                return;
+
+            p.DbType = DbType.Double;
         }
 
         private void AddToConvertedDate(IDataParameter parameter)

@@ -26,6 +26,11 @@ namespace NHibernate.JetDriver.Tests
             System.Threading.Thread.CurrentThread.CurrentUICulture = uiCulture;
         }
 
+        public CultureInfo Current
+        {
+            get { return System.Threading.Thread.CurrentThread.CurrentCulture; }
+        }
+
         public void Dispose()
         {
             SetThreadCulture(_oldCulture, _oldUiCulture);

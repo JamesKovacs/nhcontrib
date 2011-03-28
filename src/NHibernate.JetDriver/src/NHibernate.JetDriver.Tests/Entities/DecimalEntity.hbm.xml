@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="NHibernate.JetDriver.Tests.Entities" assembly="NHibernate.JetDriver.Tests">
+  <class name="DecimalEntity">
+    <id name="Id">
+      <generator class="assigned" />
+    </id>
+    <property name="SimpleDecimal"/>
+    <property name="SimpleDouble"/>
+    <property name="NullableDecimal"/>
+    <property name="NullableDouble"/>
+  </class>
+</hibernate-mapping>

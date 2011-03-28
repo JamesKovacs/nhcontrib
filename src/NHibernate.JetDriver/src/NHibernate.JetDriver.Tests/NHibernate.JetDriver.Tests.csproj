@@ -56,6 +56,7 @@
     <Compile Include="ContextCultureSwitch.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Catalog.cs" />
+    <Compile Include="Entities\DecimalEntity.cs" />
     <Compile Include="Entities\Foo.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\ProductType.cs" />
@@ -89,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Entities\NHCD37.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Entities\DecimalEntity.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
